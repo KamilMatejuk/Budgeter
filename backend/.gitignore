@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+.Python
+
+# Editor & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Environment variables
+.env
+.env.*
+
+# Pytest
+.pytest_cache/
+coverage.*
+htmlcov/
+
+# MyPy, Pylint, Ruff etc.
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+ruff_cache/
+
+# FastAPI / Uvicorn
+instance/
+*.log
+
+# Docker
+__dockerized
+docker-compose.override.yml
+*.pid
+
+# VS Code debug config
+.vscode/
+
+# Optional: ignore generated OpenAPI schema files
+openapi.json
+
+# Ignore compiled protobuf/grpc files if used later
+*.pb.go
+*.pb.cc
+*.pb.h
+*.pb.c
+*.pb.py

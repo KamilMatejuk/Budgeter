@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pymongo
+motor  # async MongoDB
+pydantic
+datamodel-code-generator

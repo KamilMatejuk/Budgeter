@@ -1,5 +1,4 @@
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from fastapi import Request, Depends
 import os
 
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")

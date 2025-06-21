@@ -1,0 +1,33 @@
+from pydantic import field_validator
+from app.models.base import PyBaseModel
+
+class Source(PyBaseModel):
+    name: str
+    field_name_id: str
+    field_name_date: str
+    field_name_title: str
+    field_name_shop: str
+    field_name_value: str
+    starting_amount: float
+
+    @field_validator("name",
+                     "field_name_id",
+                     "field_name_date",
+                     "field_name_title",
+                     "field_name_shop",
+                     "field_name_value")
+    @classmethod
+    def no_empty_field_names(cls, v: str) -> str:
+        if not v.strip(): raise ValueError("Field cannot be empty")
+        return v
+    
+    @field_validator("starting_amount")
+    @classmethod
+    def validate_starting_amount(cls, v: float) -> float:
+        if v < 0: raise ValueError("starting_amount cannot be negative")
+        return v
+
+    model_config = {
+        "extra": "forbid",
+        **PyBaseModel.model_config,
+    }

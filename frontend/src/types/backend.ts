@@ -143,6 +143,8 @@ export interface components {
             _id?: string;
             /** Name */
             name: string;
+            /** Colour */
+            colour: string;
             /** Parent */
             parent?: string | null;
             /** Children */

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from app.models.tag import Tag
-from app.models.base import PyObjectId
-from app.core.db import get_db
+from models.tag import Tag
+from models.base import PyObjectId
+from core.db import get_db
 
 
 router = APIRouter()

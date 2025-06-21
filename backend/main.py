@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.api.routes.transaction import router as transaction_router
-from app.api.routes.source import router as source_router
-from app.api.routes.tag import router as tag_router
+from routes.transaction import router as transaction_router
+from routes.source import router as source_router
+from routes.tag import router as tag_router
 
 app = FastAPI()
 

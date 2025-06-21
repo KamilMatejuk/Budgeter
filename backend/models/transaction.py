@@ -1,6 +1,7 @@
 from datetime import datetime
-from app.models.tag import Tag
-from app.models.base import PyBaseModel
+
+from models.tag import Tag
+from models.base import PyBaseModel
 
 
 class Transaction(PyBaseModel):

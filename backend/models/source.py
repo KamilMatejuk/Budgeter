@@ -1,5 +1,6 @@
 from pydantic import field_validator
-from app.models.base import PyBaseModel
+
+from models.base import PyBaseModel
 
 class Source(PyBaseModel):
     name: str

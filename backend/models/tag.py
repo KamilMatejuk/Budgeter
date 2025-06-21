@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator, Field
-from app.models.base import PyBaseModel
+
+from models.base import PyBaseModel
 
 
 class Tag(PyBaseModel):

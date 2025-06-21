@@ -1,5 +1,6 @@
 run:
-	@docker compose up
+	@docker compose up -d && \
+	docker compose logs -f backend frontend
 
 types:
 	@docker compose run --rm --user $(shell id -u):$(shell id -g) frontend \

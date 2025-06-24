@@ -39,7 +39,6 @@ async def patch(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], 
     data = data.model_copy(deep=True, update={"id": str(data.id)})
     doc = data.model_dump(by_alias=True, exclude_unset=True)
     id = PyObjectId(doc.pop("_id", None))
-    print(f"Updating document with id={id} in table={table} with data={doc}")
     result = await db[table].update_one({"_id": id}, {"$set": doc})
     if result.matched_count == 0:
         raise ValueError(f"Document with id={id} not found")
@@ -49,7 +48,7 @@ async def patch(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], 
 
 @fail_wrapper
 async def delete(db: AsyncIOMotorDatabase, table: str, id: str):
-    result = await db[table].delete_one({"_id": PyObjectId(id)})
+    result = await db[table].delete_one({"_id": id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Not found")
     return {}

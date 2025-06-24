@@ -1,34 +1,30 @@
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from models.source import Source
-from models.base import PyObjectId
+from routes.base import get, create, patch, delete
+from models.source import Source, SourcePartial
 from core.db import get_db
-
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[Source])
 async def get_sources(db: AsyncIOMotorDatabase = Depends(get_db)):
-    results = []
-    cursor = db["sources"].find()
-    async for doc in cursor:
-        results.append(Source.model_validate(doc))
-    return results
-
+    return await get(db, "sources", Source)
 
 @router.post("/", response_model=Source)
 async def create_source(data: Source, db: AsyncIOMotorDatabase = Depends(get_db)):
-    doc = data.model_dump(by_alias=True)
-    result = await db["sources"].insert_one(doc)
-    doc["_id"] = result.inserted_id
-    return doc
+    try:
+        return await create(db, "sources", Source, data)
+    except HTTPException as e:
+        if "duplicate key" in str(e):
+            raise HTTPException(status_code=400, detail="Duplicate key error")
+        raise e
 
+@router.patch("/", response_model=SourcePartial)
+async def get_sources(data: SourcePartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    return await patch(db, "sources", SourcePartial, data)
 
 @router.delete("/{id}")
 async def delete_source(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    result = await db["sources"].delete_one({"_id": PyObjectId(id)})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Source not found")
-    return {}
+    return await delete(db, "sources", id)

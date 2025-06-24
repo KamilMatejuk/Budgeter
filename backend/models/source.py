@@ -1,6 +1,8 @@
 from pydantic import field_validator
 
 from models.base import PyBaseModel
+from models.optional import Partial
+
 
 class Source(PyBaseModel):
     name: str
@@ -32,3 +34,7 @@ class Source(PyBaseModel):
         "extra": "forbid",
         **PyBaseModel.model_config,
     }
+
+
+class SourcePartial(Source, metaclass=Partial):
+    pass

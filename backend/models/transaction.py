@@ -2,6 +2,7 @@ from datetime import datetime
 
 from models.tag import Tag
 from models.base import PyBaseModel
+from models.optional import Partial
 
 
 class Transaction(PyBaseModel):
@@ -14,3 +15,7 @@ class Transaction(PyBaseModel):
     model_config = {
         **PyBaseModel.model_config,
     }
+
+
+class TransactionPartial(Transaction, metaclass=Partial):
+    pass

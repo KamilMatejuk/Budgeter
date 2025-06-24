@@ -9,16 +9,15 @@ MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "expense_tracker")
 client: AsyncIOMotorClient = None
 
 
-def get_client() -> AsyncIOMotorClient:
-    global client
-    if client is None:
-        client = AsyncIOMotorClient(MONGO_URL)
-    return client
-
-
-def get_database() -> AsyncIOMotorDatabase:
-    return get_client()[MONGO_DB_NAME]
-
-
 async def get_db() -> AsyncIOMotorDatabase:
-    return get_database()
+    global client
+    if client is not None:
+        return client[MONGO_DB_NAME]
+    client = AsyncIOMotorClient(MONGO_URL)
+    db = client[MONGO_DB_NAME]
+    await create_indexes(db)
+    return db
+
+
+async def create_indexes(db: AsyncIOMotorDatabase):
+    await db["sources"].create_index("name", unique=True)

@@ -1,34 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from models.transaction import Transaction
-from models.base import PyObjectId
+from routes.base import get, create, patch, delete
+from models.transaction import Transaction, TransactionPartial
 from core.db import get_db
 
 
 router = APIRouter()
 
-
 @router.get("/", response_model=list[Transaction])
 async def get_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
-    results = []
-    cursor = db["transactions"].find()
-    async for doc in cursor:
-        results.append(Transaction.model_validate(doc))
-    return results
-
+    return await get(db, "transactions", Transaction)
 
 @router.post("/", response_model=Transaction)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
-    doc = data.model_dump(by_alias=True)
-    result = await db["transactions"].insert_one(doc)
-    doc["_id"] = result.inserted_id
-    return doc
+    return await create(db, "transactions", Transaction, data)
 
+@router.patch("/", response_model=TransactionPartial)
+async def get_sources(data: TransactionPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    return await patch(db, "sources", TransactionPartial, data)
 
 @router.delete("/{id}")
 async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    result = await db["transactions"].delete_one({"_id": PyObjectId(id)})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Transaction not found")
-    return {}
+    return await delete(db, "transactions", id)

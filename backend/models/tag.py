@@ -2,6 +2,7 @@ import re
 from pydantic import field_validator
 
 from models.base import PyBaseModel
+from models.optional import Partial
 
 
 class Tag(PyBaseModel):
@@ -29,3 +30,7 @@ class Tag(PyBaseModel):
         "extra": "forbid",
         **PyBaseModel.model_config,
     }
+
+
+class TagPartial(Tag, metaclass=Partial):
+    pass

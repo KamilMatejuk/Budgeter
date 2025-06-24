@@ -1,7 +1,7 @@
-export default function Home() {
+export default function Account() {
   return (
     <div className="w-full h-full">
-      <p>dashboards</p>
+        <p>account</p>
     </div>
   );
 }

@@ -27,7 +27,7 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
       options.body = JSON.stringify(body || {});
     }
     if (!url.endsWith('/')) url += '/';
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       next: { tags },
       ...options,
     });

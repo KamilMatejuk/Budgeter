@@ -19,7 +19,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Get Sources */
+        patch: operations["get_sources_api_transaction__patch"];
         trace?: never;
     };
     "/api/transaction/{id}": {
@@ -51,6 +52,24 @@ export interface paths {
         put?: never;
         /** Create Source */
         post: operations["create_source_api_source__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Get Sources */
+        patch: operations["get_sources_api_source__patch"];
+        trace?: never;
+    };
+    "/api/source/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Source By Name */
+        get: operations["get_source_by_name_api_source__name__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -89,7 +108,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Get Sources */
+        patch: operations["get_sources_api_tag__patch"];
         trace?: never;
     };
     "/api/tag/{id}": {
@@ -125,17 +145,40 @@ export interface components {
             /** Name */
             name: string;
             /** Field Name Id */
-            field_name_id: string;
+            field_name_id: string | null;
+            /** Field Name Card */
+            field_name_card: string;
             /** Field Name Date */
             field_name_date: string;
             /** Field Name Title */
             field_name_title: string;
-            /** Field Name Shop */
-            field_name_shop: string;
-            /** Field Name Value */
-            field_name_value: string;
+            /** Field Name Value Positive */
+            field_name_value_positive: string;
+            /** Field Name Value Negative */
+            field_name_value_negative: string;
             /** Starting Amount */
             starting_amount: number;
+        };
+        /** SourcePartial */
+        SourcePartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name?: string | null;
+            /** Field Name Id */
+            field_name_id?: string | null;
+            /** Field Name Card */
+            field_name_card?: string | null;
+            /** Field Name Date */
+            field_name_date?: string | null;
+            /** Field Name Title */
+            field_name_title?: string | null;
+            /** Field Name Value Positive */
+            field_name_value_positive?: string | null;
+            /** Field Name Value Negative */
+            field_name_value_negative?: string | null;
+            /** Starting Amount */
+            starting_amount?: number | null;
         };
         /** Tag */
         Tag: {
@@ -145,6 +188,19 @@ export interface components {
             name: string;
             /** Colour */
             colour: string;
+            /** Parent */
+            parent?: string | null;
+            /** Children */
+            children?: string[] | null;
+        };
+        /** TagPartial */
+        TagPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name?: string | null;
+            /** Colour */
+            colour?: string | null;
             /** Parent */
             parent?: string | null;
             /** Children */
@@ -167,6 +223,21 @@ export interface components {
             value: number;
             /** Tags */
             tags: components["schemas"]["Tag"][];
+        };
+        /** TransactionPartial */
+        TransactionPartial: {
+            /** Id */
+            _id?: string;
+            /** Date */
+            date?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Shop */
+            shop?: string | null;
+            /** Value */
+            value?: number | null;
+            /** Tags */
+            tags?: components["schemas"]["Tag"][] | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -226,6 +297,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Transaction"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_sources_api_transaction__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransactionPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionPartial"];
                 };
             };
             /** @description Validation Error */
@@ -323,6 +427,70 @@ export interface operations {
             };
         };
     };
+    get_sources_api_source__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SourcePartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourcePartial"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_source_by_name_api_source__name__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Source"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_source_api_source__id__delete: {
         parameters: {
             query?: never;
@@ -394,6 +562,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Tag"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_sources_api_tag__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TagPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagPartial"];
                 };
             };
             /** @description Validation Error */

@@ -38,7 +38,7 @@ async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel],
 async def patch(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], data: PyBaseModel):
     data = data.model_copy(deep=True, update={"id": str(data.id)})
     doc = data.model_dump(by_alias=True, exclude_unset=True)
-    id = PyObjectId(doc.pop("_id", None))
+    id = doc.pop("_id", None)
     result = await db[table].update_one({"_id": id}, {"$set": doc})
     if result.matched_count == 0:
         raise ValueError(f"Document with id={id} not found")

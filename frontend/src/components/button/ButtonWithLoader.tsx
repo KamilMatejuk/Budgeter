@@ -26,6 +26,7 @@ export default function ButtonWithLoader({
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       disabled={loading}
       className={twMerge(

@@ -113,7 +113,9 @@ export default function SourceSetup({ source }: SourceSetupProps) {
           {source && (
             <ButtonWithLoader
               onClick={async () => {
-                await deleteSource(source);
+                if (await deleteSource(source)) {
+                  router.push("/import");
+                }
               }}
               text="Delete"
               destructive

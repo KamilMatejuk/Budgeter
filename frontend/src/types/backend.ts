@@ -152,6 +152,8 @@ export interface components {
             field_name_date: string;
             /** Field Name Title */
             field_name_title: string;
+            /** Field Name Organisation */
+            field_name_organisation: string;
             /** Field Name Value Positive */
             field_name_value_positive: string;
             /** Field Name Value Negative */
@@ -173,6 +175,8 @@ export interface components {
             field_name_date?: string | null;
             /** Field Name Title */
             field_name_title?: string | null;
+            /** Field Name Organisation */
+            field_name_organisation?: string | null;
             /** Field Name Value Positive */
             field_name_value_positive?: string | null;
             /** Field Name Value Negative */

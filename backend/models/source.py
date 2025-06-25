@@ -10,6 +10,7 @@ class Source(PyBaseModel):
     field_name_card: str
     field_name_date: str
     field_name_title: str
+    field_name_organisation: str
     field_name_value_positive: str
     field_name_value_negative: str
     starting_amount: float
@@ -18,6 +19,7 @@ class Source(PyBaseModel):
                      "field_name_card",
                      "field_name_date",
                      "field_name_title",
+                     "field_name_organisation",
                      "field_name_value_positive",
                      "field_name_value_negative")
     @classmethod

@@ -31,6 +31,9 @@ const FormSchema = z.object({
   field_name_title: z
     .string({ required_error: requiredError })
     .min(1, requiredError),
+  field_name_organisation: z
+    .string({ required_error: requiredError })
+    .min(1, requiredError),
   field_name_value_positive: z
     .string({ required_error: requiredError })
     .min(1, requiredError),
@@ -56,6 +59,7 @@ async function sendSource(values: FormSchemaType, source?: Source) {
     field_name_card: values.field_name_card,
     field_name_date: values.field_name_date,
     field_name_title: values.field_name_title,
+    field_name_organisation: values.field_name_organisation,
     field_name_value_positive: values.field_name_value_positive,
     field_name_value_negative: values.field_name_value_negative,
     starting_amount: parseFloat(values.starting_amount),
@@ -99,6 +103,7 @@ export default function SourceSetup({ source }: SourceSetupProps) {
       field_name_card: source?.field_name_card || "",
       field_name_date: source?.field_name_date || "",
       field_name_title: source?.field_name_title || "",
+      field_name_organisation: source?.field_name_organisation || "",
       field_name_value_positive: source?.field_name_value_positive || "",
       field_name_value_negative: source?.field_name_value_negative || "",
       starting_amount: source?.starting_amount.toFixed(2) || "0.00",
@@ -137,6 +142,11 @@ export default function SourceSetup({ source }: SourceSetupProps) {
             formik={formik}
             formikName="field_name_title"
             placeholder="title"
+          />
+          <TextInputWithError
+            formik={formik}
+            formikName="field_name_organisation"
+            placeholder="organisation"
           />
           <TextInputWithError
             formik={formik}

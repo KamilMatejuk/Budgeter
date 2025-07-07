@@ -160,6 +160,10 @@ export interface components {
             field_name_value_negative: string;
             /** Starting Amount */
             starting_amount: number;
+            /** Card Aliases */
+            card_aliases: {
+                [key: string]: string;
+            };
         };
         /** SourcePartial */
         SourcePartial: {
@@ -183,6 +187,10 @@ export interface components {
             field_name_value_negative?: string | null;
             /** Starting Amount */
             starting_amount?: number | null;
+            /** Card Aliases */
+            card_aliases?: {
+                [key: string]: string;
+            } | null;
         };
         /** Tag */
         Tag: {

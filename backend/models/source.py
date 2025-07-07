@@ -14,6 +14,7 @@ class Source(PyBaseModel):
     field_name_value_positive: str
     field_name_value_negative: str
     starting_amount: float
+    card_aliases: dict[str, str]
 
     @field_validator("name",
                      "field_name_card",

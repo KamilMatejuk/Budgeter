@@ -10,7 +10,6 @@ export interface PageProps {
 export default async function EditSource({ params }: PageProps) {
   const { name } = await params;
   const { response: source, error } = await get<Source>(`/api/source/${name}`);
-  console.log(source);
   return (
     <div className="w-full max-w-[960px] h-full mx-auto my-4">
       {error ? (

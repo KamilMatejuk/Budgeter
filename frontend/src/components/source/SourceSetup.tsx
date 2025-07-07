@@ -9,16 +9,20 @@ import AmountInputWithError from "../form/AmountInputWithError";
 import ButtonWithLoader from "../button/ButtonWithLoader";
 import { del, patch, post } from "@/app/api/fetch";
 import { useRouter } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 
 const classes = {
   form: "w-full h-full min-h-[calc(100vh-5em)] flex flex-col justify-center items-center",
-  container: "p-4 bg-second-bg rounded-xl grid grid-cols-3 gap-4",
+  container: "p-4 bg-second-bg rounded-xl grid grid-cols-4 gap-4",
   column: "flex flex-col gap-1",
+  columnDouble: "col-span-2",
   label: "p-1 text-sm text-gray-500",
 };
 
 const requiredError = "This field is required";
-const nonNegativeError = "Amount cannot be negative";
+const nonNegativeError = "This field cannot be negative";
+const onlyNumberError = "This field can only contain numbers and letters";
+const bothFieldsError = "Both key and value must be filled";
 const FormSchema = z.object({
   name: z.string({ required_error: requiredError }).min(1, requiredError),
   field_name_id: z.string(),
@@ -47,6 +51,21 @@ const FormSchema = z.object({
     .refine((val) => !isNaN(val), { message: requiredError })
     .refine((val) => val >= 0, { message: nonNegativeError })
     .transform((val) => val.toFixed(2)),
+  card_aliases: z.array(
+    z
+      .object({
+        key: z.string().regex(/^[A-Z0-9 ]*$/, onlyNumberError),
+        value: z.string(),
+      })
+      .refine(({ key, value }) => key.trim() !== "" || value.trim() === "", {
+        message: bothFieldsError,
+        path: ["key"],
+      })
+      .refine(({ key, value }) => key.trim() === "" || value.trim() !== "", {
+        message: bothFieldsError,
+        path: ["value"],
+      })
+  ),
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
@@ -63,6 +82,7 @@ async function sendSource(values: FormSchemaType, source?: Source) {
     field_name_value_positive: values.field_name_value_positive,
     field_name_value_negative: values.field_name_value_negative,
     starting_amount: parseFloat(values.starting_amount),
+    card_aliases: arrayToDict(values.card_aliases || []),
   } as Source);
   if (!error) return true;
   console.error("Error saving source:", error);
@@ -75,6 +95,17 @@ async function deleteSource(source: Source) {
   if (!error) return true;
   console.error("Error deleting source:", error);
   alert("Failed to delete source. Please try again.");
+}
+
+function dictToArray(obj: Record<string, string>) {
+  return Object.entries(obj).map(([key, value]) => ({ key, value }));
+}
+
+function arrayToDict(arr: { key: string; value: string }[]) {
+  return arr.reduce((acc, { key, value }) => {
+    if (key && value) acc[key] = value;
+    return acc;
+  }, {} as Record<string, string>);
 }
 
 interface SourceSetupProps {
@@ -107,13 +138,23 @@ export default function SourceSetup({ source }: SourceSetupProps) {
       field_name_value_positive: source?.field_name_value_positive || "",
       field_name_value_negative: source?.field_name_value_negative || "",
       starting_amount: source?.starting_amount.toFixed(2) || "0.00",
+      card_aliases: (source?.card_aliases
+        ? dictToArray(source.card_aliases)
+        : []
+      ).concat([{ key: "", value: "" }]),
     },
     onSubmit: sendSourceHandler,
     validate: withZodSchema(FormSchema),
   });
 
   return (
-    <form className={classes.form} onSubmit={formik.handleSubmit}>
+    <form
+      className={classes.form}
+      onSubmit={async () => {
+        console.log(formik.values);
+        await formik.handleSubmit();
+      }}
+    >
       <div className={classes.container}>
         <div className={classes.column}>
           <p className={classes.label}>Name</p>
@@ -159,13 +200,35 @@ export default function SourceSetup({ source }: SourceSetupProps) {
             placeholder="value (negative)"
           />
         </div>
-        <div className={classes.column}>
+        <div className={twMerge(classes.column, classes.columnDouble)}>
           <p className={classes.label}>Card aliases</p>
-          {/* <TextInputWithError
-            formik={formik}
-            formikName="field_name_id"
-            placeholder="id"
-          /> */}
+          {formik.values.card_aliases?.map((_, index) => (
+            <div
+              key={`alias-${index}-key`}
+              className="grid grid-cols-[2fr_1fr]"
+            >
+              <TextInputWithError
+                formik={formik}
+                formikName={`card_aliases[${index}].key`}
+                placeholder="card number"
+              />
+              <TextInputWithError
+                formik={formik}
+                formikName={`card_aliases[${index}].value`}
+                placeholder="alias"
+              />
+            </div>
+          ))}
+          <ButtonWithLoader
+            onClick={async () => {
+              formik.setFieldValue("card_aliases", [
+                ...formik.values.card_aliases,
+                { key: "", value: "" },
+              ]);
+            }}
+            text="+"
+            className="w-fit"
+          />
         </div>
         <div className="mt-4 w-full gap-2 col-span-3 flex">
           <ButtonWithLoader

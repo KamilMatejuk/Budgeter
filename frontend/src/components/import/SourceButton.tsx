@@ -1,7 +1,7 @@
 "use client";
 
 import { Source } from "@/types/backend";
-import { useSelectedSource } from "./SourceSelectorContext";
+import { useSelectedSourceAndFile } from "./ImportContext";
 import { twMerge } from "tailwind-merge";
 import { MdEdit } from "react-icons/md";
 import Link from "next/link";
@@ -11,7 +11,7 @@ interface SourceButtonProps {
 }
 
 export default function SourceButton({ source }: SourceButtonProps) {
-  const { selectedSource, setSelectedSource } = useSelectedSource();
+  const { selectedSource, setSelectedSource } = useSelectedSourceAndFile();
   const isSelected = selectedSource?._id === source._id;
 
   return (

@@ -3,25 +3,28 @@
 import { Source } from "@/types/backend";
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type SourceContextType = {
+type ImportContextType = {
+  selectedFile: File | null;
+  setSelectedFile: (file: File | null) => void;
   selectedSource: Source | null;
   setSelectedSource: (source: Source | null) => void;
 };
 
-const SourceContext = createContext<SourceContextType | undefined>(undefined);
+const ImportContext = createContext<ImportContextType | undefined>(undefined);
 
 export const SourceProvider = ({ children }: { children: ReactNode }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedSource, setSelectedSource] = useState<Source | null>(null);
 
   return (
-    <SourceContext.Provider value={{ selectedSource, setSelectedSource }}>
+    <ImportContext.Provider value={{ selectedFile, setSelectedFile, selectedSource, setSelectedSource }}>
       {children}
-    </SourceContext.Provider>
+    </ImportContext.Provider>
   );
 };
 
-export const useSelectedSource = () => {
-  const context = useContext(SourceContext);
+export const useSelectedSourceAndFile = () => {
+  const context = useContext(ImportContext);
   if (!context) {
     throw new Error("useSource must be used within a SourceProvider");
   }

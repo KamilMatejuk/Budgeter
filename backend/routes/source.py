@@ -23,16 +23,11 @@ async def get_source_by_name(name: str, db: AsyncIOMotorDatabase = Depends(get_d
 
 @router.post("/", response_model=Source)
 async def create_source(data: Source, db: AsyncIOMotorDatabase = Depends(get_db)):
-    try:
-        return await create(db, "sources", Source, data)
-    except HTTPException as e:
-        if "duplicate key" in str(e):
-            raise HTTPException(status_code=400, detail="Duplicate key error")
-        raise e
+    return await create(db, "sources", Source, data, "name")
 
 
 @router.patch("/", response_model=SourcePartial)
-async def get_sources(data: SourcePartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def patch_sources(data: SourcePartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     return await patch(db, "sources", SourcePartial, data)
 
 

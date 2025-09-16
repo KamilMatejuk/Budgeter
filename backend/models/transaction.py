@@ -6,9 +6,11 @@ from models.optional import Partial
 
 
 class Transaction(PyBaseModel):
+    identification: str
+    card: str
     date: datetime
     title: str
-    shop: str
+    organisation: str
     value: float
     tags: list[Tag]
 

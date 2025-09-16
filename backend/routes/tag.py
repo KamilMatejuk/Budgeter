@@ -20,8 +20,8 @@ async def create_tag(data: Tag, db: AsyncIOMotorDatabase = Depends(get_db)):
 
 
 @router.patch("/", response_model=TagPartial)
-async def get_sources(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await patch(db, "sources", TagPartial, data)
+async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    return await patch(db, "tags", TagPartial, data)
 
 
 @router.delete("/{id}")

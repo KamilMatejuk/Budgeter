@@ -27,7 +27,12 @@ async def get(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel]):
 
 
 @fail_wrapper
-async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], data: PyBaseModel):
+async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], data: PyBaseModel, unique_field: str = None):
+    if unique_field and hasattr(data, unique_field):
+        unique_value = getattr(data, unique_field)
+        existing = await db[table].find_one({unique_field: unique_value})
+        if existing:
+            return model.model_validate({**existing, "_id": str(existing["_id"])})
     data.id = str(data.id)
     doc = data.model_dump(by_alias=True)
     result = await db[table].insert_one(doc)

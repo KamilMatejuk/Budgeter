@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RiLoader5Fill } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";
 
-interface ButtonWithLoaderProps
+export interface ButtonWithLoaderProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onClick: () => Promise<void>;
   text: string;
@@ -16,14 +16,17 @@ export default function ButtonWithLoader({
   ...props
 }: ButtonWithLoaderProps) {
   const [loading, setLoading] = useState(false);
+  const disabled = props.disabled || loading;
 
   const handleClick = async () => {
     setLoading(true);
+    console.log("loading", loading);
     try {
       await onClick();
     } finally {
       setLoading(false);
     }
+    console.log("loading", loading);
   };
 
   return (
@@ -31,13 +34,14 @@ export default function ButtonWithLoader({
       {...props}
       type="button"
       onClick={handleClick}
-      disabled={loading}
+      disabled={disabled}
       className={twMerge(
         "relative flex items-center justify-center px-4 py-2 border rounded-xl transition",
         "cursor-pointer disabled:cursor-not-allowed",
+        "disabled:bg-gray-100 disabled:text-gray-800 disabled:border-gray-300",
         destructive
-          ? "bg-red-100 hover:bg-red-200 text-red-800 border-red-300 "
-          : "bg-green-100 hover:bg-green-200 text-green-800 border-green-300 ",
+          ? "bg-red-100 hover:bg-red-200 text-red-800 border-red-300"
+          : "bg-green-100 hover:bg-green-200 text-green-800 border-green-300",
         props.className || ""
       )}
     >

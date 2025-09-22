@@ -34,7 +34,9 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     const data: T = await res.json();
     if (!res.ok) {
       const dataObject = data as object;
-      const errStr = 'message' in dataObject ? (dataObject.message as string) : JSON.stringify(data);
+      const errStr = 'message' in dataObject ? (dataObject.message as string) :
+                     'detail' in dataObject ? (dataObject.detail as string) : 
+                      JSON.stringify(data);
       return { response: null, error: new Error(errStr, { cause: res.status }) };
     }
     return { response: data, error: null };

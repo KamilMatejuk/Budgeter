@@ -19,8 +19,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Get Sources */
-        patch: operations["get_sources_api_transaction__patch"];
+        /** Patch Transaction */
+        patch: operations["patch_transaction_api_transaction__patch"];
         trace?: never;
     };
     "/api/transaction/{id}": {
@@ -55,8 +55,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Get Sources */
-        patch: operations["get_sources_api_source__patch"];
+        /** Patch Sources */
+        patch: operations["patch_sources_api_source__patch"];
         trace?: never;
     };
     "/api/source/{name}": {
@@ -108,8 +108,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Get Sources */
-        patch: operations["get_sources_api_tag__patch"];
+        /** Patch Tag */
+        patch: operations["patch_tag_api_tag__patch"];
         trace?: never;
     };
     "/api/tag/{id}": {
@@ -158,6 +158,8 @@ export interface components {
             field_name_value_positive: string;
             /** Field Name Value Negative */
             field_name_value_negative: string;
+            /** Field Name Balance */
+            field_name_balance: string;
             /** Starting Amount */
             starting_amount: number;
             /** Card Aliases */
@@ -185,6 +187,8 @@ export interface components {
             field_name_value_positive?: string | null;
             /** Field Name Value Negative */
             field_name_value_negative?: string | null;
+            /** Field Name Balance */
+            field_name_balance?: string | null;
             /** Starting Amount */
             starting_amount?: number | null;
             /** Card Aliases */
@@ -222,6 +226,10 @@ export interface components {
         Transaction: {
             /** Id */
             _id?: string;
+            /** Identification */
+            identification: string;
+            /** Card */
+            card: string;
             /**
              * Date
              * Format: date-time
@@ -229,8 +237,8 @@ export interface components {
             date: string;
             /** Title */
             title: string;
-            /** Shop */
-            shop: string;
+            /** Organisation */
+            organisation: string;
             /** Value */
             value: number;
             /** Tags */
@@ -240,12 +248,16 @@ export interface components {
         TransactionPartial: {
             /** Id */
             _id?: string;
+            /** Identification */
+            identification?: string | null;
+            /** Card */
+            card?: string | null;
             /** Date */
             date?: string | null;
             /** Title */
             title?: string | null;
-            /** Shop */
-            shop?: string | null;
+            /** Organisation */
+            organisation?: string | null;
             /** Value */
             value?: number | null;
             /** Tags */
@@ -322,7 +334,7 @@ export interface operations {
             };
         };
     };
-    get_sources_api_transaction__patch: {
+    patch_transaction_api_transaction__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -439,7 +451,7 @@ export interface operations {
             };
         };
     };
-    get_sources_api_source__patch: {
+    patch_sources_api_source__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -587,7 +599,7 @@ export interface operations {
             };
         };
     };
-    get_sources_api_tag__patch: {
+    patch_tag_api_tag__patch: {
         parameters: {
             query?: never;
             header?: never;

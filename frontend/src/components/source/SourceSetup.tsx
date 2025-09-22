@@ -44,6 +44,9 @@ const FormSchema = z.object({
   field_name_value_negative: z
     .string({ required_error: requiredError })
     .min(1, requiredError),
+  field_name_balance: z
+    .string({ required_error: requiredError })
+    .min(1, requiredError),
   starting_amount: z
     .string({ required_error: requiredError })
     .min(0, requiredError)
@@ -81,6 +84,7 @@ async function sendSource(values: FormSchemaType, source?: Source) {
     field_name_organisation: values.field_name_organisation,
     field_name_value_positive: values.field_name_value_positive,
     field_name_value_negative: values.field_name_value_negative,
+    field_name_balance: values.field_name_balance,
     starting_amount: parseFloat(values.starting_amount),
     card_aliases: arrayToDict(values.card_aliases || []),
   } as Source);
@@ -137,6 +141,7 @@ export default function SourceSetup({ source }: SourceSetupProps) {
       field_name_organisation: source?.field_name_organisation || "",
       field_name_value_positive: source?.field_name_value_positive || "",
       field_name_value_negative: source?.field_name_value_negative || "",
+      field_name_balance: source?.field_name_balance || "",
       starting_amount: source?.starting_amount.toFixed(2) || "0.00",
       card_aliases: (source?.card_aliases
         ? dictToArray(source.card_aliases)
@@ -198,6 +203,11 @@ export default function SourceSetup({ source }: SourceSetupProps) {
             formik={formik}
             formikName="field_name_value_negative"
             placeholder="value (negative)"
+          />
+          <TextInputWithError
+            formik={formik}
+            formikName="field_name_balance"
+            placeholder="balance"
           />
         </div>
         <div className={twMerge(classes.column, classes.columnDouble)}>

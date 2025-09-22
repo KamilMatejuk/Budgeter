@@ -13,6 +13,7 @@ class Source(PyBaseModel):
     field_name_organisation: str
     field_name_value_positive: str
     field_name_value_negative: str
+    field_name_balance: str
     starting_amount: float
     card_aliases: dict[str, str]
 
@@ -22,7 +23,8 @@ class Source(PyBaseModel):
                      "field_name_title",
                      "field_name_organisation",
                      "field_name_value_positive",
-                     "field_name_value_negative")
+                     "field_name_value_negative",
+                     "field_name_balance")
     @classmethod
     def no_empty_field_names(cls, v: str) -> str:
         if not v.strip(): raise ValueError("Field cannot be empty")

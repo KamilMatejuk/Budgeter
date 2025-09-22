@@ -15,10 +15,7 @@ async def get_sources(db: AsyncIOMotorDatabase = Depends(get_db)):
 
 @router.get("/{name}", response_model=Source)
 async def get_source_by_name(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    result = await db["sources"].find_one({"name": name})
-    if result is None:
-        raise HTTPException(status_code=404, detail="Source not found")
-    return Source.model_validate({**result, "_id": str(result["_id"])})
+    return await get(db, "sources", Source, {"name": name}, one=True)
 
 
 @router.post("/", response_model=Source)

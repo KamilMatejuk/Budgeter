@@ -16,13 +16,16 @@ def fail_wrapper(func):
 
 
 @fail_wrapper
-async def get(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel]):
+async def get(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], condition: dict = None, one: bool = False):
     results = []
-    cursor = db[table].find()
+    cursor = db[table].find(condition or {})
     async for doc in cursor:
         if "_id" in doc:
             doc["_id"] = str(doc["_id"])
         results.append(model.model_validate(doc))
+    if one:
+        assert len(results) == 1, f"Expected one result, found {len(results)}"
+        return results[0]
     return results
 
 

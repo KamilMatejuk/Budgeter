@@ -15,6 +15,7 @@ async def get_db() -> AsyncIOMotorDatabase:
         return client[MONGO_DB_NAME]
     client = AsyncIOMotorClient(MONGO_URL)
     db = client[MONGO_DB_NAME]
+    # await clear_db(db)
     await create_indexes(db)
     return db
 
@@ -22,3 +23,10 @@ async def get_db() -> AsyncIOMotorDatabase:
 async def create_indexes(db: AsyncIOMotorDatabase):
     await db["sources"].create_index("name", unique=True)
     await db["transactions"].create_index("identification", unique=True)
+
+
+async def clear_db(db: AsyncIOMotorDatabase):
+    await db["tags"].delete_many({})
+    await db["sources"].delete_many({})
+    await db["transactions"].delete_many({})
+

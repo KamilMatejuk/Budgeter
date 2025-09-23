@@ -1,5 +1,6 @@
 run:
-	@docker compose up -d && \
+	@docker compose down && \
+	docker compose up -d && \
 	docker compose logs -f backend frontend
 
 types:

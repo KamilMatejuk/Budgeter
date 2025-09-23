@@ -26,7 +26,9 @@ async def create_indexes(db: AsyncIOMotorDatabase):
 
 
 async def clear_db(db: AsyncIOMotorDatabase):
-    await db["tags"].delete_many({})
-    await db["sources"].delete_many({})
+    # await db["tags"].delete_many({})
+    # await db["sources"].delete_many({})
     await db["transactions"].delete_many({})
+    # await db.drop_collection("transactions")
+
 

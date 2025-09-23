@@ -3,6 +3,10 @@ from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.base import PyBaseModel
+from core.logger import get_logger
+
+
+LOGGER = get_logger(__name__)
 
 
 def fail_wrapper(func):
@@ -10,6 +14,7 @@ def fail_wrapper(func):
         try:
             return await func(*args, **kwargs)
         except Exception as e:
+            LOGGER.error(str(e))
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=str(e))
     return wrapper
@@ -35,6 +40,7 @@ async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel],
         unique_value = getattr(data, unique_field)
         existing = await db[table].find_one({unique_field: unique_value})
         if existing:
+            LOGGER.warning(f'Trying to create {data} failed unique constraint of {existing} in table {table}')
             return model.model_validate({**existing, "_id": str(existing["_id"])})
     data.id = str(data.id)
     doc = data.model_dump(by_alias=True)

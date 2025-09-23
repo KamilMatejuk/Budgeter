@@ -25,7 +25,6 @@ const onlyNumberError = "This field can only contain numbers and letters";
 const bothFieldsError = "Both key and value must be filled";
 const FormSchema = z.object({
   name: z.string({ required_error: requiredError }).min(1, requiredError),
-  field_name_id: z.string(),
   field_name_card: z
     .string({ required_error: requiredError })
     .min(1, requiredError),
@@ -42,9 +41,6 @@ const FormSchema = z.object({
     .string({ required_error: requiredError })
     .min(1, requiredError),
   field_name_value_negative: z
-    .string({ required_error: requiredError })
-    .min(1, requiredError),
-  field_name_balance: z
     .string({ required_error: requiredError })
     .min(1, requiredError),
   starting_amount: z
@@ -77,14 +73,12 @@ async function sendSource(values: FormSchemaType, source?: Source) {
   const { error } = await method("/api/source", {
     _id: source?._id,
     name: values.name,
-    field_name_id: values.field_name_id,
     field_name_card: values.field_name_card,
     field_name_date: values.field_name_date,
     field_name_title: values.field_name_title,
     field_name_organisation: values.field_name_organisation,
     field_name_value_positive: values.field_name_value_positive,
     field_name_value_negative: values.field_name_value_negative,
-    field_name_balance: values.field_name_balance,
     starting_amount: parseFloat(values.starting_amount),
     card_aliases: arrayToDict(values.card_aliases || []),
   } as Source);
@@ -134,14 +128,12 @@ export default function SourceSetup({ source }: SourceSetupProps) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
       name: source?.name || "",
-      field_name_id: source?.field_name_id || "",
       field_name_card: source?.field_name_card || "",
       field_name_date: source?.field_name_date || "",
       field_name_title: source?.field_name_title || "",
       field_name_organisation: source?.field_name_organisation || "",
       field_name_value_positive: source?.field_name_value_positive || "",
       field_name_value_negative: source?.field_name_value_negative || "",
-      field_name_balance: source?.field_name_balance || "",
       starting_amount: source?.starting_amount.toFixed(2) || "0.00",
       card_aliases: (source?.card_aliases
         ? dictToArray(source.card_aliases)
@@ -155,10 +147,7 @@ export default function SourceSetup({ source }: SourceSetupProps) {
   return (
     <form
       className={classes.form}
-      onSubmit={async () => {
-        console.log(formik.values);
-        await formik.handleSubmit();
-      }}
+      onSubmit={formik.handleSubmit}
     >
       <div className={classes.container}>
         <div className={classes.column}>
@@ -169,11 +158,6 @@ export default function SourceSetup({ source }: SourceSetupProps) {
         </div>
         <div className={classes.column}>
           <p className={classes.label}>CSV field names</p>
-          <TextInputWithError
-            formik={formik}
-            formikName="field_name_id"
-            placeholder="id"
-          />
           <TextInputWithError
             formik={formik}
             formikName="field_name_card"
@@ -203,11 +187,6 @@ export default function SourceSetup({ source }: SourceSetupProps) {
             formik={formik}
             formikName="field_name_value_negative"
             placeholder="value (negative)"
-          />
-          <TextInputWithError
-            formik={formik}
-            formikName="field_name_balance"
-            placeholder="balance"
           />
         </div>
         <div className={twMerge(classes.column, classes.columnDouble)}>

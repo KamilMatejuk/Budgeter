@@ -22,7 +22,7 @@ async def get_db() -> AsyncIOMotorDatabase:
 
 async def create_indexes(db: AsyncIOMotorDatabase):
     await db["sources"].create_index("name", unique=True)
-    await db["transactions"].create_index("identification", unique=True)
+    await db["transactions"].create_index("hash", unique=True)
 
 
 async def clear_db(db: AsyncIOMotorDatabase):

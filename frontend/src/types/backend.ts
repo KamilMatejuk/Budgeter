@@ -144,8 +144,6 @@ export interface components {
             _id?: string;
             /** Name */
             name: string;
-            /** Field Name Id */
-            field_name_id: string | null;
             /** Field Name Card */
             field_name_card: string;
             /** Field Name Date */
@@ -158,8 +156,6 @@ export interface components {
             field_name_value_positive: string;
             /** Field Name Value Negative */
             field_name_value_negative: string;
-            /** Field Name Balance */
-            field_name_balance: string;
             /** Starting Amount */
             starting_amount: number;
             /** Card Aliases */
@@ -173,8 +169,6 @@ export interface components {
             _id?: string;
             /** Name */
             name?: string | null;
-            /** Field Name Id */
-            field_name_id?: string | null;
             /** Field Name Card */
             field_name_card?: string | null;
             /** Field Name Date */
@@ -187,8 +181,6 @@ export interface components {
             field_name_value_positive?: string | null;
             /** Field Name Value Negative */
             field_name_value_negative?: string | null;
-            /** Field Name Balance */
-            field_name_balance?: string | null;
             /** Starting Amount */
             starting_amount?: number | null;
             /** Card Aliases */
@@ -226,8 +218,8 @@ export interface components {
         Transaction: {
             /** Id */
             _id?: string;
-            /** Identification */
-            identification: string;
+            /** Hash */
+            hash: string;
             /** Card */
             card: string;
             /**
@@ -248,8 +240,8 @@ export interface components {
         TransactionPartial: {
             /** Id */
             _id?: string;
-            /** Identification */
-            identification?: string | null;
+            /** Hash */
+            hash?: string | null;
             /** Card */
             card?: string | null;
             /** Date */

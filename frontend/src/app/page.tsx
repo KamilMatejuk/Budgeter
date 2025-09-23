@@ -12,8 +12,8 @@ export default async function Home() {
       ) : (
         <>
           {transactions.map((transaction) => (
-            <div key={transaction.identification} className="grid grid-cols-7 gap-2 p-2 border-b">
-              <p>{transaction.identification}</p>
+            <div key={transaction.hash} className="grid grid-cols-7 gap-2 p-2 border-b">
+              <p className="break-all">{transaction.hash}</p>
               <p>{transaction.card}</p>
               <p>{transaction.date}</p>
               <p>{transaction.organisation}</p>

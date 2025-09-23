@@ -45,7 +45,7 @@ export default function Run() {
               for (const [index, row] of rows.entries()) {
                 setCounter(index + 1);
                 const transaction: Transaction = {
-                  identification: "",
+                  hash: await hashObject(row),
                   card: row[selectedSource.field_name_card],
                   date: new Date(row[selectedSource.field_name_date]).toISOString(),
                   title: row[selectedSource.field_name_title],
@@ -55,10 +55,6 @@ export default function Run() {
                     : -parseFloat(row[selectedSource.field_name_value_negative]),
                   tags: [],
                 };
-
-                transaction.identification = selectedSource.field_name_id
-                  ? row[selectedSource.field_name_id]
-                  : await hashObject({ ...transaction, balance: row[selectedSource.field_name_balance] });
 
                 if (!transaction.organisation) {
                   transaction.organisation = transaction.title;

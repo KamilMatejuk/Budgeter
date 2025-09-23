@@ -2,7 +2,7 @@ import traceback
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from models.base import PyObjectId, PyBaseModel
+from models.base import PyBaseModel
 
 
 def fail_wrapper(func):

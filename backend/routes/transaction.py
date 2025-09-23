@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from routes.base import get, create, patch, delete
@@ -16,7 +16,7 @@ async def get_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
 
 @router.post("/", response_model=Transaction)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await create(db, "transactions", Transaction, data, "identification")
+    return await create(db, "transactions", Transaction, data, "hash")
 
 
 @router.patch("/", response_model=TransactionPartial)

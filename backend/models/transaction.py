@@ -6,7 +6,7 @@ from models.optional import Partial
 
 
 class Transaction(PyBaseModel):
-    identification: str
+    hash: str
     card: str
     date: datetime
     title: str

@@ -35,6 +35,7 @@ class PyBaseModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     model_config = {
         "arbitrary_types_allowed": True,
+        "extra": "forbid",
         "json_encoders": {
             PyObjectId: str,
         }

@@ -33,11 +33,6 @@ class Source(PyBaseModel):
         if v < 0: raise ValueError("starting_amount cannot be negative")
         return v
 
-    model_config = {
-        "extra": "forbid",
-        **PyBaseModel.model_config,
-    }
-
 
 class SourcePartial(Source, metaclass=Partial):
     pass

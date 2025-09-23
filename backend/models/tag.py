@@ -26,11 +26,6 @@ class Tag(PyBaseModel):
         if not m: raise ValueError("Colour must be a valid hex code (e.g. #ff0000)")
         return v
 
-    model_config = {
-        "extra": "forbid",
-        **PyBaseModel.model_config,
-    }
-
 
 class TagPartial(Tag, metaclass=Partial):
     pass

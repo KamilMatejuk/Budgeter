@@ -14,10 +14,6 @@ class Transaction(PyBaseModel):
     value: float
     tags: list[Tag]
 
-    model_config = {
-        **PyBaseModel.model_config,
-    }
-
 
 class TransactionPartial(Transaction, metaclass=Partial):
     pass

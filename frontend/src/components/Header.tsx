@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MdOutlineAccountBox } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 import { TfiImport } from "react-icons/tfi";
 
 export default function Header() {
@@ -8,7 +8,7 @@ export default function Header() {
       <h1 className="text-2xl"><Link href="/">Budgeter</Link></h1>
       <ul className="absolute end-4 flex gap-4">
         <li><Link href="/import"><TfiImport size={25}/></Link></li>
-        <li><Link href="/account"><MdOutlineAccountBox size={30}/></Link></li>
+        <li><Link href="/settings"><IoSettingsOutline size={27}/></Link></li>
       </ul>
     </header>
   );

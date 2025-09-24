@@ -1,7 +1,7 @@
-export default function Account() {
+export default function Settings() {
   return (
     <div className="w-full h-full">
-        <p>account</p>
+        <p>settings</p>
     </div>
   );
 }

@@ -129,14 +129,442 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/products/cash/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Cashs */
+        get: operations["get_cashs_api_products_cash__get"];
+        put?: never;
+        /** Create Cash */
+        post: operations["create_cash_api_products_cash__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Cash */
+        patch: operations["patch_cash_api_products_cash__patch"];
+        trace?: never;
+    };
+    "/api/products/cash/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Cash */
+        delete: operations["delete_cash_api_products_cash__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/salary/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Salarys */
+        get: operations["get_salarys_api_products_salary__get"];
+        put?: never;
+        /** Create Salary */
+        post: operations["create_salary_api_products_salary__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Salary */
+        patch: operations["patch_salary_api_products_salary__patch"];
+        trace?: never;
+    };
+    "/api/products/salary/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Salary */
+        delete: operations["delete_salary_api_products_salary__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/personal_account/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Personalaccounts */
+        get: operations["get_personalaccounts_api_products_personal_account__get"];
+        put?: never;
+        /** Create Personalaccount */
+        post: operations["create_personalaccount_api_products_personal_account__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Personalaccount */
+        patch: operations["patch_personalaccount_api_products_personal_account__patch"];
+        trace?: never;
+    };
+    "/api/products/personal_account/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Personalaccount */
+        delete: operations["delete_personalaccount_api_products_personal_account__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/card/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Cards */
+        get: operations["get_cards_api_products_card__get"];
+        put?: never;
+        /** Create Card */
+        post: operations["create_card_api_products_card__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Card */
+        patch: operations["patch_card_api_products_card__patch"];
+        trace?: never;
+    };
+    "/api/products/card/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Card */
+        delete: operations["delete_card_api_products_card__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/savings_account/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Savingsaccounts */
+        get: operations["get_savingsaccounts_api_products_savings_account__get"];
+        put?: never;
+        /** Create Savingsaccount */
+        post: operations["create_savingsaccount_api_products_savings_account__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Savingsaccount */
+        patch: operations["patch_savingsaccount_api_products_savings_account__patch"];
+        trace?: never;
+    };
+    "/api/products/savings_account/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Savingsaccount */
+        delete: operations["delete_savingsaccount_api_products_savings_account__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/stock_account/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Stockaccounts */
+        get: operations["get_stockaccounts_api_products_stock_account__get"];
+        put?: never;
+        /** Create Stockaccount */
+        post: operations["create_stockaccount_api_products_stock_account__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Stockaccount */
+        patch: operations["patch_stockaccount_api_products_stock_account__patch"];
+        trace?: never;
+    };
+    "/api/products/stock_account/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Stockaccount */
+        delete: operations["delete_stockaccount_api_products_stock_account__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/capital_investment/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Capitalinvestments */
+        get: operations["get_capitalinvestments_api_products_capital_investment__get"];
+        put?: never;
+        /** Create Capitalinvestment */
+        post: operations["create_capitalinvestment_api_products_capital_investment__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Capitalinvestment */
+        patch: operations["patch_capitalinvestment_api_products_capital_investment__patch"];
+        trace?: never;
+    };
+    "/api/products/capital_investment/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Capitalinvestment */
+        delete: operations["delete_capitalinvestment_api_products_capital_investment__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** CapitalInvestment */
+        CapitalInvestment: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Yearly Interest */
+            yearly_interest: number;
+            capitalization: components["schemas"]["Capitalization"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+        };
+        /** CapitalInvestmentPartial */
+        CapitalInvestmentPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Yearly Interest */
+            yearly_interest?: number | null;
+            capitalization?: components["schemas"]["Capitalization"] | null;
+            /** Start */
+            start?: string | null;
+            /** End */
+            end?: string | null;
+        };
+        /**
+         * Capitalization
+         * @enum {string}
+         */
+        Capitalization: "daily" | "monthly" | "yearly" | "once";
+        /** Card */
+        Card: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Credit */
+            credit?: number | null;
+        };
+        /** CardPartial */
+        CardPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number?: string | null;
+            /** Credit */
+            credit?: number | null;
+        };
+        /** Cash */
+        Cash: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+        };
+        /** CashPartial */
+        CashPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+        };
+        /**
+         * Currency
+         * @enum {string}
+         */
+        Currency: "PLN" | "USD" | "EUR";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** PersonalAccount */
+        PersonalAccount: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+        };
+        /** PersonalAccountPartial */
+        PersonalAccountPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number?: string | null;
+        };
+        /** Salary */
+        Salary: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month: number;
+        };
+        /** SalaryPartial */
+        SalaryPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month?: number | null;
+        };
+        /** SavingsAccount */
+        SavingsAccount: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Yearly Interest */
+            yearly_interest: number;
+            capitalization: components["schemas"]["Capitalization"];
+        };
+        /** SavingsAccountPartial */
+        SavingsAccountPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number?: string | null;
+            /** Yearly Interest */
+            yearly_interest?: number | null;
+            capitalization?: components["schemas"]["Capitalization"] | null;
         };
         /** Source */
         Source: {
@@ -187,6 +615,34 @@ export interface components {
             card_aliases?: {
                 [key: string]: string;
             } | null;
+        };
+        /** StockAccount */
+        StockAccount: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Yearly Interest */
+            yearly_interest: number;
+        };
+        /** StockAccountPartial */
+        StockAccountPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number?: string | null;
+            /** Yearly Interest */
+            yearly_interest?: number | null;
         };
         /** Tag */
         Tag: {
@@ -661,8 +1117,857 @@ export interface operations {
             };
         };
     };
+    get_cashs_api_products_cash__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Cash"][];
+                };
+            };
+        };
+    };
+    create_cash_api_products_cash__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Cash"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Cash"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_cash_api_products_cash__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CashPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Cash"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_cash_api_products_cash__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_salarys_api_products_salary__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Salary"][];
+                };
+            };
+        };
+    };
+    create_salary_api_products_salary__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Salary"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Salary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_salary_api_products_salary__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SalaryPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Salary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_salary_api_products_salary__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_personalaccounts_api_products_personal_account__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalAccount"][];
+                };
+            };
+        };
+    };
+    create_personalaccount_api_products_personal_account__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonalAccount"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_personalaccount_api_products_personal_account__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonalAccountPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_personalaccount_api_products_personal_account__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_cards_api_products_card__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Card"][];
+                };
+            };
+        };
+    };
+    create_card_api_products_card__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Card"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Card"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_card_api_products_card__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CardPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Card"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_card_api_products_card__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_savingsaccounts_api_products_savings_account__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavingsAccount"][];
+                };
+            };
+        };
+    };
+    create_savingsaccount_api_products_savings_account__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavingsAccount"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavingsAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_savingsaccount_api_products_savings_account__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavingsAccountPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavingsAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_savingsaccount_api_products_savings_account__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_stockaccounts_api_products_stock_account__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAccount"][];
+                };
+            };
+        };
+    };
+    create_stockaccount_api_products_stock_account__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockAccount"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_stockaccount_api_products_stock_account__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockAccountPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAccount"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_stockaccount_api_products_stock_account__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_capitalinvestments_api_products_capital_investment__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapitalInvestment"][];
+                };
+            };
+        };
+    };
+    create_capitalinvestment_api_products_capital_investment__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CapitalInvestment"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapitalInvestment"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_capitalinvestment_api_products_capital_investment__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CapitalInvestmentPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapitalInvestment"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_capitalinvestment_api_products_capital_investment__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
 }
 
 export type Tag = components["schemas"]["Tag"]
 export type Source = components["schemas"]["Source"]
 export type Transaction = components["schemas"]["Transaction"]
+export type Currency = components["schemas"]["Currency"]
+export type Capitalization = components["schemas"]["Capitalization"]
+export type Cash = components["schemas"]["Cash"]
+export type CashPartial = components["schemas"]["CashPartial"]
+export type Salary = components["schemas"]["Salary"]
+export type SalaryPartial = components["schemas"]["SalaryPartial"]
+export type PersonalAccount = components["schemas"]["PersonalAccount"]
+export type PersonalAccountPartial = components["schemas"]["PersonalAccountPartial"]
+export type Card = components["schemas"]["Card"]
+export type CardPartial = components["schemas"]["CardPartial"]
+export type SavingsAccount = components["schemas"]["SavingsAccount"]
+export type SavingsAccountPartial = components["schemas"]["SavingsAccountPartial"]
+export type StockAccount = components["schemas"]["StockAccount"]
+export type StockAccountPartial = components["schemas"]["StockAccountPartial"]
+export type CapitalInvestment = components["schemas"]["CapitalInvestment"]
+export type CapitalInvestmentPartial = components["schemas"]["CapitalInvestmentPartial"]

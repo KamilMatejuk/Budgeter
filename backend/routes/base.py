@@ -1,9 +1,10 @@
 import traceback
-from fastapi import HTTPException
+from fastapi import HTTPException, APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.base import PyBaseModel
 from core.logger import get_logger
+from core.db import get_db
 
 
 LOGGER = get_logger(__name__)
@@ -66,3 +67,61 @@ async def delete(db: AsyncIOMotorDatabase, table: str, id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Not found")
     return {}
+
+
+class CRUDRouterFactory:
+    def __init__(
+        self,
+        router: APIRouter,
+        table: str,
+        model: type[PyBaseModel],
+        partial_model: type[PyBaseModel],
+        unique_field: str | None = None,
+    ):
+        self.router = router
+        self.table = table
+        self.model = model
+        self.partial_model = partial_model
+        self.unique_field = unique_field
+
+    def create_get(self):
+        # define GET function
+        async def f(db: AsyncIOMotorDatabase = Depends(get_db)):
+            return await get(db, self.table, self.model)
+        # update name and annotations for OpenAPI
+        f.__annotations__["return"] = list[self.model]
+        f.__name__ = f"get_{self.model.__name__.lower()}s"
+        # register route
+        self.router.get("/", response_model=list[self.model])(f)
+
+    def create_post(self):
+        # define POST function
+        async def f(data, db: AsyncIOMotorDatabase = Depends(get_db)):
+            return await create(db, self.table, self.model, data, self.unique_field)
+        # update name and annotations for OpenAPI
+        f.__annotations__["data"] = self.model
+        f.__annotations__["return"] = self.model
+        f.__name__ = f"create_{self.model.__name__.lower()}"
+        # register route
+        self.router.post("/", response_model=self.model)(f)
+
+    def create_patch(self):
+        # define PATCH function
+        async def f(data, db: AsyncIOMotorDatabase = Depends(get_db)):
+            return await patch(db, self.table, self.model, data)
+        # update name and annotations for OpenAPI
+        f.__annotations__["data"] = self.partial_model
+        f.__annotations__["return"] = self.model
+        f.__name__ = f"patch_{self.model.__name__.lower()}"
+        # register route
+        self.router.patch("/", response_model=self.model)(f)
+
+    def create_delete(self):
+        # define DELETE function
+        async def f(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+            return await delete(db, self.table, id)
+        # update name and annotations for OpenAPI
+        f.__annotations__["return"] = dict
+        f.__name__ = f"delete_{self.model.__name__.lower()}"
+        # register route
+        self.router.delete("/{id}", response_model=dict)(f)

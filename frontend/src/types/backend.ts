@@ -55,25 +55,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Patch Sources */
-        patch: operations["patch_sources_api_source__patch"];
-        trace?: never;
-    };
-    "/api/source/{name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Source By Name */
-        get: operations["get_source_by_name_api_source__name__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
+        /** Patch Source */
+        patch: operations["patch_source_api_source__patch"];
         trace?: never;
     };
     "/api/source/{id}": {
@@ -88,6 +71,23 @@ export interface paths {
         post?: never;
         /** Delete Source */
         delete: operations["delete_source_api_source__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/source/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Source By Name */
+        get: operations["get_source_by_name_api_source__name__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -345,7 +345,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionPartial"];
+                    "application/json": components["schemas"]["Transaction"];
                 };
             };
             /** @description Validation Error */
@@ -376,7 +376,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */
@@ -443,7 +445,7 @@ export interface operations {
             };
         };
     };
-    patch_sources_api_source__patch: {
+    patch_source_api_source__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -455,37 +457,6 @@ export interface operations {
                 "application/json": components["schemas"]["SourcePartial"];
             };
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SourcePartial"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_source_by_name_api_source__name__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -524,7 +495,40 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_source_by_name_api_source__name__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Source"];
                 };
             };
             /** @description Validation Error */
@@ -610,7 +614,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TagPartial"];
+                    "application/json": components["schemas"]["Tag"];
                 };
             };
             /** @description Validation Error */
@@ -641,7 +645,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

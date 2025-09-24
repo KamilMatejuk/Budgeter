@@ -14,7 +14,7 @@ export default function SourceSelector({ sources }: SourceSelectorProps) {
 
   return (
     <div className="bg-second-bg p-4 rounded-xl flex flex-col items-center gap-4">
-      <h2>Select Source</h2>
+      <h2 className="text-lg font-semibold">Select Source</h2>
       <div className="bg-first-bg w-full px-4 py-2 rounded-xl">
         <form className="flex flex-wrap gap-2 justify-center overflow-x-auto py-2">
           {sources.map((source) => (

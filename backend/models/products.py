@@ -29,9 +29,6 @@ class Product(PyBaseModel):
 class Cash(Product):
     pass
 
-class Salary(Product):
-    day_of_month: int
-
 class PersonalAccount(Product):
     number: str
 
@@ -54,12 +51,19 @@ class CapitalInvestment(Product):
     start: datetime
     end: datetime
 
+class MonthlyIncome(Product):
+    day_of_month: int
+
+class MonthlyExpense(Product):
+    day_of_month: int
+
 # Partial models for updates
 
 class CashPartial(Cash, metaclass=Partial): pass
-class SalaryPartial(Salary, metaclass=Partial): pass
 class PersonalAccountPartial(PersonalAccount, metaclass=Partial): pass
 class CardPartial(Card, metaclass=Partial): pass
 class SavingsAccountPartial(SavingsAccount, metaclass=Partial): pass
 class StockAccountPartial(StockAccount, metaclass=Partial): pass
 class CapitalInvestmentPartial(CapitalInvestment, metaclass=Partial): pass
+class MonthlyIncomePartial(MonthlyIncome, metaclass=Partial): pass
+class MonthlyExpensePartial(MonthlyExpense, metaclass=Partial): pass

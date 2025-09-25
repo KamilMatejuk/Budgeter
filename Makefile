@@ -15,8 +15,6 @@ types:
         echo "export type Capitalization = components[\"schemas\"][\"Capitalization\"]" >> frontend/src/types/backend.ts
 		echo "export type Cash = components[\"schemas\"][\"Cash\"]" >> frontend/src/types/backend.ts && \
 		echo "export type CashPartial = components[\"schemas\"][\"CashPartial\"]" >> frontend/src/types/backend.ts && \
-		echo "export type Salary = components[\"schemas\"][\"Salary\"]" >> frontend/src/types/backend.ts && \
-		echo "export type SalaryPartial = components[\"schemas\"][\"SalaryPartial\"]" >> frontend/src/types/backend.ts && \
 		echo "export type PersonalAccount = components[\"schemas\"][\"PersonalAccount\"]" >> frontend/src/types/backend.ts && \
 		echo "export type PersonalAccountPartial = components[\"schemas\"][\"PersonalAccountPartial\"]" >> frontend/src/types/backend.ts && \
 		echo "export type Card = components[\"schemas\"][\"Card\"]" >> frontend/src/types/backend.ts && \
@@ -26,4 +24,8 @@ types:
 		echo "export type StockAccount = components[\"schemas\"][\"StockAccount\"]" >> frontend/src/types/backend.ts && \
 		echo "export type StockAccountPartial = components[\"schemas\"][\"StockAccountPartial\"]" >> frontend/src/types/backend.ts && \
 		echo "export type CapitalInvestment = components[\"schemas\"][\"CapitalInvestment\"]" >> frontend/src/types/backend.ts && \
-		echo "export type CapitalInvestmentPartial = components[\"schemas\"][\"CapitalInvestmentPartial\"]" >> frontend/src/types/backend.ts
+		echo "export type CapitalInvestmentPartial = components[\"schemas\"][\"CapitalInvestmentPartial\"]" >> frontend/src/types/backend.ts && \
+		echo "export type MonthlyIncome = components[\"schemas\"][\"MonthlyIncome\"]" >> frontend/src/types/backend.ts && \
+		echo "export type MonthlyIncomePartial = components[\"schemas\"][\"MonthlyIncomePartial\"]" >> frontend/src/types/backend.ts && \
+		echo "export type MonthlyExpense = components[\"schemas\"][\"MonthlyExpense\"]" >> frontend/src/types/backend.ts && \
+		echo "export type MonthlyExpensePartial = components[\"schemas\"][\"MonthlyExpensePartial\"]" >> frontend/src/types/backend.ts

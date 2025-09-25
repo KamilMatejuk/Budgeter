@@ -165,42 +165,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/products/salary/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Salarys */
-        get: operations["get_salarys_api_products_salary__get"];
-        put?: never;
-        /** Create Salary */
-        post: operations["create_salary_api_products_salary__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Patch Salary */
-        patch: operations["patch_salary_api_products_salary__patch"];
-        trace?: never;
-    };
-    "/api/products/salary/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete Salary */
-        delete: operations["delete_salary_api_products_salary__id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/products/personal_account/": {
         parameters: {
             query?: never;
@@ -381,6 +345,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/products/monthly_income/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Monthlyincomes */
+        get: operations["get_monthlyincomes_api_products_monthly_income__get"];
+        put?: never;
+        /** Create Monthlyincome */
+        post: operations["create_monthlyincome_api_products_monthly_income__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Monthlyincome */
+        patch: operations["patch_monthlyincome_api_products_monthly_income__patch"];
+        trace?: never;
+    };
+    "/api/products/monthly_income/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Monthlyincome */
+        delete: operations["delete_monthlyincome_api_products_monthly_income__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products/monthly_expense/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Monthlyexpenses */
+        get: operations["get_monthlyexpenses_api_products_monthly_expense__get"];
+        put?: never;
+        /** Create Monthlyexpense */
+        post: operations["create_monthlyexpense_api_products_monthly_expense__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Monthlyexpense */
+        patch: operations["patch_monthlyexpense_api_products_monthly_expense__patch"];
+        trace?: never;
+    };
+    "/api/products/monthly_expense/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Monthlyexpense */
+        delete: operations["delete_monthlyexpense_api_products_monthly_expense__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -488,6 +524,54 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** MonthlyExpense */
+        MonthlyExpense: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month: number;
+        };
+        /** MonthlyExpensePartial */
+        MonthlyExpensePartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month?: number | null;
+        };
+        /** MonthlyIncome */
+        MonthlyIncome: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month: number;
+        };
+        /** MonthlyIncomePartial */
+        MonthlyIncomePartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month?: number | null;
+        };
         /** PersonalAccount */
         PersonalAccount: {
             /** Id */
@@ -511,30 +595,6 @@ export interface components {
             currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
-        };
-        /** Salary */
-        Salary: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
-            /** Day Of Month */
-            day_of_month: number;
-        };
-        /** SalaryPartial */
-        SalaryPartial: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
-            /** Day Of Month */
-            day_of_month?: number | null;
         };
         /** SavingsAccount */
         SavingsAccount: {
@@ -1236,125 +1296,6 @@ export interface operations {
             };
         };
     };
-    get_salarys_api_products_salary__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Salary"][];
-                };
-            };
-        };
-    };
-    create_salary_api_products_salary__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Salary"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Salary"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    patch_salary_api_products_salary__patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SalaryPartial"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Salary"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_salary_api_products_salary__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     get_personalaccounts_api_products_personal_account__get: {
         parameters: {
             query?: never;
@@ -1950,6 +1891,244 @@ export interface operations {
             };
         };
     };
+    get_monthlyincomes_api_products_monthly_income__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyIncome"][];
+                };
+            };
+        };
+    };
+    create_monthlyincome_api_products_monthly_income__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonthlyIncome"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyIncome"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_monthlyincome_api_products_monthly_income__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonthlyIncomePartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyIncome"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_monthlyincome_api_products_monthly_income__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_monthlyexpenses_api_products_monthly_expense__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyExpense"][];
+                };
+            };
+        };
+    };
+    create_monthlyexpense_api_products_monthly_expense__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonthlyExpense"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyExpense"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_monthlyexpense_api_products_monthly_expense__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonthlyExpensePartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyExpense"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_monthlyexpense_api_products_monthly_expense__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
 }
 
 export type Tag = components["schemas"]["Tag"]
@@ -1959,8 +2138,6 @@ export type Currency = components["schemas"]["Currency"]
 export type Capitalization = components["schemas"]["Capitalization"]
 export type Cash = components["schemas"]["Cash"]
 export type CashPartial = components["schemas"]["CashPartial"]
-export type Salary = components["schemas"]["Salary"]
-export type SalaryPartial = components["schemas"]["SalaryPartial"]
 export type PersonalAccount = components["schemas"]["PersonalAccount"]
 export type PersonalAccountPartial = components["schemas"]["PersonalAccountPartial"]
 export type Card = components["schemas"]["Card"]
@@ -1971,3 +2148,7 @@ export type StockAccount = components["schemas"]["StockAccount"]
 export type StockAccountPartial = components["schemas"]["StockAccountPartial"]
 export type CapitalInvestment = components["schemas"]["CapitalInvestment"]
 export type CapitalInvestmentPartial = components["schemas"]["CapitalInvestmentPartial"]
+export type MonthlyIncome = components["schemas"]["MonthlyIncome"]
+export type MonthlyIncomePartial = components["schemas"]["MonthlyIncomePartial"]
+export type MonthlyExpense = components["schemas"]["MonthlyExpense"]
+export type MonthlyExpensePartial = components["schemas"]["MonthlyExpensePartial"]

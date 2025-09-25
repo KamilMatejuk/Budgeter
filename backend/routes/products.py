@@ -3,12 +3,13 @@ from fastapi import APIRouter
 from routes.base import CRUDRouterFactory
 from models.products import (
     Cash, CashPartial,
-    Salary, SalaryPartial,
     PersonalAccount, PersonalAccountPartial,
     Card, CardPartial,
     SavingsAccount, SavingsAccountPartial,
     StockAccount, StockAccountPartial,
     CapitalInvestment, CapitalInvestmentPartial,
+    MonthlyIncome, MonthlyIncomePartial,
+    MonthlyExpense, MonthlyExpensePartial,
 )
 
 router = APIRouter()
@@ -20,14 +21,6 @@ cash_factory.create_post()
 cash_factory.create_patch()
 cash_factory.create_delete()
 router.include_router(cash_router)
-
-salary_router = APIRouter(prefix="/salary")
-salary_factory = CRUDRouterFactory(salary_router, "salary", Salary, SalaryPartial)
-salary_factory.create_get()
-salary_factory.create_post()
-salary_factory.create_patch()
-salary_factory.create_delete()
-router.include_router(salary_router)
 
 personal_account_router = APIRouter(prefix="/personal_account")
 personal_account_factory = CRUDRouterFactory(personal_account_router, "personal_account", PersonalAccount, PersonalAccountPartial)
@@ -68,3 +61,19 @@ capital_investment_factory.create_post()
 capital_investment_factory.create_patch()
 capital_investment_factory.create_delete()
 router.include_router(capital_investment_router)
+
+monthly_income_router = APIRouter(prefix="/monthly_income")
+monthly_income_factory = CRUDRouterFactory(monthly_income_router, "monthly_income", MonthlyIncome, MonthlyIncomePartial)
+monthly_income_factory.create_get()
+monthly_income_factory.create_post()
+monthly_income_factory.create_patch()
+monthly_income_factory.create_delete()
+router.include_router(monthly_income_router)
+
+monthly_expense_router = APIRouter(prefix="/monthly_expense")
+monthly_expense_factory = CRUDRouterFactory(monthly_expense_router, "monthly_expense", MonthlyExpense, MonthlyExpensePartial)
+monthly_expense_factory.create_get()
+monthly_expense_factory.create_post()
+monthly_expense_factory.create_patch()
+monthly_expense_factory.create_delete()
+router.include_router(monthly_expense_router)

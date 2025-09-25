@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-export interface paths {
+export type paths = {
     "/api/transaction/": {
         parameters: {
             query?: never;
@@ -417,9 +417,9 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-}
+};
 export type webhooks = Record<string, never>;
-export interface components {
+export type components = {
     schemas: {
         /** CapitalInvestment */
         CapitalInvestment: {
@@ -786,7 +786,33 @@ export interface components {
     requestBodies: never;
     headers: never;
     pathItems: never;
-}
+};
+export type CapitalInvestment = components['schemas']['CapitalInvestment'];
+export type CapitalInvestmentPartial = components['schemas']['CapitalInvestmentPartial'];
+export type Capitalization = components['schemas']['Capitalization'];
+export type Card = components['schemas']['Card'];
+export type CardPartial = components['schemas']['CardPartial'];
+export type Cash = components['schemas']['Cash'];
+export type CashPartial = components['schemas']['CashPartial'];
+export type Currency = components['schemas']['Currency'];
+export type HttpValidationError = components['schemas']['HTTPValidationError'];
+export type MonthlyExpense = components['schemas']['MonthlyExpense'];
+export type MonthlyExpensePartial = components['schemas']['MonthlyExpensePartial'];
+export type MonthlyIncome = components['schemas']['MonthlyIncome'];
+export type MonthlyIncomePartial = components['schemas']['MonthlyIncomePartial'];
+export type PersonalAccount = components['schemas']['PersonalAccount'];
+export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
+export type SavingsAccount = components['schemas']['SavingsAccount'];
+export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
+export type Source = components['schemas']['Source'];
+export type SourcePartial = components['schemas']['SourcePartial'];
+export type StockAccount = components['schemas']['StockAccount'];
+export type StockAccountPartial = components['schemas']['StockAccountPartial'];
+export type Tag = components['schemas']['Tag'];
+export type TagPartial = components['schemas']['TagPartial'];
+export type Transaction = components['schemas']['Transaction'];
+export type TransactionPartial = components['schemas']['TransactionPartial'];
+export type ValidationError = components['schemas']['ValidationError'];
 export type $defs = Record<string, never>;
 export interface operations {
     get_transactions_api_transaction__get: {
@@ -2130,25 +2156,3 @@ export interface operations {
         };
     };
 }
-
-export type Tag = components["schemas"]["Tag"]
-export type Source = components["schemas"]["Source"]
-export type Transaction = components["schemas"]["Transaction"]
-export type Currency = components["schemas"]["Currency"]
-export type Capitalization = components["schemas"]["Capitalization"]
-export type Cash = components["schemas"]["Cash"]
-export type CashPartial = components["schemas"]["CashPartial"]
-export type PersonalAccount = components["schemas"]["PersonalAccount"]
-export type PersonalAccountPartial = components["schemas"]["PersonalAccountPartial"]
-export type Card = components["schemas"]["Card"]
-export type CardPartial = components["schemas"]["CardPartial"]
-export type SavingsAccount = components["schemas"]["SavingsAccount"]
-export type SavingsAccountPartial = components["schemas"]["SavingsAccountPartial"]
-export type StockAccount = components["schemas"]["StockAccount"]
-export type StockAccountPartial = components["schemas"]["StockAccountPartial"]
-export type CapitalInvestment = components["schemas"]["CapitalInvestment"]
-export type CapitalInvestmentPartial = components["schemas"]["CapitalInvestmentPartial"]
-export type MonthlyIncome = components["schemas"]["MonthlyIncome"]
-export type MonthlyIncomePartial = components["schemas"]["MonthlyIncomePartial"]
-export type MonthlyExpense = components["schemas"]["MonthlyExpense"]
-export type MonthlyExpensePartial = components["schemas"]["MonthlyExpensePartial"]

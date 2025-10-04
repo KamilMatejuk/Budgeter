@@ -91,3 +91,15 @@ export default function Run() {
     </>
   );
 }
+
+
+// TODO
+// * move accounts to products
+// * load positive and negative values correctly
+// * distinguish moving between accounts and normal transactions
+
+
+// top bar - page title
+// left sidebar - logo, current balance, menu (dashboards, import, settings, predictions, help)
+// https://cdn.dribbble.com/userupload/4307413/file/still-328dbb0cf5ae384f442c56491df7505d.png
+// settings - black title, grey descriptions, table for each type - each edit is a new screen

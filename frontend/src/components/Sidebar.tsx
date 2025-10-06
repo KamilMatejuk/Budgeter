@@ -32,7 +32,7 @@ const classes = {
     container: "flex-1 overflow-auto py-3",
     list: "space-y-1 px-1",
     item: "group flex items-center gap-3 px-2 py-2 rounded-md hover:bg-second-bg",
-    icon: "flex-shrink-0 w-6 h-6 flex items-center justify-center text-text",
+    icon: "flex-shrink-0 w-6 h-6 flex items-center justify-center",
     label: "overflow-hidden whitespace-nowrap text-sm",
   },
 }

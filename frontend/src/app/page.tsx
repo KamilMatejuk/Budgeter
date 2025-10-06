@@ -1,29 +1,14 @@
-import { Transaction } from "@/types/backend";
-import { get } from "./api/fetch";
-import ErrorToast from "@/components/toast/ErrorToast";
+import PageHeader from "@/components/page_layout/PageHeader";
+import SectionHeader from "@/components/page_layout/SectionHeader";
 
 export default async function Home() {
-  const { response: transactions, error } = await get<Transaction[]>("/api/transaction");
-
   return (
-    <div className="w-full h-full">
-      {error ? (
-        <ErrorToast message="Could not download transactions" />
-      ) : (
-        <>
-          {transactions.map((transaction) => (
-            <div key={transaction.hash} className="grid grid-cols-7 gap-2 p-2 border-b">
-              <p className="break-all">{transaction.hash}</p>
-              <p>{transaction.card}</p>
-              <p>{transaction.date}</p>
-              <p>{transaction.organisation}</p>
-              <p>{transaction.title}</p>
-              <p>{transaction.value}</p>
-              <p>{transaction.tags.join(', ')}</p>
-            </div>
-          ))}
-        </>
-      )}
+    <div className="w-full h-full p-4">
+      <PageHeader text="Dashboards" subtext="Your overview of financial health" />
+      <SectionHeader text="Accounts' Balance" />
+      <SectionHeader text="Monthly Overview" subtext="Incomes and expenses from July 2025" />
+      <SectionHeader text="Yearly Overview" subtext="Incomes and expenses from 2025" />
+      <SectionHeader text="Trend Comparison" subtext="How this month compares to average July and to average month in 2025" />
     </div>
   );
 }

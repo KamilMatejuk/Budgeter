@@ -21,7 +21,7 @@ export async function hashObject(obj): Promise<string> {
   return hashHex;
 }
 
-export default function Run() {
+export default function RunButton() {
   const router = useRouter();
   const { selectedFile, selectedSource } = useSelectedSourceAndFile();
   const [error, setError] = useState<Error | string | null>(null);

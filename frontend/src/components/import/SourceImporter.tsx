@@ -45,47 +45,44 @@ export default function SourceImporter() {
   };
 
   return (
-    <div className="bg-second-bg p-4 rounded-xl flex flex-col items-center gap-4 w-full">
-      <h2 className="text-lg font-semibold">Select CSV File</h2>
-      <div
-        className={twMerge(
-          " w-full px-4 py-2 rounded-xl text-center",
-          isDragging ? "" : "bg-first-bg"
-        )}
-        onDrop={handleDrop}
-        onDragOver={(e) => handleDrag(e, true)}
-        onDragLeave={(e) => handleDrag(e, false)}
-      >
-        {selectedFile ? (
-          <div className="flex items-center justify-center gap-2">
-            {selectedFile.name}
-            <IoMdClose
-              size={12}
-              className="cursor-pointer"
-              onClick={() => setSelectedFile(null)}
-            />
-          </div>
-        ) : (
-          <>
-            Drag & drop your file here
-            <br />
-            or{" "}
-            <span
-              className="text-blue-500 underline cursor-pointer"
-              onClick={openFileDialog}
-            >
-              click to browse
-            </span>
-          </>
-        )}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </div>
+    <div
+      className={twMerge(
+        "text-center border-2 border-dashed border-line rounded-xl p-8 ",
+        isDragging ? "bg-second-bg border-black" : ""
+      )}
+      onDrop={handleDrop}
+      onDragOver={(e) => handleDrag(e, true)}
+      onDragLeave={(e) => handleDrag(e, false)}
+    >
+      {selectedFile ? (
+        <div className="flex items-center justify-center gap-2">
+          {selectedFile.name}
+          <IoMdClose
+            size={16}
+            className="cursor-pointer text-red-500"
+            onClick={() => setSelectedFile(null)}
+          />
+        </div>
+      ) : (
+        <>
+          Drag & drop your file here
+          <br />
+          or{" "}
+          <span
+            className="text-blue-500 underline cursor-pointer"
+            onClick={openFileDialog}
+          >
+            click to browse
+          </span>
+        </>
+      )}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        className="hidden"
+      />
     </div>
   );
 }

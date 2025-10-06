@@ -4,7 +4,7 @@ import ErrorToast from "@/components/toast/ErrorToast";
 import { SourceProvider } from "@/components/import/ImportContext";
 import SourceSelector from "@/components/import/SourceSelector";
 import SourceImporter from "@/components/import/SourceImporter";
-import Run from "@/components/import/Run";
+import RunButton from "@/components/import/RunButton";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 
@@ -19,7 +19,7 @@ export default async function Import() {
         {error ? <ErrorToast message="Could not download sources" /> : <SourceSelector sources={sources} />}
         <SectionHeader text="Select File" />
         <SourceImporter />
-        <Run />
+        <RunButton />
       </SourceProvider>
     </div>
   );

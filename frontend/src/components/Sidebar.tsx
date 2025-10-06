@@ -8,6 +8,7 @@ import { GoHome } from "react-icons/go";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TfiImport } from "react-icons/tfi";
 import { CiViewList } from "react-icons/ci";
+import { twMerge } from "tailwind-merge";
 
 
 export type NavItem = {
@@ -24,7 +25,7 @@ const items: NavItem[] = [
 ]
 
 const classes = {
-  aside: "h-screen p-2 flex flex-col border-r border-line",
+  aside: "h-screen p-2 flex flex-col",
   header: "flex items-center justify-between p-2 border-b border-line",
   name: "overflow-hidden whitespace-nowrap",
   collapseButton: "p-2 rounded-md hover:bg-second-bg",
@@ -44,7 +45,12 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <motion.aside initial={false} animate={{ width: collapsed ? 64 : 256 }} transition={transition} className={classes.aside}>
+    <motion.aside
+      initial={false}
+      animate={{ width: collapsed ? 64 : 256 }}
+      transition={transition}
+      className={twMerge(classes.aside, collapsed ? "shadow-[inset_0_0_12px_0_rgba(0,0,0,0.2)]" : "shadow-[0_0_12px_0_rgba(0,0,0,0.2)]")}
+    >
       {/* HEADER */}
       <div className={classes.header}>
         <motion.span

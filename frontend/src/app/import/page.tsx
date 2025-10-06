@@ -12,7 +12,7 @@ export default async function Import() {
   const { response: sources, error } = await get<Source[]>("/api/source");
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full p-4 space-y-4">
       <PageHeader text="Import" subtext="Load report from your preferred source" />
       <SourceProvider>
         <SectionHeader text="Select Source" />

@@ -3,7 +3,7 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 
 export default async function Home() {
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full p-4 space-y-4">
       <PageHeader text="Dashboards" subtext="Your overview of financial health" />
       <SectionHeader text="Accounts' Balance" />
       <SectionHeader text="Monthly Overview" subtext="Incomes and expenses from July 2025" />

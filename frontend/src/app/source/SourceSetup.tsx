@@ -216,6 +216,7 @@ export default function SourceSetup({ source }: SourceSetupProps) {
               ]);
             }}
             text="+"
+            action="positive"
             className="w-fit"
           />
         </div>
@@ -223,13 +224,14 @@ export default function SourceSetup({ source }: SourceSetupProps) {
           <ButtonWithLoader
             onClick={formik.submitForm}
             text="Save"
+            action="positive"
             className="flex-1"
           />
           {source && (
             <ButtonWithLoader
               onClick={deleteSourceHandler}
               text="Delete"
-              destructive
+              action="negative"
               className="flex-1"
             />
           )}

@@ -89,7 +89,7 @@ class CRUDRouterFactory:
     def create_get(self):
         # define GET function
         async def f(db: AsyncIOMotorDatabase = Depends(get_db)):
-            return await get(db, self.table, self.model)
+            return await get(db, self.table, self.model_with_id)
         # update name and annotations for OpenAPI
         f.__annotations__["return"] = list[self.model_with_id]
         f.__name__ = f"get_{self.model.__name__.lower()}s"

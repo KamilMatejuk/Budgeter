@@ -1,4 +1,4 @@
-import SourceSetup from "@/components/source/SourceSetup";
+import SourceSetup from "@/app/source/SourceSetup";
 
 export default async function NewSource() {
   return (

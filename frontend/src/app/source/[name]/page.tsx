@@ -1,5 +1,5 @@
 import { get } from "@/app/api/fetch";
-import SourceSetup from "@/components/source/SourceSetup";
+import SourceSetup from "@/app/source/SourceSetup";
 import ErrorToast from "@/components/toast/ErrorToast";
 import { SourceWithId } from "@/types/backend";
 

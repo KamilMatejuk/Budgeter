@@ -1,10 +1,10 @@
 import { SourceWithId } from "@/types/backend";
 import { get } from "../api/fetch";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { SourceProvider } from "@/components/import/ImportContext";
-import SourceSelector from "@/components/import/SourceSelector";
-import SourceImporter from "@/components/import/SourceImporter";
-import RunButton from "@/components/import/RunButton";
+import { SourceProvider } from "@/app/import/ImportContext";
+import SourceSelector from "@/app/import/SourceSelector";
+import SourceImporter from "@/app/import/SourceImporter";
+import RunButton from "@/app/import/RunButton";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 

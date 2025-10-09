@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useSelectedSourceAndFile } from "./ImportContext";
 import { useState } from "react";
-import ErrorToast from "../toast/ErrorToast";
+import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
 import { Transaction } from "@/types/backend";
 import { post } from "@/app/api/fetch";
-import ButtonWithProgress from "../button/ButtonWithProgress";
+import ButtonWithProgress from "../../components/button/ButtonWithProgress";
 
 
 // @ts-expect-error: Parameter 'obj' implicitly has an 'any' type.ts(7006)

@@ -3,10 +3,10 @@
 import { Source } from "@/types/backend";
 import { useFormik } from "formik";
 import { z } from "zod";
-import TextInputWithError from "../form/TextInputWithError";
+import TextInputWithError from "../../components/form/TextInputWithError";
 import { withZodSchema } from "formik-validator-zod";
-import AmountInputWithError from "../form/AmountInputWithError";
-import ButtonWithLoader from "../button/ButtonWithLoader";
+import AmountInputWithError from "../../components/form/AmountInputWithError";
+import ButtonWithLoader from "../../components/button/ButtonWithLoader";
 import { del, patch, post } from "@/app/api/fetch";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";

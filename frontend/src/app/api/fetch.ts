@@ -53,4 +53,4 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
 export const get = async <T>(url: string, tags?: string[]) => await fetchFromApi<T>({ url, method: 'GET', tags });
 export const post = async <T>(url: string, body: unknown) => await fetchFromApi<T>({ url, method: 'POST', body });
 export const patch = async <T>(url: string, body: unknown) => await fetchFromApi<T>({ url, method: 'PATCH', body });
-export const del = async <T>(url: string) => await fetchFromApi<T>({ url, method: 'DELETE' });
+export const del = async (url: string) => await fetchFromApi({ url, method: 'DELETE' });

@@ -1,8 +1,7 @@
 import re
 from pydantic import field_validator
 
-from models.base import PyBaseModel
-from models.optional import Partial
+from models.base import PyBaseModel, Partial, WithId
 
 
 class Tag(PyBaseModel):
@@ -27,5 +26,5 @@ class Tag(PyBaseModel):
         return v
 
 
-class TagPartial(Tag, metaclass=Partial):
-    pass
+class TagPartial(Tag, metaclass=Partial): pass
+class TagWithId(Tag, metaclass=WithId): pass

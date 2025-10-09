@@ -1,11 +1,11 @@
-import { Transaction } from "@/types/backend";
+import { TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { get } from "../api/fetch";
 
 export default async function Transactions() {
-  const { response: transactions, error } = await get<Transaction[]>("/api/transaction");
+  const { response: transactions, error } = await get<TransactionWithId[]>("/api/transaction");
 
   return (
     <div className="w-full h-full p-4 space-y-4">

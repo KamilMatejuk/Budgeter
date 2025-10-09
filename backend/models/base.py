@@ -1,12 +1,11 @@
-"""
-Custom override for PyObjectId to handle MongoDB ObjectId serialization
-and deserialization in Pydantic models.
-"""
-
 from bson import ObjectId
-from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from typing import Any, Optional
 from pydantic_core import core_schema
-from typing import Any
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic._internal._model_construction import ModelMetaclass
+
+
+# Custom override for PyObjectId to handle MongoDB ObjectId serialization in Pydantic models
 
 
 class PyObjectId(ObjectId):
@@ -30,7 +29,6 @@ class PyObjectId(ObjectId):
         return {"type": "string"}
 
 
-
 class PyBaseModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     model_config = {
@@ -40,3 +38,33 @@ class PyBaseModel(BaseModel):
             PyObjectId: str,
         }
     }
+
+
+# Metaclass to create a new model with all fields optional for PATCH requests
+
+
+class Partial(ModelMetaclass):
+    def __new__(self, name, bases, namespaces, **kwargs):
+        annotations = namespaces.get('__annotations__', {})
+        for base in bases:
+            annotations.update(base.__annotations__)
+        for field in annotations:
+            if not field.startswith('__'):
+                annotations[field] = Optional[annotations[field]]
+                namespaces.setdefault(field, None)
+        namespaces['__annotations__'] = annotations
+        return super().__new__(self, name, bases, namespaces, **kwargs)
+
+
+# Metaclass to create a new model with `id` required for CRUD responses
+
+
+class WithId(ModelMetaclass):
+    def __new__(mcls, name, bases, namespaces, **kwargs):
+        annotations = namespaces.get('__annotations__', {})
+        for base in bases:
+            annotations.update(base.__annotations__)
+        annotations["id"] = PyObjectId
+        namespaces['__annotations__'] = annotations
+        namespaces["id"] = Field(..., alias="_id")
+        return super().__new__(mcls, name, bases, namespaces, **kwargs)

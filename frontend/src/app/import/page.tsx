@@ -1,4 +1,4 @@
-import { Source } from "@/types/backend";
+import { SourceWithId } from "@/types/backend";
 import { get } from "../api/fetch";
 import ErrorToast from "@/components/toast/ErrorToast";
 import { SourceProvider } from "@/components/import/ImportContext";
@@ -9,7 +9,7 @@ import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 
 export default async function Import() {
-  const { response: sources, error } = await get<Source[]>("/api/source");
+  const { response: sources, error } = await get<SourceWithId[]>("/api/source");
 
   return (
     <div className="w-full h-full p-4 space-y-4">

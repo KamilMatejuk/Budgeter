@@ -1,7 +1,6 @@
 from pydantic import field_validator
 
-from models.base import PyBaseModel
-from models.optional import Partial
+from models.base import PyBaseModel, Partial, WithId
 
 
 class Source(PyBaseModel):
@@ -34,5 +33,5 @@ class Source(PyBaseModel):
         return v
 
 
-class SourcePartial(Source, metaclass=Partial):
-    pass
+class SourcePartial(Source, metaclass=Partial): pass
+class SourceWithId(Source, metaclass=WithId): pass

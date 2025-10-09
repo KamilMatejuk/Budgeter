@@ -1,8 +1,7 @@
 import enum
 from datetime import datetime
 
-from models.base import PyBaseModel
-from models.optional import Partial
+from models.base import PyBaseModel, Partial, WithId
 
 # Enums
 
@@ -67,3 +66,13 @@ class StockAccountPartial(StockAccount, metaclass=Partial): pass
 class CapitalInvestmentPartial(CapitalInvestment, metaclass=Partial): pass
 class MonthlyIncomePartial(MonthlyIncome, metaclass=Partial): pass
 class MonthlyExpensePartial(MonthlyExpense, metaclass=Partial): pass
+
+# WithId models for responses
+class CashWithId(Cash, metaclass=WithId): pass
+class PersonalAccountWithId(PersonalAccount, metaclass=WithId): pass
+class CardWithId(Card, metaclass=WithId): pass
+class SavingsAccountWithId(SavingsAccount, metaclass=WithId): pass
+class StockAccountWithId(StockAccount, metaclass=WithId): pass
+class CapitalInvestmentWithId(CapitalInvestment, metaclass=WithId): pass
+class MonthlyIncomeWithId(MonthlyIncome, metaclass=WithId): pass
+class MonthlyExpenseWithId(MonthlyExpense, metaclass=WithId): pass

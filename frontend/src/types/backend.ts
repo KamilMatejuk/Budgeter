@@ -461,6 +461,29 @@ export type components = {
             /** End */
             end?: string | null;
         };
+        /** CapitalInvestmentWithId */
+        CapitalInvestmentWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Yearly Interest */
+            yearly_interest: number;
+            capitalization: components["schemas"]["Capitalization"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+        };
         /**
          * Capitalization
          * @enum {string}
@@ -494,6 +517,20 @@ export type components = {
             /** Credit */
             credit?: number | null;
         };
+        /** CardWithId */
+        CardWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Credit */
+            credit: number | null;
+        };
         /** Cash */
         Cash: {
             /** Id */
@@ -508,6 +545,16 @@ export type components = {
         CashPartial: {
             /** Id */
             _id?: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+        };
+        /** CashWithId */
+        CashWithId: {
+            /** Id */
+            _id: string;
             /** Name */
             name: string;
             /** Value */
@@ -548,6 +595,18 @@ export type components = {
             /** Day Of Month */
             day_of_month?: number | null;
         };
+        /** MonthlyExpenseWithId */
+        MonthlyExpenseWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month: number;
+        };
         /** MonthlyIncome */
         MonthlyIncome: {
             /** Id */
@@ -572,6 +631,18 @@ export type components = {
             /** Day Of Month */
             day_of_month?: number | null;
         };
+        /** MonthlyIncomeWithId */
+        MonthlyIncomeWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Day Of Month */
+            day_of_month: number;
+        };
         /** PersonalAccount */
         PersonalAccount: {
             /** Id */
@@ -595,6 +666,18 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
+        };
+        /** PersonalAccountWithId */
+        PersonalAccountWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
         };
         /** SavingsAccount */
         SavingsAccount: {
@@ -625,6 +708,21 @@ export type components = {
             /** Yearly Interest */
             yearly_interest?: number | null;
             capitalization?: components["schemas"]["Capitalization"] | null;
+        };
+        /** SavingsAccountWithId */
+        SavingsAccountWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Yearly Interest */
+            yearly_interest: number;
+            capitalization: components["schemas"]["Capitalization"];
         };
         /** Source */
         Source: {
@@ -676,6 +774,31 @@ export type components = {
                 [key: string]: string;
             } | null;
         };
+        /** SourceWithId */
+        SourceWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Field Name Card */
+            field_name_card: string;
+            /** Field Name Date */
+            field_name_date: string;
+            /** Field Name Title */
+            field_name_title: string;
+            /** Field Name Organisation */
+            field_name_organisation: string;
+            /** Field Name Value Positive */
+            field_name_value_positive: string;
+            /** Field Name Value Negative */
+            field_name_value_negative: string;
+            /** Starting Amount */
+            starting_amount: number;
+            /** Card Aliases */
+            card_aliases: {
+                [key: string]: string;
+            };
+        };
         /** StockAccount */
         StockAccount: {
             /** Id */
@@ -704,6 +827,20 @@ export type components = {
             /** Yearly Interest */
             yearly_interest?: number | null;
         };
+        /** StockAccountWithId */
+        StockAccountWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Number */
+            number: string;
+            /** Yearly Interest */
+            yearly_interest: number;
+        };
         /** Tag */
         Tag: {
             /** Id */
@@ -729,6 +866,19 @@ export type components = {
             parent?: string | null;
             /** Children */
             children?: string[] | null;
+        };
+        /** TagWithId */
+        TagWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Colour */
+            colour: string;
+            /** Parent */
+            parent: string | null;
+            /** Children */
+            children: string[] | null;
         };
         /** Transaction */
         Transaction: {
@@ -771,6 +921,28 @@ export type components = {
             /** Tags */
             tags?: components["schemas"]["Tag"][] | null;
         };
+        /** TransactionWithId */
+        TransactionWithId: {
+            /** Id */
+            _id: string;
+            /** Hash */
+            hash: string;
+            /** Card */
+            card: string;
+            /**
+             * Date
+             * Format: date-time
+             */
+            date: string;
+            /** Title */
+            title: string;
+            /** Organisation */
+            organisation: string;
+            /** Value */
+            value: number;
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -789,29 +961,40 @@ export type components = {
 };
 export type CapitalInvestment = components['schemas']['CapitalInvestment'];
 export type CapitalInvestmentPartial = components['schemas']['CapitalInvestmentPartial'];
+export type CapitalInvestmentWithId = components['schemas']['CapitalInvestmentWithId'];
 export type Capitalization = components['schemas']['Capitalization'];
 export type Card = components['schemas']['Card'];
 export type CardPartial = components['schemas']['CardPartial'];
+export type CardWithId = components['schemas']['CardWithId'];
 export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
+export type CashWithId = components['schemas']['CashWithId'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type MonthlyExpense = components['schemas']['MonthlyExpense'];
 export type MonthlyExpensePartial = components['schemas']['MonthlyExpensePartial'];
+export type MonthlyExpenseWithId = components['schemas']['MonthlyExpenseWithId'];
 export type MonthlyIncome = components['schemas']['MonthlyIncome'];
 export type MonthlyIncomePartial = components['schemas']['MonthlyIncomePartial'];
+export type MonthlyIncomeWithId = components['schemas']['MonthlyIncomeWithId'];
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
+export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
+export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
 export type Source = components['schemas']['Source'];
 export type SourcePartial = components['schemas']['SourcePartial'];
+export type SourceWithId = components['schemas']['SourceWithId'];
 export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
+export type StockAccountWithId = components['schemas']['StockAccountWithId'];
 export type Tag = components['schemas']['Tag'];
 export type TagPartial = components['schemas']['TagPartial'];
+export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
+export type TransactionWithId = components['schemas']['TransactionWithId'];
 export type ValidationError = components['schemas']['ValidationError'];
 export type $defs = Record<string, never>;
 export interface operations {
@@ -830,7 +1013,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Transaction"][];
+                    "application/json": components["schemas"]["TransactionWithId"][];
                 };
             };
         };
@@ -854,7 +1037,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Transaction"];
+                    "application/json": components["schemas"]["TransactionWithId"];
                 };
             };
             /** @description Validation Error */
@@ -887,7 +1070,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Transaction"];
+                    "application/json": components["schemas"]["TransactionWithId"];
                 };
             };
             /** @description Validation Error */
@@ -949,7 +1132,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Source"][];
+                    "application/json": components["schemas"]["SourceWithId"][];
                 };
             };
         };
@@ -973,7 +1156,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Source"];
+                    "application/json": components["schemas"]["SourceWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1006,7 +1189,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Source"];
+                    "application/json": components["schemas"]["SourceWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1099,7 +1282,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Tag"][];
+                    "application/json": components["schemas"]["TagWithId"][];
                 };
             };
         };
@@ -1123,7 +1306,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    "application/json": components["schemas"]["TagWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1156,7 +1339,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    "application/json": components["schemas"]["TagWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1218,7 +1401,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Cash"][];
+                    "application/json": components["schemas"]["CashWithId"][];
                 };
             };
         };
@@ -1242,7 +1425,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Cash"];
+                    "application/json": components["schemas"]["CashWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1275,7 +1458,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Cash"];
+                    "application/json": components["schemas"]["CashWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1337,7 +1520,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PersonalAccount"][];
+                    "application/json": components["schemas"]["PersonalAccountWithId"][];
                 };
             };
         };
@@ -1361,7 +1544,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PersonalAccount"];
+                    "application/json": components["schemas"]["PersonalAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1394,7 +1577,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PersonalAccount"];
+                    "application/json": components["schemas"]["PersonalAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1456,7 +1639,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Card"][];
+                    "application/json": components["schemas"]["CardWithId"][];
                 };
             };
         };
@@ -1480,7 +1663,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Card"];
+                    "application/json": components["schemas"]["CardWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1513,7 +1696,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Card"];
+                    "application/json": components["schemas"]["CardWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1575,7 +1758,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SavingsAccount"][];
+                    "application/json": components["schemas"]["SavingsAccountWithId"][];
                 };
             };
         };
@@ -1599,7 +1782,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SavingsAccount"];
+                    "application/json": components["schemas"]["SavingsAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1632,7 +1815,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SavingsAccount"];
+                    "application/json": components["schemas"]["SavingsAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1694,7 +1877,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StockAccount"][];
+                    "application/json": components["schemas"]["StockAccountWithId"][];
                 };
             };
         };
@@ -1718,7 +1901,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StockAccount"];
+                    "application/json": components["schemas"]["StockAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1751,7 +1934,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StockAccount"];
+                    "application/json": components["schemas"]["StockAccountWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1813,7 +1996,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CapitalInvestment"][];
+                    "application/json": components["schemas"]["CapitalInvestmentWithId"][];
                 };
             };
         };
@@ -1837,7 +2020,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CapitalInvestment"];
+                    "application/json": components["schemas"]["CapitalInvestmentWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1870,7 +2053,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CapitalInvestment"];
+                    "application/json": components["schemas"]["CapitalInvestmentWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1932,7 +2115,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyIncome"][];
+                    "application/json": components["schemas"]["MonthlyIncomeWithId"][];
                 };
             };
         };
@@ -1956,7 +2139,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyIncome"];
+                    "application/json": components["schemas"]["MonthlyIncomeWithId"];
                 };
             };
             /** @description Validation Error */
@@ -1989,7 +2172,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyIncome"];
+                    "application/json": components["schemas"]["MonthlyIncomeWithId"];
                 };
             };
             /** @description Validation Error */
@@ -2051,7 +2234,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyExpense"][];
+                    "application/json": components["schemas"]["MonthlyExpenseWithId"][];
                 };
             };
         };
@@ -2075,7 +2258,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyExpense"];
+                    "application/json": components["schemas"]["MonthlyExpenseWithId"];
                 };
             };
             /** @description Validation Error */
@@ -2108,7 +2291,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MonthlyExpense"];
+                    "application/json": components["schemas"]["MonthlyExpenseWithId"];
                 };
             };
             /** @description Validation Error */

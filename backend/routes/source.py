@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from routes.base import CRUDRouterFactory, get
-from models.source import Source, SourcePartial
+from models.source import Source, SourcePartial, SourceWithId
 from core.db import get_db
 
 router = APIRouter()
 
-factory = CRUDRouterFactory(router, "sources", Source, SourcePartial, "name")
+factory = CRUDRouterFactory(router, "sources", Source, SourcePartial, SourceWithId, "name")
 factory.create_get()
 factory.create_post()
 factory.create_patch()

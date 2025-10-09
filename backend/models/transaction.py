@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from models.tag import Tag
-from models.base import PyBaseModel
-from models.optional import Partial
+from models.base import PyBaseModel, Partial, WithId
 
 
 class Transaction(PyBaseModel):
@@ -15,5 +14,5 @@ class Transaction(PyBaseModel):
     tags: list[Tag]
 
 
-class TransactionPartial(Transaction, metaclass=Partial):
-    pass
+class TransactionPartial(Transaction, metaclass=Partial): pass
+class TransactionWithId(Transaction, metaclass=WithId): pass

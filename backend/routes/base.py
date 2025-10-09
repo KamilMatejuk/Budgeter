@@ -76,12 +76,14 @@ class CRUDRouterFactory:
         table: str,
         model: type[PyBaseModel],
         partial_model: type[PyBaseModel],
+        model_with_id: type[PyBaseModel],
         unique_field: str | None = None,
     ):
         self.router = router
         self.table = table
         self.model = model
         self.partial_model = partial_model
+        self.model_with_id = model_with_id
         self.unique_field = unique_field
 
     def create_get(self):
@@ -89,32 +91,32 @@ class CRUDRouterFactory:
         async def f(db: AsyncIOMotorDatabase = Depends(get_db)):
             return await get(db, self.table, self.model)
         # update name and annotations for OpenAPI
-        f.__annotations__["return"] = list[self.model]
+        f.__annotations__["return"] = list[self.model_with_id]
         f.__name__ = f"get_{self.model.__name__.lower()}s"
         # register route
-        self.router.get("/", response_model=list[self.model])(f)
+        self.router.get("/", response_model=list[self.model_with_id])(f)
 
     def create_post(self):
         # define POST function
         async def f(data, db: AsyncIOMotorDatabase = Depends(get_db)):
-            return await create(db, self.table, self.model, data, self.unique_field)
+            return await create(db, self.table, self.model_with_id, data, self.unique_field)
         # update name and annotations for OpenAPI
         f.__annotations__["data"] = self.model
-        f.__annotations__["return"] = self.model
+        f.__annotations__["return"] = self.model_with_id
         f.__name__ = f"create_{self.model.__name__.lower()}"
         # register route
-        self.router.post("/", response_model=self.model)(f)
+        self.router.post("/", response_model=self.model_with_id)(f)
 
     def create_patch(self):
         # define PATCH function
         async def f(data, db: AsyncIOMotorDatabase = Depends(get_db)):
-            return await patch(db, self.table, self.model, data)
+            return await patch(db, self.table, self.model_with_id, data)
         # update name and annotations for OpenAPI
         f.__annotations__["data"] = self.partial_model
-        f.__annotations__["return"] = self.model
+        f.__annotations__["return"] = self.model_with_id
         f.__name__ = f"patch_{self.model.__name__.lower()}"
         # register route
-        self.router.patch("/", response_model=self.model)(f)
+        self.router.patch("/", response_model=self.model_with_id)(f)
 
     def create_delete(self):
         # define DELETE function

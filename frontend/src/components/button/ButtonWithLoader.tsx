@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from "react";
 import { RiLoader5Fill } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";

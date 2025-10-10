@@ -1,40 +1,31 @@
 'use client';
 
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo } from "react";
-import EditButton from "./EditButton";
-import DeleteButton from "./DeleteButton";
+import { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import AddButton from "./AddButton";
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+import DeleteByIdModal from "../modal/DeleteByIdModal";
+import UpdateModal from "../modal/UpdateModal";
 
 const classes = {
     table: "w-full min-w-[640px] text-sm",
     thead: "bg-second-bg",
-    colgroup: {
-        select: "w-4",
-        options: "w-12",
-        add: "w-4 p-2",
-    },
     row: {
         base: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
         selected: "bg-second-bg",
-        add: "text-subtext"
+        add: "cursor-pointer text-subtext"
     },
     th: "text-left text-xs uppercase tracking-wider px-3 py-2 select-none",
     td: "px-3 py-2 align-center",
+    options: {
+        container: "flex justify-evenly space-x-2",
+        edit: "cursor-pointer",
+        delete: "cursor-pointer text-negative",
+        add: "w-4 p-2"
+    }
 }
 
-export interface Item {
-    _id: string;
-}
-
-export interface TableProps {
-    data: Item[];
-    columns: ColumnDef<Item>[];
-    hideCreating?: boolean;
-}
-
-const selectColumn: ColumnDef<Item> = {
+const selectColumn: ColumnDef<ItemID> = {
     id: "select",
     header: ({ table }) => (
         <input
@@ -52,79 +43,100 @@ const selectColumn: ColumnDef<Item> = {
     ),
 };
 
-const optionsColumn: ColumnDef<Item> = {
-    id: "options",
-    header: "Options",
-    cell: ({ row }) => (
-        <div className="flex justify-evenly space-x-2">
-            <EditButton item={row.original} />
-            <DeleteButton item={row.original} />
-        </div>
-    )
-};
+export interface Item { _id?: string } // generic type for items without id
+export interface ItemID { _id: string } // generic type for items with id
 
-export default function Table({ data, columns, hideCreating }: TableProps) {
-    const columnsWithActions = useMemo(() => [selectColumn, ...columns, optionsColumn], [columns]);
-    const columnSizes = useMemo(() => ({
-        0: classes.colgroup.select,
-        [columns.length + 1]: classes.colgroup.options,
-    }), [columns.length]);
+export interface ModalProps<T extends Item> {
+    url: string;
+    item: T;
+    open: boolean;
+    onClose: () => void;
+}
+
+export interface TableProps<TID extends ItemID> {
+    data: TID[];
+    columns: ColumnDef<TID>[];
+    url: string;
+    hideCreating?: boolean;
+}
+
+
+export default function Table<T extends Item, TID extends ItemID>({ data, columns, url, hideCreating }: TableProps<TID>) {
+    const [selectedItem, setSelectedItem] = useState<TID | null>(null);
+    const [modalOpen, setModalOpen] = useState<"create" | "update" | "delete" | null>(null);
+    const handleEdit = (item: TID) => { setSelectedItem(item); setModalOpen("update"); console.log('edit') };
+    const handleDelete = (item: TID) => { setSelectedItem(item); setModalOpen("delete") };
+    const handleCreate = () => { setSelectedItem(null); setModalOpen("create") };
+    const closeModal = async () => { setSelectedItem(null); setModalOpen(null) };
+
+    console.log(modalOpen, selectedItem);
 
     const table = useReactTable({
         data,
-        columns: columnsWithActions,
+        columns: useMemo(() => [selectColumn, ...columns] as ColumnDef<TID>[], [columns]),
         getCoreRowModel: getCoreRowModel(),
     })
 
     return (
-        <table className={classes.table}>
-            {/* header */}
-            <thead className={classes.thead}>
-                {table.getHeaderGroups().map(headerGroup => (
-                    <tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header, i) => (
-                            <th key={header.id} className={twMerge(classes.th, columnSizes[i])}>
-                                {header.isPlaceholder
-                                    ? null
-                                    : flexRender(header.column.columnDef.header, header.getContext())}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody>
-                {/* data */}
-                {table.getRowModel().rows.map(row => (
-                    <tr key={row.id} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
-                        {row.getVisibleCells().map(cell => (
-                            <td key={cell.id} className={classes.td}>
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        <>
+            <table className={classes.table}>
+                {/* header */}
+                <thead className={classes.thead}>
+                    {table.getHeaderGroups().map(headerGroup => (
+                        <tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header, i) => (
+                                <th key={header.id} className={twMerge(classes.th, i == 0 && "w-4")}>
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(header.column.columnDef.header, header.getContext())}
+                                </th>
+                            ))}
+                            <th className={twMerge(classes.th, "w-12")}>options</th>
+                        </tr>
+                    ))}
+                </thead>
+                <tbody>
+                    {/* data */}
+                    {table.getRowModel().rows.map(row => (
+                        <tr key={row.id} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
+                            {row.getVisibleCells().map(cell => (
+                                <td key={cell.id} className={classes.td}>
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </td>
+                            ))}
+                            <td className={twMerge(classes.td, classes.options.container)}>
+                                <MdEdit size={20} className={classes.options.edit} onClick={() => handleEdit(row.original)} />
+                                <MdDelete size={20} className={classes.options.delete} onClick={() => handleDelete(row.original)} />
                             </td>
-                        ))}
-                    </tr>
-                ))}
-                {/* add new row */}
-                {!hideCreating &&
-                    <tr className={twMerge(classes.row.base, classes.row.add)}>
-                        <td className={twMerge(classes.td, classes.colgroup.add)}><AddButton /></td>
-                        <td className={classes.td} rowSpan={columns.length}>Create new</td>
-                    </tr>
-                }
-            </tbody>
-            {/* footer */}
-            <tfoot>
-                {table.getFooterGroups().map(footerGroup => (
-                    <tr key={footerGroup.id}>
-                        {footerGroup.headers.map(header => (
-                            <th key={header.id} className={classes.th}>
-                                {header.isPlaceholder
-                                    ? null
-                                    : flexRender(header.column.columnDef.footer, header.getContext())}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </tfoot>
-        </table>
+                        </tr>
+                    ))}
+                    {/* add new row */}
+                    {!hideCreating &&
+                        <tr className={twMerge(classes.row.base, classes.row.add)} onClick={handleCreate}>
+                            <td className={twMerge(classes.td, classes.options.add)}><MdAdd size={20} /></td>
+                            <td className={classes.td} colSpan={columns.length + 1}>Create new</td>
+                        </tr>
+                    }
+                </tbody>
+                {/* footer */}
+                <tfoot>
+                    {table.getFooterGroups().map(footerGroup => (
+                        <tr key={footerGroup.id}>
+                            {footerGroup.headers.map(header => (
+                                <th key={header.id} className={classes.th}>
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(header.column.columnDef.footer, header.getContext())}
+                                </th>
+                            ))}
+                            <th className={twMerge(classes.th, "w-12")}>options</th>
+                        </tr>
+                    ))}
+                </tfoot>
+            </table>
+            {/* modals */}
+            {selectedItem && <DeleteByIdModal open={modalOpen === "delete"} onClose={closeModal} url={url} id={selectedItem!._id} />}
+            <UpdateModal open={modalOpen === "update" || modalOpen === "create"} onClose={closeModal} url={url} item={selectedItem || {} as T} />
+        </>
     );
 }

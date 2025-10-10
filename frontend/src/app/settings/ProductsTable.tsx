@@ -22,18 +22,8 @@ export default async function ProductsTable() {
   if (monthlyIncomeError) return <ErrorToast message={`Could not download products (monthly income): ${monthlyIncomeError.message}`} />;
   if (monthlyExpenseError) return <ErrorToast message={`Could not download products (monthly expense): ${monthlyExpenseError.message}`} />;
 
-  const products = cash.map(item => ({ ...item, type: 'Cash' }))
-    .concat(personalAccount.map(item => ({ ...item, type: 'Personal Account' })))
-    .concat(card.map(item => ({ ...item, type: 'Card' })))
-    .concat(savingsAccount.map(item => ({ ...item, type: 'Savings Account' })))
-    .concat(stockAccount.map(item => ({ ...item, type: 'Stock Account' })))
-    .concat(capitalInvestment.map(item => ({ ...item, type: 'Capital Investment' })))
-    .concat(monthlyIncome.map(item => ({ ...item, type: 'Monthly Income' })))
-    .concat(monthlyExpense.map(item => ({ ...item, type: 'Monthly Expense' })));
-
   return (
-    <Table data={products} columns={[
-      { accessorKey: "type", header: "Type" },
+    <Table url="/api/products/cash" data={cash} columns={[
       { accessorKey: "name", header: "Name" },
       { accessorKey: "value", header: "Value" },
       { accessorKey: "currency", header: "Currency" },

@@ -15,8 +15,3 @@ export default function Settings() {
     </div>
   );
 }
-
-
-// todo create popups for editing and deleting
-// todo edit and delete functionality
-// todo create functionality

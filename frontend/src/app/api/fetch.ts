@@ -33,10 +33,8 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     });
     const data: T = await res.json();
     if (!res.ok) {
-      const dataObject = data as object;
-      const errStr = 'message' in dataObject ? (dataObject.message as string) :
-                     'detail' in dataObject ? (dataObject.detail as string) : 
-                      JSON.stringify(data);
+      const errStr = parseError(data as object)
+      console.log(errStr)
       return { response: null, error: new Error(errStr, { cause: res.status }) };
     }
     return { response: data, error: null };
@@ -54,3 +52,16 @@ export const get = async <T>(url: string, tags?: string[]) => await fetchFromApi
 export const post = async <T>(url: string, body: unknown) => await fetchFromApi<T>({ url, method: 'POST', body });
 export const patch = async <T>(url: string, body: unknown) => await fetchFromApi<T>({ url, method: 'PATCH', body });
 export const del = async (url: string) => await fetchFromApi({ url, method: 'DELETE' });
+
+
+function parseError(data: object) {
+  if ('message' in data) return data.message as string;
+  if ('detail' in data) {
+    const detail = data.detail;
+    if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail)) {
+      return detail.map(d => `${d.type} ${d.loc.join('/')}`).join(', ');
+    }
+  };
+  return JSON.stringify(data);
+}

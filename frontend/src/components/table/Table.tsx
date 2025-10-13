@@ -9,20 +9,21 @@ import UpdateModal from "../modal/UpdateModal";
 import { customRevalidateTag } from "@/app/api/fetch";
 
 const classes = {
-    table: "w-full min-w-[640px] text-sm",
+    table: "w-full min-w-[640px] text-sm m-0",
     thead: "bg-second-bg",
     row: {
         base: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
         selected: "bg-second-bg",
         add: "cursor-pointer text-subtext"
     },
-    th: "text-left text-xs uppercase tracking-wider px-3 py-2 select-none",
-    td: "px-3 py-2 align-center",
+    th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none",
+    td: "px-4 py-2 align-center",
     options: {
-        container: "flex justify-evenly space-x-2",
+        th: "text-end",
+        container: "flex justify-end space-x-2",
         edit: "cursor-pointer",
         delete: "cursor-pointer text-negative",
-        add: "w-4 p-2"
+        add: "w-4 px-3 py-1"
     }
 }
 
@@ -86,13 +87,13 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map((header, i) => (
-                                <th key={header.id} className={twMerge(classes.th, i == 0 && "w-4")}>
+                                <th key={header.id} className={twMerge(classes.th, i == 0 ? "w-4" : "w-4")}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
                                 </th>
                             ))}
-                            <th className={twMerge(classes.th, "w-12")}>options</th>
+                            <th className={twMerge(classes.th, classes.options.th)}>options</th>
                         </tr>
                     ))}
                 </thead>
@@ -130,7 +131,7 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                                         : flexRender(header.column.columnDef.footer, header.getContext())}
                                 </th>
                             ))}
-                            <th className={twMerge(classes.th, "w-12")}>options</th>
+                            <th className={twMerge(classes.th, classes.options.th)}></th>
                         </tr>
                     ))}
                 </tfoot>

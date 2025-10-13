@@ -1,6 +1,23 @@
 import React from "react";
 import { FormikProps } from "formik";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
+import { ERROR } from "@/const/message";
+
+
+export const requiredAmount = z.preprocess(
+  (val) => {
+    if (typeof val !== "string") return val;
+    const cleaned = val.replace(",", ".").trim();
+    if (cleaned === "") return undefined;
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : val;
+  },
+  z.number({ required_error: ERROR.requiredError })
+    .finite({ message: ERROR.nonNegativeError })
+    .transform((n) => Number(n.toFixed(2)))
+);
+
 
 export interface AmountInputWithErrProps<T> {
   formik: FormikProps<T>;
@@ -14,7 +31,10 @@ export default function AmountInputWithError<T>({
   const error = formik.errors[formikName] as string;
   const touched = formik.touched[formikName];
   const value = formik.values[formikName] as string;
-  const set = (v: string) => formik.setFieldValue(formikName as string, v);
+  function set(v: string) {
+    const cleaned = v.replace(/[^0-9,\.]/g, "");
+    formik.setFieldValue(formikName as string, cleaned);
+  }
 
   return (
     <div>

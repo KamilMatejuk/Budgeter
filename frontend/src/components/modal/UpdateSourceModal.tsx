@@ -2,23 +2,23 @@ import React from "react";
 import Modal from "./Modal";
 import { submit, UpdateModalProps } from "./UpdateModal";
 import { z } from "zod";
-import { ERROR } from "@/const/message";
 import { Source, SourceWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError from "../form/TextInputWithError";
+import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 
-const required = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
+
 const FormSchema = z.object({
-    name: required,
-    field_name_card: required,
-    field_name_date: required,
-    field_name_title: required,
-    field_name_organisation: required,
-    field_name_value_positive: required,
-    field_name_value_negative: required,
+    name: requiredText,
+    field_name_card: requiredText,
+    field_name_date: requiredText,
+    field_name_title: requiredText,
+    field_name_organisation: requiredText,
+    field_name_value_positive: requiredText,
+    field_name_value_negative: requiredText,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
+
 
 export default function UpdateSourceModal({ url, item, open, onClose }: UpdateModalProps<Source>) {
     const formik = useFormik<FormSchemaType>({

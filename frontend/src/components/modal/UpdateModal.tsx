@@ -3,7 +3,8 @@ import { ModalProps } from "./Modal";
 import { Item, ItemID } from "../table/Table";
 import UpdateSourceModal from "./UpdateSourceModal";
 import { patch, post } from "@/app/api/fetch";
-import { Source } from "@/types/backend";
+import { Cash, Source } from "@/types/backend";
+import UpdateCashModal from "./UpdateCashModal";
 
 
 export interface UpdateModalProps<T extends Item> extends ModalProps {
@@ -22,4 +23,5 @@ export async function submit<FST, TID extends ItemID>(url: string, values: FST, 
 
 export default function UpdateModal<T extends Item>({ url, item, open, onClose }: UpdateModalProps<T>) {
     if (url === "/api/source") return <UpdateSourceModal open={open} onClose={onClose} item={item as unknown as Source} url={url} />;
+    if (url === "/api/products/cash") return <UpdateCashModal open={open} onClose={onClose} item={item as unknown as Cash} url={url} />;
 }

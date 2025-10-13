@@ -1,6 +1,12 @@
 import React from "react";
 import { FormikProps } from "formik";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
+import { ERROR } from "@/const/message";
+
+
+export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
+
 
 export interface TextInputWithErrProps<T>
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,11 +14,8 @@ export interface TextInputWithErrProps<T>
   formikName: keyof T | string;
 }
 
-function getFromFormik<T>(
-  formik: FormikProps<T>,
-  formikObject: keyof FormikProps<T>,
-  formikName: keyof T | string
-) {
+
+function getFromFormik<T>(formik: FormikProps<T>, formikObject: keyof FormikProps<T>, formikName: keyof T | string) {
   if ((formikName as string).includes("[")) {
     const segments = (formikName as string).replace(/\[(\d+)\]/g, ".$1").split(".");
     let value = formik[formikObject];
@@ -25,25 +28,15 @@ function getFromFormik<T>(
   return formik[formikObject][formikName] as string;
 }
 
-export function getError<T>(
-  formik: FormikProps<T>,
-  formikName: keyof T | string
-) {
+export function getError<T>(formik: FormikProps<T>, formikName: keyof T | string) {
   return getFromFormik(formik, "errors", formikName);
 }
 
-export function getTouched<T>(
-  formik: FormikProps<T>,
-  formikName: keyof T | string
-) {
+export function getTouched<T>(formik: FormikProps<T>, formikName: keyof T | string) {
   return getFromFormik(formik, "touched", formikName);
 }
 
-export default function TextInputWithError<T>({
-  formik,
-  formikName,
-  ...props
-}: TextInputWithErrProps<T>) {
+export default function TextInputWithError<T>({ formik, formikName, ...props }: TextInputWithErrProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
 

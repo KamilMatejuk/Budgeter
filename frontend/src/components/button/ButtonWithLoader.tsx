@@ -27,13 +27,11 @@ export default function ButtonWithLoader({ onClick, text, action, ...props }: Bu
 
   const handleClick = async () => {
     setLoading(true);
-    console.log("loading", loading);
     try {
       await onClick();
     } finally {
       setLoading(false);
     }
-    console.log("loading", loading);
   };
 
   return (

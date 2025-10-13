@@ -69,8 +69,6 @@ export default function Table<T extends Item, TID extends ItemID>({ data, column
     const handleCreate = () => { setSelectedItem(null); setModalOpen("create") };
     const closeModal = async () => { setSelectedItem(null); setModalOpen(null) };
 
-    console.log(modalOpen, selectedItem);
-
     const table = useReactTable({
         data,
         columns: useMemo(() => [selectColumn, ...columns] as ColumnDef<TID>[], [columns]),
@@ -135,7 +133,7 @@ export default function Table<T extends Item, TID extends ItemID>({ data, column
                 </tfoot>
             </table>
             {/* modals */}
-            {selectedItem && <DeleteByIdModal open={modalOpen === "delete"} onClose={closeModal} url={url} id={selectedItem!._id} />}
+            {selectedItem && <DeleteByIdModal open={modalOpen === "delete"} onClose={closeModal} url={url} id={selectedItem._id} />}
             <UpdateModal open={modalOpen === "update" || modalOpen === "create"} onClose={closeModal} url={url} item={selectedItem || {} as T} />
         </>
     );

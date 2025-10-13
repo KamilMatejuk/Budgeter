@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "../modal/DeleteByIdModal";
 import UpdateModal from "../modal/UpdateModal";
+import { customRevalidateTag } from "@/app/api/fetch";
 
 const classes = {
     table: "w-full min-w-[640px] text-sm",
@@ -54,20 +55,21 @@ export interface ModalProps<T extends Item> {
 }
 
 export interface TableProps<TID extends ItemID> {
+    url: string;
+    tag: string;
     data: TID[];
     columns: ColumnDef<TID>[];
-    url: string;
     hideCreating?: boolean;
 }
 
 
-export default function Table<T extends Item, TID extends ItemID>({ data, columns, url, hideCreating }: TableProps<TID>) {
+export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating }: TableProps<TID>) {
     const [selectedItem, setSelectedItem] = useState<TID | null>(null);
     const [modalOpen, setModalOpen] = useState<"create" | "update" | "delete" | null>(null);
     const handleEdit = (item: TID) => { setSelectedItem(item); setModalOpen("update"); console.log('edit') };
     const handleDelete = (item: TID) => { setSelectedItem(item); setModalOpen("delete") };
     const handleCreate = () => { setSelectedItem(null); setModalOpen("create") };
-    const closeModal = async () => { setSelectedItem(null); setModalOpen(null) };
+    const closeModal = async () => { setSelectedItem(null); setModalOpen(null); customRevalidateTag(tag) };
 
     const table = useReactTable({
         data,

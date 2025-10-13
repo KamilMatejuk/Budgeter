@@ -11,8 +11,6 @@ class Source(PyBaseModel):
     field_name_organisation: str
     field_name_value_positive: str
     field_name_value_negative: str
-    starting_amount: float
-    card_aliases: dict[str, str]
 
     @field_validator("name",
                      "field_name_card",
@@ -26,12 +24,6 @@ class Source(PyBaseModel):
         if not v.strip(): raise ValueError("Field cannot be empty")
         return v
     
-    @field_validator("starting_amount")
-    @classmethod
-    def validate_starting_amount(cls, v: float) -> float:
-        if v < 0: raise ValueError("starting_amount cannot be negative")
-        return v
-
 
 class SourcePartial(Source, metaclass=Partial): pass
 class SourceWithId(Source, metaclass=WithId): pass

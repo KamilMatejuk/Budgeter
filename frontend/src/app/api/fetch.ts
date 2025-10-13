@@ -33,9 +33,7 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     });
     const data: T = await res.json();
     if (!res.ok) {
-      const errStr = parseError(data as object)
-      console.log(errStr)
-      return { response: null, error: new Error(errStr, { cause: res.status }) };
+      return { response: null, error: new Error(parseError(data as object), { cause: res.status }) };
     }
     return { response: data, error: null };
   } catch (err) {

@@ -60,13 +60,14 @@ export interface TableProps<TID extends ItemID> {
     data: TID[];
     columns: ColumnDef<TID>[];
     hideCreating?: boolean;
+    newText?: string;
 }
 
 
-export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating }: TableProps<TID>) {
+export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating, newText }: TableProps<TID>) {
     const [selectedItem, setSelectedItem] = useState<TID | null>(null);
     const [modalOpen, setModalOpen] = useState<"create" | "update" | "delete" | null>(null);
-    const handleEdit = (item: TID) => { setSelectedItem(item); setModalOpen("update"); console.log('edit') };
+    const handleEdit = (item: TID) => { setSelectedItem(item); setModalOpen("update") };
     const handleDelete = (item: TID) => { setSelectedItem(item); setModalOpen("delete") };
     const handleCreate = () => { setSelectedItem(null); setModalOpen("create") };
     const closeModal = async () => { setSelectedItem(null); setModalOpen(null); customRevalidateTag(tag) };
@@ -114,7 +115,7 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                     {!hideCreating &&
                         <tr className={twMerge(classes.row.base, classes.row.add)} onClick={handleCreate}>
                             <td className={twMerge(classes.td, classes.options.add)}><MdAdd size={20} /></td>
-                            <td className={classes.td} colSpan={columns.length + 1}>Create new</td>
+                            <td className={classes.td} colSpan={columns.length + 1}>Create new {newText || ""}</td>
                         </tr>
                     }
                 </tbody>

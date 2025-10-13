@@ -9,6 +9,6 @@ export default async function SourcesTable() {
   if (error) return <ErrorToast message={`Could not download sources: ${error.message}`} />;
 
   return (
-    <Table<Source, SourceWithId> url="/api/source" tag="source" data={sources} columns={[{ accessorKey: "name", header: "Name" }]} />
+    <Table<Source, SourceWithId> url="/api/source" tag="source" newText="source" data={sources} columns={[{ accessorKey: "name", header: "Name" }]}/>
   );
 }

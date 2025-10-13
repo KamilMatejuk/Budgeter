@@ -133,8 +133,8 @@ export default function Table<T extends Item, TID extends ItemID>({ data, column
                 </tfoot>
             </table>
             {/* modals */}
-            {selectedItem && <DeleteByIdModal open={modalOpen === "delete"} onClose={closeModal} url={url} id={selectedItem._id} />}
-            <UpdateModal open={modalOpen === "update" || modalOpen === "create"} onClose={closeModal} url={url} item={selectedItem || {} as T} />
+            {selectedItem && modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} id={selectedItem._id} />}
+            {(modalOpen === "update" || modalOpen === "create") && <UpdateModal open onClose={closeModal} url={url} item={selectedItem || {} as T} />}
         </>
     );
 }

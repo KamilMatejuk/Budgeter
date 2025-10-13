@@ -12,7 +12,7 @@ export default function DeleteByIdModal({ url, id, open, onClose }: DeleteByIdMo
     async function submit() {
         const { error } = await del(`${url}/${id}`);
         if (error) alert(`Error: ${error.message}`);
-        onClose();
+        else onClose();
     }
 
     return (

@@ -45,7 +45,7 @@ const selectColumn: ColumnDef<ItemID> = {
 };
 
 export interface Item { _id?: string } // generic type for items without id
-export interface ItemID { _id: string } // generic type for items with id
+export interface ItemID extends Item { _id: string } // generic type for items with id
 
 export interface ModalProps<T extends Item> {
     url: string;

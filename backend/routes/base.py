@@ -44,7 +44,7 @@ async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel],
             LOGGER.warning(f'Trying to create {data} failed unique constraint of {existing} in table {table}')
             return model.model_validate({**existing, "_id": str(existing["_id"])})
     data.id = str(data.id)
-    doc = data.model_dump(by_alias=True)
+    doc = data.model_dump(by_alias=True, mode="json")
     result = await db[table].insert_one(doc)
     return model.model_validate({**doc, "_id": str(result.inserted_id)})
 
@@ -52,7 +52,7 @@ async def create(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel],
 @fail_wrapper
 async def patch(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], data: PyBaseModel):
     data = data.model_copy(deep=True, update={"id": str(data.id)})
-    doc = data.model_dump(by_alias=True, exclude_unset=True)
+    doc = data.model_dump(by_alias=True, exclude_unset=True, mode="json")
     id = doc.pop("_id", None)
     result = await db[table].update_one({"_id": id}, {"$set": doc})
     if result.matched_count == 0:

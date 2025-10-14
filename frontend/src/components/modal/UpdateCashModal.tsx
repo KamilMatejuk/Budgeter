@@ -9,6 +9,7 @@ import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Currency } from "@/types/enum";
 import AmountInputWithError, { requiredAmount } from "../form/AmountInputWithError";
+import ChoiceInputWithError from "../form/ChoiceInputWithError";
 
 
 const FormSchema = z.object({
@@ -37,7 +38,7 @@ export default function UpdateCashModal({ url, item, open, onClose }: UpdateModa
             <p>Value</p>
             <AmountInputWithError formik={formik} formikName="value" />
             <p>Currency</p>
-            <TextInputWithError formik={formik} formikName="currency" />
+            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} />
         </Modal>
     );
 }

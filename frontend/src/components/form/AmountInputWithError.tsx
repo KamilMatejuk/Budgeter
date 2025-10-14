@@ -1,9 +1,8 @@
 import React from "react";
-import { FormikProps } from "formik";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { getError, getTouched, getValue } from "./TextInputWithError";
+import { getError, getTouched, getValue, TextInputWithErrorProps } from "./TextInputWithError";
 
 
 export const requiredAmount = z.preprocess(
@@ -38,15 +37,10 @@ function format(value: number | string | undefined) {
 }
 
 
-export interface AmountInputWithErrorProps<T> {
-  formik: FormikProps<T>;
-  formikName: keyof T;
-}
-
 export default function AmountInputWithError<T>({
   formik,
   formikName,
-}: AmountInputWithErrorProps<T>) {
+}: TextInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
   const value = getValue(formik, formikName);

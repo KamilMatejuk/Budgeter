@@ -36,6 +36,10 @@ export function getTouched<T>(formik: FormikProps<T>, formikName: keyof T | stri
   return getFromFormik(formik, "touched", formikName);
 }
 
+export function getValue<T>(formik: FormikProps<T>, formikName: keyof T | string) {
+  return getFromFormik(formik, "values", formikName);
+}
+
 export default function TextInputWithError<T>({ formik, formikName, ...props }: TextInputWithErrProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);

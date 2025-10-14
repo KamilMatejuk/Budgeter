@@ -38,7 +38,7 @@ function format(value: number | string | undefined) {
 }
 
 
-export interface AmountInputWithErrProps<T> {
+export interface AmountInputWithErrorProps<T> {
   formik: FormikProps<T>;
   formikName: keyof T;
 }
@@ -46,7 +46,7 @@ export interface AmountInputWithErrProps<T> {
 export default function AmountInputWithError<T>({
   formik,
   formikName,
-}: AmountInputWithErrProps<T>) {
+}: AmountInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
   const value = getValue(formik, formikName);

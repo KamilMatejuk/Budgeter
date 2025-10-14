@@ -8,7 +8,7 @@ import { ERROR } from "@/const/message";
 export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
 
 
-export interface TextInputWithErrProps<T>
+export interface TextInputWithErrorProps<T>
   extends React.InputHTMLAttributes<HTMLInputElement> {
   formik: FormikProps<T>;
   formikName: keyof T | string;
@@ -40,7 +40,7 @@ export function getValue<T>(formik: FormikProps<T>, formikName: keyof T | string
   return getFromFormik(formik, "values", formikName);
 }
 
-export default function TextInputWithError<T>({ formik, formikName, ...props }: TextInputWithErrProps<T>) {
+export default function TextInputWithError<T>({ formik, formikName, ...props }: TextInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
 

@@ -51,7 +51,7 @@ export default function AccountNumberInputWithError<T>({
       onChange={(e) => {
         set(e.target.value);
         // fix cursor position (don't move to the end)
-        const cursorPos = e.target.selectionStart || e.target.value.length;
+        const cursorPos = (e.target.selectionStart || e.target.value.length) + 1;
         requestAnimationFrame(() => e.target.setSelectionRange(cursorPos, cursorPos));
       }}
       onBlur={() => set(value)}

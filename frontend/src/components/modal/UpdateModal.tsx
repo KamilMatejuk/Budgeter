@@ -3,9 +3,10 @@ import { ModalProps } from "./Modal";
 import { Item, ItemID } from "../table/Table";
 import UpdateSourceModal from "./UpdateSourceModal";
 import { patch, post } from "@/app/api/fetch";
-import { Card, Cash, Source } from "@/types/backend";
+import { Card, Cash, PersonalAccount, Source } from "@/types/backend";
 import UpdateCashModal from "./UpdateCashModal";
 import UpdateCardModal from "./UpdateCardModal";
+import UpdatePersonalAccountModal from "./UpdatePersonalAccountModal";
 
 
 export interface UpdateModalProps<T extends Item> extends ModalProps {
@@ -26,4 +27,5 @@ export default function UpdateModal<T extends Item>({ url, item, open, onClose }
     if (url === "/api/source") return <UpdateSourceModal open={open} onClose={onClose} item={item as unknown as Source} url={url} />;
     if (url === "/api/products/cash") return <UpdateCashModal open={open} onClose={onClose} item={item as unknown as Cash} url={url} />;
     if (url === "/api/products/card") return <UpdateCardModal open={open} onClose={onClose} item={item as unknown as Card} url={url} />;
+    if (url === "/api/products/personal_account") return <UpdatePersonalAccountModal open={open} onClose={onClose} item={item as unknown as PersonalAccount} url={url} />;
 }

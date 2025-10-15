@@ -33,7 +33,7 @@ class PersonalAccount(Product):
 
 class Card(Product):
     number: str
-    credit: float | None = None
+    credit: bool
 
 class SavingsAccount(Product):
     number: str

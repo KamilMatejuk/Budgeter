@@ -501,7 +501,7 @@ export type components = {
             /** Number */
             number: string;
             /** Credit */
-            credit?: number | null;
+            credit: boolean;
         };
         /** CardPartial */
         CardPartial: {
@@ -515,7 +515,7 @@ export type components = {
             /** Number */
             number?: string | null;
             /** Credit */
-            credit?: number | null;
+            credit?: boolean | null;
         };
         /** CardWithId */
         CardWithId: {
@@ -529,7 +529,7 @@ export type components = {
             /** Number */
             number: string;
             /** Credit */
-            credit: number | null;
+            credit: boolean;
         };
         /** Cash */
         Cash: {

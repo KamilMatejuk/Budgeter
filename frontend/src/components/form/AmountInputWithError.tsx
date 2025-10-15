@@ -1,8 +1,7 @@
 import React from "react";
-import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { getError, getTouched, getValue, TextInputWithErrorProps } from "./TextInputWithError";
+import TextInputWithError, { getValue, TextInputWithErrorProps } from "./TextInputWithError";
 
 
 export const requiredAmount = z.preprocess(
@@ -13,11 +12,13 @@ export const requiredAmount = z.preprocess(
     .transform((n) => Number(n.toFixed(2)))
 );
 
+
 function preprocess(value: number | string) {
   if (typeof value !== "string") return value;
   if (value === "") return undefined;
   return Number(value);
 }
+
 
 function removeChars(value: number | string | undefined) {
   if (typeof value !== "string") return value ? value.toString() : "";
@@ -30,6 +31,7 @@ function removeChars(value: number | string | undefined) {
   return before + "." + after;
 }
 
+
 function format(value: number | string | undefined) {
   if (typeof value === "number") return value.toFixed(2);
   if (typeof value === "string" && value !== "") return Number(value).toFixed(2);
@@ -41,31 +43,20 @@ export default function AmountInputWithError<T>({
   formik,
   formikName,
 }: TextInputWithErrorProps<T>) {
-  const error = getError(formik, formikName);
-  const touched = getTouched(formik, formikName);
   const value = getValue(formik, formikName);
 
   return (
-    <div>
-      <input
-        type="text"
-        inputMode="decimal"
-        className={twMerge(
-          "border border-gray-300 px-4 py-2 rounded-md w-full text-center",
-          error && touched ? "border-red-200 bg-red-500/10" : ""
-        )}
-        {...formik.getFieldProps(formikName as string)}
-        value={value}
-        onChange={(e) => {
-          const cleaned = removeChars(e.target.value);
-          formik.setFieldValue(formikName as string, cleaned);
-        }}
-        onFocus={() => formik.setFieldValue(formikName as string, "")}
-        onBlur={() => formik.setFieldValue(formikName as string, format(value))}
-      />
-      {error && touched && (
-        <p className="text-red-500 text-sm text-center">{error}</p>
-      )}
-    </div>
+    <TextInputWithError
+      formik={formik}
+      formikName={formikName}
+      inputMode="decimal"
+      value={value}
+      onChange={(e) => {
+        const cleaned = removeChars(e.target.value);
+        formik.setFieldValue(formikName as string, cleaned);
+      }}
+      onFocus={() => formik.setFieldValue(formikName as string, "")}
+      onBlur={() => formik.setFieldValue(formikName as string, format(value))}
+    />
   );
 }

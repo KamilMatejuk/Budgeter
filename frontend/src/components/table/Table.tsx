@@ -16,8 +16,8 @@ const classes = {
         selected: "bg-second-bg",
         add: "cursor-pointer text-subtext"
     },
-    th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none",
-    td: "px-4 py-2 align-center",
+    th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none whitespace-nowrap",
+    td: "px-4 py-2 align-center whitespace-nowrap",
     options: {
         th: "text-end",
         container: "flex justify-end space-x-2",

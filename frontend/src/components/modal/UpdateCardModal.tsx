@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Currency } from "@/types/enum";
-import AmountInputWithError, { requiredAmount } from "../form/AmountInputWithError";
+import AmountInputWithError, { requiredNonNegativeAmount } from "../form/AmountInputWithError";
 import ChoiceInputWithError from "../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../form/CardNumberInputWithError";
 
@@ -20,7 +20,7 @@ enum Type {
 const FormSchema = z.object({
     name: requiredText,
     number: requiredCardNumber,
-    value: requiredAmount,
+    value: requiredNonNegativeAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     credit: z.nativeEnum(Type, { required_error: ERROR.requiredError }),
 });

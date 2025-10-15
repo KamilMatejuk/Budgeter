@@ -4,11 +4,19 @@ import { ERROR } from "@/const/message";
 import TextInputWithError, { getValue, TextInputWithErrorProps } from "./TextInputWithError";
 
 
-export const requiredAmount = z.preprocess(
+export const requiredPositiveAmount = z.preprocess(
   (val) => preprocess(val as string),
   z.number({ required_error: ERROR.requiredError })
     .finite({ message: ERROR.positiveError })
     .gt(0, { message: ERROR.positiveError })
+    .transform((n) => Number(n.toFixed(2)))
+);
+
+export const requiredNonNegativeAmount = z.preprocess(
+  (val) => preprocess(val as string),
+  z.number({ required_error: ERROR.requiredError })
+    .finite({ message: ERROR.positiveError })
+    .gte(0, { message: ERROR.nonNegativeError })
     .transform((n) => Number(n.toFixed(2)))
 );
 

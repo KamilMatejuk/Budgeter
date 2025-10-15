@@ -8,13 +8,13 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Currency } from "@/types/enum";
-import AmountInputWithError, { requiredAmount } from "../form/AmountInputWithError";
+import AmountInputWithError, { requiredNonNegativeAmount } from "../form/AmountInputWithError";
 import ChoiceInputWithError from "../form/ChoiceInputWithError";
 
 
 const FormSchema = z.object({
     name: requiredText,
-    value: requiredAmount,
+    value: requiredNonNegativeAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError })
 });
 type FormSchemaType = z.infer<typeof FormSchema>;

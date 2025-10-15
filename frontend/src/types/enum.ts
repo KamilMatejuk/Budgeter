@@ -1,9 +1,9 @@
 // Capitalization from backend.ts
 export enum Capitalization {
-    DAILY = "daily",
-    MONTHLY = "monthly",
-    YEARLY = "yearly",
-    ONCE = "once"
+    ONCE = "Once",
+    DAILY = "Daily",
+    MONTHLY = "Monthly",
+    YEARLY = "Yearly",
 }
 
 // Currency from backend.ts

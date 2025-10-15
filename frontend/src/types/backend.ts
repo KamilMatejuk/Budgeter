@@ -488,7 +488,7 @@ export type components = {
          * Capitalization
          * @enum {string}
          */
-        Capitalization: "daily" | "monthly" | "yearly" | "once";
+        Capitalization: "Once" | "Daily" | "Monthly" | "Yearly";
         /** Card */
         Card: {
             /** Id */

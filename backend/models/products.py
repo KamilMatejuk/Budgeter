@@ -6,10 +6,10 @@ from models.base import PyBaseModel, Partial, WithId
 # Enums
 
 class Capitalization(enum.Enum):
-    DAILY = "daily"
-    MONTHLY = "monthly"
-    YEARLY = "yearly"
-    ONCE = "once"
+    ONCE = "Once"
+    DAILY = "Daily"
+    MONTHLY = "Monthly"
+    YEARLY = "Yearly"
 
 class Currency(enum.Enum):
     PLN = "PLN"

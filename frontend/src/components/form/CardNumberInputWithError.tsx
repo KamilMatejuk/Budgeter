@@ -20,6 +20,7 @@ function format(value: string) {
 export default function CardNumberInputWithError<T>({
   formik,
   formikName,
+  label,
 }: TextInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
 
@@ -34,6 +35,7 @@ export default function CardNumberInputWithError<T>({
     <TextInputWithError
       formik={formik}
       formikName={formikName}
+      label={label}
       inputMode="decimal"
       value={value}
       onChange={(e) => {

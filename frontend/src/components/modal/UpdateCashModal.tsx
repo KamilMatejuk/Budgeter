@@ -33,12 +33,9 @@ export default function UpdateCashModal({ url, item, open, onClose }: UpdateModa
 
     return (
         <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
-            <p>Name</p>
-            <TextInputWithError formik={formik} formikName="name" />
-            <p>Value</p>
-            <AmountInputWithError formik={formik} formikName="value" />
-            <p>Currency</p>
-            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} />
+            <TextInputWithError formik={formik} formikName="name" label="Name"/>
+            <AmountInputWithError formik={formik} formikName="value" label="Value"/>
+            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency"/>
         </Modal>
     );
 }

@@ -16,37 +16,40 @@ export interface ChoiceInputWithErrorProps<T> extends TextInputWithErrorProps<T>
 }
 
 
-export default function ChoiceInputWithError<T>({ formik, formikName, ...props }: ChoiceInputWithErrorProps<T>) {
+export default function ChoiceInputWithError<T>({ formik, formikName, label, optionsEnum }: ChoiceInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
   const value = getValue(formik, formikName);
 
   return (
-    <fieldset>
-      <div className={classes.container}>
-        {Object.entries(props.optionsEnum).map(([key, optValue]) => {
-          const id = `${formikName as string}-${key}`;
-          const checked = String(value ?? "") === String(optValue);
-          return (
-            <label key={key} htmlFor={id} className={twMerge(classes.option, checked && classes.optionChecked)}>
-              <input
-                id={id}
-                name={name ?? formikName as string}
-                type="radio"
-                value={optValue}
-                checked={checked}
-                onChange={() => formik.setFieldValue(formikName as string, optValue, true)}
-                onBlur={() => formik.setFieldTouched(formikName as string, true, true)}
-                className={classes.radio}
-              />
-              <span className={classes.optionLabel}>{optValue}</span>
-            </label>
-          );
-        })}
-      </div>
-      {error && touched && (
-        <p className="text-red-500 text-sm text-center">{error}</p>
-      )}
-    </fieldset>
+    <div>
+      {label && <label className="">{label}</label>}
+      <fieldset>
+        <div className={classes.container}>
+          {Object.entries(optionsEnum).map(([key, optValue]) => {
+            const id = `${formikName as string}-${key}`;
+            const checked = String(value ?? "") === String(optValue);
+            return (
+              <label key={key} htmlFor={id} className={twMerge(classes.option, checked && classes.optionChecked)}>
+                <input
+                  id={id}
+                  name={name ?? formikName as string}
+                  type="radio"
+                  value={optValue}
+                  checked={checked}
+                  onChange={() => formik.setFieldValue(formikName as string, optValue, true)}
+                  onBlur={() => formik.setFieldTouched(formikName as string, true, true)}
+                  className={classes.radio}
+                />
+                <span className={classes.optionLabel}>{optValue}</span>
+              </label>
+            );
+          })}
+        </div>
+        {error && touched && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
+      </fieldset>
+    </div>
   );
 }

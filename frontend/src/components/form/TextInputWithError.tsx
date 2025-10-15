@@ -12,6 +12,7 @@ export interface TextInputWithErrorProps<T>
   extends React.InputHTMLAttributes<HTMLInputElement> {
   formik: FormikProps<T>;
   formikName: keyof T | string;
+  label?: string;
 }
 
 
@@ -40,12 +41,13 @@ export function getValue<T>(formik: FormikProps<T>, formikName: keyof T | string
   return getFromFormik(formik, "values", formikName);
 }
 
-export default function TextInputWithError<T>({ formik, formikName, ...props }: TextInputWithErrorProps<T>) {
+export default function TextInputWithError<T>({ formik, formikName, label, ...props }: TextInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
 
   return (
     <div>
+      {label && <label className="">{label}</label>}
       <input
         type="text"
         {...props}

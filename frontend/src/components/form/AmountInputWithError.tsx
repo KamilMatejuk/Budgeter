@@ -42,6 +42,7 @@ function format(value: number | string | undefined) {
 export default function AmountInputWithError<T>({
   formik,
   formikName,
+  label,
 }: TextInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
 
@@ -49,6 +50,7 @@ export default function AmountInputWithError<T>({
     <TextInputWithError
       formik={formik}
       formikName={formikName}
+      label={label}
       inputMode="decimal"
       value={value}
       onChange={(e) => {

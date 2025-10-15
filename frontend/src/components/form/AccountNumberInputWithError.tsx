@@ -1,7 +1,8 @@
 import React from "react";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import TextInputWithError, { getValue, TextInputWithErrorProps } from "./TextInputWithError";
+import TextInputWithError, { TextInputWithErrorProps } from "./TextInputWithError";
+import { getValue } from "./InputWithError";
 
 
 export const requiredAccountNumber = z.preprocess(

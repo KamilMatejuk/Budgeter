@@ -1,11 +1,12 @@
 import React from "react";
 import { z } from "zod";
-import { ERROR } from "@/const/message";
 import { getValue, SingleInputWithErrorProps } from "./InputWithError";
 import DateInputWrapperWithError from "./DateInputWrapperWithError";
 
 
-export const requiredDate = z.date({ required_error: ERROR.requiredError })
+export const requiredDayOfMonth = z.number()
+  .min(1, { message: "Must be between 1 and 28" })
+  .max(28, { message: "Must be between 1 and 28" });
 
 
 export default function DayOfMonthInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {

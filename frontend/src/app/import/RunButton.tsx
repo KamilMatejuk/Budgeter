@@ -87,7 +87,14 @@ export default function RunButton() {
     <ErrorToast message={error instanceof Error ? error.message : error} />
   ) : (
     <>
-      <ButtonWithProgress current={counter} max={maxCounter} text="Import" onClick={handleImport} disabled={!selectedFile || !selectedSource} />
+      <ButtonWithProgress
+        current={counter}
+        max={maxCounter}
+        text="Import"
+        onClick={handleImport}
+        disabled={!selectedFile || !selectedSource}
+        action="positive"
+      />
     </>
   );
 }

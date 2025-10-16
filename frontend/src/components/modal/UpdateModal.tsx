@@ -3,12 +3,13 @@ import { ModalProps } from "./Modal";
 import { Item, ItemID } from "../table/Table";
 import UpdateSourceModal from "./UpdateSourceModal";
 import { patch, post } from "@/app/api/fetch";
-import { Card, Cash, PersonalAccount, SavingsAccount, Source, StockAccount } from "@/types/backend";
+import { CapitalInvestment, Card, Cash, PersonalAccount, SavingsAccount, Source, StockAccount } from "@/types/backend";
 import UpdateCashModal from "./UpdateCashModal";
 import UpdateCardModal from "./UpdateCardModal";
 import UpdatePersonalAccountModal from "./UpdatePersonalAccountModal";
 import UpdateSavingsAccountModal from "./UpdateSavingsAccountModal";
 import UpdateStockAccountModal from "./UpdateStockAccountModal";
+import UpdateCapitalInvestmentModal from "./UpdateCapitalInvestmentModal";
 
 
 export interface UpdateModalProps<T extends Item> extends ModalProps {
@@ -32,4 +33,5 @@ export default function UpdateModal<T extends Item>({ url, item, open, onClose }
     if (url === "/api/products/personal_account") return <UpdatePersonalAccountModal open={open} onClose={onClose} item={item as unknown as PersonalAccount} url={url} />;
     if (url === "/api/products/savings_account") return <UpdateSavingsAccountModal open={open} onClose={onClose} item={item as unknown as SavingsAccount} url={url} />;
     if (url === "/api/products/stock_account") return <UpdateStockAccountModal open={open} onClose={onClose} item={item as unknown as StockAccount} url={url} />;
+    if (url === "/api/products/capital_investment") return <UpdateCapitalInvestmentModal open={open} onClose={onClose} item={item as unknown as CapitalInvestment} url={url} />;
 }

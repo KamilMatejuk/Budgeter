@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Capitalization, Currency } from "@/types/enum";
-import AmountInputWithError, { requiredNonNegativeAmount, requiredPositiveAmount } from "../form/AmountInputWithError";
+import AmountInputWithError, { requiredPositiveAmount } from "../form/AmountInputWithError";
 import ChoiceInputWithError from "../form/ChoiceInputWithError";
 import AccountNumberInputWithError, { requiredAccountNumber } from "../form/AccountNumberInputWithError";
 
@@ -16,7 +16,7 @@ import AccountNumberInputWithError, { requiredAccountNumber } from "../form/Acco
 const FormSchema = z.object({
     name: requiredText,
     number: requiredAccountNumber,
-    value: requiredNonNegativeAmount,
+    value: requiredPositiveAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     yearly_interest: requiredPositiveAmount,
     capitalization: z.nativeEnum(Capitalization, { required_error: ERROR.requiredError }),

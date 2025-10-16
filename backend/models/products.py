@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
 
@@ -47,8 +47,8 @@ class StockAccount(Product):
 class CapitalInvestment(Product):
     yearly_interest: float
     capitalization: Capitalization
-    start: datetime
-    end: datetime
+    start: date
+    end: date
 
 class MonthlyIncome(Product):
     day_of_month: int

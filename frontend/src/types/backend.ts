@@ -435,12 +435,12 @@ export type components = {
             capitalization: components["schemas"]["Capitalization"];
             /**
              * Start
-             * Format: date-time
+             * Format: date
              */
             start: string;
             /**
              * End
-             * Format: date-time
+             * Format: date
              */
             end: string;
         };
@@ -475,12 +475,12 @@ export type components = {
             capitalization: components["schemas"]["Capitalization"];
             /**
              * Start
-             * Format: date-time
+             * Format: date
              */
             start: string;
             /**
              * End
-             * Format: date-time
+             * Format: date
              */
             end: string;
         };

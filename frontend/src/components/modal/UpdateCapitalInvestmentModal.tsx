@@ -8,15 +8,15 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Capitalization, Currency } from "@/types/enum";
-import AmountInputWithError, { requiredNonNegativeAmount, requiredPositiveAmount } from "../form/AmountInputWithError";
+import AmountInputWithError, { requiredPositiveAmount } from "../form/AmountInputWithError";
 import ChoiceInputWithError from "../form/ChoiceInputWithError";
-import { requiredDate } from "../form/DateInputWithError";
+import { getISODateString, requiredDate } from "../form/DateInputWithError";
 import DateRangeInputWithError from "../form/DateRangeInputWithError";
 
 
 const FormSchema = z.object({
     name: requiredText,
-    value: requiredNonNegativeAmount,
+    value: requiredPositiveAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     yearly_interest: requiredPositiveAmount,
     capitalization: z.nativeEnum(Capitalization, { required_error: ERROR.requiredError }),
@@ -24,6 +24,7 @@ const FormSchema = z.object({
     end: requiredDate,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
+type SubmitFormSchemaType = Omit<FormSchemaType, "start" | "end"> & { start: string; end: string; };
 
 
 export default function UpdateCapitalInvestmentModal({ url, item, open, onClose }: UpdateModalProps<CapitalInvestment>) {
@@ -37,18 +38,23 @@ export default function UpdateCapitalInvestmentModal({ url, item, open, onClose 
             start: item.start ? new Date(item.start) : new Date(),
             end: item.end ? new Date(item.end) : new Date(),
         },
-        onSubmit: async (values) => { if (await submit<FormSchemaType, CapitalInvestmentWithId>(url, values, item?._id)) onClose() },
+        onSubmit: async (values) => {
+            const val = { ...values, start: getISODateString(values.start), end: getISODateString(values.end) };
+            if (await submit<SubmitFormSchemaType, CapitalInvestmentWithId>(url, val, item?._id)) {
+                onClose()
+            }
+        },
         validate: withZodSchema(FormSchema),
     });
 
-return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
-        <TextInputWithError formik={formik} formikName="name" label="Name" />
-        <AmountInputWithError formik={formik} formikName="value" label="Value" />
-        <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
-        <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
-        <ChoiceInputWithError formik={formik} formikName="capitalization" optionsEnum={Capitalization} label="Capitalization" />
-        <DateRangeInputWithError formik={formik} formikNames={["start", "end"]} label="Date Range" />
-    </Modal>
-);
+    return (
+        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
+            <TextInputWithError formik={formik} formikName="name" label="Name" />
+            <AmountInputWithError formik={formik} formikName="value" label="Value" />
+            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+            <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
+            <ChoiceInputWithError formik={formik} formikName="capitalization" optionsEnum={Capitalization} label="Capitalization" />
+            <DateRangeInputWithError formik={formik} formikNames={["start", "end"]} label="Date Range" />
+        </Modal>
+    );
 }

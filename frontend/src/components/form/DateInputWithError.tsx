@@ -5,7 +5,12 @@ import { getValue, SingleInputWithErrorProps } from "./InputWithError";
 import DateInputWrapperWithError from "./DateInputWrapperWithError";
 
 
-export const requiredDate = z.date({ required_error: ERROR.requiredError })
+export const requiredDate = z.date({ required_error: ERROR.requiredError });
+
+
+export function getISODateString(date: Date) {
+  return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
+}
 
 
 export default function DateInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {

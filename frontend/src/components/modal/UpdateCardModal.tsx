@@ -47,7 +47,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
     });
 
     return (
-        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
+        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Card">
             <TextInputWithError formik={formik} formikName="name" label="Name" />
             <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
             <AmountInputWithError formik={formik} formikName="value" label="Value" />

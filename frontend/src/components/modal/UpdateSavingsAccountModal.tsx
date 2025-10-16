@@ -39,7 +39,7 @@ export default function UpdateSavingsAccountModal({ url, item, open, onClose }: 
     });
 
 return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Savings Account">
         <TextInputWithError formik={formik} formikName="name" label="Name" />
         <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
         <AmountInputWithError formik={formik} formikName="value" label="Value" />

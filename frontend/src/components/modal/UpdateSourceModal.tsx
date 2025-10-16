@@ -36,7 +36,7 @@ export default function UpdateSourceModal({ url, item, open, onClose }: UpdateMo
     });
 
     return (
-        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
+        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Source">
             <TextInputWithError formik={formik} formikName="name" label="Name" />
             <TextInputWithError formik={formik} formikName="field_name_card" placeholder="card" label="CSV field names"/>
             <TextInputWithError formik={formik} formikName="field_name_date" placeholder="date" />

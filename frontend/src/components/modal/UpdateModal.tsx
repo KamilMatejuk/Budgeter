@@ -35,6 +35,6 @@ export default function UpdateModal<T extends Item>({ url, item, open, onClose }
     if (url === "/api/products/savings_account") return <UpdateSavingsAccountModal open={open} onClose={onClose} item={item as unknown as SavingsAccount} url={url} />;
     if (url === "/api/products/stock_account") return <UpdateStockAccountModal open={open} onClose={onClose} item={item as unknown as StockAccount} url={url} />;
     if (url === "/api/products/capital_investment") return <UpdateCapitalInvestmentModal open={open} onClose={onClose} item={item as unknown as CapitalInvestment} url={url} />;
-    if (url === "/api/products/monthly_income") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyIncome} url={url} />;
-    if (url === "/api/products/monthly_expense") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyExpense} url={url} />;
+    if (url === "/api/products/monthly_income") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyIncome} url={url} title="Monthly Income"/>;
+    if (url === "/api/products/monthly_expense") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyExpense} url={url} title="Monthly Expense"/>;
 }

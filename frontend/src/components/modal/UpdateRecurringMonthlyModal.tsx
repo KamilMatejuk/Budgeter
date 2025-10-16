@@ -22,7 +22,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-export default function UpdateRecurringMonthlyModal({ url, item, open, onClose }: UpdateModalProps<MonthlyIncome | MonthlyExpense>) {
+export default function UpdateRecurringMonthlyModal({ url, item, open, onClose, title }: UpdateModalProps<MonthlyIncome | MonthlyExpense>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
             name: item.name || "",
@@ -35,7 +35,7 @@ export default function UpdateRecurringMonthlyModal({ url, item, open, onClose }
     });
 
 return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm}>
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={title}>
         <TextInputWithError formik={formik} formikName="name" label="Name" />
         <AmountInputWithError formik={formik} formikName="value" label="Value" />
         <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />

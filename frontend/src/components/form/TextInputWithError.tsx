@@ -2,13 +2,13 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import InputWithError, { getError, getTouched, InputWithErrorProps } from "./InputWithError";
+import InputWithError, { getError, getTouched, SingleInputWithErrorProps } from "./InputWithError";
 
 
 export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
 
 
-export interface TextInputWithErrorProps<T> extends InputWithErrorProps<T>, React.InputHTMLAttributes<HTMLInputElement> { }
+export interface TextInputWithErrorProps<T> extends SingleInputWithErrorProps<T>, React.InputHTMLAttributes<HTMLInputElement> { }
 
 
 export default function TextInputWithError<T>({ formik, formikName, label, ...props }: TextInputWithErrorProps<T>) {
@@ -16,7 +16,7 @@ export default function TextInputWithError<T>({ formik, formikName, label, ...pr
   const touched = getTouched(formik, formikName);
 
   return (
-    <InputWithError formik={formik} formikName={formikName} label={label}>
+    <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
       <input
         type="text"
         {...formik.getFieldProps(formikName as string)}

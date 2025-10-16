@@ -1,6 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-import InputWithError, { getValue, InputWithErrorProps } from "./InputWithError";
+import InputWithError, { getValue, SingleInputWithErrorProps } from "./InputWithError";
 
 
 const classes = {
@@ -11,7 +11,7 @@ const classes = {
   radio: "form-radio hidden",
 }
 
-export interface ChoiceInputWithErrorProps<T> extends InputWithErrorProps<T> {
+export interface ChoiceInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   optionsEnum: Record<string, string>;
 }
 
@@ -20,7 +20,7 @@ export default function ChoiceInputWithError<T>({ formik, formikName, label, opt
   const value = getValue(formik, formikName);
 
   return (
-    <InputWithError formik={formik} formikName={formikName} label={label}>
+    <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
       <fieldset>
         <div className={classes.container}>
           {Object.entries(optionsEnum).map(([key, optValue]) => {

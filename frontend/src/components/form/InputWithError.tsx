@@ -7,10 +7,14 @@ import { ERROR } from "@/const/message";
 export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
 
 
-export interface InputWithErrorProps<T> extends PropsWithChildren {
+export interface MultiInputWithErrorProps<T> extends PropsWithChildren {
   formik: FormikProps<T>;
-  formikName: keyof T | string;
+  formikNames: (keyof T | string)[];
   label?: string;
+}
+
+export interface SingleInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames"> { 
+  formikName: keyof T | string;
 }
 
 
@@ -39,9 +43,9 @@ export function getValue<T>(formik: FormikProps<T>, formikName: keyof T | string
   return getFromFormik(formik, "values", formikName);
 }
 
-export default function InputWithError<T>({ formik, formikName, label, children }: InputWithErrorProps<T>) {
-  const error = getError(formik, formikName);
-  const touched = getTouched(formik, formikName);
+export default function InputWithError<T>({ formik, formikNames, label, children }: MultiInputWithErrorProps<T>) {
+  const error = formikNames.map(name => getError(formik, name)).filter(Boolean).join(" & ");
+  const touched = formikNames.map(name => getTouched(formik, name)).some(Boolean);
 
   return (
     <div>

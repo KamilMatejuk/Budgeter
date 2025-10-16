@@ -20,7 +20,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Sidebar />
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto w-full h-full pl-4 pt-4 pb-64 space-y-4">
           {children}
         </div>
       </body>

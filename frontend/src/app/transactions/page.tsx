@@ -8,7 +8,7 @@ export default async function Transactions() {
   const { response: transactions, error } = await get<TransactionWithId[]>("/api/transaction");
 
   return (
-    <div className="w-full h-full p-4 space-y-4">
+    <>
       <PageHeader text="Transactions History" subtext="Overview of your recent transactions" />
       <SectionHeader text="Last Month" subtext="01.07.2025 - 31.07.2025" />
       {error ? (
@@ -28,6 +28,6 @@ export default async function Transactions() {
           ))}
         </>
       )}
-    </div>
+    </>
   );
 }

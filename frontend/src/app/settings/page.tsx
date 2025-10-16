@@ -8,7 +8,7 @@ import RecurringProducts from "./RecurringProducts";
 
 export default function Settings() {
   return (
-    <div className="w-full h-full p-4 space-y-4">
+    <>
       <PageHeader text="Settings" subtext="Manage your details and preferences" />
       <SectionHeader text="Sources" subtext="Where your data comes from and in what form" />
       <Sources />
@@ -21,6 +21,6 @@ export default function Settings() {
       <SectionHeader text="Recurring" subtext="Monthly income and expenses" />
       <RecurringProducts />
       <SectionHeader text="Tags" subtext="Hierarchy of your organisational tags" />
-    </div>
+    </>
   );
 }

@@ -22,7 +22,7 @@ const classes = {
         th: "text-end",
         container: "flex justify-end space-x-2",
         edit: "cursor-pointer",
-        delete: "cursor-pointer text-negative",
+        delete: "cursor-pointer",
         add: "w-4 px-3 py-1"
     }
 }

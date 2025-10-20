@@ -5,6 +5,7 @@ import PhysicalProducts from "./PhysicalProducts";
 import Accounts from "./Accounts";
 import Investments from "./Investments";
 import RecurringProducts from "./RecurringProducts";
+import TagTree from "./TagTree";
 
 export default function Settings() {
   return (
@@ -21,6 +22,7 @@ export default function Settings() {
       <SectionHeader text="Recurring" subtext="Monthly income and expenses" />
       <RecurringProducts />
       <SectionHeader text="Tags" subtext="Hierarchy of your organisational tags" />
+      <TagTree />
     </>
   );
 }

@@ -21,10 +21,12 @@ class Tag(PyBaseModel):
     @classmethod
     def validate_colour(cls: "Tag", v: str) -> str:
         v = v.strip().upper()
-        m = re.match(r"^#[0-9A-F]{6}$", v)
-        if not m: raise ValueError("Colour must be a valid hex code (e.g. #ff0000)")
+        m = re.match(r"^#[0-9A-F]{8}$", v)
+        if not m: raise ValueError("Colour must be a valid hex code (e.g. #ff0000ff)")
         return v
 
+class TagRequest(Tag):
+    colour: str | None = None
 
 class TagPartial(Tag, metaclass=Partial): pass
 class TagWithId(Tag, metaclass=WithId): pass

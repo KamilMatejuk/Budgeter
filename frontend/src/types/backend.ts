@@ -849,6 +849,19 @@ export type components = {
             /** Children */
             children?: string[] | null;
         };
+        /** TagRequest */
+        TagRequest: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Colour */
+            colour?: string | null;
+            /** Parent */
+            parent?: string | null;
+            /** Children */
+            children?: string[] | null;
+        };
         /** TagWithId */
         TagWithId: {
             /** Id */
@@ -973,6 +986,7 @@ export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];
 export type Tag = components['schemas']['Tag'];
 export type TagPartial = components['schemas']['TagPartial'];
+export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
@@ -1278,7 +1292,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Tag"];
+                "application/json": components["schemas"]["TagRequest"];
             };
         };
         responses: {

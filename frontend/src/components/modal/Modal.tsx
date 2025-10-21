@@ -5,7 +5,7 @@ import ButtonWithLoader from "../button/ButtonWithLoader";
 
 
 const classes = {
-    container: "fixed inset-0 z-50 flex items-center justify-center",
+    container: "fixed inset-0 z-50 flex items-center justify-center m-0 p-0",
     backdrop: "absolute inset-0 backdrop-blur-xs bg-black/40",
     dialog: "relative z-10 min-w-96 p-4 rounded-2xl bg-first-bg shadow-2xl ring-1 ring-black/10 flex flex-col gap-4",
     title: "text-lg font-bold text-center",

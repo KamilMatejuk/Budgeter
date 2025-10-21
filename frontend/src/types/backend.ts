@@ -502,6 +502,8 @@ export type components = {
             number: string;
             /** Credit */
             credit: boolean;
+            /** Account */
+            account: string;
         };
         /** CardPartial */
         CardPartial: {
@@ -516,6 +518,8 @@ export type components = {
             number?: string | null;
             /** Credit */
             credit?: boolean | null;
+            /** Account */
+            account?: string | null;
         };
         /** CardWithId */
         CardWithId: {
@@ -530,6 +534,8 @@ export type components = {
             number: string;
             /** Credit */
             credit: boolean;
+            /** Account */
+            account: string;
         };
         /** Cash */
         Cash: {

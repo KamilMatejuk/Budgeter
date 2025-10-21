@@ -34,6 +34,7 @@ class PersonalAccount(Product):
 class Card(Product):
     number: str
     credit: bool
+    account: str # id of PersonalAccount the card is assigned to
 
 class SavingsAccount(Product):
     number: str

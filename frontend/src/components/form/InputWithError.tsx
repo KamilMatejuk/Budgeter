@@ -48,8 +48,8 @@ export default function InputWithError<T>({ formik, formikNames, label, children
   const touched = formikNames.map(name => getTouched(formik, name)).some(Boolean);
 
   return (
-    <div>
-      {label && <label className="">{label}</label>}
+    <div className="flex flex-col">
+      {label && <label className="w-full">{label}</label>}
       {children}
       {error && touched && (
         <p className="text-red-500 text-sm text-center">{error}</p>

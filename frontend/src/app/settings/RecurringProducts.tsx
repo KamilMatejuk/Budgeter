@@ -2,7 +2,6 @@ import { get } from "../api/fetch";
 import { MonthlyExpense, MonthlyExpenseWithId, MonthlyIncome, MonthlyIncomeWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { columns, dayOfMonthColumn } from "./const";
 
 export default async function RecurringProducts() {
   const { response: income, error: incomeError } = await get<MonthlyIncomeWithId[]>("/api/products/monthly_income", ["monthly_income"]);
@@ -17,7 +16,7 @@ export default async function RecurringProducts() {
           tag="monthly_income"
           newText="monthly income"
           data={income}
-          columns={[...columns, dayOfMonthColumn]} />}
+          columns={["name", "value", "currency", "dayOfMonth"]} />}
       {expenseError
         ? <ErrorToast message={`Could not download expenses: ${expenseError.message}`} />
         : <Table<MonthlyExpense, MonthlyExpenseWithId>
@@ -25,7 +24,7 @@ export default async function RecurringProducts() {
           tag="monthly_expense"
           newText="monthly expense"
           data={expense}
-          columns={[...columns, dayOfMonthColumn]} />}
+          columns={["name", "value", "currency", "dayOfMonth"]} />}
     </>
   );
 }

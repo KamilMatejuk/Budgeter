@@ -2,7 +2,6 @@ import { get } from "../api/fetch";
 import { Card, CardWithId, Cash, CashWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { columns, creditColumn, numberColumn } from "./const";
 
 export default async function PhysicalProducts() {
   const { response: cash, error: cashError } = await get<CashWithId[]>("/api/products/cash", ["cash"]);
@@ -17,7 +16,7 @@ export default async function PhysicalProducts() {
           tag="cash"
           newText="cash"
           data={cash}
-          columns={columns} />}
+          columns={["name", "value", "currency"]} />}
       {cardError
         ? <ErrorToast message={`Could not download cards: ${cardError.message}`} />
         : <Table<Card, CardWithId>
@@ -25,7 +24,7 @@ export default async function PhysicalProducts() {
           tag="card"
           newText="card"
           data={card}
-          columns={[...columns, numberColumn, creditColumn]} />}
+          columns={["name", "value", "currency", "number", "credit"]} />}
     </>
   );
 }

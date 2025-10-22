@@ -7,6 +7,8 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "../modal/DeleteByIdModal";
 import UpdateModal from "../modal/UpdateModal";
 import { customRevalidateTag } from "@/app/api/fetch";
+import { PersonalAccountWithId } from "@/types/backend";
+
 
 const classes = {
     table: "w-full min-w-[640px] text-sm m-0",
@@ -27,26 +29,48 @@ const classes = {
     }
 }
 
-const selectColumn: ColumnDef<ItemID> = {
-    id: "select",
-    header: ({ table }) => (
-        <input
-            type="checkbox"
-            checked={table.getIsAllRowsSelected?.() ?? false}
-            onChange={table.getToggleAllRowsSelectedHandler?.()}
-        />
-    ),
-    cell: ({ row }) => (
-        <input
-            type="checkbox"
-            checked={row.getIsSelected?.() ?? false}
-            onChange={row.getToggleSelectedHandler?.()}
-        />
-    ),
-};
-
 export interface Item { _id?: string } // generic type for items without id
 export interface ItemID extends Item { _id: string } // generic type for items with id
+
+export const COLUMNS = {
+  select: {
+    id: "select",
+    header: ({ table }) => (
+      <input
+        type="checkbox"
+        checked={table.getIsAllRowsSelected?.() ?? false}
+        onChange={table.getToggleAllRowsSelectedHandler?.()}
+      />
+    ),
+    cell: ({ row }) => (
+      <input
+        type="checkbox"
+        checked={row.getIsSelected?.() ?? false}
+        onChange={row.getToggleSelectedHandler?.()}
+      />
+    ),
+  } as ColumnDef<ItemID>,
+  name: { accessorKey: "name", header: "Name" },
+  value: { accessorKey: "value", header: "Value" },
+  currency: { accessorKey: "currency", header: "Currency" },
+  number: { accessorKey: "number", header: "Number" },
+  credit: { accessorKey: "credit", header: "Credit" },
+  minAmountMonthly: {
+    accessorKey: "min_incoming_amount_monthly",
+    header: "Minimal Incoming/Outgoing Monthly",
+    cell: ({ row }) => {
+      const incoming = row.original.min_incoming_amount_monthly;
+      const outgoing = row.original.min_outgoing_amount_monthly;
+      return `${incoming} / ${outgoing}`;
+    }
+  } as ColumnDef<PersonalAccountWithId>,
+  interest: { accessorKey: "yearly_interest", header: "Yearly Interest" },
+  capitalization: { accessorKey: "capitalization", header: "Capitalization" },
+  startDate: { accessorKey: "start", header: "Start Date" },
+  endDate: { accessorKey: "end", header: "End Date" },
+  dayOfMonth: { accessorKey: "day_of_month", header: "Day of Month" },
+};
+
 
 export interface ModalProps<T extends Item> {
     url: string;
@@ -59,7 +83,7 @@ export interface TableProps<TID extends ItemID> {
     url: string;
     tag: string;
     data: TID[];
-    columns: ColumnDef<TID>[];
+    columns: (keyof typeof COLUMNS)[];
     hideCreating?: boolean;
     newText?: string;
 }
@@ -75,7 +99,7 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
 
     const table = useReactTable({
         data,
-        columns: useMemo(() => [selectColumn, ...columns] as ColumnDef<TID>[], [columns]),
+        columns: useMemo(() => [COLUMNS.select, ...columns.map(col => COLUMNS[col])] as ColumnDef<TID>[], [columns]),
         getCoreRowModel: getCoreRowModel(),
     })
 

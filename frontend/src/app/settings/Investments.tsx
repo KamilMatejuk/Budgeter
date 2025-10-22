@@ -2,7 +2,6 @@ import { get } from "../api/fetch";
 import { CapitalInvestment, CapitalInvestmentWithId, SavingsAccount, SavingsAccountWithId, StockAccount, StockAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { capitalizationColumn, columns, endDateColumn, interestColumn, numberColumn, startDateColumn } from "./const";
 
 export default async function Investments() {
   const { response: savings, error: savingsAccountError } = await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
@@ -18,7 +17,7 @@ export default async function Investments() {
           tag="savings_account"
           newText="savings account"
           data={savings}
-          columns={[...columns, numberColumn, interestColumn, capitalizationColumn]} />}
+          columns={["name", "value", "currency", "number", "interest", "capitalization"]} />}
       {stockAccountError
         ? <ErrorToast message={`Could not download stock accounts: ${stockAccountError.message}`} />
         : <Table<StockAccount, StockAccountWithId>
@@ -26,7 +25,7 @@ export default async function Investments() {
           tag="stock_account"
           newText="stock account"
           data={stock}
-          columns={[...columns, numberColumn, interestColumn]} />}
+          columns={["name", "value", "currency", "number", "interest"]} />}
       {capitalInvestmentError
         ? <ErrorToast message={`Could not download capital investments: ${capitalInvestmentError.message}`} />
         : <Table<CapitalInvestment, CapitalInvestmentWithId>
@@ -34,7 +33,7 @@ export default async function Investments() {
           tag="capital_investment"
           newText="capital investment"
           data={capital}
-          columns={[...columns, numberColumn, capitalizationColumn, startDateColumn, endDateColumn]} />}
+          columns={["name", "value", "currency", "number", "capitalization", "startDate", "endDate"]} />}
     </>
   );
 }

@@ -14,6 +14,6 @@ export default async function Sources() {
         tag="source"
         newText="source"
         data={response}
-        columns={[{ accessorKey: "name", header: "Name" }]} />
+        columns={["name"]} />
   );
 }

@@ -2,7 +2,6 @@ import { get } from "../api/fetch";
 import { PersonalAccount, PersonalAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { columns, numberColumn } from "./const";
 
 export default async function Accounts() {
   const { response, error } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
@@ -15,6 +14,6 @@ export default async function Accounts() {
         tag="personal_account"
         newText="account"
         data={response}
-        columns={[...columns, numberColumn]} />
+        columns={["name", "value", "currency", "number"]} />
   );
 }

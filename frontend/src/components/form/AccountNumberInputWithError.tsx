@@ -20,7 +20,9 @@ function format(value: string) {
   value = value.toUpperCase().replace(/[^0-9PL]/g, "").trim();
   // insert space every 4 characters
   if (!value.startsWith("PL")) {
-    return `PL${value}`.replace(/(.{4})/g, "$1 ").trim().slice(2);
+    const formatted = value.replace(/(.{4})/g, "$1 ").trim();
+    if (formatted.length <= 2) return formatted;
+    return formatted.slice(0, 2) + " " + formatted.slice(2);
   }
   return value.replace(/(.{4})/g, "$1 ").trim();
 }
@@ -36,7 +38,7 @@ export default function AccountNumberInputWithError<T>({
     newValue = format(newValue);
     if (newValue.length > value.length) {
       // maximum length 26/28 characters + spaces between
-      if (/^[0-9]/.test(newValue) && value.length === 26 + 6) return;
+      if (/^[0-9]/.test(newValue) && value.length === 26 + 7) return;
       if (!/^[0-9]/.test(newValue) && value.length === 28 + 6) return;
     }
     formik.setFieldValue(formikName as string, newValue);

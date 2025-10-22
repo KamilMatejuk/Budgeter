@@ -34,8 +34,8 @@ export default function DropDownInputWithError<T>({ formik, formikName, label, o
                     onBlur={() => formik.setFieldTouched(formikName as string, true, true)}
                     className={twMerge(classes.select, error && touched && classes.selectError)}
                 >
-                    {Object.entries(options).map(([key, optValue]) => (
-                        <option key={key} value={optValue} className={classes.option}>
+                    {Object.entries(options).map(([id, optValue]) => (
+                        <option key={id} value={id} className={classes.option}>
                             {optValue}
                         </option>
                     ))}

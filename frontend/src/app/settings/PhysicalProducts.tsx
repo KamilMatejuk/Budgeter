@@ -1,11 +1,12 @@
 import { get } from "../api/fetch";
-import { Card, CardWithId, Cash, CashWithId } from "@/types/backend";
+import { Card, CardWithId, Cash, CashWithId, PersonalAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import ErrorToast from "@/components/toast/ErrorToast";
 
 export default async function PhysicalProducts() {
   const { response: cash, error: cashError } = await get<CashWithId[]>("/api/products/cash", ["cash"]);
-  const { response: card, error: cardError } = await get<CardWithId[]>("/api/products/card", ["card"]);
+  const { response: cards, error: cardsError } = await get<CardWithId[]>("/api/products/card", ["card"]);
+  const { response: accounts } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
 
   return (
     <>
@@ -17,13 +18,16 @@ export default async function PhysicalProducts() {
           newText="cash"
           data={cash}
           columns={["name", "value", "currency"]} />}
-      {cardError
-        ? <ErrorToast message={`Could not download cards: ${cardError.message}`} />
+      {cardsError
+        ? <ErrorToast message={`Could not download cards: ${cardsError.message}`} />
         : <Table<Card, CardWithId>
           url="/api/products/card"
           tag="card"
           newText="card"
-          data={card}
+          data={cards.map(card => ({
+            ...card,
+            account: accounts?.find(acc => acc._id === card.account)?.name || card.account,
+          }))}
           columns={["name", "value", "currency", "number", "credit", "account", "minTransactionsMonthly"]} />}
     </>
   );

@@ -55,6 +55,8 @@ export const COLUMNS = {
   currency: { accessorKey: "currency", header: "Currency" },
   number: { accessorKey: "number", header: "Number" },
   credit: { accessorKey: "credit", header: "Credit" },
+  account: { accessorKey: "account", header: "Account" },
+  minTransactionsMonthly: { accessorKey: "min_number_of_transactions_monthly", header: "Minimal Transactions Monthly" },
   minAmountMonthly: {
     accessorKey: "min_incoming_amount_monthly",
     header: "Minimal Incoming/Outgoing Monthly",

@@ -30,11 +30,14 @@ class Cash(Product):
 
 class PersonalAccount(Product):
     number: str
+    min_incoming_amount_monthly: int
+    min_outgoing_amount_monthly: int
 
 class Card(Product):
     number: str
     credit: bool
     account: str # id of PersonalAccount the card is assigned to
+    min_number_of_transactions_monthly: int
 
 class SavingsAccount(Product):
     number: str

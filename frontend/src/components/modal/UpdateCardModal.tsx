@@ -26,6 +26,7 @@ const FormSchema = z.object({
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     credit: z.nativeEnum(Type, { required_error: ERROR.requiredError }),
     account: requiredText,
+    min_number_of_transactions_monthly: requiredNonNegativeAmount,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 type SubmitFormSchemaType = Omit<FormSchemaType, "credit"> & { credit: boolean };
@@ -41,6 +42,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
             number: item.number || "",
             credit: item.credit ? Type.CREDIT : Type.DEBIT,
             account: item.account || "",
+            min_number_of_transactions_monthly: item.min_number_of_transactions_monthly || 0,
         },
         onSubmit: async (values) => {
             if (await submit<SubmitFormSchemaType, CardWithId>(url, { ...values, credit: values.credit == Type.CREDIT }, item?._id)) {
@@ -73,6 +75,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
             <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
             <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
             <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts} />
+            <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
         </Modal>
     );
 }

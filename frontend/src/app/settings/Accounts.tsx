@@ -14,6 +14,6 @@ export default async function Accounts() {
         tag="personal_account"
         newText="account"
         data={response}
-        columns={["name", "value", "currency", "number"]} />
+        columns={["name", "value", "currency", "number", "minAmountMonthly"]} />
   );
 }

@@ -504,6 +504,8 @@ export type components = {
             credit: boolean;
             /** Account */
             account: string;
+            /** Min Number Of Transactions Monthly */
+            min_number_of_transactions_monthly: number;
         };
         /** CardPartial */
         CardPartial: {
@@ -520,6 +522,8 @@ export type components = {
             credit?: boolean | null;
             /** Account */
             account?: string | null;
+            /** Min Number Of Transactions Monthly */
+            min_number_of_transactions_monthly?: number | null;
         };
         /** CardWithId */
         CardWithId: {
@@ -536,6 +540,8 @@ export type components = {
             credit: boolean;
             /** Account */
             account: string;
+            /** Min Number Of Transactions Monthly */
+            min_number_of_transactions_monthly: number;
         };
         /** Cash */
         Cash: {
@@ -660,6 +666,10 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
+            /** Min Incoming Amount Monthly */
+            min_incoming_amount_monthly: number;
+            /** Min Outgoing Amount Monthly */
+            min_outgoing_amount_monthly: number;
         };
         /** PersonalAccountPartial */
         PersonalAccountPartial: {
@@ -672,6 +682,10 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
+            /** Min Incoming Amount Monthly */
+            min_incoming_amount_monthly?: number | null;
+            /** Min Outgoing Amount Monthly */
+            min_outgoing_amount_monthly?: number | null;
         };
         /** PersonalAccountWithId */
         PersonalAccountWithId: {
@@ -684,6 +698,10 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
+            /** Min Incoming Amount Monthly */
+            min_incoming_amount_monthly: number;
+            /** Min Outgoing Amount Monthly */
+            min_outgoing_amount_monthly: number;
         };
         /** SavingsAccount */
         SavingsAccount: {

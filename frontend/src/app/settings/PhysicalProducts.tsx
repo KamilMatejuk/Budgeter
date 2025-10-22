@@ -24,7 +24,7 @@ export default async function PhysicalProducts() {
           tag="card"
           newText="card"
           data={card}
-          columns={["name", "value", "currency", "number", "credit"]} />}
+          columns={["name", "value", "currency", "number", "credit", "account", "minTransactionsMonthly"]} />}
     </>
   );
 }

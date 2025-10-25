@@ -22,7 +22,6 @@ enum Type {
 const FormSchema = z.object({
     name: requiredText,
     number: requiredCardNumber,
-    value: requiredNonNegativeAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     credit: z.nativeEnum(Type, { required_error: ERROR.requiredError }),
     account: requiredText,
@@ -37,7 +36,6 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
     const formik = useFormik<FormSchemaType>({
         initialValues: {
             name: item.name || "",
-            value: item.value || 0,
             currency: item.currency as Currency || Currency.PLN,
             number: item.number || "",
             credit: item.credit ? Type.CREDIT : Type.DEBIT,
@@ -71,7 +69,6 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
         <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Card">
             <TextInputWithError formik={formik} formikName="name" label="Name" />
             <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
-            <AmountInputWithError formik={formik} formikName="value" label="Value" />
             <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
             <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
             <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts} />

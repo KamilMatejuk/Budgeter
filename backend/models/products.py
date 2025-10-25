@@ -20,15 +20,16 @@ class Currency(enum.Enum):
 
 class Product(PyBaseModel):
     name: str
-    value: float
     currency: Currency
 
 # Specific products
 
 class Cash(Product):
+    value: float
     pass
 
 class PersonalAccount(Product):
+    value: float
     number: str
     min_incoming_amount_monthly: int
     min_outgoing_amount_monthly: int
@@ -40,24 +41,29 @@ class Card(Product):
     min_number_of_transactions_monthly: int
 
 class SavingsAccount(Product):
+    value: float
     number: str
     yearly_interest: float
     capitalization: Capitalization
 
 class StockAccount(Product):
+    value: float
     number: str
     yearly_interest: float
 
 class CapitalInvestment(Product):
+    value: float
     yearly_interest: float
     capitalization: Capitalization
     start: date
     end: date
 
 class MonthlyIncome(Product):
+    value: float
     day_of_month: int
 
 class MonthlyExpense(Product):
+    value: float
     day_of_month: int
 
 # Partial models for updates

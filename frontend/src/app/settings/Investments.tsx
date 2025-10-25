@@ -25,7 +25,7 @@ export default async function Investments() {
           tag="capital_investment"
           newText="capital investment"
           data={capital}
-          columns={["name", "value", "currency", "number", "capitalization", "startDate", "endDate"]} />}
+          columns={["name", "value", "currency", "interest", "capitalization", "startDate", "endDate"]} />}
       {savingsAccountError
         ? <ErrorToast message={`Could not download saving accounts: ${savingsAccountError.message}`} />
         : <Table<SavingsAccount, SavingsAccountWithId>

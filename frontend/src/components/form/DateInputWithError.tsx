@@ -9,7 +9,7 @@ export const requiredDate = z.date({ required_error: ERROR.requiredError });
 
 
 export function getISODateString(date: Date) {
-  return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${(date.getDate()).toString().padStart(2, "0")}`;
 }
 
 

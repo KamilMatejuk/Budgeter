@@ -1,11 +1,12 @@
-import { TransactionWithId } from "@/types/backend";
+import { Transaction, TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { get } from "../api/fetch";
+import Table from "@/components/table/Table";
 
 export default async function Transactions() {
-  const { response: transactions, error } = await get<TransactionWithId[]>("/api/transaction");
+  const { response, error } = await get<TransactionWithId[]>("/api/transaction", ["transaction"]);
 
   return (
     <>
@@ -14,19 +15,12 @@ export default async function Transactions() {
       {error ? (
         <ErrorToast message="Could not download transactions" />
       ) : (
-        <>
-          {transactions.map((transaction) => (
-            <div key={transaction.hash} className="grid grid-cols-7 gap-2 p-2 border-b">
-              <p className="break-all">{transaction.hash}</p>
-              <p>{transaction.card}</p>
-              <p>{transaction.date}</p>
-              <p>{transaction.organisation}</p>
-              <p>{transaction.title}</p>
-              <p>{transaction.value}</p>
-              <p>{transaction.tags.join(', ')}</p>
-            </div>
-          ))}
-        </>
+        <Table<Transaction, TransactionWithId>
+          url="/api/transaction"
+          tag="transaction"
+          data={response}
+          columns={["card", "date", "title", "organisation", "value", "tags"]}
+          hideCreating />
       )}
     </>
   );

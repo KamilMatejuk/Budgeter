@@ -11,6 +11,7 @@
   --color-black-2: #313139;
   --color-black-3: #8b8b8b;
   --color-negative: #dd2424;
+  --color-positive: #4f9416;
 }
 
 :root {
@@ -26,6 +27,7 @@
   --color-text: var(--color-black-2);
   --color-subtext: var(--color-black-3);
   --color-negative: var(--color-negative);
+  --color-positive: var(--color-positive);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -40,6 +42,7 @@
     --color-text: var(--color-white-2);
     --color-subtext: var(--color-white-3);
     --color-negative: var(--color-negative);
+    --color-positive: var(--color-positive);
   }
 } */
 

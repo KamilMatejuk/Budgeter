@@ -104,10 +104,10 @@ const transactionsColumns = {
         header: "Organisation",
         cell: ({ row }) => <CellTextWrap value={row.original.organisation} />,
     } as ColumnDef<Transaction>,
-    value: {
+    diffValue: {
         accessorKey: "value",
         header: "Value",
-        cell: ({ row }) => <CellValue value={row.original.value} />,
+        cell: ({ row }) => <CellValue value={row.original.value} as_diff />,
     } as ColumnDef<Transaction>,
     tags: {
         accessorKey: "tags",

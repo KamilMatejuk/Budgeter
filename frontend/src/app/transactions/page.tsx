@@ -65,7 +65,7 @@ export default async function Transactions() {
                     url="/api/transaction"
                     tag="transaction"
                     data={parse(group.transactions, accounts)}
-                    columns={["date", "account", "title", "organisation", "value", "tags"]}
+                    columns={["date", "account", "title", "organisation", "diffValue", "tags"]}
                     hideCreating />
                 </div>
               ))}

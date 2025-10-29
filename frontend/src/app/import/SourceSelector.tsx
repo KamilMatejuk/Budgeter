@@ -1,17 +1,24 @@
 "use client";
 
-import { Source } from "@/types/backend";
-import SourceButton from "./SourceButton";
+import ButtonWithLoader from "@/components/button/ButtonWithLoader";
+import { useSelectedSourceAndFile } from "./ImportContext";
 
 interface SourceSelectorProps {
-  sources: Source[];
+  sources: string[];
 }
 
 export default function SourceSelector({ sources }: SourceSelectorProps) {
+  const { selectedSource, setSelectedSource } = useSelectedSourceAndFile();
+
   return (
     <form className="flex flex-wrap gap-2 justify-center overflow-x-auto py-2">
-      {sources.map((source) => (
-        <SourceButton source={source} key={source._id} />
+      {sources.map((source, i) => (
+        <ButtonWithLoader
+          key={i}
+          text={source}
+          onClick={async () => await setSelectedSource(source)}
+          action={source === selectedSource ? "positive" : "neutral"}
+        />
       ))}
     </form>
   );

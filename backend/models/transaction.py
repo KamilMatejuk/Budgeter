@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from models.tag import Tag
 from models.base import PyBaseModel, Partial, WithId
@@ -6,8 +6,8 @@ from models.base import PyBaseModel, Partial, WithId
 
 class Transaction(PyBaseModel):
     hash: str
-    card: str
-    date: datetime
+    account: str # id of PersonalAccount
+    date: date
     title: str
     organisation: str
     value: float

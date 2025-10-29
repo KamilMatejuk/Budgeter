@@ -1,12 +1,20 @@
-import { Transaction, TransactionWithId } from "@/types/backend";
+import { PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { get } from "../api/fetch";
 import Table from "@/components/table/Table";
 
+function parse(transactions: TransactionWithId[], accounts: PersonalAccountWithId[] | null) {
+  return transactions.map(transaction => ({
+    ...transaction,
+    account: accounts?.find(acc => acc._id === transaction.account)?.name || transaction.account,
+  }));
+}
+
 export default async function Transactions() {
-  const { response, error } = await get<TransactionWithId[]>("/api/transaction", ["transaction"]);
+  const { response: transactions, error } = await get<TransactionWithId[]>("/api/transaction", ["transaction"]);
+  const { response: accounts } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
 
   return (
     <>
@@ -18,8 +26,8 @@ export default async function Transactions() {
         <Table<Transaction, TransactionWithId>
           url="/api/transaction"
           tag="transaction"
-          data={response}
-          columns={["card", "date", "title", "organisation", "value", "tags"]}
+          data={parse(transactions, accounts)}
+          columns={["date", "account", "title", "organisation", "value", "tags"]}
           hideCreating />
       )}
     </>

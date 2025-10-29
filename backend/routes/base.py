@@ -30,8 +30,7 @@ async def get(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], co
             doc["_id"] = str(doc["_id"])
         results.append(model.model_validate(doc))
     if one:
-        assert len(results) == 1, f"Expected one result, found {len(results)}"
-        return results[0]
+        return results[0] if len(results) > 0 else None
     return results
 
 

@@ -5,21 +5,9 @@ import { useSelectedSourceAndFile } from "./ImportContext";
 import { useState } from "react";
 import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
-import { Transaction } from "@/types/backend";
 import { post } from "@/app/api/fetch";
 import ButtonWithProgress from "../../components/button/ButtonWithProgress";
 
-
-// @ts-expect-error: Parameter 'obj' implicitly has an 'any' type.ts(7006)
-export async function hashObject(obj): Promise<string> {
-  const json = JSON.stringify(obj);
-  const encoder = new TextEncoder();
-  const data = encoder.encode(json);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-}
 
 export default function RunButton() {
   const router = useRouter();
@@ -44,24 +32,7 @@ export default function RunButton() {
               setMaxCounter(rows.length);
               for (const [index, row] of rows.entries()) {
                 setCounter(index + 1);
-                const transaction: Transaction = {
-                  hash: await hashObject(row),
-                  card: row[selectedSource.field_name_card],
-                  date: new Date(row[selectedSource.field_name_date]).toISOString(),
-                  title: row[selectedSource.field_name_title],
-                  organisation: row[selectedSource.field_name_organisation],
-                  value: row[selectedSource.field_name_value_positive]
-                    ? parseFloat(row[selectedSource.field_name_value_positive])
-                    : -parseFloat(row[selectedSource.field_name_value_negative]),
-                  tags: [],
-                };
-
-                if (!transaction.organisation) {
-                  transaction.organisation = transaction.title;
-                  transaction.title = "";
-                }
-
-                const { error } = await post("/api/transaction", transaction);
+                const { error } = await post(`/api/source/${selectedSource}`, row);
                 if (error) {
                   reject(new Error(error.message)); // reject the whole Promise
                   return;

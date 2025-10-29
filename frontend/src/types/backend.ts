@@ -50,16 +50,14 @@ export type paths = {
         /** Get Sources */
         get: operations["get_sources_api_source__get"];
         put?: never;
-        /** Create Source */
-        post: operations["create_source_api_source__post"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Patch Source */
-        patch: operations["patch_source_api_source__patch"];
+        patch?: never;
         trace?: never;
     };
-    "/api/source/{id}": {
+    "/api/source/Millennium": {
         parameters: {
             query?: never;
             header?: never;
@@ -68,25 +66,8 @@ export type paths = {
         };
         get?: never;
         put?: never;
-        post?: never;
-        /** Delete Source */
-        delete: operations["delete_source_api_source__id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/source/{name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Source By Name */
-        get: operations["get_source_by_name_api_source__name__get"];
-        put?: never;
-        post?: never;
+        /** Create Transaction From Millennium */
+        post: operations["create_transaction_from_millennium_api_source_Millennium_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -577,6 +558,33 @@ export type components = {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** MillenniumRequest */
+        MillenniumRequest: {
+            /** Id */
+            _id?: string;
+            /** Numer Rachunku/Karty */
+            "Numer rachunku/karty": string;
+            /** Data Transakcji */
+            "Data transakcji": string;
+            /** Data Rozliczenia */
+            "Data rozliczenia": string;
+            /** Rodzaj Transakcji */
+            "Rodzaj transakcji": string;
+            /** Na Konto/Z Konta */
+            "Na konto/Z konta": string;
+            /** Odbiorca/Zleceniodawca */
+            "Odbiorca/Zleceniodawca": string;
+            /** Opis */
+            Opis: string;
+            /** Obciążenia */
+            "Obci\u0105\u017Cenia": string;
+            /** Uznania */
+            Uznania: string;
+            /** Saldo */
+            Saldo: string;
+            /** Waluta */
+            Waluta: string;
+        };
         /** MonthlyExpense */
         MonthlyExpense: {
             /** Id */
@@ -742,63 +750,6 @@ export type components = {
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
         };
-        /** Source */
-        Source: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            /** Field Name Card */
-            field_name_card: string;
-            /** Field Name Date */
-            field_name_date: string;
-            /** Field Name Title */
-            field_name_title: string;
-            /** Field Name Organisation */
-            field_name_organisation: string;
-            /** Field Name Value Positive */
-            field_name_value_positive: string;
-            /** Field Name Value Negative */
-            field_name_value_negative: string;
-        };
-        /** SourcePartial */
-        SourcePartial: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name?: string | null;
-            /** Field Name Card */
-            field_name_card?: string | null;
-            /** Field Name Date */
-            field_name_date?: string | null;
-            /** Field Name Title */
-            field_name_title?: string | null;
-            /** Field Name Organisation */
-            field_name_organisation?: string | null;
-            /** Field Name Value Positive */
-            field_name_value_positive?: string | null;
-            /** Field Name Value Negative */
-            field_name_value_negative?: string | null;
-        };
-        /** SourceWithId */
-        SourceWithId: {
-            /** Id */
-            _id: string;
-            /** Name */
-            name: string;
-            /** Field Name Card */
-            field_name_card: string;
-            /** Field Name Date */
-            field_name_date: string;
-            /** Field Name Title */
-            field_name_title: string;
-            /** Field Name Organisation */
-            field_name_organisation: string;
-            /** Field Name Value Positive */
-            field_name_value_positive: string;
-            /** Field Name Value Negative */
-            field_name_value_negative: string;
-        };
         /** StockAccount */
         StockAccount: {
             /** Id */
@@ -899,11 +850,11 @@ export type components = {
             _id?: string;
             /** Hash */
             hash: string;
-            /** Card */
-            card: string;
+            /** Account */
+            account: string;
             /**
              * Date
-             * Format: date-time
+             * Format: date
              */
             date: string;
             /** Title */
@@ -921,8 +872,8 @@ export type components = {
             _id?: string;
             /** Hash */
             hash?: string | null;
-            /** Card */
-            card?: string | null;
+            /** Account */
+            account?: string | null;
             /** Date */
             date?: string | null;
             /** Title */
@@ -940,11 +891,11 @@ export type components = {
             _id: string;
             /** Hash */
             hash: string;
-            /** Card */
-            card: string;
+            /** Account */
+            account: string;
             /**
              * Date
-             * Format: date-time
+             * Format: date
              */
             date: string;
             /** Title */
@@ -984,6 +935,7 @@ export type CashPartial = components['schemas']['CashPartial'];
 export type CashWithId = components['schemas']['CashWithId'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
+export type MillenniumRequest = components['schemas']['MillenniumRequest'];
 export type MonthlyExpense = components['schemas']['MonthlyExpense'];
 export type MonthlyExpensePartial = components['schemas']['MonthlyExpensePartial'];
 export type MonthlyExpenseWithId = components['schemas']['MonthlyExpenseWithId'];
@@ -996,9 +948,6 @@ export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
-export type Source = components['schemas']['Source'];
-export type SourcePartial = components['schemas']['SourcePartial'];
-export type SourceWithId = components['schemas']['SourceWithId'];
 export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];
@@ -1146,12 +1095,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SourceWithId"][];
+                    "application/json": string[];
                 };
             };
         };
     };
-    create_source_api_source__post: {
+    create_transaction_from_millennium_api_source_Millennium_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1160,7 +1109,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Source"];
+                "application/json": components["schemas"]["MillenniumRequest"];
             };
         };
         responses: {
@@ -1170,104 +1119,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SourceWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    patch_source_api_source__patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SourcePartial"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SourceWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_source_api_source__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
+                    "application/json": components["schemas"]["TransactionWithId"] | {
                         [key: string]: unknown;
                     };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_source_by_name_api_source__name__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Source"];
                 };
             };
             /** @description Validation Error */

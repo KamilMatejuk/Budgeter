@@ -85,9 +85,9 @@ const settingsColumns = {
 }
 
 const transactionsColumns = {
-    card: {
-        accessorKey: "card",
-        header: "Card"
+    account: {
+        accessorKey: "account",
+        header: "Account"
 
     },
     date: {

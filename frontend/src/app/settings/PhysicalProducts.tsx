@@ -28,7 +28,7 @@ export default async function PhysicalProducts() {
             ...card,
             account: accounts?.find(acc => acc._id === card.account)?.name || card.account,
           }))}
-          columns={["name", "value", "currency", "number", "credit", "account", "minTransactionsMonthly"]} />}
+          columns={["name", "currency", "number", "credit", "account", "minTransactionsMonthly"]} />}
     </>
   );
 }

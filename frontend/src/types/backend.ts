@@ -408,9 +408,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -431,9 +431,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
             /** Yearly Interest */
             yearly_interest?: number | null;
             capitalization?: components["schemas"]["Capitalization"] | null;
@@ -448,9 +448,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -476,6 +476,8 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Value */
+            value?: number | null;
             currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
@@ -492,6 +494,8 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Value */
+            value?: number | null;
             currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
@@ -508,6 +512,8 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Value */
+            value: number | null;
             currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
@@ -524,9 +530,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
         };
         /** CashPartial */
         CashPartial: {
@@ -534,9 +540,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
         };
         /** CashWithId */
         CashWithId: {
@@ -544,9 +550,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
         };
         /**
          * Currency
@@ -591,9 +597,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
         };
@@ -603,9 +609,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value?: number | null;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month?: number | null;
         };
@@ -615,9 +621,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
         };
@@ -627,9 +633,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
         };
@@ -639,9 +645,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month?: number | null;
         };
@@ -651,9 +657,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
         };
@@ -663,9 +669,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Min Incoming Amount Monthly */
@@ -679,9 +685,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
             /** Min Incoming Amount Monthly */
@@ -695,9 +701,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Min Incoming Amount Monthly */
@@ -711,9 +717,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Yearly Interest */
@@ -726,9 +732,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
             /** Yearly Interest */
@@ -741,9 +747,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Yearly Interest */
@@ -756,9 +762,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Yearly Interest */
@@ -770,9 +776,9 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
-            value?: number | null;
+            value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number?: string | null;
             /** Yearly Interest */
@@ -784,9 +790,9 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            currency: components["schemas"]["Currency"];
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
             /** Yearly Interest */

@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
+
 from fastapi import FastAPI
 from routes.transaction import router as transaction_router
 from routes.source import router as source_router

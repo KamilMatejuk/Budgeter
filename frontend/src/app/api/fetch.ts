@@ -26,7 +26,7 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     if (method === 'POST' || method === 'PATCH') {
       options.body = JSON.stringify(body || {});
     }
-    if (!url.endsWith('/')) url += '/';
+    if (url.endsWith('/')) url = url.slice(0, -1);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       next: { tags },
       ...options,

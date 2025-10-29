@@ -3,6 +3,7 @@ import { ItemID } from "./Table";
 import { CardWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
 import CellValue from "./CellValue";
 import CellBoolean from "./CellBoolean";
+import CellTextWrap from "./CellTextWrap";
 
 const selectColumn: ColumnDef<ItemID> = {
     id: "select",
@@ -88,23 +89,21 @@ const transactionsColumns = {
     account: {
         accessorKey: "account",
         header: "Account"
-
     },
     date: {
         accessorKey: "date",
         header: "Date"
-
     },
     title: {
         accessorKey: "title",
-        header: "Title"
-
-    },
+        header: "Title",
+        cell: ({ row }) => <CellTextWrap value={row.original.title} />,
+    } as ColumnDef<Transaction>,
     organisation: {
         accessorKey: "organisation",
-        header: "Organisation"
-
-    },
+        header: "Organisation",
+        cell: ({ row }) => <CellTextWrap value={row.original.organisation} />,
+    } as ColumnDef<Transaction>,
     value: {
         accessorKey: "value",
         header: "Value",

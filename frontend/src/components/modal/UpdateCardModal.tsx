@@ -52,16 +52,11 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
 
     const [accounts, setAccounts] = useState<Record<string, string>>({});
     useEffect(() => {
-        const fetchAccounts = async () => {
-            const { response } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
-            if (!response) return;
-            const acc = response.reduce((acc, curr) => {
-                acc[curr._id] = `${curr.name} (${curr.currency})`;
-                return acc;
-            }, {} as Record<string, string>);
-            setAccounts(acc);
-        };
-        fetchAccounts();
+        get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"])
+            .then(({ response }) => setAccounts((response || []).reduce(
+                (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
+                {} as Record<string, string>
+            )));
     }, []);
 
 

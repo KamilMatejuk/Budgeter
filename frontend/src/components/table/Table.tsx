@@ -11,6 +11,7 @@ import { COLUMNS } from "./columns";
 
 
 const classes = {
+    container: "overflow-auto",
     table: "w-full min-w-[640px] text-sm m-0",
     thead: "bg-second-bg",
     row: {
@@ -19,7 +20,7 @@ const classes = {
         add: "cursor-pointer text-subtext"
     },
     th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none whitespace-nowrap",
-    td: "px-4 py-2 align-center whitespace-nowrap",
+    td: "px-4 py-2 align-middle whitespace-nowrap",
     options: {
         th: "text-end",
         container: "flex justify-end space-x-2",
@@ -64,7 +65,7 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
     })
 
     return (
-        <>
+        <div className={classes.container}>
             <table className={classes.table}>
                 {/* header */}
                 <thead className={classes.thead}>
@@ -90,9 +91,11 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}
-                            <td className={twMerge(classes.td, classes.options.container)}>
-                                <MdEdit size={20} className={classes.options.edit} onClick={() => handleEdit(row.original)} />
-                                <MdDelete size={20} className={classes.options.delete} onClick={() => handleDelete(row.original)} />
+                            <td className={classes.td}>
+                                <div className={classes.options.container}>
+                                    <MdEdit size={20} className={classes.options.edit} onClick={() => handleEdit(row.original)} />
+                                    <MdDelete size={20} className={classes.options.delete} onClick={() => handleDelete(row.original)} />
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -123,6 +126,6 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
             {/* modals */}
             {selectedItem && modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} id={selectedItem._id} />}
             {(modalOpen === "update" || modalOpen === "create") && <UpdateModal open onClose={closeModal} url={url} item={selectedItem || {} as T} />}
-        </>
+        </div>
     );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { RiLoader5Fill } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";
+import MultilineText from "../MultilineText";
 
 
 const classes = {
@@ -43,7 +44,7 @@ export default function ButtonWithLoader({ onClick, text, action, ...props }: Bu
       className={twMerge(classes.base, classes.disabled, classes[action], props.className)}
     >
       <RiLoader5Fill size={24} className={loading ? "animate-spin absolute " : "hidden"} />
-      <p className={loading ? "invisible" : ""}>{text}</p>
+      <p className={loading ? "invisible" : ""}><MultilineText text={text} /></p>
     </button>
   );
 }

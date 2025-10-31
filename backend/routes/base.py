@@ -93,7 +93,7 @@ class CRUDRouterFactory:
         f.__annotations__["return"] = list[self.model_with_id]
         f.__name__ = f"get_{self.model.__name__.lower()}s"
         # register route
-        self.router.get("/", response_model=list[self.model_with_id])(f)
+        self.router.get("", response_model=list[self.model_with_id])(f)
 
     def create_get_by_id(self):
         # define GET function
@@ -116,7 +116,7 @@ class CRUDRouterFactory:
         f.__annotations__["return"] = self.model_with_id
         f.__name__ = f"create_{self.model.__name__.lower()}"
         # register route
-        self.router.post("/", response_model=self.model_with_id)(f)
+        self.router.post("", response_model=self.model_with_id)(f)
 
     def create_patch(self):
         # define PATCH function
@@ -127,7 +127,7 @@ class CRUDRouterFactory:
         f.__annotations__["return"] = self.model_with_id
         f.__name__ = f"patch_{self.model.__name__.lower()}"
         # register route
-        self.router.patch("/", response_model=self.model_with_id)(f)
+        self.router.patch("", response_model=self.model_with_id)(f)
 
     def create_delete(self):
         # define DELETE function

@@ -34,7 +34,7 @@ class Source(enum.Enum):
 
 router = APIRouter()
 
-@router.get("/", response_model=list[str])
+@router.get("", response_model=list[str])
 async def get_sources():
     return [source.value for source in Source]
 

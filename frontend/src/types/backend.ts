@@ -4,7 +4,7 @@
  */
 
 export type paths = {
-    "/api/transaction/": {
+    "/api/transaction": {
         parameters: {
             query?: never;
             header?: never;
@@ -12,15 +12,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Transactions */
-        get: operations["get_transactions_api_transaction__get"];
+        get: operations["get_transactions_api_transaction_get"];
         put?: never;
         /** Create Transaction */
-        post: operations["create_transaction_api_transaction__post"];
+        post: operations["create_transaction_api_transaction_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Transaction */
-        patch: operations["patch_transaction_api_transaction__patch"];
+        patch: operations["patch_transaction_api_transaction_patch"];
         trace?: never;
     };
     "/api/transaction/{id}": {
@@ -58,7 +58,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/source/": {
+    "/api/source": {
         parameters: {
             query?: never;
             header?: never;
@@ -66,7 +66,7 @@ export type paths = {
             cookie?: never;
         };
         /** Get Sources */
-        get: operations["get_sources_api_source__get"];
+        get: operations["get_sources_api_source_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -92,7 +92,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/tag/": {
+    "/api/tag": {
         parameters: {
             query?: never;
             header?: never;
@@ -100,15 +100,13 @@ export type paths = {
             cookie?: never;
         };
         /** Get Tags */
-        get: operations["get_tags_api_tag__get"];
+        get: operations["get_tags_api_tag_get"];
         put?: never;
-        /** Create Tag */
-        post: operations["create_tag_api_tag__post"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Patch Tag */
-        patch: operations["patch_tag_api_tag__patch"];
+        patch?: never;
         trace?: never;
     };
     "/api/tag/{id}": {
@@ -129,7 +127,25 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/cash/": {
+    "/api/tag/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Tag */
+        post: operations["create_tag_api_tag__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Tag */
+        patch: operations["patch_tag_api_tag__patch"];
+        trace?: never;
+    };
+    "/api/products/cash": {
         parameters: {
             query?: never;
             header?: never;
@@ -137,15 +153,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Cashs */
-        get: operations["get_cashs_api_products_cash__get"];
+        get: operations["get_cashs_api_products_cash_get"];
         put?: never;
         /** Create Cash */
-        post: operations["create_cash_api_products_cash__post"];
+        post: operations["create_cash_api_products_cash_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Cash */
-        patch: operations["patch_cash_api_products_cash__patch"];
+        patch: operations["patch_cash_api_products_cash_patch"];
         trace?: never;
     };
     "/api/products/cash/{id}": {
@@ -165,7 +181,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/personal_account/": {
+    "/api/products/personal_account": {
         parameters: {
             query?: never;
             header?: never;
@@ -173,15 +189,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Personalaccounts */
-        get: operations["get_personalaccounts_api_products_personal_account__get"];
+        get: operations["get_personalaccounts_api_products_personal_account_get"];
         put?: never;
         /** Create Personalaccount */
-        post: operations["create_personalaccount_api_products_personal_account__post"];
+        post: operations["create_personalaccount_api_products_personal_account_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Personalaccount */
-        patch: operations["patch_personalaccount_api_products_personal_account__patch"];
+        patch: operations["patch_personalaccount_api_products_personal_account_patch"];
         trace?: never;
     };
     "/api/products/personal_account/{id}": {
@@ -202,7 +218,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/card/": {
+    "/api/products/card": {
         parameters: {
             query?: never;
             header?: never;
@@ -210,15 +226,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Cards */
-        get: operations["get_cards_api_products_card__get"];
+        get: operations["get_cards_api_products_card_get"];
         put?: never;
         /** Create Card */
-        post: operations["create_card_api_products_card__post"];
+        post: operations["create_card_api_products_card_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Card */
-        patch: operations["patch_card_api_products_card__patch"];
+        patch: operations["patch_card_api_products_card_patch"];
         trace?: never;
     };
     "/api/products/card/{id}": {
@@ -239,7 +255,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/savings_account/": {
+    "/api/products/savings_account": {
         parameters: {
             query?: never;
             header?: never;
@@ -247,15 +263,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Savingsaccounts */
-        get: operations["get_savingsaccounts_api_products_savings_account__get"];
+        get: operations["get_savingsaccounts_api_products_savings_account_get"];
         put?: never;
         /** Create Savingsaccount */
-        post: operations["create_savingsaccount_api_products_savings_account__post"];
+        post: operations["create_savingsaccount_api_products_savings_account_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Savingsaccount */
-        patch: operations["patch_savingsaccount_api_products_savings_account__patch"];
+        patch: operations["patch_savingsaccount_api_products_savings_account_patch"];
         trace?: never;
     };
     "/api/products/savings_account/{id}": {
@@ -276,7 +292,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/stock_account/": {
+    "/api/products/stock_account": {
         parameters: {
             query?: never;
             header?: never;
@@ -284,15 +300,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Stockaccounts */
-        get: operations["get_stockaccounts_api_products_stock_account__get"];
+        get: operations["get_stockaccounts_api_products_stock_account_get"];
         put?: never;
         /** Create Stockaccount */
-        post: operations["create_stockaccount_api_products_stock_account__post"];
+        post: operations["create_stockaccount_api_products_stock_account_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Stockaccount */
-        patch: operations["patch_stockaccount_api_products_stock_account__patch"];
+        patch: operations["patch_stockaccount_api_products_stock_account_patch"];
         trace?: never;
     };
     "/api/products/stock_account/{id}": {
@@ -313,7 +329,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/capital_investment/": {
+    "/api/products/capital_investment": {
         parameters: {
             query?: never;
             header?: never;
@@ -321,15 +337,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Capitalinvestments */
-        get: operations["get_capitalinvestments_api_products_capital_investment__get"];
+        get: operations["get_capitalinvestments_api_products_capital_investment_get"];
         put?: never;
         /** Create Capitalinvestment */
-        post: operations["create_capitalinvestment_api_products_capital_investment__post"];
+        post: operations["create_capitalinvestment_api_products_capital_investment_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Capitalinvestment */
-        patch: operations["patch_capitalinvestment_api_products_capital_investment__patch"];
+        patch: operations["patch_capitalinvestment_api_products_capital_investment_patch"];
         trace?: never;
     };
     "/api/products/capital_investment/{id}": {
@@ -350,7 +366,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/monthly_income/": {
+    "/api/products/monthly_income": {
         parameters: {
             query?: never;
             header?: never;
@@ -358,15 +374,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Monthlyincomes */
-        get: operations["get_monthlyincomes_api_products_monthly_income__get"];
+        get: operations["get_monthlyincomes_api_products_monthly_income_get"];
         put?: never;
         /** Create Monthlyincome */
-        post: operations["create_monthlyincome_api_products_monthly_income__post"];
+        post: operations["create_monthlyincome_api_products_monthly_income_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Monthlyincome */
-        patch: operations["patch_monthlyincome_api_products_monthly_income__patch"];
+        patch: operations["patch_monthlyincome_api_products_monthly_income_patch"];
         trace?: never;
     };
     "/api/products/monthly_income/{id}": {
@@ -387,7 +403,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/monthly_expense/": {
+    "/api/products/monthly_expense": {
         parameters: {
             query?: never;
             header?: never;
@@ -395,15 +411,15 @@ export type paths = {
             cookie?: never;
         };
         /** Get Monthlyexpenses */
-        get: operations["get_monthlyexpenses_api_products_monthly_expense__get"];
+        get: operations["get_monthlyexpenses_api_products_monthly_expense_get"];
         put?: never;
         /** Create Monthlyexpense */
-        post: operations["create_monthlyexpense_api_products_monthly_expense__post"];
+        post: operations["create_monthlyexpense_api_products_monthly_expense_post"];
         delete?: never;
         options?: never;
         head?: never;
         /** Patch Monthlyexpense */
-        patch: operations["patch_monthlyexpense_api_products_monthly_expense__patch"];
+        patch: operations["patch_monthlyexpense_api_products_monthly_expense_patch"];
         trace?: never;
     };
     "/api/products/monthly_expense/{id}": {
@@ -1054,7 +1070,7 @@ export type TransactionWithId = components['schemas']['TransactionWithId'];
 export type ValidationError = components['schemas']['ValidationError'];
 export type $defs = Record<string, never>;
 export interface operations {
-    get_transactions_api_transaction__get: {
+    get_transactions_api_transaction_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1074,7 +1090,7 @@ export interface operations {
             };
         };
     };
-    create_transaction_api_transaction__post: {
+    create_transaction_api_transaction_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1107,7 +1123,7 @@ export interface operations {
             };
         };
     };
-    patch_transaction_api_transaction__patch: {
+    patch_transaction_api_transaction_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -1236,7 +1252,7 @@ export interface operations {
             };
         };
     };
-    get_sources_api_source__get: {
+    get_sources_api_source_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1291,7 +1307,7 @@ export interface operations {
             };
         };
     };
-    get_tags_api_tag__get: {
+    get_tags_api_tag_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1307,6 +1323,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TagWithId"][];
+                };
+            };
+        };
+    };
+    get_tag_by_id_api_tag__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_tag_api_tag__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -1377,71 +1457,7 @@ export interface operations {
             };
         };
     };
-    get_tag_by_id_api_tag__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TagWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_tag_api_tag__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_cashs_api_products_cash__get: {
+    get_cashs_api_products_cash_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1461,7 +1477,7 @@ export interface operations {
             };
         };
     };
-    create_cash_api_products_cash__post: {
+    create_cash_api_products_cash_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1494,7 +1510,7 @@ export interface operations {
             };
         };
     };
-    patch_cash_api_products_cash__patch: {
+    patch_cash_api_products_cash_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -1560,7 +1576,7 @@ export interface operations {
             };
         };
     };
-    get_personalaccounts_api_products_personal_account__get: {
+    get_personalaccounts_api_products_personal_account_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1580,7 +1596,7 @@ export interface operations {
             };
         };
     };
-    create_personalaccount_api_products_personal_account__post: {
+    create_personalaccount_api_products_personal_account_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1613,7 +1629,7 @@ export interface operations {
             };
         };
     };
-    patch_personalaccount_api_products_personal_account__patch: {
+    patch_personalaccount_api_products_personal_account_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -1710,7 +1726,7 @@ export interface operations {
             };
         };
     };
-    get_cards_api_products_card__get: {
+    get_cards_api_products_card_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1730,7 +1746,7 @@ export interface operations {
             };
         };
     };
-    create_card_api_products_card__post: {
+    create_card_api_products_card_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1763,7 +1779,7 @@ export interface operations {
             };
         };
     };
-    patch_card_api_products_card__patch: {
+    patch_card_api_products_card_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -1860,7 +1876,7 @@ export interface operations {
             };
         };
     };
-    get_savingsaccounts_api_products_savings_account__get: {
+    get_savingsaccounts_api_products_savings_account_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1880,7 +1896,7 @@ export interface operations {
             };
         };
     };
-    create_savingsaccount_api_products_savings_account__post: {
+    create_savingsaccount_api_products_savings_account_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1913,7 +1929,7 @@ export interface operations {
             };
         };
     };
-    patch_savingsaccount_api_products_savings_account__patch: {
+    patch_savingsaccount_api_products_savings_account_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -2010,7 +2026,7 @@ export interface operations {
             };
         };
     };
-    get_stockaccounts_api_products_stock_account__get: {
+    get_stockaccounts_api_products_stock_account_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2030,7 +2046,7 @@ export interface operations {
             };
         };
     };
-    create_stockaccount_api_products_stock_account__post: {
+    create_stockaccount_api_products_stock_account_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2063,7 +2079,7 @@ export interface operations {
             };
         };
     };
-    patch_stockaccount_api_products_stock_account__patch: {
+    patch_stockaccount_api_products_stock_account_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -2160,7 +2176,7 @@ export interface operations {
             };
         };
     };
-    get_capitalinvestments_api_products_capital_investment__get: {
+    get_capitalinvestments_api_products_capital_investment_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2180,7 +2196,7 @@ export interface operations {
             };
         };
     };
-    create_capitalinvestment_api_products_capital_investment__post: {
+    create_capitalinvestment_api_products_capital_investment_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2213,7 +2229,7 @@ export interface operations {
             };
         };
     };
-    patch_capitalinvestment_api_products_capital_investment__patch: {
+    patch_capitalinvestment_api_products_capital_investment_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -2310,7 +2326,7 @@ export interface operations {
             };
         };
     };
-    get_monthlyincomes_api_products_monthly_income__get: {
+    get_monthlyincomes_api_products_monthly_income_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2330,7 +2346,7 @@ export interface operations {
             };
         };
     };
-    create_monthlyincome_api_products_monthly_income__post: {
+    create_monthlyincome_api_products_monthly_income_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2363,7 +2379,7 @@ export interface operations {
             };
         };
     };
-    patch_monthlyincome_api_products_monthly_income__patch: {
+    patch_monthlyincome_api_products_monthly_income_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -2460,7 +2476,7 @@ export interface operations {
             };
         };
     };
-    get_monthlyexpenses_api_products_monthly_expense__get: {
+    get_monthlyexpenses_api_products_monthly_expense_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2480,7 +2496,7 @@ export interface operations {
             };
         };
     };
-    create_monthlyexpense_api_products_monthly_expense__post: {
+    create_monthlyexpense_api_products_monthly_expense_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2513,7 +2529,7 @@ export interface operations {
             };
         };
     };
-    patch_monthlyexpense_api_products_monthly_expense__patch: {
+    patch_monthlyexpense_api_products_monthly_expense_patch: {
         parameters: {
             query?: never;
             header?: never;

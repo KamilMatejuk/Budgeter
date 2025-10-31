@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 import Navigation from "./Navigation";
 import Header from "./Header";
 import Accounts from "./Accounts";
+import Requirements from "./Requirements";
 
 
 export const transition = {
@@ -31,16 +32,10 @@ export default function Sidebar() {
       transition={transition}
       className={twMerge("h-screen p-2 flex flex-col", collapsed ? "shadow-[inset_0_0_12px_0_rgba(0,0,0,0.2)]" : "shadow-[0_0_12px_0_rgba(0,0,0,0.2)]")}
     >
-      {/* HEADER */}
       <Header collapsed={collapsed} setCollapsed={setCollapsed} />
-
-      {/* accounts (with nonzero value) */}
-      <Accounts collapsed={collapsed} />
-
-      {/* cards and accounts with not-met limits this month */}
-
-      {/* NAV */}
       <Navigation collapsed={collapsed} />
+      <Requirements collapsed={collapsed} />
+      <Accounts collapsed={collapsed} />
     </motion.aside>
   );
 }

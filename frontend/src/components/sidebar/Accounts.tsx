@@ -9,7 +9,7 @@ import CellValue from "../table/CellValue";
 
 
 const classes = {
-  container: "flex-1 overflow-hidden py-3",
+  container: "overflow-hidden py-3",
   list: "overflow-x-hidden",
   item: "text-sm flex flex-nowrap whitespace-nowrap justify-between p-1 pl-3 w-full",
   label: "overflow-hidden whitespace-nowrap text-sm",

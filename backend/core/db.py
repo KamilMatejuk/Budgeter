@@ -29,6 +29,7 @@ async def clear_db(db: AsyncIOMotorDatabase):
     # await db["tags"].delete_many({})
     # await db["sources"].delete_many({})
     await db["transactions"].delete_many({})
+    await db["card_monthly_history"].delete_many({})
     # await db.drop_collection("transactions")
 
 

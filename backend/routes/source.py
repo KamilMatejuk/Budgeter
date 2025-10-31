@@ -2,6 +2,7 @@ import enum
 import hashlib
 from pydantic import Field
 from fastapi import HTTPException, APIRouter, Depends
+from models.history import CardMonthlyHistory
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.products import CardWithId, PersonalAccountWithId
@@ -10,7 +11,23 @@ from routes.base import PyBaseModel, fail_wrapper, get, create
 from core.db import get_db
 
 
+async def mark_card_usage_in_history(card: CardWithId, date: str, db: AsyncIOMotorDatabase):
+    year = int(date.split("-")[0])
+    month = int(date.split("-")[1])
+    condition = {"card": str(card.id), "year": year, "month": month}
+    history: CardMonthlyHistory = await get(db, "card_monthly_history", CardMonthlyHistory, condition, one=True)
+    if history is None:
+        history = CardMonthlyHistory(year=year, month=month, card=str(card.id), transactions=1)
+        await db["card_monthly_history"].insert_one(
+            history.model_dump(by_alias=True, mode="json"))
+    else:
+        await db["card_monthly_history"].update_one(
+            {"_id": str(history.id)},
+            {"$set": {"transactions": history.transactions + 1}})
+
+
 # Enums
+
 class Source(enum.Enum):
     MILLENNIUM = "Millennium"
 
@@ -59,6 +76,7 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": card.account}, one=True)
         if account is None:
             raise HTTPException(status_code=500, detail=f"Account with id {card.account} not found")
+        await mark_card_usage_in_history(card, data.transaction_date, db)
     else:
         account = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
         if account is None:
@@ -66,6 +84,7 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
 
     if "WCZEŚN.SPŁ.KARTY" in data.type:
         # TODO handle credit card payments
+        # jak jest płatność kartą kredytową to nie dodawać do konta, tylko usuwać wartość z karty kredytowej
         return {}
     elif "PRZELEW WEWNĘTRZNY PRZYCHODZĄCY" in data.type:
         # TODO handle internal transfers in (double entry?)

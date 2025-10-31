@@ -424,6 +424,57 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/history/requirements/cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Required Card Transactions */
+        get: operations["get_required_card_transactions_api_history_requirements_cards_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/history/requirements/accounts/in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Required Account Amount In */
+        get: operations["get_required_account_amount_in_api_history_requirements_accounts_in_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/history/requirements/accounts/out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Required Account Amount Out */
+        get: operations["get_required_account_amount_out_api_history_requirements_accounts_out_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 };
 export type webhooks = Record<string, never>;
 export type components = {
@@ -737,6 +788,15 @@ export type components = {
             /** Min Outgoing Amount Monthly */
             min_outgoing_amount_monthly: number;
         };
+        /** RequirementsResponse */
+        RequirementsResponse: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Remaining */
+            remaining: number;
+        };
         /** SavingsAccount */
         SavingsAccount: {
             /** Id */
@@ -977,6 +1037,7 @@ export type MonthlyIncomeWithId = components['schemas']['MonthlyIncomeWithId'];
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
+export type RequirementsResponse = components['schemas']['RequirementsResponse'];
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
@@ -2545,6 +2606,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_required_card_transactions_api_history_requirements_cards_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequirementsResponse"][];
+                };
+            };
+        };
+    };
+    get_required_account_amount_in_api_history_requirements_accounts_in_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequirementsResponse"][];
+                };
+            };
+        };
+    };
+    get_required_account_amount_out_api_history_requirements_accounts_out_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequirementsResponse"][];
                 };
             };
         };

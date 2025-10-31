@@ -95,6 +95,18 @@ class CRUDRouterFactory:
         # register route
         self.router.get("/", response_model=list[self.model_with_id])(f)
 
+    def create_get_by_id(self):
+        # define GET function
+        async def f(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+            res = await get(db, self.table, self.model_with_id, {"_id": id}, one=True)
+            if res is not None: return res
+            raise HTTPException(status_code=404, detail="Not found")
+        # update name and annotations for OpenAPI
+        f.__annotations__["return"] = self.model_with_id
+        f.__name__ = f"get_{self.model.__name__.lower()}_by_id"
+        # register route
+        self.router.get("/{id}", response_model=self.model_with_id)(f)
+
     def create_post(self):
         # define POST function
         async def f(data, db: AsyncIOMotorDatabase = Depends(get_db)):

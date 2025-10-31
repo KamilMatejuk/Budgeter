@@ -10,6 +10,7 @@ router = APIRouter()
 
 factory = CRUDRouterFactory(router, "transactions", Transaction, TransactionPartial, TransactionWithId, "hash")
 factory.create_get()
+factory.create_get_by_id()
 factory.create_post()
 factory.create_patch()
 factory.create_delete()

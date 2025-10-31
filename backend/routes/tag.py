@@ -37,6 +37,7 @@ def getNextColor(current_color: str) -> str:
 router = APIRouter()
 factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
 factory.create_get()
+factory.create_get_by_id()
 
 
 @router.post("/", response_model=TagWithId)

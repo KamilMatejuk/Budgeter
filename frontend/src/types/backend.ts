@@ -30,7 +30,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Transaction By Id */
+        get: operations["get_transaction_by_id_api_transaction__id__get"];
         put?: never;
         post?: never;
         /** Delete Transaction */
@@ -117,7 +118,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Tag By Id */
+        get: operations["get_tag_by_id_api_tag__id__get"];
         put?: never;
         post?: never;
         /** Delete Tag */
@@ -189,7 +191,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Personalaccount By Id */
+        get: operations["get_personalaccount_by_id_api_products_personal_account__id__get"];
         put?: never;
         post?: never;
         /** Delete Personalaccount */
@@ -225,7 +228,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Card By Id */
+        get: operations["get_card_by_id_api_products_card__id__get"];
         put?: never;
         post?: never;
         /** Delete Card */
@@ -261,7 +265,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Savingsaccount By Id */
+        get: operations["get_savingsaccount_by_id_api_products_savings_account__id__get"];
         put?: never;
         post?: never;
         /** Delete Savingsaccount */
@@ -297,7 +302,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Stockaccount By Id */
+        get: operations["get_stockaccount_by_id_api_products_stock_account__id__get"];
         put?: never;
         post?: never;
         /** Delete Stockaccount */
@@ -333,7 +339,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Capitalinvestment By Id */
+        get: operations["get_capitalinvestment_by_id_api_products_capital_investment__id__get"];
         put?: never;
         post?: never;
         /** Delete Capitalinvestment */
@@ -369,7 +376,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Monthlyincome By Id */
+        get: operations["get_monthlyincome_by_id_api_products_monthly_income__id__get"];
         put?: never;
         post?: never;
         /** Delete Monthlyincome */
@@ -405,7 +413,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Monthlyexpense By Id */
+        get: operations["get_monthlyexpense_by_id_api_products_monthly_expense__id__get"];
         put?: never;
         post?: never;
         /** Delete Monthlyexpense */
@@ -1070,6 +1079,37 @@ export interface operations {
             };
         };
     };
+    get_transaction_by_id_api_transaction__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_transaction_api_transaction__id__delete: {
         parameters: {
             query?: never;
@@ -1255,6 +1295,37 @@ export interface operations {
                 "application/json": components["schemas"]["TagPartial"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_tag_by_id_api_tag__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -1514,6 +1585,37 @@ export interface operations {
             };
         };
     };
+    get_personalaccount_by_id_api_products_personal_account__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalAccountWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_personalaccount_api_products_personal_account__id__delete: {
         parameters: {
             query?: never;
@@ -1612,6 +1714,37 @@ export interface operations {
                 "application/json": components["schemas"]["CardPartial"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_card_by_id_api_products_card__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -1752,6 +1885,37 @@ export interface operations {
             };
         };
     };
+    get_savingsaccount_by_id_api_products_savings_account__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavingsAccountWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_savingsaccount_api_products_savings_account__id__delete: {
         parameters: {
             query?: never;
@@ -1850,6 +2014,37 @@ export interface operations {
                 "application/json": components["schemas"]["StockAccountPartial"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAccountWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_stockaccount_by_id_api_products_stock_account__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -1990,6 +2185,37 @@ export interface operations {
             };
         };
     };
+    get_capitalinvestment_by_id_api_products_capital_investment__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapitalInvestmentWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_capitalinvestment_api_products_capital_investment__id__delete: {
         parameters: {
             query?: never;
@@ -2109,6 +2335,37 @@ export interface operations {
             };
         };
     };
+    get_monthlyincome_by_id_api_products_monthly_income__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyIncomeWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     delete_monthlyincome_api_products_monthly_income__id__delete: {
         parameters: {
             query?: never;
@@ -2207,6 +2464,37 @@ export interface operations {
                 "application/json": components["schemas"]["MonthlyExpensePartial"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlyExpenseWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_monthlyexpense_by_id_api_products_monthly_expense__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

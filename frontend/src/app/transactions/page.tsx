@@ -8,10 +8,10 @@ import MonthSelector from "./MonthSelector";
 
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     year?: string;
     month?: string;
-  };
+  }>;
 }
 
 export function monthName(month: number) {
@@ -23,8 +23,7 @@ export function monthName(month: number) {
 
 export default async function Transactions({ searchParams }: PageProps) {
   // read params
-  const year = await searchParams.year;
-  const month = await searchParams.month;
+  const { year, month } = await searchParams;
   const yearNr = year ? parseInt(year) : new Date().getFullYear();
   const monthNr = month ? parseInt(month) : new Date().getMonth() + 1;
   // get transactions

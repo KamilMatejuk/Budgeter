@@ -76,6 +76,7 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": card.account}, one=True)
         if account is None:
             raise HTTPException(status_code=500, detail=f"Account with id {card.account} not found")
+        if card.credit and data.type == "PŁATNOŚĆ KARTĄ": data.type = "PŁATNOŚĆ KARTĄ KREDYTOWĄ"
         await mark_card_usage_in_history(card, data.transaction_date, db)
     else:
         account = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)

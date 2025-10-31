@@ -15,7 +15,7 @@ interface PageProps {
 }
 
 export function monthName(month: number) {
-  const date = new Date();
+  const date = new Date(1970, 0, 1);
   date.setMonth(month - 1);
   return date.toLocaleString('default', { month: 'long' });
 }

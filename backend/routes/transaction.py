@@ -15,7 +15,7 @@ factory.create_patch()
 factory.create_delete()
 
 @router.get("/{year}/{month}", response_model=list[TransactionWithId])
-async def create_tag(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = datetime.date(year, month, 1)
     end = (start + datetime.timedelta(days=32)).replace(day=1)
     return await get(db, "transactions", TransactionWithId, {"date": {"$gte": start.isoformat(), "$lt": end.isoformat()}})

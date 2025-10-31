@@ -23,20 +23,22 @@ export function monthName(month: number) {
 
 export default async function Transactions({ searchParams }: PageProps) {
   // read params
-  const year = searchParams.year ? parseInt(searchParams.year) : new Date().getFullYear();
-  const month = searchParams.month ? parseInt(searchParams.month) : new Date().getMonth() + 1;
+  const year = await searchParams.year;
+  const month = await searchParams.month;
+  const yearNr = year ? parseInt(year) : new Date().getFullYear();
+  const monthNr = month ? parseInt(month) : new Date().getMonth() + 1;
   // get transactions
-  const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transaction/${year}/${month}`, ["transaction"]);
+  const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transaction/${yearNr}/${monthNr}`, ["transaction"]);
 
   return (
     <>
       <PageHeader text="Transactions History" subtext="Overview of your recent transactions" />
-      <MonthSelector year={year} month={month} />
+      <MonthSelector year={yearNr} month={monthNr} />
       {error
         ? <ErrorToast message="Could not download transactions" />
         : transactions.length == 0
           ? <WarningToast message="No transactions found" />
-          : <TransactionsTable transactions={transactions} header={`${monthName(month)} ${year}`} />
+          : <TransactionsTable transactions={transactions} header={`${monthName(monthNr)} ${yearNr}`} />
       }
     </>
   );

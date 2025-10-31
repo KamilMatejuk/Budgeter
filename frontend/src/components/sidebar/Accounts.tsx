@@ -13,6 +13,7 @@ const classes = {
   list: "overflow-x-hidden",
   item: "text-sm flex flex-nowrap whitespace-nowrap justify-between p-1 pl-3 w-full",
   label: "overflow-hidden whitespace-nowrap text-sm",
+  total: "text-sm flex flex-nowrap whitespace-nowrap justify-end p-1 pl-3 w-full border-t border-line mt-2",
 }
 
 
@@ -46,6 +47,7 @@ export default function Accounts({ collapsed }: AccountsProps) {
   const [stocks, setStocks] = useState<number>(0);
   const [capitals, setCapitals] = useState<number>(0);
   const [savings, setSavings] = useState<number>(0);
+  const total = cards.reduce((acc, it) => acc + (it.value || 0), 0) + accounts.reduce((acc, it) => acc + (it.value || 0), 0) + savings + capitals + stocks;
 
   useEffect(() => {
     get<CardWithId[]>("/api/products/card", ["card"])
@@ -77,6 +79,9 @@ export default function Accounts({ collapsed }: AccountsProps) {
         { name: "Capital", value: capitals },
         { name: "Stocks", value: stocks },
       ]} />
+      <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
+        <CellValue value={total} as_diff />
+      </motion.span>
     </div>
   );
 }

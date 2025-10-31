@@ -69,10 +69,10 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
             <table className={classes.table}>
                 {/* header */}
                 <thead className={classes.thead}>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
+                    {table.getHeaderGroups().map((headerGroup, i) => (
+                        <tr key={`${headerGroup.id}-${i}`}>
                             {headerGroup.headers.map((header, i) => (
-                                <th key={header.id} className={twMerge(classes.th, i == 0 ? "w-4" : "w-4")}>
+                                <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 ? "w-4" : "w-4")}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -84,10 +84,10 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                 </thead>
                 <tbody>
                     {/* data */}
-                    {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.id} className={classes.td}>
+                    {table.getRowModel().rows.map((row, i) => (
+                        <tr key={`${row.id}-${i}`} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
+                            {row.getVisibleCells().map((cell, i) => (
+                                <td key={`${cell.id}-${i}`} className={classes.td}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}
@@ -109,10 +109,10 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                 </tbody>
                 {/* footer */}
                 <tfoot>
-                    {table.getFooterGroups().map(footerGroup => (
-                        <tr key={footerGroup.id}>
-                            {footerGroup.headers.map(header => (
-                                <th key={header.id} className={classes.th}>
+                    {table.getFooterGroups().map((footerGroup, i) => (
+                        <tr key={`${footerGroup.id}-${i}`}>
+                            {footerGroup.headers.map((header, i) => (
+                                <th key={`${header.id}-${i}`} className={classes.th}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.footer, header.getContext())}

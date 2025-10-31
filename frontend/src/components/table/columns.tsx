@@ -4,6 +4,7 @@ import { CardWithId, PersonalAccountWithId, Transaction } from "@/types/backend"
 import CellValue from "./CellValue";
 import CellBoolean from "./CellBoolean";
 import CellTextWrap from "./CellTextWrap";
+import CellAccountName from "./CellAccountName";
 
 const selectColumn: ColumnDef<ItemID> = {
     id: "select",
@@ -48,8 +49,9 @@ const settingsColumns = {
     } as ColumnDef<CardWithId>,
     account: {
         accessorKey: "account",
-        header: "Account"
-    },
+        header: "Account",
+        cell: ({ row }) => <CellAccountName id={row.original.account} />,
+    } as ColumnDef<CardWithId>,
     minTransactionsMonthly: {
         accessorKey: "min_number_of_transactions_monthly",
         header: "Minimal Transactions Monthly"
@@ -86,10 +88,6 @@ const settingsColumns = {
 }
 
 const transactionsColumns = {
-    account: {
-        accessorKey: "account",
-        header: "Account"
-    },
     date: {
         accessorKey: "date",
         header: "Date"

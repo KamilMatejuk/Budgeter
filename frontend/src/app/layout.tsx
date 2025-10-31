@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Budgeter",
@@ -19,10 +20,12 @@ export default function RootLayout({
         // https://stackoverflow.com/a/75339011/6645624
         suppressHydrationWarning
       >
-        <Sidebar />
-        <div className="flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4">
-          {children}
-        </div>
+        <ReactQueryProvider>
+          <Sidebar />
+          <div className="flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4">
+            {children}
+          </div>
+        </ReactQueryProvider>
       </body>
     </html>
   );

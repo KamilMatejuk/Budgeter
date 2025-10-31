@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-table": "^8.21.3",
     "formik": "^2.4.6",
     "formik-validator-zod": "^2.2.0",

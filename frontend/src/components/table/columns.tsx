@@ -7,6 +7,7 @@ import CellTextWrap from "./CellTextWrap";
 import CellAccountName from "./CellAccountName";
 import CellOrganisation from "./CellOrganisation";
 import CellIcon from "./CellIcon";
+import { Currency } from "@/types/enum";
 
 const selectColumn: ColumnDef<ItemID> = {
     id: "select",
@@ -34,7 +35,7 @@ const settingsColumns = {
     value: {
         accessorKey: "value",
         header: "Value",
-        cell: ({ row }) => <CellValue value={row.original.value} />,
+        cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} />,
     } as ColumnDef<PersonalAccountWithId>,
     currency: {
         accessorKey: "currency",
@@ -116,7 +117,7 @@ const transactionsColumns = {
     diffValue: {
         accessorKey: "value",
         header: "Value",
-        cell: ({ row }) => <CellValue value={row.original.value} as_diff />,
+        cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} as_diff />,
     } as ColumnDef<Transaction>,
     tags: {
         accessorKey: "tags",

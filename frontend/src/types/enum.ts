@@ -12,3 +12,9 @@ export enum Currency {
     USD = "USD",
     EUR = "EUR",
 }
+
+export const CURRENCY_SYMBOLS: Record<Currency, string> = {
+    [Currency.PLN]: "zł",
+    [Currency.USD]: "$",
+    [Currency.EUR]: "€",
+};

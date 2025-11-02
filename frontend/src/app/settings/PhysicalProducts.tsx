@@ -16,7 +16,7 @@ export default async function PhysicalProducts() {
           tag="cash"
           newText="cash"
           data={cash}
-          columns={["name", "value", "currency"]} />}
+          columns={["name", "value"]} />}
       {cardsError
         ? <ErrorToast message={`Could not download cards: ${cardsError.message}`} />
         : <Table<Card, CardWithId>

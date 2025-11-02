@@ -16,7 +16,7 @@ export default async function RecurringProducts() {
           tag="monthly_income"
           newText="monthly income"
           data={income}
-          columns={["name", "value", "currency", "dayOfMonth"]} />}
+          columns={["name", "value", "dayOfMonth"]} />}
       {expenseError
         ? <ErrorToast message={`Could not download expenses: ${expenseError.message}`} />
         : <Table<MonthlyExpense, MonthlyExpenseWithId>
@@ -24,7 +24,7 @@ export default async function RecurringProducts() {
           tag="monthly_expense"
           newText="monthly expense"
           data={expense}
-          columns={["name", "value", "currency", "dayOfMonth"]} />}
+          columns={["name", "value", "dayOfMonth"]} />}
     </>
   );
 }

@@ -17,7 +17,7 @@ export default async function Investments() {
           tag="stock_account"
           newText="stock account"
           data={stock}
-          columns={["name", "value", "currency", "number", "interest"]} />}
+          columns={["name", "value", "number", "interest"]} />}
       {capitalInvestmentError
         ? <ErrorToast message={`Could not download capital investments: ${capitalInvestmentError.message}`} />
         : <Table<CapitalInvestment, CapitalInvestmentWithId>
@@ -25,7 +25,7 @@ export default async function Investments() {
           tag="capital_investment"
           newText="capital investment"
           data={capital}
-          columns={["name", "value", "currency", "interest", "capitalization", "startDate", "endDate"]} />}
+          columns={["name", "value", "interest", "capitalization", "startDate", "endDate"]} />}
       {savingsAccountError
         ? <ErrorToast message={`Could not download saving accounts: ${savingsAccountError.message}`} />
         : <Table<SavingsAccount, SavingsAccountWithId>
@@ -33,7 +33,7 @@ export default async function Investments() {
           tag="savings_account"
           newText="savings account"
           data={savings}
-          columns={["name", "value", "currency", "number", "interest", "capitalization"]} />}
+          columns={["name", "value", "number", "interest", "capitalization"]} />}
     </>
   );
 }

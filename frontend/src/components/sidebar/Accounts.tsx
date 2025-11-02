@@ -6,6 +6,7 @@ import { spanTransition } from "./Sidebar";
 import { get } from "@/app/api/fetch";
 import { CapitalInvestmentWithId, CardWithId, PersonalAccountWithId, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
 import CellValue from "../table/CellValue";
+import { Currency } from "@/types/enum";
 
 
 const classes = {
@@ -17,7 +18,7 @@ const classes = {
 }
 
 
-function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null }[] }) {
+function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null, currency: Currency }[] }) {
   return (
     <>
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
@@ -27,7 +28,7 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
         {items.map((it) => (
           <li key={it.name} className={classes.item}>
             {it.name}
-            <CellValue value={it.value || 0} as_diff />
+            <CellValue value={it.value || 0} currency={it.currency} as_diff />
           </li>
         ))}
       </motion.ul>
@@ -72,15 +73,15 @@ export default function Accounts({ collapsed }: AccountsProps) {
 
   return (
     <div className={classes.container}>
-      <Section title="Cards" collapsed={collapsed} items={cards} />
-      <Section title="Accounts" collapsed={collapsed} items={accounts} />
+      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency: card.currency as Currency}))} />
+      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency: account.currency as Currency}))} />
       <Section title="Investments" collapsed={collapsed} items={[
-        { name: "Savings", value: savings },
-        { name: "Capital", value: capitals },
-        { name: "Stocks", value: stocks },
+        { name: "Savings", value: savings, currency: Currency.PLN },
+        { name: "Capital", value: capitals, currency: Currency.PLN },
+        { name: "Stocks", value: stocks, currency: Currency.PLN },
       ]} />
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
-        <CellValue value={total} as_diff />
+        <CellValue value={total} currency={Currency.PLN} as_diff />
       </motion.span>
     </div>
   );

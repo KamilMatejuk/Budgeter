@@ -40,7 +40,7 @@ factory.create_get()
 factory.create_get_by_id()
 
 
-@router.post("/", response_model=TagWithId)
+@router.post("", response_model=TagWithId)
 async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     parent = await get_parent(data, db)
     # use parent colour
@@ -54,7 +54,7 @@ async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db
     return item
 
 
-@router.patch("/", response_model=TagWithId)
+@router.patch("", response_model=TagWithId)
 async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     item = await patch(db, "tags", TagWithId, data)
     # recursively update colour in children

@@ -23,15 +23,15 @@ export default function Requirements({ collapsed }: RequirementsProps) {
   const [incomes, setIncomes] = useState<RequirementsResponse[]>([]);
   const [outcomes, setOutcomes] = useState<RequirementsResponse[]>([]);
   useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/cards", [])
+    get<RequirementsResponse[]>("/api/history/requirements/cards", ["card"])
       .then(({ response }) => response && setTransactions(response));
   }, []);
   useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/accounts/in", [])
+    get<RequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"])
       .then(({ response }) => response && setIncomes(response));
   }, []);
   useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/accounts/out", [])
+    get<RequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"])
       .then(({ response }) => response && setOutcomes(response));
   }, []);
 

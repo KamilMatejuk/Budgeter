@@ -1,11 +1,8 @@
-'use client';
-
 import { motion } from "framer-motion";
 import WarningToast from "../toast/WarningToast";
-import { spanTransition } from "./Sidebar";
-import { useEffect, useState } from "react";
 import { RequirementsResponse } from "@/types/backend";
-import { get } from "@/app/api/fetch";
+import { spanTransition } from "./SidebarClient";
+
 
 const classes = {
   container: "flex-1 overflow-hidden py-3 flex flex-col justify-center gap-1",
@@ -13,28 +10,15 @@ const classes = {
 }
 
 
-interface RequirementsProps {
+export interface RequirementsProps {
   collapsed: boolean;
+  transactions: RequirementsResponse[];
+  incomes: RequirementsResponse[];
+  outcomes: RequirementsResponse[];
 }
 
 
-export default function Requirements({ collapsed }: RequirementsProps) {
-  const [transactions, setTransactions] = useState<RequirementsResponse[]>([]);
-  const [incomes, setIncomes] = useState<RequirementsResponse[]>([]);
-  const [outcomes, setOutcomes] = useState<RequirementsResponse[]>([]);
-  useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/cards", ["card"])
-      .then(({ response }) => response && setTransactions(response));
-  }, []);
-  useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"])
-      .then(({ response }) => response && setIncomes(response));
-  }, []);
-  useEffect(() => {
-    get<RequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"])
-      .then(({ response }) => response && setOutcomes(response));
-  }, []);
-
+export default function Requirements({ transactions, incomes, outcomes, collapsed }: RequirementsProps) {
   const cardMessage = "Those cards didn't reach this month's required transactions:\n" +
     transactions.map(it => `- ${it.name} (${it.remaining} remaining)`).join("\n");
 

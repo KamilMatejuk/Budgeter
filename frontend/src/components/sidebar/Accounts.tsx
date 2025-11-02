@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { spanTransition } from "./Sidebar";
-import { get } from "@/app/api/fetch";
-import { CapitalInvestmentWithId, CardWithId, PersonalAccountWithId, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
+import { spanTransition } from "./SidebarClient";
+import { CardWithId, PersonalAccountWithId } from "@/types/backend";
 import CellValue from "../table/CellValue";
 import { Currency } from "@/types/enum";
 
@@ -37,44 +35,27 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
 }
 
 
-interface AccountsProps {
+export interface AccountsProps {
   collapsed: boolean;
+  cards: CardWithId[];
+  accounts: PersonalAccountWithId[];
+  stocks: number;
+  capitals: number;
+  savings: number;
 }
 
 
-export default function Accounts({ collapsed }: AccountsProps) {
-  const [cards, setCards] = useState<CardWithId[]>([{ name: 'loading...', value: 0 }] as CardWithId[]);
-  const [accounts, setAccounts] = useState<PersonalAccountWithId[]>([{ name: 'loading...', value: 0 }] as PersonalAccountWithId[]);
-  const [stocks, setStocks] = useState<number>(0);
-  const [capitals, setCapitals] = useState<number>(0);
-  const [savings, setSavings] = useState<number>(0);
-  const total = cards.reduce((acc, it) => acc + (it.value || 0), 0) + accounts.reduce((acc, it) => acc + (it.value || 0), 0) + savings + capitals + stocks;
-
-  useEffect(() => {
-    get<CardWithId[]>("/api/products/card", ["card"])
-      .then(({ response }) => response && setCards(response.filter((it) => it.credit && it.value)));
-  }, []);
-  useEffect(() => {
-    get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"])
-      .then(({ response }) => response && setAccounts(response.filter((it) => it.value)));
-  }, []);
-  useEffect(() => {
-    get<StockAccountWithId[]>("/api/products/stock_account", ["stock_account"])
-      .then(({ response }) => response && setStocks(response.reduce((acc, it) => acc + (it.value || 0), 0)));
-  }, []);
-  useEffect(() => {
-    get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"])
-      .then(({ response }) => response && setCapitals(response.reduce((acc, it) => acc + (it.value || 0), 0)));
-  }, []);
-  useEffect(() => {
-    get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"])
-      .then(({ response }) => response && setSavings(response.reduce((acc, it) => acc + (it.value || 0), 0)));
-  }, []);
+export default function Accounts({ collapsed, cards, accounts, stocks, capitals, savings }: AccountsProps) {
+  const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
+    + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
+    + savings
+    + capitals
+    + stocks;
 
   return (
     <div className={classes.container}>
-      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency: card.currency as Currency}))} />
-      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency: account.currency as Currency}))} />
+      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency: card.currency as Currency }))} />
+      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency: account.currency as Currency }))} />
       <Section title="Investments" collapsed={collapsed} items={[
         { name: "Savings", value: savings, currency: Currency.PLN },
         { name: "Capital", value: capitals, currency: Currency.PLN },

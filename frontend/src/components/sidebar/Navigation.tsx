@@ -5,7 +5,7 @@ import { GoHome } from "react-icons/go";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TfiImport } from "react-icons/tfi";
 import { CiViewList } from "react-icons/ci";
-import { spanTransition } from "./Sidebar";
+import { spanTransition } from "./SidebarClient";
 
 
 export type NavItem = {

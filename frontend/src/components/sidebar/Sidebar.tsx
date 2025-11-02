@@ -1,41 +1,32 @@
-'use client';
-
-import React, { useState } from "react";
-import { motion, Transition } from "framer-motion";
-import { twMerge } from "tailwind-merge";
-import Navigation from "./Navigation";
-import Header from "./Header";
-import Accounts from "./Accounts";
-import Requirements from "./Requirements";
+import { get } from "@/app/api/fetch";
+import SidebarClient from "./SidebarClient";
+import { CapitalInvestmentWithId, CardWithId, PersonalAccountWithId, RequirementsResponse, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
 
 
-export const transition = {
-  type: "spring",
-  duration: 500,
-  stiffness: 300,
-  damping: 30
-} as Transition;
-export const spanTransition = (collapsed: boolean) => ({
-  x: collapsed ? -8 : 0,
-  width: collapsed ? 0 : 240,
-  opacity: collapsed ? 0 : 1,
-});
+export default async function Sidebar() {
+  // server side wrapper for all components requireing data fetching
 
+  const { response: transactions } = await get<RequirementsResponse[]>("/api/history/requirements/cards", ["card"]);
+  const { response: incomes } = await get<RequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"]);
+  const { response: outcomes } = await get<RequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"]);
+  const requirementsProps = {
+    transactions: transactions || [],
+    incomes: incomes || [],
+    outcomes: outcomes || [],
+  };
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const { response: cards } = await get<CardWithId[]>("/api/products/card", ["card"]);
+  const { response: accounts } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
+  const { response: stocks } = await get<StockAccountWithId[]>("/api/products/stock_account", ["stock_account"]);
+  const { response: capitals } = await get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"]);
+  const { response: savings } = await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
+  const accountsProps = {
+    cards: cards?.filter((it) => it.credit && it.value) || [],
+    accounts: accounts?.filter((it) => it.value) || [],
+    stocks: stocks?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
+    capitals: capitals?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
+    savings: savings?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
+  };
 
-  return (
-    <motion.aside
-      initial={false}
-      animate={{ width: collapsed ? 64 : 256 }}
-      transition={transition}
-      className={twMerge("h-screen p-2 flex flex-col", collapsed ? "shadow-[inset_0_0_12px_0_rgba(0,0,0,0.2)]" : "shadow-[0_0_12px_0_rgba(0,0,0,0.2)]")}
-    >
-      <Header collapsed={collapsed} setCollapsed={setCollapsed} />
-      <Navigation collapsed={collapsed} />
-      <Requirements collapsed={collapsed} />
-      <Accounts collapsed={collapsed} />
-    </motion.aside>
-  );
+  return (<SidebarClient requirementsProps={requirementsProps} accountsProps={accountsProps} />);
 }

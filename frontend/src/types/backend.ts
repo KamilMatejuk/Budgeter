@@ -102,11 +102,13 @@ export type paths = {
         /** Get Tags */
         get: operations["get_tags_api_tag_get"];
         put?: never;
-        post?: never;
+        /** Create Tag */
+        post: operations["create_tag_api_tag_post"];
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Patch Tag */
+        patch: operations["patch_tag_api_tag_patch"];
         trace?: never;
     };
     "/api/tag/{id}": {
@@ -125,24 +127,6 @@ export type paths = {
         options?: never;
         head?: never;
         patch?: never;
-        trace?: never;
-    };
-    "/api/tag/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Tag */
-        post: operations["create_tag_api_tag__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Patch Tag */
-        patch: operations["patch_tag_api_tag__patch"];
         trace?: never;
     };
     "/api/products/cash": {
@@ -491,6 +475,60 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/organisation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organisations */
+        get: operations["get_organisations_api_organisation_get"];
+        put?: never;
+        /** Create Organisation */
+        post: operations["create_organisation_api_organisation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Organisation */
+        patch: operations["patch_organisation_api_organisation_patch"];
+        trace?: never;
+    };
+    "/api/organisation/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organisation By Id */
+        get: operations["get_organisation_by_id_api_organisation__id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Organisation */
+        delete: operations["delete_organisation_api_organisation__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/organisation/regex/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organisation By Name Regex */
+        get: operations["get_organisation_by_name_regex_api_organisation_regex__name__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 };
 export type webhooks = Record<string, never>;
 export type components = {
@@ -755,6 +793,39 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
+        };
+        /** Organisation */
+        Organisation: {
+            /** Id */
+            _id?: string;
+            /** Pattern */
+            pattern: string;
+            /** Name */
+            name: string;
+            /** Icon */
+            icon?: string | null;
+        };
+        /** OrganisationPartial */
+        OrganisationPartial: {
+            /** Id */
+            _id?: string;
+            /** Pattern */
+            pattern?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Icon */
+            icon?: string | null;
+        };
+        /** OrganisationWithId */
+        OrganisationWithId: {
+            /** Id */
+            _id: string;
+            /** Pattern */
+            pattern: string;
+            /** Name */
+            name: string;
+            /** Icon */
+            icon: string | null;
         };
         /** PersonalAccount */
         PersonalAccount: {
@@ -1050,6 +1121,9 @@ export type MonthlyExpenseWithId = components['schemas']['MonthlyExpenseWithId']
 export type MonthlyIncome = components['schemas']['MonthlyIncome'];
 export type MonthlyIncomePartial = components['schemas']['MonthlyIncomePartial'];
 export type MonthlyIncomeWithId = components['schemas']['MonthlyIncomeWithId'];
+export type Organisation = components['schemas']['Organisation'];
+export type OrganisationPartial = components['schemas']['OrganisationPartial'];
+export type OrganisationWithId = components['schemas']['OrganisationWithId'];
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
@@ -1327,6 +1401,72 @@ export interface operations {
             };
         };
     };
+    create_tag_api_tag_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TagRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_tag_api_tag_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TagPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_tag_by_id_api_tag__id__get: {
         parameters: {
             query?: never;
@@ -1378,72 +1518,6 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_tag_api_tag__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TagRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TagWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    patch_tag_api_tag__patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TagPartial"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TagWithId"];
                 };
             };
             /** @description Validation Error */
@@ -2682,6 +2756,187 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RequirementsResponse"][];
+                };
+            };
+        };
+    };
+    get_organisations_api_organisation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"][];
+                };
+            };
+        };
+    };
+    create_organisation_api_organisation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Organisation"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_organisation_api_organisation_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrganisationPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_organisation_by_id_api_organisation__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_organisation_api_organisation__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_organisation_by_name_regex_api_organisation_regex__name__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

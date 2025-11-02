@@ -1,0 +1,45 @@
+import datetime
+from fastapi import HTTPException, APIRouter, Depends
+from motor.motor_asyncio import AsyncIOMotorDatabase
+
+from core.db import get_db
+from routes.base import CRUDRouterFactory, create, get, patch
+from models.organisation import Organisation, OrganisationPartial, OrganisationWithId
+
+router = APIRouter()
+
+factory = CRUDRouterFactory(router, "organisations", Organisation, OrganisationPartial, OrganisationWithId)
+factory.create_get()
+factory.create_get_by_id()
+factory.create_delete()
+
+@router.get("/regex/{name}", response_model=OrganisationWithId)
+async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
+    for org in organisations:
+        if org.pattern.lower() in name.lower():
+            return org
+        if org.name.lower() == name.lower():
+            return org
+    raise HTTPException(status_code=404, detail="Organisation not found")
+
+
+@router.post("", response_model=OrganisationWithId)
+async def create_organisation(data: Organisation, db: AsyncIOMotorDatabase = Depends(get_db)):
+    item = await create(db, "organisations", OrganisationWithId, data)
+    # update matching transactions
+    async for doc in db["transactions"].find({}):
+        if item.pattern.lower() in doc["organisation"].lower():
+            await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
+    return item
+
+
+@router.patch("", response_model=OrganisationWithId)
+async def patch_organisation(data: OrganisationPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    prev = await get(db, "organisations", OrganisationWithId, {"_id": str(data.id)}, one=True)
+    item = await patch(db, "organisations", OrganisationWithId, data)
+    # update matching transactions if name changed
+    if prev.name != item.name:
+        async for doc in db["transactions"].find({"organisation": prev.name}):
+            await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
+    return item

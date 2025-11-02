@@ -3,6 +3,7 @@ import hashlib
 from pydantic import Field
 from fastapi import HTTPException, APIRouter, Depends
 from models.history import CardMonthlyHistory
+from models.organisation import OrganisationWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.products import CardWithId, PersonalAccountWithId
@@ -94,12 +95,20 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
         # TODO handle internal transfers out (double entry?)
         return {}
     
+    # override organisation based on pattern matching
+    organisation = data.recipient or data.description
+    for org in await get(db, "organisations", OrganisationWithId):
+        if org.pattern.lower() in organisation.lower():
+            organisation = org.name
+            break
+    
+    # create transaction
     item = Transaction(
         hash=hash,
         account=str(account.id),
         date=data.transaction_date,
         title=data.description if data.recipient else data.type.title(),
-        organisation=data.recipient or data.description,
+        organisation=organisation,
         value=data.credits or data.charges,
         tags=[],
     )

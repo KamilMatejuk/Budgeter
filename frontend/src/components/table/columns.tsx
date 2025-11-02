@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ItemID } from "./Table";
-import { CardWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
+import { CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
 import CellValue from "./CellValue";
 import CellBoolean from "./CellBoolean";
 import CellTextWrap from "./CellTextWrap";
 import CellAccountName from "./CellAccountName";
+import CellOrganisation from "./CellOrganisation";
+import CellIcon from "./CellIcon";
 
 const selectColumn: ColumnDef<ItemID> = {
     id: "select",
@@ -85,6 +87,15 @@ const settingsColumns = {
         accessorKey: "day_of_month",
         header: "Day of Month"
     },
+    pattern: {
+        accessorKey: "pattern",
+        header: "Pattern"
+    },
+    icon: {
+        accessorKey: "icon",
+        header: "Icon",
+        cell: ({ row }) => <CellIcon source={row.original.icon || ""} alt={row.original.name} />,
+    } as ColumnDef<OrganisationWithId>,
 }
 
 const transactionsColumns = {
@@ -100,7 +111,7 @@ const transactionsColumns = {
     organisation: {
         accessorKey: "organisation",
         header: "Organisation",
-        cell: ({ row }) => <CellTextWrap value={row.original.organisation} />,
+        cell: ({ row }) => <CellOrganisation name={row.original.organisation} />,
     } as ColumnDef<Transaction>,
     diffValue: {
         accessorKey: "value",

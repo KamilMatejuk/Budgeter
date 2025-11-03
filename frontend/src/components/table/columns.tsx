@@ -57,15 +57,22 @@ const settingsColumns = {
     } as ColumnDef<CardWithId>,
     minTransactionsMonthly: {
         accessorKey: "min_number_of_transactions_monthly",
-        header: "Minimal Transactions Monthly"
-    },
+        header: "Requirements",
+        cell: ({ row }) => {
+            const amount = row.original.min_number_of_transactions_monthly;
+            return amount ? `${amount} transactions` : "None";
+        }
+    } as ColumnDef<CardWithId>,
     minAmountMonthly: {
         accessorKey: "min_incoming_amount_monthly",
-        header: "Minimal Incoming/Outgoing Monthly",
+        header: "Requirements",
         cell: ({ row }) => {
             const incoming = row.original.min_incoming_amount_monthly;
             const outgoing = row.original.min_outgoing_amount_monthly;
-            return `${incoming} / ${outgoing}`;
+            return [
+                incoming ? `${incoming.toFixed(2)} incoming` : null,
+                outgoing ? `${outgoing.toFixed(2)} outgoing` : null,
+            ].filter(Boolean).join(", ") || "None";
         }
     } as ColumnDef<PersonalAccountWithId>,
     interest: {

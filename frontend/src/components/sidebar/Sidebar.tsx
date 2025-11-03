@@ -1,6 +1,13 @@
 import { get } from "@/app/api/fetch";
 import SidebarClient from "./SidebarClient";
-import { CapitalInvestmentWithId, CardWithId, PersonalAccountWithId, RequirementsResponse, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
+import { CapitalInvestmentWithId, CardWithId, Currency, PersonalAccountWithId, RequirementsResponse, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
+import { convertToPLN } from "@/app/api/forex";
+
+async function mapCurrenciesToPLN<T extends { value: number; currency: Currency }>(items: T[] | null): Promise<T[]> {
+  if (!items || items.length === 0) return [];
+  return await Promise.all(
+    items.map(async (it: T) => ({ ...it, value: await convertToPLN(it.value, it.currency), currency: "PLN" })));
+}
 
 
 export default async function Sidebar() {
@@ -22,10 +29,10 @@ export default async function Sidebar() {
   const { response: savings } = await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
   const accountsProps = {
     cards: cards?.filter((it) => it.credit && it.value) || [],
-    accounts: accounts?.filter((it) => it.value) || [],
-    stocks: stocks?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
-    capitals: capitals?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
-    savings: savings?.reduce((acc, it) => acc + (it.value || 0), 0) || 0,
+    accounts: await mapCurrenciesToPLN(accounts?.filter((it) => it.value) || []),
+    stocks: (await mapCurrenciesToPLN(stocks)).reduce((acc, it) => acc + (it.value || 0), 0),
+    capitals: (await mapCurrenciesToPLN(capitals)).reduce((acc, it) => acc + (it.value || 0), 0),
+    savings: (await mapCurrenciesToPLN(savings)).reduce((acc, it) => acc + (it.value || 0), 0),
   };
 
   return (<SidebarClient requirementsProps={requirementsProps} accountsProps={accountsProps} />);

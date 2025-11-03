@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ItemID } from "./Table";
-import { CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
+import { CapitalInvestmentWithId, CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
 import CellValue from "./CellValue";
 import CellBoolean from "./CellBoolean";
 import CellTextWrap from "./CellTextWrap";
@@ -70,8 +70,9 @@ const settingsColumns = {
     } as ColumnDef<PersonalAccountWithId>,
     interest: {
         accessorKey: "yearly_interest",
-        header: "Yearly Interest"
-    },
+        header: "Yearly Interest",
+        cell: ({ row }) => row.original.yearly_interest.toFixed(1) + "%",
+    } as ColumnDef<CapitalInvestmentWithId>,
     capitalization: {
         accessorKey: "capitalization",
         header: "Capitalization"

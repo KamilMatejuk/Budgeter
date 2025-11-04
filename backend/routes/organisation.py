@@ -1,5 +1,5 @@
 import datetime
-from fastapi import HTTPException, APIRouter, Depends
+from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
@@ -21,7 +21,7 @@ async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = D
             return org
         if org.name.lower() == name.lower():
             return org
-    raise HTTPException(status_code=404, detail="Organisation not found")
+    return Organisation(pattern="", name=name).model_dump(by_alias=True, mode="json")
 
 
 @router.post("", response_model=OrganisationWithId)

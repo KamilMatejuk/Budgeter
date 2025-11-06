@@ -2,13 +2,14 @@ import enum
 import hashlib
 from pydantic import Field
 from fastapi import HTTPException, APIRouter, Depends
-from models.history import CardMonthlyHistory
+from models.history import CardMonthlyHistory, AccountDailyHistory
 from models.organisation import OrganisationWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.products import CardWithId, PersonalAccountWithId
 from models.transaction import Transaction, TransactionWithId
 from routes.base import PyBaseModel, fail_wrapper, get, create
+from core.utils import Value
 from core.db import get_db
 
 
@@ -26,6 +27,21 @@ async def mark_card_usage_in_history(card: CardWithId, date: str, db: AsyncIOMot
             {"_id": str(history.id)},
             {"$set": {"transactions": history.transactions + 1}})
 
+
+async def mark_transaction_in_history(account_id: str, date: str, value: float, db: AsyncIOMotorDatabase):
+    history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": account_id, "date": date}, one=True)
+    if history is None:
+        history = AccountDailyHistory(account=account_id, date=date, value=value)
+        await db["account_daily_history"].insert_one(
+            history.model_dump(by_alias=True, mode="json"))
+    else:
+        await db["account_daily_history"].update_one(
+            {"_id": str(history.id)},
+            {"$set": {"value": Value.add(history.value, value)}})
+    # update all future dates until manual_update is True
+    async for doc in db["account_daily_history"].find({"account": account_id, "date": {"$gt": date}}):
+        if doc.get("manual_update", False): break
+        await db["account_daily_history"].update_one({"_id": doc["_id"]}, {"$set": {"value": Value.add(doc["value"], value)}})
 
 # Enums
 
@@ -112,4 +128,5 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
         value=data.credits or data.charges,
         tags=[],
     )
+    await mark_transaction_in_history(str(account.id), data.transaction_date, item.value, db)
     return await create(db, "transactions", TransactionWithId, item)

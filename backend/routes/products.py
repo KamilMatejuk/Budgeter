@@ -1,6 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from routes.base import CRUDRouterFactory
+from core.db import get_db
+from routes.base import CRUDRouterFactory, create, get, patch
+from models.history import AccountDailyHistory
 from models.products import (
     CapitalInvestmentWithId, CardWithId, Cash, CashPartial, CashWithId, MonthlyExpenseWithId, MonthlyIncomeWithId,
     PersonalAccount, PersonalAccountPartial,
@@ -26,10 +29,30 @@ personal_account_router = APIRouter(prefix="/personal_account")
 personal_account_factory = CRUDRouterFactory(personal_account_router, "personal_account", PersonalAccount, PersonalAccountPartial, PersonalAccountWithId)
 personal_account_factory.create_get()
 personal_account_factory.create_get_by_id()
-personal_account_factory.create_post()
-personal_account_factory.create_patch()
 personal_account_factory.create_delete()
+
+async def _mark_initial_balance_in_history(item: PersonalAccountWithId, db: AsyncIOMotorDatabase):
+    history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(item.id), "date": item.date}, one=True)
+    if history is None:
+        history = AccountDailyHistory(account=str(item.id), date=item.date, value=item.initial_balance, manual_update=True)
+        await db["account_daily_history"].insert_one(history.model_dump(by_alias=True, mode="json"))
+    else:
+        await db["account_daily_history"].update_one({"_id": str(history.id)}, {"$set": {"value": item.initial_balance, "manual_update": True}})
+
+@personal_account_router.post("", response_model=PersonalAccountWithId)
+async def create_personalaccount(data: PersonalAccount, db: AsyncIOMotorDatabase = Depends(get_db)):
+    item = await create(db, "personal_account", PersonalAccountWithId, data)
+    await _mark_initial_balance_in_history(item, db)
+    return item
+
+@personal_account_router.patch("", response_model=PersonalAccountWithId)
+async def patch_personalaccount(data: PersonalAccountPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    item = await patch(db, "personal_account", PersonalAccountWithId, data)
+    await _mark_initial_balance_in_history(item, db)
+    return item
+
 router.include_router(personal_account_router)
+
 
 card_router = APIRouter(prefix="/card")
 card_factory = CRUDRouterFactory(card_router, "card", Card, CardPartial, CardWithId)

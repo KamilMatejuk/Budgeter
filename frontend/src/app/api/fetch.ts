@@ -3,8 +3,8 @@
 import { revalidateTag } from 'next/cache';
 import { RequestInit } from 'next/dist/server/web/spec-extension/request';
 
-export type RESTMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-export type FetchArgs = {
+type RESTMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+type FetchArgs = {
   url: string;
   method: RESTMethod;
   body?: unknown;

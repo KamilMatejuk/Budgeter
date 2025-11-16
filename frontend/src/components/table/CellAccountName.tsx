@@ -3,7 +3,7 @@ import { get } from "@/app/api/fetch";
 import { PersonalAccountWithId } from "@/types/backend";
 
 
-export interface CellAccountNameProps {
+interface CellAccountNameProps {
   id: string;
 }
 

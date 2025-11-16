@@ -4,7 +4,7 @@ import { OrganisationWithId } from "@/types/backend";
 import CellIcon from "./CellIcon";
 
 
-export interface CellOrganisationProps {
+interface CellOrganisationProps {
   name: string;
 }
 

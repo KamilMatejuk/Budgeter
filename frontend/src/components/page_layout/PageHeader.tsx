@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-export interface PageHeaderProps extends React.ButtonHTMLAttributes<HTMLHeadingElement> {
+interface PageHeaderProps extends React.ButtonHTMLAttributes<HTMLHeadingElement> {
   text: string;
   subtext?: string;
 }

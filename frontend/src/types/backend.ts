@@ -573,39 +573,39 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /**
+             * End
+             * Format: date
+             */
+            end: string;
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
-            /**
-             * Start
-             * Format: date
-             */
-            start: string;
-            /**
-             * End
-             * Format: date
-             */
-            end: string;
         };
         /** CapitalInvestmentPartial */
         CapitalInvestmentPartial: {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
+            name?: string | null;
+            /** End */
+            end?: string | null;
+            /** Start */
+            start?: string | null;
             /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Yearly Interest */
             yearly_interest?: number | null;
             capitalization?: components["schemas"]["Capitalization"] | null;
-            /** Start */
-            start?: string | null;
-            /** End */
-            end?: string | null;
         };
         /** CapitalInvestmentWithId */
         CapitalInvestmentWithId: {
@@ -613,22 +613,22 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /**
+             * End
+             * Format: date
+             */
+            end: string;
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
-            /**
-             * Start
-             * Format: date
-             */
-            start: string;
-            /**
-             * End
-             * Format: date
-             */
-            end: string;
         };
         /**
          * Capitalization
@@ -641,13 +641,13 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
-            /** Value */
-            value?: number | null;
-            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
+            /** Value */
+            value?: number | null;
             /** Credit */
             credit: boolean;
+            currency: components["schemas"]["Currency"];
             /** Account */
             account: string;
             /** Min Number Of Transactions Monthly */
@@ -658,14 +658,14 @@ export type components = {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
-            /** Value */
-            value?: number | null;
-            currency: components["schemas"]["Currency"];
+            name?: string | null;
             /** Number */
             number?: string | null;
+            /** Value */
+            value?: number | null;
             /** Credit */
             credit?: boolean | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Account */
             account?: string | null;
             /** Min Number Of Transactions Monthly */
@@ -677,13 +677,13 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
-            /** Value */
-            value: number | null;
-            currency: components["schemas"]["Currency"];
             /** Number */
             number: string;
+            /** Value */
+            value: number | null;
             /** Credit */
             credit: boolean;
+            currency: components["schemas"]["Currency"];
             /** Account */
             account: string;
             /** Min Number Of Transactions Monthly */
@@ -704,10 +704,10 @@ export type components = {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
+            name?: string | null;
             /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
         };
         /** CashWithId */
         CashWithId: {
@@ -764,21 +764,21 @@ export type components = {
             name: string;
             /** Value */
             value: number;
-            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
+            currency: components["schemas"]["Currency"];
         };
         /** MonthlyExpensePartial */
         MonthlyExpensePartial: {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
+            name?: string | null;
             /** Value */
             value?: number | null;
-            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
         };
         /** MonthlyExpenseWithId */
         MonthlyExpenseWithId: {
@@ -788,9 +788,9 @@ export type components = {
             name: string;
             /** Value */
             value: number;
-            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
+            currency: components["schemas"]["Currency"];
         };
         /** MonthlyIncome */
         MonthlyIncome: {
@@ -800,21 +800,21 @@ export type components = {
             name: string;
             /** Value */
             value: number;
-            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
+            currency: components["schemas"]["Currency"];
         };
         /** MonthlyIncomePartial */
         MonthlyIncomePartial: {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
+            name?: string | null;
             /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            value?: number | null;
             /** Day Of Month */
             day_of_month?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
         };
         /** MonthlyIncomeWithId */
         MonthlyIncomeWithId: {
@@ -824,9 +824,9 @@ export type components = {
             name: string;
             /** Value */
             value: number;
-            currency: components["schemas"]["Currency"];
             /** Day Of Month */
             day_of_month: number;
+            currency: components["schemas"]["Currency"];
         };
         /** Organisation */
         Organisation: {
@@ -867,11 +867,11 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly: number;
             /** Min Outgoing Amount Monthly */
@@ -882,12 +882,12 @@ export type components = {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            name?: string | null;
             /** Number */
             number?: string | null;
+            /** Value */
+            value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly?: number | null;
             /** Min Outgoing Amount Monthly */
@@ -899,11 +899,11 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly: number;
             /** Min Outgoing Amount Monthly */
@@ -924,11 +924,11 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -938,12 +938,12 @@ export type components = {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            name?: string | null;
             /** Number */
             number?: string | null;
+            /** Value */
+            value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Yearly Interest */
             yearly_interest?: number | null;
             capitalization?: components["schemas"]["Capitalization"] | null;
@@ -954,11 +954,11 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -969,11 +969,11 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Yearly Interest */
             yearly_interest: number;
         };
@@ -982,12 +982,12 @@ export type components = {
             /** Id */
             _id?: string;
             /** Name */
-            name: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
+            name?: string | null;
             /** Number */
             number?: string | null;
+            /** Value */
+            value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Yearly Interest */
             yearly_interest?: number | null;
         };
@@ -997,11 +997,11 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Number */
+            number: string;
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
-            /** Number */
-            number: string;
             /** Yearly Interest */
             yearly_interest: number;
         };

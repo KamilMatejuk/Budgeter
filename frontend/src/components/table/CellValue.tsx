@@ -1,7 +1,7 @@
 import { Currency, CURRENCY_SYMBOLS } from "@/types/enum";
 import { twMerge } from "tailwind-merge";
 
-export interface CellValueProps {
+interface CellValueProps {
   value?: number;
   as_diff?: boolean;
   currency?: Currency;

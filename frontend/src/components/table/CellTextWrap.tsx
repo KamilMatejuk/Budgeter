@@ -1,4 +1,4 @@
-export interface CellTextWrapProps {
+interface CellTextWrapProps {
   value?: string;
 }
 

@@ -16,51 +16,65 @@ class Currency(enum.Enum):
     USD = "USD"
     EUR = "EUR"
 
-# Base product
 
-class Product(PyBaseModel):
+class Cash(PyBaseModel):
     name: str
     value: float
     currency: Currency
 
-# Specific products
-
-class Cash(Product):
-    pass
-
-class PersonalAccount(Product):
+class PersonalAccount(PyBaseModel):
+    name: str
     number: str
+    value: float
+    currency: Currency
     min_incoming_amount_monthly: int
     min_outgoing_amount_monthly: int
 
-class Card(Product):
+class Card(PyBaseModel):
+    name: str
     number: str
+    value: float
     credit: bool
+    currency: Currency
     account: str # id of PersonalAccount the card is assigned to
     min_number_of_transactions_monthly: int
     value: float | None = None # value shouldn't be set from frontend, and is only available for credit cards
 
-class SavingsAccount(Product):
+class SavingsAccount(PyBaseModel):
+    name: str
     number: str
+    value: float
+    currency: Currency
     yearly_interest: float
     capitalization: Capitalization
 
-class StockAccount(Product):
+class StockAccount(PyBaseModel):
+    name: str
     number: str
+    value: float
+    currency: Currency
     yearly_interest: float
 
-class CapitalInvestment(Product):
-    yearly_interest: float
-    capitalization: Capitalization
-    start: date
+class CapitalInvestment(PyBaseModel):
+    name: str
     end: date
+    start: date
+    value: float
+    currency: Currency
+    yearly_interest: float
+    capitalization: Capitalization
 
-class MonthlyIncome(Product):
-    day_of_month: int
-
-class MonthlyExpense(Product):
+class MonthlyIncome(PyBaseModel):
+    name: str
     value: float
     day_of_month: int
+    currency: Currency
+
+class MonthlyExpense(PyBaseModel):
+    name: str
+    value: float
+    day_of_month: int
+    currency: Currency
 
 # Partial models for updates
 

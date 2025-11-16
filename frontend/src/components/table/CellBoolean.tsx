@@ -1,6 +1,6 @@
 import { MdCheck, MdClose } from "react-icons/md";
 
-export interface CellBooleanProps {
+interface CellBooleanProps {
   value?: boolean;
 }
 

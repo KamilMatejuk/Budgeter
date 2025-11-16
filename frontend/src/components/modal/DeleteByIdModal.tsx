@@ -3,7 +3,7 @@ import Modal, { ModalProps } from "./Modal";
 import { del } from "@/app/api/fetch";
 
 
-export interface DeleteByIdModalProps extends ModalProps {
+interface DeleteByIdModalProps extends ModalProps {
     url: string;
     id: string;
 }

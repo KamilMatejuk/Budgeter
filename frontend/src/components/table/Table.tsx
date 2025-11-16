@@ -33,14 +33,7 @@ const classes = {
 export interface Item { _id?: string } // generic type for items without id
 export interface ItemID extends Item { _id: string } // generic type for items with id
 
-export interface ModalProps<T extends Item> {
-    url: string;
-    item: T;
-    open: boolean;
-    onClose: () => void;
-}
-
-export interface TableProps<TID extends ItemID> {
+interface TableProps<TID extends ItemID> {
     url: string;
     tag: string;
     data: TID[];
@@ -48,7 +41,6 @@ export interface TableProps<TID extends ItemID> {
     hideCreating?: boolean;
     newText?: string;
 }
-
 
 export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating, newText }: TableProps<TID>) {
     const [selectedItem, setSelectedItem] = useState<TID | null>(null);

@@ -8,7 +8,7 @@ import { CiViewList } from "react-icons/ci";
 import { spanTransition } from "./SidebarClient";
 
 
-export type NavItem = {
+type NavItem = {
   label: string;
   href: string;
   icon: React.ReactNode;

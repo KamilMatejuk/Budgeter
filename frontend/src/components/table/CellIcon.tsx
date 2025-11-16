@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export interface CellIconProps {
+interface CellIconProps {
   source: string;
   alt?: string;
 }

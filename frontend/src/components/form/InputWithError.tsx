@@ -1,10 +1,5 @@
 import React, { PropsWithChildren } from "react";
 import { FormikProps } from "formik";
-import { z } from "zod";
-import { ERROR } from "@/const/message";
-
-
-export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
 
 
 export interface MultiInputWithErrorProps<T> extends PropsWithChildren {

@@ -1,0 +1,13 @@
+{
+    "ignore": [
+        "src/types/backend.ts"
+    ],
+    "ignoreDependencies": [
+        "eslint",
+        "eslint-config-next",
+        "openapi-typescript",
+        "react-papaparse",
+        "papaparse",
+        "postcss"
+    ]
+}

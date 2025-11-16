@@ -21,6 +21,13 @@ export const requiredNonNegativeAmount = z.preprocess(
     .transform((n) => Number(n.toFixed(2)))
 );
 
+export const requiredAmount = z.preprocess(
+  (val) => preprocess(val as string),
+  z.number({ required_error: ERROR.requiredError })
+    .finite({ message: ERROR.positiveError })
+    .transform((n) => Number(n.toFixed(2)))
+);
+
 
 function preprocess(value: number | string) {
   if (typeof value !== "string") return value;
@@ -31,7 +38,7 @@ function preprocess(value: number | string) {
 
 function removeChars(value: number | string | undefined) {
   if (typeof value !== "string") return value ? value.toString() : "";
-  value = value.replace(",", ".").replace(/[^0-9\.]/g, "").trim();
+  value = value.replace(",", ".").replace(/[^0-9-\.]/g, "").trim();
   // allow only one dot and 2 decimal places
   const dotIndex = value.indexOf(".");
   if (dotIndex === -1) return value;

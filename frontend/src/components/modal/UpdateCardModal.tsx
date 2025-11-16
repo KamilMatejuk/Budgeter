@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import { Currency } from "@/types/enum";
-import AmountInputWithError, { requiredNonNegativeAmount } from "../form/AmountInputWithError";
+import AmountInputWithError, { requiredAmount, requiredNonNegativeAmount } from "../form/AmountInputWithError";
 import ChoiceInputWithError from "../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../form/CardNumberInputWithError";
 import DropDownInputWithError from "../form/DropDownInputWithError";
@@ -22,6 +22,7 @@ enum Type {
 const FormSchema = z.object({
     name: requiredText,
     number: requiredCardNumber,
+    value: requiredAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     credit: z.nativeEnum(Type, { required_error: ERROR.requiredError }),
     account: requiredText,
@@ -38,12 +39,17 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
             name: item.name || "",
             currency: item.currency as Currency || Currency.PLN,
             number: item.number || "",
+            value: item.value || 0,
             credit: item.credit ? Type.CREDIT : Type.DEBIT,
             account: item.account || "",
             min_number_of_transactions_monthly: item.min_number_of_transactions_monthly || 0,
         },
         onSubmit: async (values) => {
-            if (await submit<SubmitFormSchemaType, CardWithId>(url, { ...values, credit: values.credit == Type.CREDIT }, item?._id)) {
+            if (await submit<SubmitFormSchemaType, CardWithId>(url, {
+                ...values,
+                credit: values.credit == Type.CREDIT,
+                value: values.credit == Type.CREDIT ? values.value : 0,
+            }, item?._id)) {
                 onClose();
             }
         },
@@ -64,6 +70,8 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
         <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Card">
             <TextInputWithError formik={formik} formikName="name" label="Name" />
             <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
+            {formik.values.credit === Type.CREDIT &&
+                <AmountInputWithError formik={formik} formikName="value" label="Value" />}
             <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
             <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
             <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts} />

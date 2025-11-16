@@ -2,6 +2,7 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
 from fastapi import FastAPI
+from core.db import setup_db
 from routes.transaction import router as transaction_router
 from routes.source import router as source_router
 from routes.tag import router as tag_router
@@ -17,3 +18,7 @@ app.include_router(tag_router, prefix="/api/tag", tags=["Tags"])
 app.include_router(products_router, prefix="/api/products", tags=["Products"])
 app.include_router(history_router, prefix="/api/history", tags=["History"])
 app.include_router(organisation_router, prefix="/api/organisation", tags=["Organisations"])
+
+@app.on_event("startup")
+async def startup_event():
+    await setup_db()

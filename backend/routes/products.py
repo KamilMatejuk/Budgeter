@@ -1,3 +1,4 @@
+import datetime
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -32,12 +33,13 @@ personal_account_factory.create_get_by_id()
 personal_account_factory.create_delete()
 
 async def _mark_initial_balance_in_history(item: PersonalAccountWithId, db: AsyncIOMotorDatabase):
-    history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(item.id), "date": item.date}, one=True)
+    date = datetime.date.today().strftime("%Y-%m-%d")
+    history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(item.id), "date": date}, one=True)
     if history is None:
-        history = AccountDailyHistory(account=str(item.id), date=item.date, value=item.initial_balance, manual_update=True)
+        history = AccountDailyHistory(account=str(item.id), date=date, value=item.value, manual_update=True)
         await db["account_daily_history"].insert_one(history.model_dump(by_alias=True, mode="json"))
     else:
-        await db["account_daily_history"].update_one({"_id": str(history.id)}, {"$set": {"value": item.initial_balance, "manual_update": True}})
+        await db["account_daily_history"].update_one({"_id": str(history.id)}, {"$set": {"value": item.value, "manual_update": True}})
 
 @personal_account_router.post("", response_model=PersonalAccountWithId)
 async def create_personalaccount(data: PersonalAccount, db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -50,6 +52,15 @@ async def patch_personalaccount(data: PersonalAccountPartial, db: AsyncIOMotorDa
     item = await patch(db, "personal_account", PersonalAccountWithId, data)
     await _mark_initial_balance_in_history(item, db)
     return item
+
+async def get_personalaccount_by_number(number: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
+    for account in accounts:
+        account_parsed = account.number.replace(" ", "").replace("PL", "")
+        number_parsed = number.replace(" ", "").replace("PL", "")
+        if account_parsed == number_parsed:
+            return account
+    return None
 
 router.include_router(personal_account_router)
 

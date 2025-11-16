@@ -33,4 +33,5 @@ async def create_indexes(db: AsyncIOMotorDatabase):
 async def clear_db(db: AsyncIOMotorDatabase):
     await db["transactions"].delete_many({})
     await db["card_monthly_history"].delete_many({})
+    await db["account_daily_history"].delete_many({})
     logger.debug("Cleared database")

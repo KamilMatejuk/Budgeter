@@ -22,10 +22,13 @@ async def get_sources():
 @fail_wrapper
 @router.post("/Millennium", response_model=TransactionWithId | dict)
 async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
-    hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
-    # check hash exists
-    existing = await get(db, "transactions", TransactionWithId, {"hash": hash}, one=True)
-    if existing: return existing
-    # create new
-    if data.type == "": data.type = "PŁATNOŚĆ KARTĄ"
-    return await create_millennium_transaction(hash, data, db)
+    @fail_wrapper
+    async def inner():
+        hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
+        # check hash exists
+        existing = await get(db, "transactions", TransactionWithId, {"hash": hash}, one=True)
+        if existing: return existing
+        # create new
+        if data.type == "": data.type = "PŁATNOŚĆ KARTĄ"
+        return await create_millennium_transaction(hash, data, db)
+    return await inner()

@@ -4,11 +4,11 @@ from models.products import CardWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from routes.base import get
 from models.base import PyBaseModel
-from models.history import AccountDailyHistory, CardMonthlyHistory
-from models.products import PersonalAccountWithId
+from routes.base import fail_wrapper, get
 from models.transaction import TransactionWithId
+from models.products import PersonalAccountWithId
+from models.history import AccountDailyHistory, CardMonthlyHistory
 
 
 router = APIRouter()
@@ -22,22 +22,25 @@ class RequirementsResponse(PyBaseModel):
 
 @router.get("/requirements/cards", response_model=list[RequirementsResponse])
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
-    today = datetime.datetime.now()
-    cards: list[CardWithId] = await get(db, "card", CardWithId, {"active": True})
-    responses = []
-    for c in cards:
-        required = c.min_number_of_transactions_monthly or 0
-        if required == 0:
-            continue
-        condition = {"card": str(c.id), "year": today.year, "month": today.month}
-        history: CardMonthlyHistory = await get(db, "card_monthly_history", CardMonthlyHistory, condition, one=True)
-        if not history:
-            responses.append(RequirementsResponse(name=c.name, remaining=required))
-        else:
-            remaining = max(required - history.transactions, 0)
-            if remaining > 0:
-                responses.append(RequirementsResponse(name=c.name, remaining=remaining))
-    return responses
+    @fail_wrapper
+    async def inner():
+        today = datetime.datetime.now()
+        cards: list[CardWithId] = await get(db, "card", CardWithId, {"active": True})
+        responses = []
+        for c in cards:
+            required = c.min_number_of_transactions_monthly or 0
+            if required == 0:
+                continue
+            condition = {"card": str(c.id), "year": today.year, "month": today.month}
+            history: CardMonthlyHistory = await get(db, "card_monthly_history", CardMonthlyHistory, condition, one=True)
+            if not history:
+                responses.append(RequirementsResponse(name=c.name, remaining=required))
+            else:
+                remaining = max(required - history.transactions, 0)
+                if remaining > 0:
+                    responses.append(RequirementsResponse(name=c.name, remaining=remaining))
+        return responses
+    return await inner()
 
 @router.get("/requirements/accounts/in", response_model=list[RequirementsResponse])
 async def get_required_account_amount_in(db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -47,6 +50,7 @@ async def get_required_account_amount_in(db: AsyncIOMotorDatabase = Depends(get_
 async def get_required_account_amount_out(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await _get_required_account_amount(db, "min_outgoing_amount_monthly", lambda t: t.value < 0)
 
+@fail_wrapper
 async def _get_required_account_amount(db, key, filtr):
     today = datetime.datetime.now()
     start = datetime.date(today.year, today.month, 1)
@@ -87,6 +91,7 @@ async def get_account_values_monthly(year: int, month: int, db: AsyncIOMotorData
         end = datetime.date.today() + datetime.timedelta(days=1)
     return await _get_account_values(start, end, db)
 
+@fail_wrapper
 async def _get_account_values(start: datetime.date, end: datetime.date, db: AsyncIOMotorDatabase):
     response = {}
     # get accounts

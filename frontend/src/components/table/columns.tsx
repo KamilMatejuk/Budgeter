@@ -125,7 +125,7 @@ const transactionsColumns = {
     diffValue: {
         accessorKey: "value",
         header: "Value",
-        cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} as_diff />,
+        cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} colour />,
     } as ColumnDef<Transaction>,
     tags: {
         accessorKey: "tags",

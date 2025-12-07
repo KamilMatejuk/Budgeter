@@ -3,17 +3,15 @@ import { twMerge } from "tailwind-merge";
 
 interface CellValueProps {
   value?: number;
-  as_diff?: boolean;
+  colour?: boolean;
   currency?: Currency;
 }
 
-export default function CellValue({ value, as_diff, currency }: CellValueProps) {
+export default function CellValue({ value, colour, currency }: CellValueProps) {
   if (value === undefined) return null
   let valueStr = (value || 0).toFixed(2)
   // add plus sign for positive diffs
-  if (value > 0 && as_diff) {
-    valueStr = "+" + valueStr;
-  }
+  if (value > 0) valueStr = "+" + valueStr;
   // add separator
   if (valueStr.length > 7) {
     valueStr = valueStr.slice(0, -6) + " " + valueStr.slice(-6)
@@ -23,6 +21,6 @@ export default function CellValue({ value, as_diff, currency }: CellValueProps) 
   }
   // add currency symbol
   valueStr += currency ? ` ${CURRENCY_SYMBOLS[currency]}` : "";
-  const className = twMerge("p-0 text-right font-mono", value > 0 && as_diff ? "text-positive" : value < 0 ? "text-negative" : "");
+  const className = twMerge("p-0 text-right font-mono", colour ? (value > 0 ? "text-positive" : value < 0 ? "text-negative" : "") : "");
   return (<p className={className}>{valueStr}</p>);
 }

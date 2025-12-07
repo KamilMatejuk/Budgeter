@@ -26,7 +26,7 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
         {items.map((it) => (
           <li key={it.name} className={classes.item}>
             {it.name}
-            <CellValue value={it.value || 0} currency={it.currency} as_diff />
+            <CellValue value={it.value || 0} currency={it.currency} colour />
           </li>
         ))}
       </motion.ul>
@@ -62,7 +62,7 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
         { name: "Stocks", value: stocks, currency: Currency.PLN },
       ]} />
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
-        <CellValue value={total} currency={Currency.PLN} as_diff />
+        <CellValue value={total} currency={Currency.PLN} colour />
       </motion.span>
     </div>
   );

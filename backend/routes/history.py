@@ -23,7 +23,7 @@ class RequirementsResponse(PyBaseModel):
 @router.get("/requirements/cards", response_model=list[RequirementsResponse])
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
     today = datetime.datetime.now()
-    cards: list[CardWithId] = await get(db, "card", CardWithId)
+    cards: list[CardWithId] = await get(db, "card", CardWithId, {"active": True})
     responses = []
     for c in cards:
         required = c.min_number_of_transactions_monthly or 0

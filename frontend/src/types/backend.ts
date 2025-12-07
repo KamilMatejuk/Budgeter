@@ -647,6 +647,8 @@ export type components = {
             value?: number | null;
             /** Credit */
             credit: boolean;
+            /** Active */
+            active: boolean;
             currency: components["schemas"]["Currency"];
             /** Account */
             account: string;
@@ -665,6 +667,8 @@ export type components = {
             value?: number | null;
             /** Credit */
             credit?: boolean | null;
+            /** Active */
+            active?: boolean | null;
             currency?: components["schemas"]["Currency"] | null;
             /** Account */
             account?: string | null;
@@ -683,6 +687,8 @@ export type components = {
             value: number | null;
             /** Credit */
             credit: boolean;
+            /** Active */
+            active: boolean;
             currency: components["schemas"]["Currency"];
             /** Account */
             account: string;

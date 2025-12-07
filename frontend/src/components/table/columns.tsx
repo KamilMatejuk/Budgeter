@@ -50,6 +50,11 @@ const settingsColumns = {
         header: "Credit",
         cell: ({ row }) => <CellBoolean value={row.original.credit} />,
     } as ColumnDef<CardWithId>,
+    active: {
+        accessorKey: "active",
+        header: "Active",
+        cell: ({ row }) => <CellBoolean value={row.original.active} />,
+    } as ColumnDef<CardWithId>,
     account: {
         accessorKey: "account",
         header: "Account",

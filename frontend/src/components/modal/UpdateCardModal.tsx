@@ -19,17 +19,23 @@ enum Type {
     CREDIT = "CREDIT",
 }
 
+enum Active {
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+}
+
 const FormSchema = z.object({
     name: requiredText,
     number: requiredCardNumber,
     value: requiredAmount,
     currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
     credit: z.nativeEnum(Type, { required_error: ERROR.requiredError }),
+    active: z.nativeEnum(Active, { required_error: ERROR.requiredError }),
     account: requiredText,
     min_number_of_transactions_monthly: requiredNonNegativeAmount,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
-type SubmitFormSchemaType = Omit<FormSchemaType, "credit"> & { credit: boolean };
+type SubmitFormSchemaType = Omit<FormSchemaType, "credit" | "active"> & { credit: boolean, active: boolean };
 
 
 
@@ -41,6 +47,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
             number: item.number || "",
             value: item.value || 0,
             credit: item.credit ? Type.CREDIT : Type.DEBIT,
+            active: item.active ? Active.ACTIVE : Active.INACTIVE,
             account: item.account || "",
             min_number_of_transactions_monthly: item.min_number_of_transactions_monthly || 0,
         },
@@ -48,6 +55,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
             if (await submit<SubmitFormSchemaType, CardWithId>(url, {
                 ...values,
                 credit: values.credit == Type.CREDIT,
+                active: values.active == Active.ACTIVE,
                 value: values.credit == Type.CREDIT ? values.value : 0,
             }, item?._id)) {
                 onClose();
@@ -74,6 +82,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: UpdateModa
                 <AmountInputWithError formik={formik} formikName="value" label="Value" />}
             <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
             <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
+            <ChoiceInputWithError formik={formik} formikName="active" optionsEnum={Active} label="Active" />
             <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts} />
             <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
         </Modal>

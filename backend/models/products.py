@@ -35,6 +35,7 @@ class Card(PyBaseModel):
     number: str
     value: float
     credit: bool
+    active: bool
     currency: Currency
     account: str # id of PersonalAccount the card is assigned to
     min_number_of_transactions_monthly: int

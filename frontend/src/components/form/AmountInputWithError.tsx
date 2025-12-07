@@ -36,9 +36,10 @@ function preprocess(value: number | string) {
 }
 
 
-function removeChars(value: number | string | undefined) {
+function removeChars(value: number | string | undefined, allowNegative?: boolean) {
   if (typeof value !== "string") return value ? value.toString() : "";
-  value = value.replace(",", ".").replace(/[^0-9-\.]/g, "").trim();
+  const forbidden = allowNegative ? /[^0-9-\.]/g : /[^0-9\.]/g;
+  value = value.replace(",", ".").replace(forbidden, "").trim();
   // allow only one dot and 2 decimal places
   const dotIndex = value.indexOf(".");
   if (dotIndex === -1) return value;
@@ -51,16 +52,20 @@ function removeChars(value: number | string | undefined) {
 function format(value: number | string | undefined) {
   if (typeof value === "number") return value.toFixed(2);
   if (typeof value === "string" && value !== "") return Number(value).toFixed(2);
-  return "0.00";
+  return "";
 }
 
+export interface AmountInputWithErrorProps<T> extends TextInputWithErrorProps<T> {
+  allowNegative?: boolean;
+}
 
 export default function AmountInputWithError<T>({
   formik,
   formikName,
   label,
-}: TextInputWithErrorProps<T>) {
-  const value = getValue(formik, formikName);
+  allowNegative,
+}: AmountInputWithErrorProps<T>) {
+  const value = format(getValue(formik, formikName));
 
   return (
     <TextInputWithError
@@ -70,11 +75,11 @@ export default function AmountInputWithError<T>({
       inputMode="decimal"
       value={value}
       onChange={(e) => {
-        const cleaned = removeChars(e.target.value);
-        formik.setFieldValue(formikName as string, cleaned);
+        const cursorPos = (e.target.selectionStart || e.target.value.length);
+        formik.setFieldValue(formikName as string, format(removeChars(e.target.value, allowNegative)));
+        requestAnimationFrame(() => e.target.setSelectionRange(cursorPos, cursorPos));
       }}
-      onFocus={() => formik.setFieldValue(formikName as string, "")}
-      onBlur={() => formik.setFieldValue(formikName as string, format(value))}
+      onBlur={() => formik.setFieldValue(formikName as string, format(value) || "0.00")}
     />
   );
 }

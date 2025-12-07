@@ -2,7 +2,7 @@ import React from "react";
 import { ModalProps } from "./Modal";
 import { Item, ItemID } from "../table/Table";
 import { patch, post } from "@/app/api/fetch";
-import { CapitalInvestment, Card, Cash, MonthlyExpense, MonthlyIncome, Organisation, PersonalAccount, SavingsAccount, StockAccount } from "@/types/backend";
+import { CapitalInvestment, Card, Cash, MonthlyExpense, MonthlyIncome, Organisation, PersonalAccount, SavingsAccount, StockAccount, Transaction } from "@/types/backend";
 import UpdateCashModal from "./UpdateCashModal";
 import UpdateCardModal from "./UpdateCardModal";
 import UpdatePersonalAccountModal from "./UpdatePersonalAccountModal";
@@ -11,6 +11,7 @@ import UpdateStockAccountModal from "./UpdateStockAccountModal";
 import UpdateCapitalInvestmentModal from "./UpdateCapitalInvestmentModal";
 import UpdateRecurringMonthlyModal from "./UpdateRecurringMonthlyModal";
 import UpdateOrganisationModal from "./UpdateOrganisationModal";
+import UpdateTransactionModal from "./UpdateTransactionModal";
 
 
 export interface UpdateModalProps<T extends Item> extends ModalProps {
@@ -37,4 +38,5 @@ export default function UpdateModal<T extends Item>({ url, item, open, onClose }
     if (url === "/api/products/monthly_income") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyIncome} url={url} title="Monthly Income"/>;
     if (url === "/api/products/monthly_expense") return <UpdateRecurringMonthlyModal open={open} onClose={onClose} item={item as unknown as MonthlyExpense} url={url} title="Monthly Expense"/>;
     if (url === "/api/organisation") return <UpdateOrganisationModal open={open} onClose={onClose} item={item as unknown as Organisation} url={url} />;
+    if (url === "/api/transaction") return <UpdateTransactionModal open={open} onClose={onClose} item={item as unknown as Transaction} url={url} />;
 }

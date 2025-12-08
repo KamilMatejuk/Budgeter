@@ -1,12 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ItemID } from "./Table";
 import { BackupResponse, CapitalInvestmentWithId, CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
-import CellValue from "./CellValue";
-import CellBoolean from "./CellBoolean";
-import CellTextWrap from "./CellTextWrap";
-import CellAccountName from "./CellAccountName";
-import CellOrganisation from "./CellOrganisation";
-import CellIcon from "./CellIcon";
+import CellValue from "./cells/CellValue";
+import CellBoolean from "./cells/CellBoolean";
+import CellTextWrap from "./cells/CellTextWrap";
+import CellAccountName from "./cells/CellAccountName";
+import CellOrganisation from "./cells/CellOrganisation";
+import CellIcon from "./cells/CellIcon";
 import { Currency } from "@/types/enum";
 
 const selectColumn: ColumnDef<ItemID> = {

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { spanTransition } from "./SidebarClient";
 import { CardWithId, PersonalAccountWithId } from "@/types/backend";
-import CellValue from "../table/CellValue";
+import CellValue from "../table/cells/CellValue";
 import { Currency } from "@/types/enum";
 
 

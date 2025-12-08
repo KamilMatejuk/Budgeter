@@ -9,11 +9,11 @@ import TextInputWithError, { requiredText } from "../form/TextInputWithError";
 import AmountInputWithError, { requiredAmount } from "../form/AmountInputWithError";
 import { patch } from "@/app/api/fetch";
 import { FaArrowRight } from "react-icons/fa";
-import CellAccountName from "../table/CellAccountName";
-import CellOrganisation from "../table/CellOrganisation";
+import CellAccountName from "../table/cells/CellAccountName";
+import CellOrganisation from "../table/cells/CellOrganisation";
 import { ERROR } from "@/const/message";
 import ButtonWithLoader from "../button/ButtonWithLoader";
-import CellValue from "../table/CellValue";
+import CellValue from "../table/cells/CellValue";
 
 
 const createFormSchema = (totalValue: number) => z.object({

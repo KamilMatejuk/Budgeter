@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ItemID } from "./Table";
-import { CapitalInvestmentWithId, CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
+import { BackupResponse, CapitalInvestmentWithId, CardWithId, OrganisationWithId, PersonalAccountWithId, Transaction } from "@/types/backend";
 import CellValue from "./CellValue";
 import CellBoolean from "./CellBoolean";
 import CellTextWrap from "./CellTextWrap";
@@ -138,8 +138,27 @@ const transactionsColumns = {
     },
 }
 
+const backupColumns = {
+    timestamp: {
+        accessorKey: "timestamp",
+        header: "Timestamp",
+        cell: ({ row }) => new Date(row.original.timestamp).toLocaleString('pl-PL'),
+    } as ColumnDef<BackupResponse>,
+    size_mb: {
+        accessorKey: "size_mb",
+        header: "Size",
+        cell: ({ row }) => row.original.size_mb.toFixed(2) + " MB",
+    } as ColumnDef<BackupResponse>,
+    description: {
+        accessorKey: "description",
+        header: "Description",
+        cell: ({ row }) => <CellTextWrap value={row.original.description} />,
+    } as ColumnDef<BackupResponse>,
+};
+
 export const COLUMNS = {
     select: selectColumn,
     ...settingsColumns,
     ...transactionsColumns,
+    ...backupColumns,
 };

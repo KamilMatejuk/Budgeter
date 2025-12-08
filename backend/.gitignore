@@ -53,3 +53,5 @@ openapi.json
 *.pb.h
 *.pb.c
 *.pb.py
+
+backups/

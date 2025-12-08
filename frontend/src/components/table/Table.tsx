@@ -22,7 +22,7 @@ const classes = {
     th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none whitespace-nowrap",
     td: "px-4 py-2 align-middle whitespace-nowrap",
     options: {
-        th: "text-end",
+        th: "text-end w-12",
         container: "flex justify-end space-x-2",
         edit: "cursor-pointer",
         delete: "cursor-pointer",
@@ -64,18 +64,16 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                     {table.getHeaderGroups().map((headerGroup, i) => (
                         <tr key={`${headerGroup.id}-${i}`}>
                             {headerGroup.headers.map((header, i) => (
-                                <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 ? "w-4" : "w-4")}>
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(header.column.columnDef.header, header.getContext())}
+                                <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 && "w-4")}>
+                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                 </th>
                             ))}
                             <th className={twMerge(classes.th, classes.options.th)}>options</th>
                         </tr>
                     ))}
                 </thead>
+                {/* data */}
                 <tbody>
-                    {/* data */}
                     {table.getRowModel().rows.map((row, i) => (
                         <tr key={`${row.id}-${i}`} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
                             {row.getVisibleCells().map((cell, i) => (
@@ -99,21 +97,6 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                         </tr>
                     }
                 </tbody>
-                {/* footer */}
-                <tfoot>
-                    {table.getFooterGroups().map((footerGroup, i) => (
-                        <tr key={`${footerGroup.id}-${i}`}>
-                            {footerGroup.headers.map((header, i) => (
-                                <th key={`${header.id}-${i}`} className={classes.th}>
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(header.column.columnDef.footer, header.getContext())}
-                                </th>
-                            ))}
-                            <th className={twMerge(classes.th, classes.options.th)}></th>
-                        </tr>
-                    ))}
-                </tfoot>
             </table>
             {/* modals */}
             {selectedItem && modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} id={selectedItem._id} />}

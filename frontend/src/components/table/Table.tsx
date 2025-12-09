@@ -3,10 +3,10 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import DeleteByIdModal from "../modal/DeleteByIdModal";
-import UpdateModal from "../modal/UpdateModal";
+import { MdAdd } from "react-icons/md";
 import { customRevalidateTag } from "@/app/api/fetch";
+import { BackendModalProps } from "../modal/Modal";
+import { IconBaseProps } from "react-icons";
 
 
 const classes = {
@@ -18,13 +18,12 @@ const classes = {
         selected: "bg-second-bg",
         add: "cursor-pointer text-subtext"
     },
-    th: "text-left text-xs uppercase tracking-wider px-4 py-2 select-none whitespace-nowrap",
-    td: "px-4 py-2 align-middle whitespace-nowrap",
+    th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
+    td: "p-2 align-middle whitespace-nowrap",
     options: {
         th: "text-end w-12",
         container: "flex justify-end space-x-2",
-        edit: "cursor-pointer",
-        delete: "cursor-pointer",
+        icon: "cursor-pointer",
         add: "w-4 px-3 py-1"
     }
 }
@@ -37,55 +36,63 @@ interface TableProps<TID extends ItemID> {
     tag: string;
     data: TID[];
     columns: ColumnDef<TID>[];
-    hideCreating?: boolean;
+    options: { name: string; icon: React.ComponentType<IconBaseProps>; component: React.ComponentType<BackendModalProps<TID>> }[];
+    CreateModal?: React.ComponentType<BackendModalProps<TID>>;
     newText?: string;
 }
 
 
-const selectColumn: ColumnDef<ItemID> = {
-    id: "select",
-    header: ({ table }) => (<input
-        type="checkbox"
-        checked={table.getIsAllRowsSelected?.() ?? false}
-        onChange={table.getToggleAllRowsSelectedHandler?.()}
-    />),
-    cell: ({ row }) => (<input
-        type="checkbox"
-        checked={row.getIsSelected?.() ?? false}
-        onChange={row.getToggleSelectedHandler?.()}
-    />),
-};
-
-
-export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating, newText }: TableProps<TID>) {
+export default function Table<TID extends ItemID>({ url, tag, data, columns, options, CreateModal, newText }: TableProps<TID>) {
+    // modals types are indexed as: 0 - create, 1+ - custom options
     const [selectedItem, setSelectedItem] = useState<TID | null>(null);
-    const [modalOpen, setModalOpen] = useState<"create" | "update" | "delete" | null>(null);
-    const handleEdit = (item: TID) => { setSelectedItem(item); setModalOpen("update") };
-    const handleDelete = (item: TID) => { setSelectedItem(item); setModalOpen("delete") };
-    const handleCreate = () => { setSelectedItem(null); setModalOpen("create") };
-    const closeModal = async () => { setSelectedItem(null); setModalOpen(null); customRevalidateTag(tag) };
+    const [selectedModal, setSelectedModal] = useState<number | null>(null);
+    const closeModal = async () => { setSelectedItem(null); setSelectedModal(null); customRevalidateTag(tag) };
 
     const table = useReactTable({
         data,
         getCoreRowModel: getCoreRowModel(),
-        columns: useMemo(() => [selectColumn, ...columns] as ColumnDef<TID>[], [columns]),
+        columns: useMemo(() => [
+            {
+                id: "select",
+                header: ({ table }) => (<input
+                    type="checkbox"
+                    checked={table.getIsAllRowsSelected?.() ?? false}
+                    onChange={table.getToggleAllRowsSelectedHandler?.()}
+                />),
+                cell: ({ row }) => (<input
+                    type="checkbox"
+                    checked={row.getIsSelected?.() ?? false}
+                    onChange={row.getToggleSelectedHandler?.()}
+                />),
+            },
+            ...columns,
+            {
+                id: "options", header: "Options", cell: ({ row }) => <div className="flex justify-end space-x-2">
+                    {options.map(({ name, icon: Icon }, index) => (
+                        <Icon
+                            size={20}
+                            title={name}
+                            className={classes.options.icon}
+                            onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} key={index}
+                        />))}
+                </div>
+            },
+        ] as ColumnDef<TID>[], [columns, options]),
     })
+    const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
 
     return (
         <div className={classes.container}>
             <table className={classes.table}>
                 {/* header */}
                 <thead className={classes.thead}>
-                    {table.getHeaderGroups().map((headerGroup, i) => (
-                        <tr key={`${headerGroup.id}-${i}`}>
-                            {headerGroup.headers.map((header, i) => (
-                                <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 && "w-4")}>
-                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                </th>
-                            ))}
-                            <th className={twMerge(classes.th, classes.options.th)}>options</th>
-                        </tr>
-                    ))}
+                    <tr>
+                        {headers.map((header, i) => (
+                            <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 && "w-4 px-4", i == headers.length - 1 && "text-right")}>
+                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                            </th>
+                        ))}
+                    </tr>
                 </thead>
                 {/* data */}
                 <tbody>
@@ -94,32 +101,29 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                             {row.getVisibleCells().map((cell, i) => (
                                 <td key={`${cell.id}-${i}`} className={twMerge(
                                     classes.td,
+                                    i == 0 && "px-4",
                                     cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
                                     cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
                                 )}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}
-                            <td className={classes.td}>
-                                <div className={classes.options.container}>
-                                    <MdEdit size={20} className={classes.options.edit} onClick={() => handleEdit(row.original)} />
-                                    <MdDelete size={20} className={classes.options.delete} onClick={() => handleDelete(row.original)} />
-                                </div>
-                            </td>
                         </tr>
                     ))}
                     {/* add new row */}
-                    {!hideCreating &&
-                        <tr className={twMerge(classes.row.base, classes.row.add)} onClick={handleCreate}>
+                    {CreateModal &&
+                        <tr className={twMerge(classes.row.base, classes.row.add)} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
                             <td className={twMerge(classes.td, classes.options.add)}><MdAdd size={20} /></td>
                             <td className={classes.td} colSpan={columns.length + 1}>Create new {newText || ""}</td>
                         </tr>
                     }
                 </tbody>
             </table>
-            {/* modals */}
-            {selectedItem && modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} id={selectedItem._id} />}
-            {(modalOpen === "update" || modalOpen === "create") && <UpdateModal open onClose={closeModal} url={url} item={selectedItem || {} as T} />}
+            {/* option modals */}
+            {CreateModal && selectedModal === 0 && <CreateModal open onClose={closeModal} url={url} item={selectedItem} />}
+            {options.map(({ component: Option }, index) => (
+                selectedModal === index + 1 && <Option open onClose={closeModal} url={url} item={selectedItem} key={index} />
+            ))}
         </div>
     );
 }

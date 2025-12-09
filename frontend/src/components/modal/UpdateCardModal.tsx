@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Modal from "./Modal";
-import { submit, UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
+import { submit } from "./UpdateModal";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { Card, CardWithId, PersonalAccountWithId } from "@/types/backend";
+import { CardWithId, PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
@@ -39,17 +39,17 @@ type SubmitFormSchemaType = Omit<FormSchemaType, "credit" | "active"> & { credit
 
 
 
-export default function UpdateCardModal({ url, item, open, onClose }: UpdateModalProps<Card>) {
+export default function UpdateCardModal({ url, item, open, onClose }: BackendModalProps<CardWithId>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
-            name: item.name || "",
-            currency: item.currency as Currency || Currency.PLN,
-            number: item.number || "",
-            value: item.value || 0,
-            credit: item.credit ? Type.CREDIT : Type.DEBIT,
-            active: item.active ? Active.ACTIVE : Active.INACTIVE,
-            account: item.account || "",
-            min_number_of_transactions_monthly: item.min_number_of_transactions_monthly || 0,
+            name: item?.name || "",
+            currency: item?.currency as Currency || Currency.PLN,
+            number: item?.number || "",
+            value: item?.value || 0,
+            credit: item?.credit ? Type.CREDIT : Type.DEBIT,
+            active: item?.active ? Active.ACTIVE : Active.INACTIVE,
+            account: item?.account || "",
+            min_number_of_transactions_monthly: item?.min_number_of_transactions_monthly || 0,
         },
         onSubmit: async (values) => {
             if (await submit<SubmitFormSchemaType, CardWithId>(url, {

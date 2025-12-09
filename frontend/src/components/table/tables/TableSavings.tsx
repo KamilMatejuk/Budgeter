@@ -1,10 +1,13 @@
 'use client';
 
-import { SavingsAccount, SavingsAccountWithId } from "@/types/backend";
+import { SavingsAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
+import UpdateSavingsAccountModal from "@/components/modal/UpdateSavingsAccountModal";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableSavingsProps {
@@ -21,11 +24,16 @@ const columns: ColumnDef<SavingsAccountWithId>[] = [
 
 export default function TableSavings({ data }: TableSavingsProps) {
   return (
-    <Table<SavingsAccount, SavingsAccountWithId>
+    <Table<SavingsAccountWithId>
       url="/api/products/savings_account"
       tag="savings_account"
       newText="savings account"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateSavingsAccountModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateSavingsAccountModal} />
   );
 }

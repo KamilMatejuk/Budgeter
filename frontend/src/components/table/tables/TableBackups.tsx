@@ -18,11 +18,11 @@ const columns: ColumnDef<BackupResponse>[] = [
 
 export default function TableBackups({ data }: TableBackupsProps) {
   return (
-    <Table<BackupResponse, BackupResponse>
+    <Table<BackupResponse>
       url="/api/backup"
       tag="backup"
       data={data}
       columns={columns}
-      hideCreating />
+      options={[]} />
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { PropsWithChildren, useEffect, useRef } from "react";
 import ButtonWithLoader from "../button/ButtonWithLoader";
+import { ItemID } from "../table/Table";
 
 
 const classes = {
@@ -20,6 +21,11 @@ export interface ModalProps extends PropsWithChildren {
     onSave?: () => Promise<void>;
     onDelete?: () => Promise<void>;
     title?: string;
+}
+
+export interface BackendModalProps<TID extends ItemID> extends ModalProps {
+    url: string;
+    item?: TID | null;
 }
 
 export default function Modal({ open, onClose, children, cancellable, onSave, onDelete, title }: ModalProps) {

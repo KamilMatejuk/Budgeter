@@ -1,8 +1,7 @@
 import React from "react";
-import Modal from "./Modal";
-import { UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
 import { z } from "zod";
-import { Transaction, TransactionPartial } from "@/types/backend";
+import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
 import { FormikProps, useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
@@ -78,17 +77,15 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
 }
 
 
-export default function UpdateTransactionModal({ url, item, open, onClose }: UpdateModalProps<Transaction>) {
+export default function UpdateTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionWithId>) {
     const formik = useFormik<FormSchemaType>({
-        initialValues: { parts: [{ title: item.title, value: item.value }] },
-        onSubmit: async (values) => {
-            if (await submit(values, item, url)) onClose();
-        },
-        validate: withZodSchema(createFormSchema(item.value)),
+        initialValues: { parts: [{ title: item?.title || "", value: item?.value || 0 }] },
+        onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },
+        validate: withZodSchema(createFormSchema(item?.value || 0)),
     });
     const isSplit = formik.values.parts.length > 1;
 
-    return (
+    return item && (
         <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Transaction">
             <p className="m-auto">{new Date(item.date).toLocaleDateString("pl-PL")}</p>
             <div className="grid grid-cols-[1fr_auto_1fr] gap-1 items-center">

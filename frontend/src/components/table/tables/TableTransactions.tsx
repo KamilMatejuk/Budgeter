@@ -1,12 +1,15 @@
 'use client';
 
-import { Transaction, TransactionWithId } from "@/types/backend";
+import { TransactionWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellOrganisation from "../cells/CellOrganisation";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
 import CellAccountName from "../cells/CellAccountName";
+import { MdDelete, MdEdit } from "react-icons/md";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import UpdateTransactionModal from "@/components/modal/UpdateTransactionModal";
 
 
 interface TableTransactionsProps {
@@ -24,11 +27,14 @@ const columns: ColumnDef<TransactionWithId>[] = [
 
 export default function TableTransactions({ data }: TableTransactionsProps) {
   return (
-    <Table<Transaction, TransactionWithId>
+    <Table<TransactionWithId>
       url="/api/transaction"
       tag="transaction"
       data={data}
       columns={columns}
-      hideCreating />
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateTransactionModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]} />
   );
 }

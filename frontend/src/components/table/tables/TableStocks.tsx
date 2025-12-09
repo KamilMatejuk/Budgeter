@@ -1,10 +1,13 @@
 'use client';
 
-import { StockAccount, StockAccountWithId } from "@/types/backend";
+import { StockAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
+import UpdateStockAccountModal from "@/components/modal/UpdateStockAccountModal";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableStocksProps {
@@ -20,11 +23,16 @@ const columns: ColumnDef<StockAccountWithId>[] = [
 
 export default function TableStocks({ data }: TableStocksProps) {
   return (
-    <Table<StockAccount, StockAccountWithId>
+    <Table<StockAccountWithId>
       url="/api/products/stock_account"
       tag="stock_account"
       newText="stock account"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateStockAccountModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateStockAccountModal} />
   );
 }

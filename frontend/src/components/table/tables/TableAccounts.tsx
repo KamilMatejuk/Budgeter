@@ -1,10 +1,13 @@
 'use client';
 
-import { PersonalAccount, PersonalAccountWithId } from "@/types/backend";
+import { PersonalAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import UpdatePersonalAccountModal from "@/components/modal/UpdatePersonalAccountModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableAccountsProps {
@@ -29,11 +32,16 @@ const columns: ColumnDef<PersonalAccountWithId>[] = [
 
 export default function TableAccounts({ data }: TableAccountsProps) {
   return (
-    <Table<PersonalAccount, PersonalAccountWithId>
+    <Table<PersonalAccountWithId>
       url="/api/products/personal_account"
       tag="personal_account"
       newText="account"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdatePersonalAccountModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdatePersonalAccountModal} />
   );
 }

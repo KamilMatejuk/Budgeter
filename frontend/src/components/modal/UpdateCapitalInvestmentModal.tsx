@@ -1,9 +1,9 @@
 import React from "react";
-import Modal from "./Modal";
-import { submit, UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
+import { submit } from "./UpdateModal";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { CapitalInvestment, CapitalInvestmentWithId } from "@/types/backend";
+import { CapitalInvestmentWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
@@ -27,16 +27,16 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 type SubmitFormSchemaType = Omit<FormSchemaType, "start" | "end"> & { start: string; end: string; };
 
 
-export default function UpdateCapitalInvestmentModal({ url, item, open, onClose }: UpdateModalProps<CapitalInvestment>) {
+export default function UpdateCapitalInvestmentModal({ url, item, open, onClose }: BackendModalProps<CapitalInvestmentWithId>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
-            name: item.name || "",
-            value: item.value || 0,
-            currency: item.currency as Currency || Currency.PLN,
-            yearly_interest: item.yearly_interest || 0,
-            capitalization: item.capitalization as Capitalization || Capitalization.ONCE,
-            start: item.start ? new Date(item.start) : new Date(),
-            end: item.end ? new Date(item.end) : new Date(),
+            name: item?.name || "",
+            value: item?.value || 0,
+            currency: item?.currency as Currency || Currency.PLN,
+            yearly_interest: item?.yearly_interest || 0,
+            capitalization: item?.capitalization as Capitalization || Capitalization.ONCE,
+            start: item?.start ? new Date(item.start) : new Date(),
+            end: item?.end ? new Date(item.end) : new Date(),
         },
         onSubmit: async (values) => {
             const val = { ...values, start: getISODateString(values.start), end: getISODateString(values.end) };

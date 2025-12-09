@@ -1,10 +1,13 @@
 'use client';
 
-import { Cash, CashWithId } from "@/types/backend";
+import { CashWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
+import UpdateCashModal from "@/components/modal/UpdateCashModal";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableCashProps {
@@ -18,11 +21,16 @@ const columns: ColumnDef<CashWithId>[] = [
 
 export default function TableCash({ data }: TableCashProps) {
   return (
-    <Table<Cash, CashWithId>
+    <Table<CashWithId>
       url="/api/products/cash"
       tag="cash"
       newText="cash"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateCashModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateCashModal} />
   );
 }

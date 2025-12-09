@@ -1,11 +1,11 @@
 import React from "react";
-import Modal from "./Modal";
-import { submit, UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
+import { submit } from "./UpdateModal";
 import { z } from "zod";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
-import { Organisation, OrganisationWithId } from "@/types/backend";
+import { OrganisationWithId } from "@/types/backend";
 import { ERROR } from "@/const/message";
 
 
@@ -17,12 +17,12 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-export default function UpdateOrganisationModal({ url, item, open, onClose }: UpdateModalProps<Organisation>) {
+export default function UpdateOrganisationModal({ url, item, open, onClose }: BackendModalProps<OrganisationWithId>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
-            name: item.name || "",
-            pattern: item.pattern || "",
-            icon: item.icon || "",
+            name: item?.name || "",
+            pattern: item?.pattern || "",
+            icon: item?.icon || "",
         },
         onSubmit: async (values) => { if (await submit<FormSchemaType, OrganisationWithId>(url, values, item?._id)) onClose(); },
         validate: withZodSchema(FormSchema),

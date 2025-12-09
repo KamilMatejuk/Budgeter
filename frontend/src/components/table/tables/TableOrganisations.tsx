@@ -1,9 +1,12 @@
 'use client';
 
-import { Organisation, OrganisationWithId } from "@/types/backend";
+import { OrganisationWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellIcon from "../cells/CellIcon";
+import UpdateOrganisationModal from "@/components/modal/UpdateOrganisationModal";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableOrganisationsProps {
@@ -18,11 +21,16 @@ const columns: ColumnDef<OrganisationWithId>[] = [
 
 export default function TableOrganisations({ data }: TableOrganisationsProps) {
   return (
-    <Table<Organisation, OrganisationWithId>
+    <Table<OrganisationWithId>
       url="/api/organisation"
       tag="organisation"
       newText="organisation"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateOrganisationModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateOrganisationModal} />
   );
 }

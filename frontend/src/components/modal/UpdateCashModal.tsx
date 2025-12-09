@@ -1,9 +1,9 @@
 import React from "react";
-import Modal from "./Modal";
-import { submit, UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
+import { submit } from "./UpdateModal";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { Cash, CashWithId } from "@/types/backend";
+import { CashWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
@@ -20,12 +20,12 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-export default function UpdateCashModal({ url, item, open, onClose }: UpdateModalProps<Cash>) {
+export default function UpdateCashModal({ url, item, open, onClose }: BackendModalProps<CashWithId>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
-            name: item.name || "",
-            value: item.value || 0,
-            currency: item.currency as Currency || Currency.PLN,
+            name: item?.name || "",
+            value: item?.value || 0,
+            currency: item?.currency as Currency || Currency.PLN,
         },
         onSubmit: async (values) => { if (await submit<FormSchemaType, CashWithId>(url, values, item?._id)) onClose(); },
         validate: withZodSchema(FormSchema),

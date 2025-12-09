@@ -1,10 +1,13 @@
 'use client';
 
-import { CapitalInvestment, CapitalInvestmentWithId } from "@/types/backend";
+import { CapitalInvestmentWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
+import UpdateCapitalInvestmentModal from "@/components/modal/UpdateCapitalInvestmentModal";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 
 interface TableInvestmentsProps {
@@ -22,11 +25,16 @@ const columns: ColumnDef<CapitalInvestmentWithId>[] = [
 
 export default function TableInvestments({ data }: TableInvestmentsProps) {
   return (
-    <Table<CapitalInvestment, CapitalInvestmentWithId>
+    <Table<CapitalInvestmentWithId>
       url="/api/products/capital_investment"
       tag="capital_investment"
       newText="capital investment"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateCapitalInvestmentModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateCapitalInvestmentModal} />
   );
 }

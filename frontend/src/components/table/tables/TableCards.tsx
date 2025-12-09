@@ -1,10 +1,13 @@
 'use client';
 
-import { Card, CardWithId } from "@/types/backend";
+import { CardWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellBoolean from "../cells/CellBoolean";
 import CellAccountName from "../cells/CellAccountName";
+import UpdateCardModal from "@/components/modal/UpdateCardModal";
+import { MdDelete, MdEdit } from "react-icons/md";
+import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
 
 
 interface TableCardsProps {
@@ -28,11 +31,16 @@ const columns: ColumnDef<CardWithId>[] = [
 
 export default function TableCards({ data }: TableCardsProps) {
   return (
-    <Table<Card, CardWithId>
+    <Table<CardWithId>
       url="/api/products/card"
       tag="card"
       newText="card"
       data={data}
-      columns={columns} />
+      columns={columns}
+      options={[
+        { name: "Edit", icon: MdEdit, component: UpdateCardModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
+      ]}
+      CreateModal={UpdateCardModal} />
   );
 }

@@ -1,9 +1,9 @@
 import React from "react";
-import Modal from "./Modal";
-import { submit, UpdateModalProps } from "./UpdateModal";
+import Modal, { BackendModalProps } from "./Modal";
+import { submit } from "./UpdateModal";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { PersonalAccount, PersonalAccountWithId } from "@/types/backend";
+import { PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../form/TextInputWithError";
@@ -24,15 +24,15 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-export default function UpdatePersonalAccountModal({ url, item, open, onClose }: UpdateModalProps<PersonalAccount>) {
+export default function UpdatePersonalAccountModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
     const formik = useFormik<FormSchemaType>({
         initialValues: {
-            name: item.name || "",
-            number: item.number || "",
-            value: item.value || 0,
-            currency: item.currency as Currency || Currency.PLN,
-            min_incoming_amount_monthly: item.min_incoming_amount_monthly || 0,
-            min_outgoing_amount_monthly: item.min_outgoing_amount_monthly || 0,
+            name: item?.name || "",
+            number: item?.number || "",
+            value: item?.value || 0,
+            currency: item?.currency as Currency || Currency.PLN,
+            min_incoming_amount_monthly: item?.min_incoming_amount_monthly || 0,
+            min_outgoing_amount_monthly: item?.min_outgoing_amount_monthly || 0,
         },
         onSubmit: async (values) => { if (await submit<FormSchemaType, PersonalAccountWithId>(url, values, item?._id)) onClose() },
         validate: withZodSchema(FormSchema),

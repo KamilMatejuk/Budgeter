@@ -17,13 +17,19 @@ export async function getExchangeRate(base: CurrencyType | CurrencyEnum, target:
     if (base === target) return 1;
     // https://www.freeforexapi.com/
     // max 100 requests per month
-    const apiKey = process.env.NEXT_PUBLIC_FOREX_API_KEY;
-    const currencies = Object.values(CurrencyEnum).join(',');
-    const url = `https://apilayer.net/api/live?access_key=${apiKey}&currencies=${currencies}&source=${target}&format=1`;
-    // store in cache for 1 day
-    const response = await fetch(url, { next: { revalidate: 24 * 60 * 60, tags: [`forex_${target}`] } });
-    const data = await response.json();
-    return (1 / data.quotes[`${target}${base}`]) || FALLBACK_RATES[`${base}${target}`];
+    try {
+        const apiKey = process.env.NEXT_PUBLIC_FOREX_API_KEY;
+        const currencies = Object.values(CurrencyEnum).join(',');
+        const url = `https://apilayer.net/api/live?access_key=${apiKey}&currencies=${currencies}&source=${target}&format=1`;
+        // store in cache for 1 day
+        const options = { next: { revalidate: 24 * 60 * 60, tags: [`forex_${target}`] } };
+        const response = await fetch(url, options);
+        const data = await response.json();
+        return (1 / data.quotes[`${target}${base}`]) || FALLBACK_RATES[`${base}${target}`];
+    } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+        return FALLBACK_RATES[`${base}${target}`];
+    }
 }
 
 export async function convertToPLN(value: number, base: CurrencyType): Promise<number> {

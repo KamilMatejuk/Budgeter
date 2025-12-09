@@ -1,0 +1,32 @@
+'use client';
+
+import { CapitalInvestment, CapitalInvestmentWithId } from "@/types/backend";
+import Table from "@/components/table/Table";
+import { ColumnDef } from "@tanstack/react-table";
+import CellValue from "../cells/CellValue";
+import { Currency } from "@/types/enum";
+
+
+interface TableInvestmentsProps {
+  data: CapitalInvestmentWithId[];
+}
+
+const columns: ColumnDef<CapitalInvestmentWithId>[] = [
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} /> },
+  { accessorKey: "yearly_interest", header: "Yearly Interest", cell: ({ row }) => row.original.yearly_interest.toFixed(1) + "%" },
+  { accessorKey: "capitalization", header: "Capitalization" },
+  { accessorKey: "start", header: "Start Date" },
+  { accessorKey: "end", header: "End Date" },
+];
+
+export default function TableInvestments({ data }: TableInvestmentsProps) {
+  return (
+    <Table<CapitalInvestment, CapitalInvestmentWithId>
+      url="/api/products/capital_investment"
+      tag="capital_investment"
+      newText="capital investment"
+      data={data}
+      columns={columns} />
+  );
+}

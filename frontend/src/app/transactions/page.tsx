@@ -3,8 +3,9 @@ import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import { get } from "../api/fetch";
 import WarningToast from "@/components/toast/WarningToast";
-import TransactionsTable from "./TransactionsTable";
 import MonthSelector from "./MonthSelector";
+import SectionHeader from "@/components/page_layout/SectionHeader";
+import TableTransactions from "@/components/table/tables/TableTransactions";
 
 
 interface PageProps {
@@ -28,6 +29,10 @@ export default async function Transactions({ searchParams }: PageProps) {
   const monthNr = month ? parseInt(month) : new Date().getMonth() + 1;
   // get transactions
   const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transaction/${yearNr}/${monthNr}`, ["transaction"]);
+  // get details
+  const minDate = new Date(Math.min(...(transactions || []).map(t => new Date(t.date).getTime())));
+  const maxDate = new Date(Math.max(...(transactions || []).map(t => new Date(t.date).getTime())));
+  const dateRange = `${minDate.toLocaleDateString()} - ${maxDate.toLocaleDateString()}`;
 
   return (
     <>
@@ -37,7 +42,10 @@ export default async function Transactions({ searchParams }: PageProps) {
         ? <ErrorToast message="Could not download transactions" />
         : transactions.length == 0
           ? <WarningToast message="No transactions found" />
-          : <TransactionsTable transactions={transactions} header={`${monthName(monthNr)} ${yearNr}`} />
+          : <>
+            <SectionHeader text={`${monthName(monthNr)} ${yearNr}`} subtext={dateRange} />
+            <TableTransactions data={transactions} />
+          </>
       }
     </>
   );

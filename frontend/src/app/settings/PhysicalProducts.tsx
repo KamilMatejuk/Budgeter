@@ -1,7 +1,8 @@
 import { get } from "../api/fetch";
-import { Card, CardWithId, Cash, CashWithId } from "@/types/backend";
-import Table from "@/components/table/Table";
+import { CardWithId, CashWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
+import TableCash from "@/components/table/tables/TableCash";
+import TableCards from "@/components/table/tables/TableCards";
 
 export default async function PhysicalProducts() {
   const { response: cash, error: cashError } = await get<CashWithId[]>("/api/products/cash", ["cash"]);
@@ -11,20 +12,10 @@ export default async function PhysicalProducts() {
     <>
       {cashError
         ? <ErrorToast message={`Could not download cash: ${cashError.message}`} />
-        : <Table<Cash, CashWithId>
-          url="/api/products/cash"
-          tag="cash"
-          newText="cash"
-          data={cash}
-          columns={["name", "value"]} />}
+        : <TableCash data={cash} />}
       {cardsError
         ? <ErrorToast message={`Could not download cards: ${cardsError.message}`} />
-        : <Table<Card, CardWithId>
-          url="/api/products/card"
-          tag="card"
-          newText="card"
-          data={cards}
-          columns={["name", "currency", "number", "credit", "active", "account", "minTransactionsMonthly"]} />}
+        : <TableCards data={cards} />}
     </>
   );
 }

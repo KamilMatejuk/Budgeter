@@ -7,7 +7,6 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "../modal/DeleteByIdModal";
 import UpdateModal from "../modal/UpdateModal";
 import { customRevalidateTag } from "@/app/api/fetch";
-import { COLUMNS } from "./columns";
 
 
 const classes = {
@@ -37,10 +36,26 @@ interface TableProps<TID extends ItemID> {
     url: string;
     tag: string;
     data: TID[];
-    columns: (keyof typeof COLUMNS)[];
+    columns: ColumnDef<TID>[];
     hideCreating?: boolean;
     newText?: string;
 }
+
+
+const selectColumn: ColumnDef<ItemID> = {
+    id: "select",
+    header: ({ table }) => (<input
+        type="checkbox"
+        checked={table.getIsAllRowsSelected?.() ?? false}
+        onChange={table.getToggleAllRowsSelectedHandler?.()}
+    />),
+    cell: ({ row }) => (<input
+        type="checkbox"
+        checked={row.getIsSelected?.() ?? false}
+        onChange={row.getToggleSelectedHandler?.()}
+    />),
+};
+
 
 export default function Table<T extends Item, TID extends ItemID>({ url, tag, data, columns, hideCreating, newText }: TableProps<TID>) {
     const [selectedItem, setSelectedItem] = useState<TID | null>(null);
@@ -52,8 +67,8 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
 
     const table = useReactTable({
         data,
-        columns: useMemo(() => [COLUMNS.select, ...columns.map(col => COLUMNS[col])] as ColumnDef<TID>[], [columns]),
         getCoreRowModel: getCoreRowModel(),
+        columns: useMemo(() => [selectColumn, ...columns] as ColumnDef<TID>[], [columns]),
     })
 
     return (

@@ -1,10 +1,10 @@
 import React from "react";
 import Modal, { BackendModalProps } from "./Modal";
 import { del } from "@/app/api/fetch";
-import { ItemID } from "../table/Table";
+import { Item } from "../table/Table";
 
 
-export default function DeleteByIdModal<TID extends ItemID>({ url, item, open, onClose }: BackendModalProps<TID>) {
+export default function DeleteByIdModal<T extends Item>({ url, item, open, onClose }: BackendModalProps<T>) {
     async function submit() {
         const { error } = await del(`${url}/${item?._id}`);
         if (error) alert(`Error: ${error.message}`);

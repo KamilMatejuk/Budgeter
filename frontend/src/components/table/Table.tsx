@@ -10,41 +10,28 @@ import { IconBaseProps } from "react-icons";
 
 
 const classes = {
-    container: "overflow-auto",
-    table: "w-full min-w-[640px] text-sm m-0",
-    thead: "bg-second-bg",
-    row: {
-        base: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
-        selected: "bg-second-bg",
-        add: "cursor-pointer text-subtext"
-    },
-    th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
+    row: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
+    selectedRow: "bg-second-bg",
     td: "p-2 align-middle whitespace-nowrap",
-    options: {
-        th: "text-end w-12",
-        container: "flex justify-end space-x-2",
-        icon: "cursor-pointer",
-        add: "w-4 px-3 py-1"
-    }
 }
 
-export interface Item { _id?: string } // generic type for items without id
-export interface ItemID extends Item { _id: string } // generic type for items with id
+export interface Item { _id: string } // generic type for items with id
 
-interface TableProps<TID extends ItemID> {
+
+interface TableProps<T extends Item> {
     url: string;
     tag: string;
-    data: TID[];
-    columns: ColumnDef<TID>[];
-    options: { name: string; icon: React.ComponentType<IconBaseProps>; component: React.ComponentType<BackendModalProps<TID>> }[];
-    CreateModal?: React.ComponentType<BackendModalProps<TID>>;
+    data: T[];
+    columns: ColumnDef<T>[];
+    options: { name: string; icon: React.ComponentType<IconBaseProps>; component: React.ComponentType<BackendModalProps<T>> }[];
+    CreateModal?: React.ComponentType<BackendModalProps<T>>;
     newText?: string;
 }
 
 
-export default function Table<TID extends ItemID>({ url, tag, data, columns, options, CreateModal, newText }: TableProps<TID>) {
+export default function Table<T extends Item>({ url, tag, data, columns, options, CreateModal, newText }: TableProps<T>) {
     // modals types are indexed as: 0 - create, 1+ - custom options
-    const [selectedItem, setSelectedItem] = useState<TID | null>(null);
+    const [selectedItem, setSelectedItem] = useState<T | null>(null);
     const [selectedModal, setSelectedModal] = useState<number | null>(null);
     const closeModal = async () => { setSelectedItem(null); setSelectedModal(null); customRevalidateTag(tag) };
 
@@ -72,29 +59,25 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
                 cell: ({ row }) => (
                     <div className="flex justify-end space-x-2">
                         {options.map(({ name, icon: Icon }, index) => (
-                            <Icon
-                                size={20}
-                                title={name}
-                                className={classes.options.icon}
-                                onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} key={index}
-                            />))}
+                            <Icon size={20} title={name} className="cursor-pointer" key={index}
+                                onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
                     </div>
                 ),
                 meta: { alignedRight: true },
             },
-        ] as ColumnDef<TID>[], [columns, options]),
+        ] as ColumnDef<T>[], [columns, options]),
     })
     const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
 
     return (
-        <div className={classes.container}>
-            <table className={classes.table}>
+        <>
+            <table className="w-full min-w-[640px] text-sm m-0">
                 {/* header */}
-                <thead className={classes.thead}>
+                <thead className="bg-second-bg">
                     <tr>
                         {headers.map((header, i) => (
                             <th key={`${header.id}-${i}`} className={twMerge(
-                                classes.th,
+                                "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
                                 i == 0 && "w-4 px-4",
                                 header.column.columnDef.meta?.alignedRight && "text-right",
                             )}>
@@ -106,7 +89,7 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
                 {/* data */}
                 <tbody>
                     {table.getRowModel().rows.map((row, i) => (
-                        <tr key={`${row.id}-${i}`} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
+                        <tr key={`${row.id}-${i}`} className={twMerge(classes.row, row.getIsSelected() && classes.selectedRow)}>
                             {row.getVisibleCells().map((cell, i) => (
                                 <td key={`${cell.id}-${i}`} className={twMerge(
                                     classes.td,
@@ -122,8 +105,8 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
                     ))}
                     {/* add new row */}
                     {CreateModal &&
-                        <tr className={twMerge(classes.row.base, classes.row.add)} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
-                            <td className={twMerge(classes.td, classes.options.add)}><MdAdd size={20} /></td>
+                        <tr className={twMerge(classes.row, "cursor-pointer text-subtext")} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
+                            <td className="w-4 px-3 py-1"><MdAdd size={20} /></td>
                             <td className={classes.td} colSpan={columns.length + 1}>Create new {newText || ""}</td>
                         </tr>
                     }
@@ -134,6 +117,6 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
             {options.map(({ component: Option }, index) => (
                 selectedModal === index + 1 && <Option open onClose={closeModal} url={url} item={selectedItem} key={index} />
             ))}
-        </div>
+        </>
     );
 }

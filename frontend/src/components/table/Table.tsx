@@ -67,15 +67,20 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
             },
             ...columns,
             {
-                id: "options", header: "Options", cell: ({ row }) => <div className="flex justify-end space-x-2">
-                    {options.map(({ name, icon: Icon }, index) => (
-                        <Icon
-                            size={20}
-                            title={name}
-                            className={classes.options.icon}
-                            onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} key={index}
-                        />))}
-                </div>
+                id: "options",
+                header: "Options",
+                cell: ({ row }) => (
+                    <div className="flex justify-end space-x-2">
+                        {options.map(({ name, icon: Icon }, index) => (
+                            <Icon
+                                size={20}
+                                title={name}
+                                className={classes.options.icon}
+                                onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} key={index}
+                            />))}
+                    </div>
+                ),
+                meta: { alignedRight: true },
             },
         ] as ColumnDef<TID>[], [columns, options]),
     })
@@ -88,7 +93,11 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
                 <thead className={classes.thead}>
                     <tr>
                         {headers.map((header, i) => (
-                            <th key={`${header.id}-${i}`} className={twMerge(classes.th, i == 0 && "w-4 px-4", i == headers.length - 1 && "text-right")}>
+                            <th key={`${header.id}-${i}`} className={twMerge(
+                                classes.th,
+                                i == 0 && "w-4 px-4",
+                                header.column.columnDef.meta?.alignedRight && "text-right",
+                            )}>
                                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                             </th>
                         ))}
@@ -104,6 +113,7 @@ export default function Table<TID extends ItemID>({ url, tag, data, columns, opt
                                     i == 0 && "px-4",
                                     cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
                                     cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
+                                    cell.column.columnDef.meta?.alignedRight && "text-right",
                                 )}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>

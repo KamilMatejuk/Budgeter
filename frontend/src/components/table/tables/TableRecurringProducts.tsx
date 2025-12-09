@@ -17,7 +17,7 @@ interface TableRecurringProductsProps {
 
 const columns: ColumnDef<RecurringProductWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} /> },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} />, meta: { alignedRight: true } },
   { accessorKey: "day_of_month", header: "Day of Month" },
 ];
 

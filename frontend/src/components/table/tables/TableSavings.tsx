@@ -16,7 +16,7 @@ interface TableSavingsProps {
 
 const columns: ColumnDef<SavingsAccountWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} /> },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} />, meta: { alignedRight: true } },
   { accessorKey: "number", header: "Number" },
   { accessorKey: "yearly_interest", header: "Yearly Interest", cell: ({ row }) => row.original.yearly_interest.toFixed(1) + "%" },
   { accessorKey: "capitalization", header: "Capitalization" },

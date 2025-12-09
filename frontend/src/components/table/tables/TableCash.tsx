@@ -16,7 +16,7 @@ interface TableCashProps {
 
 const columns: ColumnDef<CashWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} /> },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} />, meta: { alignedRight: true } },
 ];
 
 export default function TableCash({ data }: TableCashProps) {

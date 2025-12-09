@@ -21,7 +21,7 @@ const columns: ColumnDef<TransactionWithId>[] = [
   { accessorKey: "account", header: "Account", cell: ({ row }) => <CellAccountName id={row.original.account} /> },
   { accessorKey: "title", header: "Title", meta: { wrap: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} colour />, },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} colour />, meta: { alignedRight: true } },
   { accessorKey: "tags", header: "Tags" },
 ];
 

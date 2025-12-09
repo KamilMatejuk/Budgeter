@@ -92,7 +92,11 @@ export default function Table<T extends Item, TID extends ItemID>({ url, tag, da
                     {table.getRowModel().rows.map((row, i) => (
                         <tr key={`${row.id}-${i}`} className={twMerge(classes.row.base, row.getIsSelected() && classes.row.selected)}>
                             {row.getVisibleCells().map((cell, i) => (
-                                <td key={`${cell.id}-${i}`} className={classes.td}>
+                                <td key={`${cell.id}-${i}`} className={twMerge(
+                                    classes.td,
+                                    cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
+                                    cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
+                                )}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}

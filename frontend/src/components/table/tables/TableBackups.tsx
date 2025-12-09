@@ -3,7 +3,6 @@
 import { BackupResponse } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellTextWrap from "../cells/CellTextWrap";
 
 
 interface TableBackupsProps {
@@ -14,7 +13,7 @@ const columns: ColumnDef<BackupResponse>[] = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "timestamp", header: "Timestamp", cell: ({ row }) => new Date(row.original.timestamp).toLocaleString('pl-PL') },
   { accessorKey: "size_mb", header: "Size", cell: ({ row }) => row.original.size_mb.toFixed(2) + " MB" },
-  { accessorKey: "description", header: "Description", cell: ({ row }) => <CellTextWrap value={row.original.description} /> },
+  { accessorKey: "description", header: "Description", meta: { wrap: true } },
 ];
 
 export default function TableBackups({ data }: TableBackupsProps) {

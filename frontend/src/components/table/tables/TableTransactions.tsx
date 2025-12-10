@@ -8,8 +8,8 @@ import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
 import CellAccountName from "../cells/CellAccountName";
 import { MdDelete, MdEdit } from "react-icons/md";
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
-import UpdateTransactionModal from "@/components/modal/UpdateTransactionModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
+import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionModal";
 
 
 interface TableTransactionsProps {

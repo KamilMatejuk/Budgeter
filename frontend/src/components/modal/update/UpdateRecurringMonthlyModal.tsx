@@ -1,16 +1,16 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
-import { submit } from "./UpdateModal";
+import Modal, { BackendModalProps } from "../Modal";
+import { submit } from "./utils";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
 import { MonthlyExpenseWithId, MonthlyIncomeWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { Currency } from "@/types/enum";
-import AmountInputWithError, { requiredPositiveAmount } from "../form/AmountInputWithError";
-import ChoiceInputWithError from "../form/ChoiceInputWithError";
-import DayOfMonthInputWithError, { requiredDayOfMonth } from "../form/DayOfMonthInputWithError";
+import AmountInputWithError, { requiredPositiveAmount } from "../../form/AmountInputWithError";
+import ChoiceInputWithError from "../../form/ChoiceInputWithError";
+import DayOfMonthInputWithError, { requiredDayOfMonth } from "../../form/DayOfMonthInputWithError";
 
 
 const FormSchema = z.object({
@@ -30,7 +30,7 @@ export default function UpdateRecurringMonthlyModal({ url, item, open, onClose, 
       currency: item?.currency as Currency || Currency.PLN,
       day_of_month: item?.day_of_month || 1,
     },
-    onSubmit: async (values) => { if (await submit<FormSchemaType, MonthlyIncomeWithId | MonthlyExpenseWithId>(url, values, item?._id)) onClose() },
+    onSubmit: async (values) => await submit<FormSchemaType, MonthlyIncomeWithId | MonthlyExpenseWithId>(url, values, item?._id, onClose),
     validate: withZodSchema(FormSchema),
   });
 

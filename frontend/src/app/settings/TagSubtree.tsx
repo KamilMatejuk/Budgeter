@@ -1,12 +1,12 @@
 'use client';
 
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { TagWithId } from "@/types/backend";
 import { useState } from "react";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { customRevalidateTag } from "../api/fetch";
-import UpdateTagModal from "@/components/modal/UpdateTagModal";
+import UpdateTagModal from "@/components/modal/update/UpdateTagModal";
 
 const classes = {
   tag: {

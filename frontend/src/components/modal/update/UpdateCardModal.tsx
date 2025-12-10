@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Modal, { BackendModalProps } from "./Modal";
-import { submit } from "./UpdateModal";
+import Modal, { BackendModalProps } from "../Modal";
+import { submit } from "./utils";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
 import { CardWithId, PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { Currency } from "@/types/enum";
-import AmountInputWithError, { requiredAmount, requiredNonNegativeAmount } from "../form/AmountInputWithError";
-import ChoiceInputWithError from "../form/ChoiceInputWithError";
-import CardNumberInputWithError, { requiredCardNumber } from "../form/CardNumberInputWithError";
-import DropDownInputWithError from "../form/DropDownInputWithError";
+import AmountInputWithError, { requiredAmount, requiredNonNegativeAmount } from "../../form/AmountInputWithError";
+import ChoiceInputWithError from "../../form/ChoiceInputWithError";
+import CardNumberInputWithError, { requiredCardNumber } from "../../form/CardNumberInputWithError";
+import DropDownInputWithError from "../../form/DropDownInputWithError";
 import { get } from "@/app/api/fetch";
 
 enum Type {
@@ -52,14 +52,13 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
             min_number_of_transactions_monthly: item?.min_number_of_transactions_monthly || 0,
         },
         onSubmit: async (values) => {
-            if (await submit<SubmitFormSchemaType, CardWithId>(url, {
+            const val = {
                 ...values,
                 credit: values.credit == Type.CREDIT,
                 active: values.active == Active.ACTIVE,
                 value: values.credit == Type.CREDIT ? values.value : 0,
-            }, item?._id)) {
-                onClose();
             }
+            await submit<SubmitFormSchemaType, CardWithId>(url, val, item?._id, onClose);
         },
         validate: withZodSchema(FormSchema),
     });

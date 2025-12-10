@@ -1,17 +1,17 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
-import { submit } from "./UpdateModal";
+import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
 import { CapitalInvestmentWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { Capitalization, Currency } from "@/types/enum";
-import AmountInputWithError, { requiredPositiveAmount } from "../form/AmountInputWithError";
-import ChoiceInputWithError from "../form/ChoiceInputWithError";
-import { getISODateString, requiredDate } from "../form/DateInputWithError";
-import DateRangeInputWithError from "../form/DateRangeInputWithError";
+import AmountInputWithError, { requiredPositiveAmount } from "../../form/AmountInputWithError";
+import ChoiceInputWithError from "../../form/ChoiceInputWithError";
+import { getISODateString, requiredDate } from "../../form/DateInputWithError";
+import DateRangeInputWithError from "../../form/DateRangeInputWithError";
+import { submit } from "./utils";
 
 
 const FormSchema = z.object({
@@ -40,9 +40,7 @@ export default function UpdateCapitalInvestmentModal({ url, item, open, onClose 
         },
         onSubmit: async (values) => {
             const val = { ...values, start: getISODateString(values.start), end: getISODateString(values.end) };
-            if (await submit<SubmitFormSchemaType, CapitalInvestmentWithId>(url, val, item?._id)) {
-                onClose()
-            }
+            await submit<SubmitFormSchemaType, CapitalInvestmentWithId>(url, val, item?._id, onClose);
         },
         validate: withZodSchema(FormSchema),
     });

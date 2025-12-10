@@ -5,8 +5,8 @@ import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
-import UpdateCapitalInvestmentModal from "@/components/modal/UpdateCapitalInvestmentModal";
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import UpdateCapitalInvestmentModal from "@/components/modal/update/UpdateCapitalInvestmentModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
 
 

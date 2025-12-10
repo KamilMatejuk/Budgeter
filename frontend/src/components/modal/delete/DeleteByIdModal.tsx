@@ -1,7 +1,7 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
+import Modal, { BackendModalProps } from "../Modal";
 import { del } from "@/app/api/fetch";
-import { Item } from "../table/Table";
+import { Item } from "../../table/Table";
 
 
 export default function DeleteByIdModal<T extends Item>({ url, item, open, onClose }: BackendModalProps<T>) {

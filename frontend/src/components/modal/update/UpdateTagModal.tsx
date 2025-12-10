@@ -1,12 +1,12 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
-import { submit } from "./UpdateModal";
+import Modal, { BackendModalProps } from "../Modal";
+import { submit } from "./utils";
 import { z } from "zod";
 import { TagWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
-import ColorInputWithError, { requiredColor } from "../form/ColorInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
+import ColorInputWithError, { requiredColor } from "../../form/ColorInputWithError";
 
 
 export default function UpdateTagModal({ url, item, open, onClose }: BackendModalProps<TagWithId>) {
@@ -25,9 +25,8 @@ export default function UpdateTagModal({ url, item, open, onClose }: BackendModa
             ...(editColor ? { colour: item?.colour } : {})
         },
         onSubmit: async (values) => {
-            if (await submit<SubmitFormSchemaType, TagWithId>(url, { ...FormSchema.parse(values), parent: item?.parent }, item?._id)) {
-                onClose();
-            }
+            const val = { ...FormSchema.parse(values), parent: item?.parent };
+            await submit<SubmitFormSchemaType, TagWithId>(url, val, item?._id, onClose)
         },
         validate: withZodSchema(FormSchema),
     });

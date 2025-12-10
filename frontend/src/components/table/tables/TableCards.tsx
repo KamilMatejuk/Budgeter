@@ -5,9 +5,9 @@ import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellBoolean from "../cells/CellBoolean";
 import CellAccountName from "../cells/CellAccountName";
-import UpdateCardModal from "@/components/modal/UpdateCardModal";
+import UpdateCardModal from "@/components/modal/update/UpdateCardModal";
 import { MdDelete, MdEdit } from "react-icons/md";
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 
 
 interface TableCardsProps {

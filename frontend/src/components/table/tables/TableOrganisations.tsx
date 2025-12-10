@@ -4,8 +4,8 @@ import { OrganisationWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellIcon from "../cells/CellIcon";
-import UpdateOrganisationModal from "@/components/modal/UpdateOrganisationModal";
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
+import UpdateOrganisationModal from "@/components/modal/update/UpdateOrganisationModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
 
 

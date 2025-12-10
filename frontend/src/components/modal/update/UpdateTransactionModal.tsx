@@ -1,18 +1,18 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
+import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
 import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
 import { FormikProps, useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
-import AmountInputWithError, { requiredAmount } from "../form/AmountInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
+import AmountInputWithError, { requiredAmount } from "../../form/AmountInputWithError";
 import { patch } from "@/app/api/fetch";
 import { FaArrowRight } from "react-icons/fa";
-import CellAccountName from "../table/cells/CellAccountName";
-import CellOrganisation from "../table/cells/CellOrganisation";
+import CellAccountName from "../../table/cells/CellAccountName";
+import CellOrganisation from "../../table/cells/CellOrganisation";
 import { ERROR } from "@/const/message";
-import ButtonWithLoader from "../button/ButtonWithLoader";
-import CellValue from "../table/cells/CellValue";
+import ButtonWithLoader from "../../button/ButtonWithLoader";
+import CellValue from "../../table/cells/CellValue";
 
 
 const createFormSchema = (totalValue: number) => z.object({
@@ -69,8 +69,7 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
         alert("Splitting transactions is not supported yet.");
         return false;
     }
-    const { error } = await patch(url, val); // check _id or id
-    console.log("UpdateTransactionModal submit", { val, error });
+    const { error } = await patch(url, val);
     if (!error) return true;
     alert(`Error: ${error.message}`);
     return false;

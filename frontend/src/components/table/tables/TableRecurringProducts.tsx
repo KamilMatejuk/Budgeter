@@ -6,8 +6,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
 import { MdDelete, MdEdit } from "react-icons/md";
-import DeleteByIdModal from "@/components/modal/DeleteByIdModal";
-import UpdateRecurringMonthlyModal from "@/components/modal/UpdateRecurringMonthlyModal";
+import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
+import UpdateRecurringMonthlyModal from "@/components/modal/update/UpdateRecurringMonthlyModal";
 
 type RecurringProductWithId = MonthlyIncomeWithId | MonthlyExpenseWithId;
 interface TableRecurringProductsProps {

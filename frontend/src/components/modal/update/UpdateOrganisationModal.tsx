@@ -1,10 +1,10 @@
 import React from "react";
-import Modal, { BackendModalProps } from "./Modal";
-import { submit } from "./UpdateModal";
+import Modal, { BackendModalProps } from "../Modal";
+import { submit } from "./utils";
 import { z } from "zod";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../form/TextInputWithError";
+import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { OrganisationWithId } from "@/types/backend";
 import { ERROR } from "@/const/message";
 
@@ -24,7 +24,7 @@ export default function UpdateOrganisationModal({ url, item, open, onClose }: Ba
             pattern: item?.pattern || "",
             icon: item?.icon || "",
         },
-        onSubmit: async (values) => { if (await submit<FormSchemaType, OrganisationWithId>(url, values, item?._id)) onClose(); },
+        onSubmit: async (values) => await submit<FormSchemaType, OrganisationWithId>(url, values, item?._id, onClose),
         validate: withZodSchema(FormSchema),
     });
 

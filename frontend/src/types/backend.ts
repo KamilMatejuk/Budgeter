@@ -578,7 +578,8 @@ export type paths = {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update Backup */
+        patch: operations["update_backup_api_backup_patch"];
         trace?: never;
     };
     "/api/backup/restore/{name}": {
@@ -619,6 +620,15 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** BackupPatchRequest */
+        BackupPatchRequest: {
+            /** Id */
+            _id?: string;
+            /** Prev Name */
+            prev_name: string;
+            /** Name */
+            name: string;
+        };
         /** BackupRequest */
         BackupRequest: {
             /** Id */
@@ -1217,6 +1227,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type BackupPatchRequest = components['schemas']['BackupPatchRequest'];
 export type BackupRequest = components['schemas']['BackupRequest'];
 export type BackupResponse = components['schemas']['BackupResponse'];
 export type CapitalInvestment = components['schemas']['CapitalInvestment'];
@@ -3155,6 +3166,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["BackupRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_backup_api_backup_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BackupPatchRequest"];
             };
         };
         responses: {

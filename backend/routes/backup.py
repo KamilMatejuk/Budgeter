@@ -23,6 +23,10 @@ router = APIRouter()
 class BackupRequest(PyBaseModel):
     name: str
 
+class BackupPatchRequest(PyBaseModel):
+    prev_name: str
+    name: str
+
 class BackupResponse(PyBaseModel, metaclass=WithId):
     name: str
     timestamp: datetime
@@ -81,7 +85,9 @@ async def get_backups():
     @fail_wrapper
     async def inner():
         response = []
-        for f in glob.glob(os.path.join(BACKUP_DIR, f"*{BACKUP_EXT}")):
+        files = glob.glob(os.path.join(BACKUP_DIR, f"*{BACKUP_EXT}"))
+        files = sorted(files, key=os.path.getmtime, reverse=True)
+        for f in files:
             response.append(BackupResponse(**_parse_file_info(f)))
         return response
     return await inner()
@@ -105,6 +111,22 @@ async def create_backup(data: BackupRequest, db: AsyncIOMotorDatabase = Depends(
     return await inner()
 
 
+@router.patch("", response_model=BackupResponse)
+async def update_backup(data: BackupPatchRequest):
+    @fail_wrapper
+    async def inner():
+        filename = _name_to_filename(data.prev_name)
+        assert os.path.exists(filename), "Backup not found"
+        new_name = _find_unique_name(data.name)
+        new_filename = _name_to_filename(new_name)
+        # preserve timestamp
+        stat = os.stat(filename)
+        os.rename(filename, new_filename)
+        os.utime(new_filename, (stat.st_atime, stat.st_mtime))
+        return BackupResponse(**_parse_file_info(new_filename))
+    return await inner()
+
+
 @router.post("/restore/{name}", response_model=dict)
 async def restore_backup(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
@@ -115,7 +137,7 @@ async def restore_backup(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         for coll in collections:
             await db[coll].delete_many({})
         # restore from backup
-        async for coll_name, doc in _read(filename):
+        for coll_name, doc in _read(filename):
             await db[coll_name].insert_one(doc)
         return {}
     return await inner()

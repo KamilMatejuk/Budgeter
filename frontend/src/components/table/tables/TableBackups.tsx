@@ -3,6 +3,10 @@
 import { BackupResponse } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
+import { MdDelete, MdEdit, MdRestore } from "react-icons/md";
+import DeleteByNameModal from "@/components/modal/delete/DeleteByNameModal";
+import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
+import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
 
 
 interface TableBackupsProps {
@@ -23,6 +27,12 @@ export default function TableBackups({ data }: TableBackupsProps) {
       tag="backup"
       data={data}
       columns={columns}
-      options={[]} />
+      options={[
+        { name: "Restore", icon: MdRestore, component: RestoreBackupModal },
+        { name: "Edit", icon: MdEdit, component: UpdateBackupModal },
+        { name: "Delete", icon: MdDelete, component: DeleteByNameModal },
+      ]}
+      CreateModal={UpdateBackupModal}
+      newText="backup" />
   );
 }

@@ -23,7 +23,7 @@ export default function RunButton() {
       return;
     }
     const backupName = `Auto pre-import of "${selectedFile.name.toLowerCase()}"`;
-    const { error: backupError } = await post(`/api/backup`, { name: backupName } as BackupRequest);
+    const { error: backupError } = await post(`/api/backup`, { name: backupName, auto: true } as BackupRequest);
     if (backupError) {
       setError(`Pre-import backup failed: ${backupError.message}`);
       return;

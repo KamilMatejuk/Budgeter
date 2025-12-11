@@ -17,7 +17,9 @@ export default function UpdateBackupModal({ url, item, open, onClose }: BackendM
     initialValues: { name: item?.name || "" },
     onSubmit: async (values) => {
       const method = item ? patch : post;
-      const body = item ? { prev_name: item?.name, ...values } as BackupPatchRequest : values as BackupRequest;
+      const body = item
+        ? { prev_name: item?.name, ...values } as BackupPatchRequest
+        : { auto: false, ...values } as BackupRequest;
       const { error } = await method(url, body);
       if (!error) return onClose();
       alert(`Error: ${error.message}`);

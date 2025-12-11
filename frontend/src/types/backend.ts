@@ -632,6 +632,8 @@ export type components = {
         BackupRequest: {
             /** Id */
             _id?: string;
+            /** Auto */
+            auto: boolean;
             /** Name */
             name: string;
         };
@@ -641,6 +643,8 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Auto */
+            auto: boolean;
             /**
              * Timestamp
              * Format: date-time

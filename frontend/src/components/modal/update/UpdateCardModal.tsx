@@ -13,6 +13,7 @@ import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../../form/CardNumberInputWithError";
 import DropDownInputWithError from "../../form/DropDownInputWithError";
 import { get } from "@/app/api/fetch";
+import { useQuery } from "@tanstack/react-query";
 
 enum Type {
   DEBIT = "DEBIT",
@@ -63,15 +64,16 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
     validate: withZodSchema(FormSchema),
   });
 
-  const [accounts, setAccounts] = useState<Record<string, string>>({});
-  useEffect(() => {
-    get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"])
-      .then(({ response }) => setAccounts((response || []).reduce(
+  const { data: accounts } = useQuery({
+    queryKey: ["personal_account"],
+    queryFn: async () => {
+      const { response } = await get<PersonalAccountWithId[]>(`/api/products/personal_account`, ["personal_account"]);
+      return (response || []).reduce(
         (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
         {} as Record<string, string>
-      )));
-  }, []);
-
+      );
+    },
+  });
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Card">
@@ -82,7 +84,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
       <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
       <ChoiceInputWithError formik={formik} formikName="active" optionsEnum={Active} label="Active" />
-      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts} />
+      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts || {}} />
       <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
     </Modal>
   );

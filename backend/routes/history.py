@@ -61,7 +61,7 @@ async def _get_required_account_amount(db, key, filtr):
         required = getattr(a, key, 0)
         if required == 0:
             continue
-        condition = {"account": str(a.id), "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}
+        condition = {"account": str(a.id), "deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}
         history: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
         if not history:
             responses.append(RequirementsResponse(name=a.name, remaining=required))

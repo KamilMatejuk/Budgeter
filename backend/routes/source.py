@@ -26,7 +26,7 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
     async def inner():
         hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
         # check hash exists
-        existing = await get(db, "transactions", TransactionWithId, {"hash": hash}, one=True)
+        existing = await get(db, "transactions", TransactionWithId, {"hash": hash, "deleted": False}, one=True)
         if existing: return existing
         # create new
         if data.type == "": data.type = "PŁATNOŚĆ KARTĄ"

@@ -12,6 +12,7 @@ class Transaction(PyBaseModel):
     organisation: str
     value: float
     tags: list[Tag]
+    deleted: bool = False
 
 
 class TransactionPartial(Transaction, metaclass=Partial): pass

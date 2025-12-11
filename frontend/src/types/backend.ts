@@ -4,25 +4,6 @@
  */
 
 export type paths = {
-    "/api/transaction": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Transactions */
-        get: operations["get_transactions_api_transaction_get"];
-        put?: never;
-        /** Create Transaction */
-        post: operations["create_transaction_api_transaction_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Patch Transaction */
-        patch: operations["patch_transaction_api_transaction_patch"];
-        trace?: never;
-    };
     "/api/transaction/{id}": {
         parameters: {
             query?: never;
@@ -39,6 +20,24 @@ export type paths = {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/transaction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Transaction */
+        post: operations["create_transaction_api_transaction_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Transaction */
+        patch: operations["patch_transaction_api_transaction_patch"];
         trace?: never;
     };
     "/api/transaction/{year}/{month}": {
@@ -1169,6 +1168,11 @@ export type components = {
             value: number;
             /** Tags */
             tags: components["schemas"]["Tag"][];
+            /**
+             * Deleted
+             * @default false
+             */
+            deleted: boolean;
         };
         /** TransactionPartial */
         TransactionPartial: {
@@ -1188,6 +1192,8 @@ export type components = {
             value?: number | null;
             /** Tags */
             tags?: components["schemas"]["Tag"][] | null;
+            /** Deleted */
+            deleted?: boolean | null;
         };
         /** TransactionWithId */
         TransactionWithId: {
@@ -1210,6 +1216,8 @@ export type components = {
             value: number;
             /** Tags */
             tags: components["schemas"]["Tag"][];
+            /** Deleted */
+            deleted: boolean;
         };
         /** ValidationError */
         ValidationError: {
@@ -1272,11 +1280,13 @@ export type TransactionWithId = components['schemas']['TransactionWithId'];
 export type ValidationError = components['schemas']['ValidationError'];
 export type $defs = Record<string, never>;
 export interface operations {
-    get_transactions_api_transaction_get: {
+    get_transaction_by_id_api_transaction__id__get: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1287,7 +1297,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"][];
+                    "application/json": components["schemas"]["TransactionWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_transaction_api_transaction__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -1345,70 +1397,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TransactionWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_transaction_by_id_api_transaction__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_transaction_api_transaction__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
                 };
             };
             /** @description Validation Error */

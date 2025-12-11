@@ -57,6 +57,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/transaction/split": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Split Transactions */
+        patch: operations["split_transactions_api_transaction_split_patch"];
+        trace?: never;
+    };
     "/api/source": {
         parameters: {
             query?: never;
@@ -1199,6 +1216,22 @@ export type components = {
             /** Deleted */
             deleted?: boolean | null;
         };
+        /** TransactionSplitRequest */
+        TransactionSplitRequest: {
+            /** Id */
+            _id?: string;
+            /** Items */
+            items: components["schemas"]["TransactionSplitRequestItem"][];
+        };
+        /** TransactionSplitRequestItem */
+        TransactionSplitRequestItem: {
+            /** Id */
+            _id?: string;
+            /** Title */
+            title: string;
+            /** Value */
+            value: number;
+        };
         /** TransactionWithId */
         TransactionWithId: {
             /** Id */
@@ -1280,6 +1313,8 @@ export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
+export type TransactionSplitRequest = components['schemas']['TransactionSplitRequest'];
+export type TransactionSplitRequestItem = components['schemas']['TransactionSplitRequestItem'];
 export type TransactionWithId = components['schemas']['TransactionWithId'];
 export type ValidationError = components['schemas']['ValidationError'];
 export type $defs = Record<string, never>;
@@ -1425,6 +1460,39 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    split_transactions_api_transaction_split_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransactionSplitRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

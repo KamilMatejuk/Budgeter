@@ -17,3 +17,11 @@ class Transaction(PyBaseModel):
 
 class TransactionPartial(Transaction, metaclass=Partial): pass
 class TransactionWithId(Transaction, metaclass=WithId): pass
+
+
+class TransactionSplitRequestItem(PyBaseModel):
+    title: str
+    value: float
+
+class TransactionSplitRequest(PyBaseModel):
+    items: list[TransactionSplitRequestItem]

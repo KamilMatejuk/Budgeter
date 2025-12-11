@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
+import { Transaction, TransactionPartial, TransactionSplitRequest, TransactionWithId } from "@/types/backend";
 import { FormikProps, useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -64,12 +64,9 @@ function removeTransactionPart(formik: FormikProps<FormSchemaType>) {
 async function submit(values: FormSchemaType, item: Transaction, url: string) {
   const val = values.parts.length === 1
     ? { _id: item._id, ...values.parts[0] } as TransactionPartial // create regular transaction
-    : values.parts.map(v => ({ _id: item._id, ...v } as TransactionPartial)); // split transaction
-  if (Array.isArray(val)) {
-    alert("Splitting transactions is not supported yet.");
-    return false;
-  }
-  const { error } = await patch(url, val);
+    : { _id: item._id, items: values.parts } as TransactionSplitRequest; // split transaction
+  const slug = values.parts.length === 1 ? url : `${url}/split`;
+  const { error } = await patch(slug, val);
   if (!error) return true;
   alert(`Error: ${error.message}`);
   return false;
@@ -111,27 +108,27 @@ export default function UpdateTransactionModal({ url, item, open, onClose }: Bac
             label={isSplit ? `Value #${i + 1}` : "Value"} />
         </div>
       ))}
-      <p className="m-auto">Split into subtransactions</p>
+      <p className="m-auto text-subtext">Split into subtransactions</p>
       <div className="w-full flex gap-1">
         <ButtonWithLoader
-          className="text-nowrap"
+          className="flex-1 text-nowrap"
           action="neutral"
           disabled={formik.values.parts.length >= 2}
           onClick={async () => splitTransactionsIntoParts(formik, 2)}
           text="Split to 2" />
         <ButtonWithLoader
-          className="text-nowrap"
+          className="flex-1 text-nowrap"
           action="neutral"
           disabled={formik.values.parts.length >= 3}
           onClick={async () => splitTransactionsIntoParts(formik, 3)}
           text="Split to 3" />
         <ButtonWithLoader
-          className="text-nowrap"
+          className="flex-1 text-nowrap"
           action="neutral"
           onClick={async () => addTransactionPart(formik)}
           text="Add empty" />
         <ButtonWithLoader
-          className="text-nowrap"
+          className="flex-1 text-nowrap"
           action="neutral"
           disabled={formik.values.parts.length <= 1}
           onClick={async () => removeTransactionPart(formik)}

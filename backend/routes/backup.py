@@ -38,7 +38,7 @@ def _name_to_filename(name: str) -> str:
     return os.path.join(BACKUP_DIR, name.lower().replace(" ", "_") + BACKUP_EXT)
 
 def _filename_to_name(filename: str) -> str:
-    return os.path.basename(filename).replace(BACKUP_EXT, "").replace("_", " ").title()
+    return os.path.basename(filename).replace(BACKUP_EXT, "").replace("_", " ").capitalize()
 
 def _read(filename: str):
     with open(filename, "rb") as f:

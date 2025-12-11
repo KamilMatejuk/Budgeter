@@ -7,6 +7,7 @@ import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
 import { post } from "@/app/api/fetch";
 import ButtonWithProgress from "../../components/button/ButtonWithProgress";
+import { BackupRequest } from "@/types/backend";
 
 
 export default function RunButton() {
@@ -21,6 +22,12 @@ export default function RunButton() {
       setError("Select a file and a source before importing.");
       return;
     }
+    const backupName = `Auto pre-import of "${selectedFile.name.toLowerCase()}"`;
+    const { error: backupError } = await post(`/api/backup`, { name: backupName } as BackupRequest);
+    if (backupError) {
+      setError(`Pre-import backup failed: ${backupError.message}`);
+      return;
+    }
     try {
       await new Promise((resolve, reject) => {
         Papa.parse(selectedFile, {
@@ -32,9 +39,9 @@ export default function RunButton() {
               setMaxCounter(rows.length);
               for (const [index, row] of rows.entries()) {
                 setCounter(index + 1);
-                const { error } = await post(`/api/source/${selectedSource}`, row);
-                if (error) {
-                  reject(new Error(error.message)); // reject the whole Promise
+                const { error: rowError } = await post(`/api/source/${selectedSource}`, row);
+                if (rowError) {
+                  reject(new Error(rowError.message)); // reject the whole Promise
                   return;
                 }
               }

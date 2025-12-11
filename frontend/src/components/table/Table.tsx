@@ -95,6 +95,7 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
                   classes.td,
                   i == 0 && "px-4",
                   cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
+                  cell.column.columnDef.meta?.wrapForce && "whitespace-normal break-all",
                   cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
                   cell.column.columnDef.meta?.alignedRight && "text-right",
                 )}>

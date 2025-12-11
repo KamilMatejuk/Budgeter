@@ -30,4 +30,3 @@ export default function TextInputWithError<T>({ formik, formikName, label, ...pr
     </InputWithError>
   );
 }
-

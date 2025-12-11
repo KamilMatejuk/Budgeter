@@ -5,15 +5,15 @@ import { Item } from "../../table/Table";
 
 
 export default function DeleteByIdModal<T extends Item>({ url, item, open, onClose }: BackendModalProps<T>) {
-    async function submit() {
-        const { error } = await del(`${url}/${item?._id}`);
-        if (error) alert(`Error: ${error.message}`);
-        else onClose();
-    }
+  async function submit() {
+    const { error } = await del(`${url}/${item?._id}`);
+    if (error) alert(`Error: ${error.message}`);
+    else onClose();
+  }
 
-    return (
-        <Modal open={open} onClose={onClose} cancellable onDelete={submit}>
-            <p>Are you sure you want to delete {item?._id}?</p>
-        </Modal>
-    );
+  return (
+    <Modal open={open} onClose={onClose} cancellable onDelete={submit}>
+      <p>Are you sure you want to delete {item?._id}?</p>
+    </Modal>
+  );
 }

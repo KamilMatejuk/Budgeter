@@ -14,35 +14,35 @@ import AccountNumberInputWithError, { requiredAccountNumber } from "../../form/A
 
 
 const FormSchema = z.object({
-    name: requiredText,
-    number: requiredAccountNumber,
-    value: requiredPositiveAmount,
-    currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
-    yearly_interest: requiredPositiveAmount,
+  name: requiredText,
+  number: requiredAccountNumber,
+  value: requiredPositiveAmount,
+  currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
+  yearly_interest: requiredPositiveAmount,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
 export default function UpdateStockAccountModal({ url, item, open, onClose }: BackendModalProps<StockAccountWithId>) {
-    const formik = useFormik<FormSchemaType>({
-        initialValues: {
-            name: item?.name || "",
-            number: item?.number || "",
-            value: item?.value || 0,
-            currency: item?.currency as Currency || Currency.PLN,
-            yearly_interest: item?.yearly_interest || 0,
-        },
-        onSubmit: async (values) => await submit<FormSchemaType, StockAccountWithId>(url, values, item?._id, onClose),
-        validate: withZodSchema(FormSchema),
-    });
+  const formik = useFormik<FormSchemaType>({
+    initialValues: {
+      name: item?.name || "",
+      number: item?.number || "",
+      value: item?.value || 0,
+      currency: item?.currency as Currency || Currency.PLN,
+      yearly_interest: item?.yearly_interest || 0,
+    },
+    onSubmit: async (values) => await submit<FormSchemaType, StockAccountWithId>(url, values, item?._id, onClose),
+    validate: withZodSchema(FormSchema),
+  });
 
-    return (
-        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Stock Account">
-            <TextInputWithError formik={formik} formikName="name" label="Name" />
-            <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
-            <AmountInputWithError formik={formik} formikName="value" label="Value" />
-            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
-            <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
-        </Modal>
-    );
+  return (
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Stock Account">
+      <TextInputWithError formik={formik} formikName="name" label="Name" />
+      <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
+      <AmountInputWithError formik={formik} formikName="value" label="Value" />
+      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
+    </Modal>
+  );
 }

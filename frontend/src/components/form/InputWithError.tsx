@@ -8,7 +8,7 @@ export interface MultiInputWithErrorProps<T> extends PropsWithChildren {
   label?: string;
 }
 
-export interface SingleInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames"> { 
+export interface SingleInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames"> {
   formikName: keyof T | string;
 }
 

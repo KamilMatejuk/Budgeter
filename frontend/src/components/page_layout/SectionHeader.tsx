@@ -13,6 +13,5 @@ export default function SectionHeader({ text, subtext, ...props }: SectionHeader
       </h2>
       {subtext && <p className="text-sm text-subtext">{subtext}</p>}
     </div>
-
   );
 }

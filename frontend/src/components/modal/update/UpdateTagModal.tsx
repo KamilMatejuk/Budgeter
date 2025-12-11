@@ -10,31 +10,31 @@ import ColorInputWithError, { requiredColor } from "../../form/ColorInputWithErr
 
 
 export default function UpdateTagModal({ url, item, open, onClose }: BackendModalProps<TagWithId>) {
-    const editColor = !item?.parent;
+  const editColor = !item?.parent;
 
-    const FormSchema = z.object({
-        name: requiredText,
-        ...(editColor ? { colour: requiredColor } : {})
-    });
-    type FormSchemaType = z.infer<typeof FormSchema>;
-    type SubmitFormSchemaType = FormSchemaType & { parent?: string | null };
+  const FormSchema = z.object({
+    name: requiredText,
+    ...(editColor ? { colour: requiredColor } : {})
+  });
+  type FormSchemaType = z.infer<typeof FormSchema>;
+  type SubmitFormSchemaType = FormSchemaType & { parent?: string | null };
 
-    const formik = useFormik<FormSchemaType>({
-        initialValues: {
-            name: item?.name || "",
-            ...(editColor ? { colour: item?.colour } : {})
-        },
-        onSubmit: async (values) => {
-            const val = { ...FormSchema.parse(values), parent: item?.parent };
-            await submit<SubmitFormSchemaType, TagWithId>(url, val, item?._id, onClose)
-        },
-        validate: withZodSchema(FormSchema),
-    });
+  const formik = useFormik<FormSchemaType>({
+    initialValues: {
+      name: item?.name || "",
+      ...(editColor ? { colour: item?.colour } : {})
+    },
+    onSubmit: async (values) => {
+      const val = { ...FormSchema.parse(values), parent: item?.parent };
+      await submit<SubmitFormSchemaType, TagWithId>(url, val, item?._id, onClose)
+    },
+    validate: withZodSchema(FormSchema),
+  });
 
-    return (
-        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Tag">
-            <TextInputWithError formik={formik} formikName="name" label="Name" />
-            {editColor && <ColorInputWithError formik={formik} formikName="colour" label="Colour" />}
-        </Modal>
-    );
+  return (
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Tag">
+      <TextInputWithError formik={formik} formikName="name" label="Name" />
+      {editColor && <ColorInputWithError formik={formik} formikName="colour" label="Colour" />}
+    </Modal>
+  );
 }

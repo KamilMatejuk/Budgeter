@@ -14,38 +14,38 @@ import AccountNumberInputWithError, { requiredAccountNumber } from "../../form/A
 
 
 const FormSchema = z.object({
-    name: requiredText,
-    number: requiredAccountNumber,
-    value: requiredPositiveAmount,
-    currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
-    yearly_interest: requiredPositiveAmount,
-    capitalization: z.nativeEnum(Capitalization, { required_error: ERROR.requiredError }),
+  name: requiredText,
+  number: requiredAccountNumber,
+  value: requiredPositiveAmount,
+  currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
+  yearly_interest: requiredPositiveAmount,
+  capitalization: z.nativeEnum(Capitalization, { required_error: ERROR.requiredError }),
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
 export default function UpdateSavingsAccountModal({ url, item, open, onClose }: BackendModalProps<SavingsAccountWithId>) {
-    const formik = useFormik<FormSchemaType>({
-        initialValues: {
-            name: item?.name || "",
-            number: item?.number || "",
-            value: item?.value || 0,
-            currency: item?.currency as Currency || Currency.PLN,
-            yearly_interest: item?.yearly_interest || 0,
-            capitalization: item?.capitalization as Capitalization || Capitalization.ONCE,
-        },
-        onSubmit: async (values) => await submit<FormSchemaType, SavingsAccountWithId>(url, values, item?._id, onClose),
-        validate: withZodSchema(FormSchema),
-    });
+  const formik = useFormik<FormSchemaType>({
+    initialValues: {
+      name: item?.name || "",
+      number: item?.number || "",
+      value: item?.value || 0,
+      currency: item?.currency as Currency || Currency.PLN,
+      yearly_interest: item?.yearly_interest || 0,
+      capitalization: item?.capitalization as Capitalization || Capitalization.ONCE,
+    },
+    onSubmit: async (values) => await submit<FormSchemaType, SavingsAccountWithId>(url, values, item?._id, onClose),
+    validate: withZodSchema(FormSchema),
+  });
 
-    return (
-        <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Savings Account">
-            <TextInputWithError formik={formik} formikName="name" label="Name" />
-            <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
-            <AmountInputWithError formik={formik} formikName="value" label="Value" />
-            <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
-            <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
-            <ChoiceInputWithError formik={formik} formikName="capitalization" optionsEnum={Capitalization} label="Capitalization" />
-        </Modal>
-    );
+  return (
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Savings Account">
+      <TextInputWithError formik={formik} formikName="name" label="Name" />
+      <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
+      <AmountInputWithError formik={formik} formikName="value" label="Value" />
+      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
+      <ChoiceInputWithError formik={formik} formikName="capitalization" optionsEnum={Capitalization} label="Capitalization" />
+    </Modal>
+  );
 }

@@ -24,5 +24,4 @@ export default function DateRangeInputWithError<T>({ formik, formikNames, label 
       isClearable
       inline
     />);
-
 }

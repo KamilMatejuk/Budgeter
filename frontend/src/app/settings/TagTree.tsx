@@ -7,9 +7,7 @@ import TagSubtree from "./TagSubtree";
 export default async function TagTree() {
   const { response, error } = await get<TagWithId[]>("/api/tag", ["tag"]);
 
-  return (
-    error
-      ? <ErrorToast message={`Could not download tags: ${error.message}`} />
-      : <TagSubtree allTags={response} />
-  );
+  return error
+    ? <ErrorToast message={`Could not download tags: ${error.message}`} />
+    : <TagSubtree allTags={response} />;
 }

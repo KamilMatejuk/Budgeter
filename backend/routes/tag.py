@@ -6,7 +6,7 @@ from models.tag import Tag, TagPartial, TagWithId, TagRequest
 from core.db import get_db
 
 
-COLOR_ALPHA_PROGRESSION = ["FF", "CC", "99", "66", "33"]
+COLOR_ALPHA_PROGRESSION = ["FF", "7F", "4C", "26"]
 
 
 async def get_parent(tag: Tag, db: AsyncIOMotorDatabase) -> Tag | None:
@@ -82,7 +82,7 @@ async def delete_tag(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         async def f(tag: Tag):
             for child in await get_children(tag, db):
                 await f(child)
-        await delete(db, "tags", str(tag.id))
+            await delete(db, "tags", str(tag.id))
         await f(tag)
         # remove from parent
         parent = await get_parent(tag, db)

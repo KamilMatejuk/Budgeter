@@ -25,9 +25,11 @@ export async function getExchangeRate(base: CurrencyType | CurrencyEnum, target:
     const options = { next: { revalidate: 24 * 60 * 60, tags: [`forex_${target}`] } };
     const response = await fetch(url, options);
     const data = await response.json();
+    if (data.error && data.error.code == 104) throw new Error("Forex API monthly request limit reached");
+    if (!data.quotes) throw new Error(`Invalid response from forex API: ${JSON.stringify(data)}`);
     return (1 / data.quotes[`${target}${base}`]) || FALLBACK_RATES[`${base}${target}`];
   } catch (error) {
-    console.error("Error fetching exchange rate:", error);
+    console.warn("Error fetching exchange rate:", error);
     return FALLBACK_RATES[`${base}${target}`];
   }
 }

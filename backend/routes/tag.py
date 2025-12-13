@@ -6,9 +6,6 @@ from models.tag import Tag, TagPartial, TagWithId, TagRequest
 from core.db import get_db
 
 
-COLOR_ALPHA_PROGRESSION = ["FF", "7F", "4C", "26"]
-
-
 async def get_parent(tag: Tag, db: AsyncIOMotorDatabase) -> Tag | None:
     if not tag.parent: return None
     return await get(db, "tags", Tag, {"_id": tag.parent}, one=True)
@@ -24,16 +21,6 @@ async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[Tag]:
     return children
 
 
-def getNextColor(current_color: str) -> str:
-    current_alpha = current_color[-2:]
-    try: current_alpha_index = COLOR_ALPHA_PROGRESSION.index(current_alpha)
-    except ValueError:  current_alpha_index = -1
-    if current_alpha_index < len(COLOR_ALPHA_PROGRESSION) - 1:
-        next_alpha = COLOR_ALPHA_PROGRESSION[current_alpha_index + 1]
-    else: next_alpha = COLOR_ALPHA_PROGRESSION[-1]
-    return current_color[:-2] + next_alpha
-
-
 router = APIRouter()
 factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
 factory.create_get()
@@ -45,9 +32,8 @@ async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db
     @fail_wrapper
     async def inner():
         parent = await get_parent(data, db)
-        # use parent colour
-        if not parent: data.colour = (data.colour[:-2] or "#000000") + "FF"
-        else: data.colour = getNextColor(parent.colour)
+        # get color
+        data.colour = data.colour or (parent.colour if parent else "#FFFFFF")
         item = await create(db, "tags", TagWithId, data)
         # add to parent's children
         if parent:
@@ -63,12 +49,13 @@ async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)
     async def inner():
         item = await patch(db, "tags", TagWithId, data)
         # recursively update colour in children
-        async def f(tag: Tag):
-            for child in await get_children(tag, db):
-                child.colour = getNextColor(tag.colour)
-                await patch(db, "tags", TagPartial, child)
-                await f(child)
-        await f(item)
+        if data.colour:
+            async def f(tag: Tag):
+                for child in await get_children(tag, db):
+                    child.colour = data.colour
+                    await patch(db, "tags", TagPartial, child)
+                    await f(child)
+            await f(item)
         return item
     return await inner()
 

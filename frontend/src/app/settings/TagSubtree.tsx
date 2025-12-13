@@ -7,11 +7,12 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { customRevalidateTag } from "../api/fetch";
 import UpdateTagModal from "@/components/modal/update/UpdateTagModal";
+import { getTextColor } from "@/components/table/cells/CellTag";
 
 const classes = {
   tag: {
     container: "flex items-center",
-    body: "m-1 border border-transparent rounded px-2",
+    body: "m-1 rounded px-2",
     edit: "cursor-pointer",
     delete: "cursor-pointer",
   },
@@ -35,13 +36,13 @@ export default function TagSubtree({ parent, allTags }: TagSubtreeProps) {
 
   const children = allTags.filter((tag) => tag.parent === (parent?._id || null));
   const newTag = "Create new " + (parent ? `subtag of ${parent.name}` : 'tag')
-
+  const style = parent ? { backgroundColor: parent.colour, color: getTextColor(parent.colour) } : {};
   return (
     <div>
       {parent && (
         <div className={classes.tag.container}>
           <div className={classes.lines.horizontal}></div>
-          <span className={classes.tag.body} style={{ backgroundColor: parent.colour }}>{parent.name}</span>
+          <span className={classes.tag.body} style={style}>{parent.name}</span>
           <MdEdit size={20} className={classes.tag.edit} onClick={() => setModalOpen("update")} />
           <MdDelete size={20} className={classes.tag.delete} onClick={() => setModalOpen("delete")} />
         </div>

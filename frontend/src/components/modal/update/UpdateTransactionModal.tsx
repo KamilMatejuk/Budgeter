@@ -13,15 +13,16 @@ import CellOrganisation from "../../table/cells/CellOrganisation";
 import { ERROR } from "@/const/message";
 import ButtonWithLoader from "../../button/ButtonWithLoader";
 import CellValue from "../../table/cells/CellValue";
+import TagsInputWithError from "@/components/form/TagsInputWithError";
 
 
 const createFormSchema = (totalValue: number) => z.object({
   parts: z
-    .array(z.object({ title: requiredText, value: requiredAmount }))
+    .array(z.object({ title: requiredText, value: requiredAmount, tags: z.array(z.string()).min(1, ERROR.requiredError) }))
     .min(1, ERROR.requiredError)
     .superRefine((parts, ctx) => {
       const sum = parts.reduce((acc, curr) => acc + curr.value, 0);
-      if (sum === totalValue) return;
+      if (sum.toFixed(2) === totalValue.toFixed(2)) return;
       const message = `Total value should equal ${totalValue.toFixed(2)} and not ${sum.toFixed(2)}.`;
       parts.forEach((_, index) => ctx.addIssue({ code: z.ZodIssueCode.custom, message, path: [index, "value"] }));
     })
@@ -37,18 +38,22 @@ function splitTransactionsIntoParts(formik: FormikProps<FormSchemaType>, n: numb
   const partValue = parseFloat((totalValue / n).toFixed(2));
   const remainder = parseFloat((totalValue - partValue * n).toFixed(2));
   const title = currentParts[0]?.title || "";
+  const tags = currentParts[0]?.tags || [];
   const newParts = Array.from({ length: n }, (_, i) => ({
     title: `${title} #${i + 1}`,
-    value: partValue + (i === n - 1 ? remainder : 0)
+    value: partValue + (i === n - 1 ? remainder : 0),
+    tags: tags,
   }));
   formik.setFieldValue("parts", newParts);
 }
 function addTransactionPart(formik: FormikProps<FormSchemaType>) {
   const currentParts = formik.values.parts;
   const title = currentParts[0]?.title || "";
+  const tags = currentParts[0]?.tags || [];
   const newPart = {
     title: `${title} #${currentParts.length + 1}`,
     value: 0,
+    tags: tags,
   };
   formik.setFieldValue("parts", [...currentParts, newPart]);
 }
@@ -75,7 +80,7 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
 
 export default function UpdateTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionWithId>) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { parts: [{ title: item?.title || "", value: item?.value || 0 }] },
+    initialValues: { parts: [{ title: item?.title || "", value: item?.value || 0, tags: item?.tags || [] }] },
     onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },
     validate: withZodSchema(createFormSchema(item?.value || 0)),
   });
@@ -106,6 +111,10 @@ export default function UpdateTransactionModal({ url, item, open, onClose }: Bac
             formik={formik}
             formikName={`parts[${i}].value`}
             label={isSplit ? `Value #${i + 1}` : "Value"} />
+          <TagsInputWithError
+            formik={formik}
+            formikName={`parts[${i}].tags`}
+            label={isSplit ? `Tag #${i + 1}` : "Tag"} />
         </div>
       ))}
       <p className="m-auto text-subtext">Split into subtransactions</p>

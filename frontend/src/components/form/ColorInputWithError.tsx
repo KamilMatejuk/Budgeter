@@ -10,7 +10,7 @@ export const requiredColor = z.string().min(1, ERROR.requiredError)
   .refine((s) => /^[0-9a-f]{6}$/.test(s) || /^[0-9a-f]{8}$/.test(s), {
     message: "Must be a 6- or 8-digit hex color",
   })
-  .transform((s) => s.length === 6 ? s + "ff" : s)
+  .transform((s) => s.length === 8 ? s.slice(0, 6) : s)
   .transform((s) => `#${s}`);
 
 
@@ -25,10 +25,12 @@ export default function ColorInputWithError<T>({ formik, formikName, label }: Si
           style={{ width: '100%', height: '24px' }}
         />
       </InputWithError>
-      <style>{`
-                .react-colorful__saturation { display: none; }
-                .react-colorful__hue { border-radius: 8px; height: 16px; margin-top: 4px; }
-            `}</style>
+      <style>
+        {`
+        .react-colorful__saturation { display: none; }
+        .react-colorful__hue { border-radius: 8px; height: 16px; margin-top: 4px; }
+        `}
+      </style>
     </>
   );
 }

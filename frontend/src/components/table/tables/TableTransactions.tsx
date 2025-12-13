@@ -10,6 +10,7 @@ import CellAccountName from "../cells/CellAccountName";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionModal";
+import CellTag from "../cells/CellTag";
 
 
 interface TableTransactionsProps {
@@ -22,7 +23,13 @@ const columns: ColumnDef<TransactionWithId>[] = [
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
   { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} colour />, meta: { alignedRight: true } },
-  { accessorKey: "tags", header: "Tags" },
+  {
+    accessorKey: "tags", header: "Tags", cell: ({ row }) => (
+      <div className="flex flex-col gap-1">
+        {row.original.tags.map((tagId) => <CellTag key={tagId} id={tagId} />)}
+      </div>
+    ), meta: { wrap: true }
+  },
 ];
 
 export default function TableTransactions({ data }: TableTransactionsProps) {

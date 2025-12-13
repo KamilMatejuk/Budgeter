@@ -1,6 +1,5 @@
 from datetime import date
 
-from models.tag import Tag
 from models.base import PyBaseModel, Partial, WithId
 
 
@@ -11,7 +10,7 @@ class Transaction(PyBaseModel):
     title: str
     organisation: str
     value: float
-    tags: list[Tag]
+    tags: list[str] # ids of Tags
     deleted: bool = False
 
 
@@ -22,6 +21,7 @@ class TransactionWithId(Transaction, metaclass=WithId): pass
 class TransactionSplitRequestItem(PyBaseModel):
     title: str
     value: float
+    tags: list[str]
 
 class TransactionSplitRequest(PyBaseModel):
     items: list[TransactionSplitRequestItem]

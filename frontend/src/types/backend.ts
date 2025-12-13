@@ -1116,19 +1116,6 @@ export type components = {
             /** Yearly Interest */
             yearly_interest: number;
         };
-        /** Tag */
-        Tag: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            /** Colour */
-            colour: string;
-            /** Parent */
-            parent?: string | null;
-            /** Children */
-            children?: string[] | null;
-        };
         /** TagPartial */
         TagPartial: {
             /** Id */
@@ -1188,7 +1175,7 @@ export type components = {
             /** Value */
             value: number;
             /** Tags */
-            tags: components["schemas"]["Tag"][];
+            tags: string[];
             /**
              * Deleted
              * @default false
@@ -1212,7 +1199,7 @@ export type components = {
             /** Value */
             value?: number | null;
             /** Tags */
-            tags?: components["schemas"]["Tag"][] | null;
+            tags?: string[] | null;
             /** Deleted */
             deleted?: boolean | null;
         };
@@ -1231,6 +1218,8 @@ export type components = {
             title: string;
             /** Value */
             value: number;
+            /** Tags */
+            tags: string[];
         };
         /** TransactionWithId */
         TransactionWithId: {
@@ -1252,7 +1241,7 @@ export type components = {
             /** Value */
             value: number;
             /** Tags */
-            tags: components["schemas"]["Tag"][];
+            tags: string[];
             /** Deleted */
             deleted: boolean;
         };
@@ -1307,7 +1296,6 @@ export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId']
 export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];
-export type Tag = components['schemas']['Tag'];
 export type TagPartial = components['schemas']['TagPartial'];
 export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];

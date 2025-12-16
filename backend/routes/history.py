@@ -4,8 +4,9 @@ from models.products import CardWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from core.utils import Value
 from models.base import PyBaseModel
-from routes.base import fail_wrapper, get
+from routes.base import fail_wrapper, get, patch, create
 from models.transaction import TransactionWithId
 from models.products import PersonalAccountWithId
 from models.history import AccountDailyHistory, CardMonthlyHistory
@@ -101,8 +102,9 @@ async def _get_account_values(start: datetime.date, end: datetime.date, db: Asyn
         condition = {"date": {"$gte": start.isoformat(), "$lt": end.isoformat()}, "account": str(account.id)}
         history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory, condition)
         # expand to full month
-        before = await db["account_daily_history"].find_one({"account": str(account.id), "date": {"$lt": start.isoformat()}}, sort=[("date", -1)])
-        current_value = before["value"] if before else 0.0
+        before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
+                                                {"account": str(account.id), "date": {"$lte": start.isoformat()}}, "date", one=True)
+        current_value = before.value if before else 0.0
         full_records = []
         record_index = 0
         records = sorted(history, key=lambda x: x.date)
@@ -114,3 +116,37 @@ async def _get_account_values(start: datetime.date, end: datetime.date, db: Asyn
             full_records.append(current_value)
         response[account.name] = full_records
     return response
+
+class PatchAccountValueRequest(PyBaseModel):
+    date: datetime.date
+    value: float
+
+@router.patch("/account_value", response_model=dict)
+async def get_account_values_yearly(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        print(data)
+        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
+        before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
+                                                {"account": str(account.id), "date": {"$lte": data.date.isoformat()}}, "date", one=True)
+        diff = data.value - (before.value if before else 0.0)
+        # add curr day
+        if before.date == data.date:
+            before.value = data.value
+            before.manual_update = True
+            await patch(db, "account_daily_history", AccountDailyHistory, before)
+        else:
+            before = AccountDailyHistory(account=str(account.id), date=data.date.isoformat(), value=data.value, manual_update=True)
+            await create(db, "account_daily_history", AccountDailyHistory, before)
+        # update all following days
+        history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
+                                                       {"date": {"$gte": data.date.isoformat()}, "account": str(account.id)}, "date")
+        for i, record in enumerate(history):
+            print("RECORD", record)
+            new_value = Value.add(record.value, diff)
+            await db["account_daily_history"].update_one({"_id": record.id}, {"$set": {"value": new_value, "manual_update": i == 0}})
+        # update final value
+        account.value = Value.add(account.value, diff)
+        await patch(db, "personal_account", PersonalAccountWithId, account)
+        return {}
+    return await inner()

@@ -6,6 +6,7 @@ import DateInputWrapperWithError from "./DateInputWrapperWithError";
 
 
 export const requiredDate = z.date({ required_error: ERROR.requiredError });
+export const requiredDateInPast = requiredDate.refine((date) => new Date(date) <= new Date(), { message: ERROR.dateInPastError });
 
 
 export function getISODateString(date: Date) {

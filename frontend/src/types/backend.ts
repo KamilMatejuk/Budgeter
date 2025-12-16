@@ -525,6 +525,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/history/account_value": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Get Account Values Yearly */
+        patch: operations["get_account_values_yearly_api_history_account_value_patch"];
+        trace?: never;
+    };
     "/api/organisation": {
         parameters: {
             query?: never;
@@ -972,6 +989,18 @@ export type components = {
             /** Icon */
             icon: string | null;
         };
+        /** PatchAccountValueRequest */
+        PatchAccountValueRequest: {
+            /** Id */
+            _id?: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Value */
+            value: number;
+        };
         /** PersonalAccount */
         PersonalAccount: {
             /** Id */
@@ -1286,6 +1315,7 @@ export type MonthlyIncomeWithId = components['schemas']['MonthlyIncomeWithId'];
 export type Organisation = components['schemas']['Organisation'];
 export type OrganisationPartial = components['schemas']['OrganisationPartial'];
 export type OrganisationWithId = components['schemas']['OrganisationWithId'];
+export type PatchAccountValueRequest = components['schemas']['PatchAccountValueRequest'];
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
@@ -2989,6 +3019,41 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: number[];
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_account_values_yearly_api_history_account_value_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchAccountValueRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };

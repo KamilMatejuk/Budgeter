@@ -8,6 +8,8 @@ import { Currency } from "@/types/enum";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdatePersonalAccountModal from "@/components/modal/update/UpdatePersonalAccountModal";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { AiFillDollarCircle } from "react-icons/ai";
+import SetAccountValueOnDateModal from "@/components/modal/custom/SetAccountValueOnDateModal";
 
 
 interface TableAccountsProps {
@@ -40,6 +42,7 @@ export default function TableAccounts({ data }: TableAccountsProps) {
       columns={columns}
       options={[
         { name: "Edit", icon: MdEdit, component: UpdatePersonalAccountModal },
+        { name: "Set value", icon: AiFillDollarCircle, component: SetAccountValueOnDateModal },
         { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
       ]}
       CreateModal={UpdatePersonalAccountModal} />

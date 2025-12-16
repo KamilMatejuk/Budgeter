@@ -3,4 +3,5 @@ export const ERROR = {
   positiveError: "This field must be positive",
   nonNegativeError: "This field must be non-negative",
   imageBase64Format: "The image must be in base64 format (data:image/...)",
+  dateInPastError: "The date must be in the past",
 }

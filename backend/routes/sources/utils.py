@@ -37,8 +37,8 @@ async def mark_transaction_in_history(account: PersonalAccountWithId, date: str,
         if doc.get("manual_update", False): break
         await db["account_daily_history"].update_one({"_id": doc["_id"]}, {"$set": {"value": Value.add(doc["value"], value)}})
     # update current value of the account
-    latest = await db["account_daily_history"].find_one({"account": str(account.id)}, sort=[("date", -1)])
-    value = latest["value"] if latest else 0.0
+    latest: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, sort="date", one=True)
+    value = latest.value if latest else 0.0
     await db["personal_account"].update_one({"_id": str(account.id)}, {"$set": {"value": value}})
 
 

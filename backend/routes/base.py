@@ -22,9 +22,14 @@ def fail_wrapper(func):
 
 
 @fail_wrapper
-async def get(db: AsyncIOMotorDatabase, table: str, model: type[PyBaseModel], condition: dict = None, one: bool = False):
+async def get(db: AsyncIOMotorDatabase,
+              table: str,
+              model: type[PyBaseModel],
+              condition: dict = None,
+              sort: str = None,
+              one: bool = False):
     results = []
-    cursor = db[table].find(condition or {})
+    cursor = db[table].find(condition or {}, sort=[(sort, -1)] if sort else None)
     async for doc in cursor:
         if "_id" in doc:
             doc["_id"] = str(doc["_id"])

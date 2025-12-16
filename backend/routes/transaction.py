@@ -6,6 +6,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Value
 from models.base import PyObjectId
+from models.products import PersonalAccountWithId
+from routes.sources.utils import mark_transaction_in_history
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
 from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionWithId
 
@@ -31,8 +33,13 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
     async def inner():
         transaction: TransactionWithId = await get(db, "transactions", TransactionWithId, {"_id": id}, one=True)
         assert transaction is not None, "Transaction not found"
+        # delete
         transaction.deleted = True
         await patch(db, "transactions", TransactionPartial, transaction)
+        # update history
+        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
+        date = transaction.date.strftime("%Y-%m-%d")
+        await mark_transaction_in_history(account, date, Value.parse_negate(transaction.value), db)
         return {}
     return await inner()
 

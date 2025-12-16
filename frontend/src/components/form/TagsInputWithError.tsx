@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { use, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import InputWithError, { getError, getTouched, getValue, SingleInputWithErrorProps } from "./InputWithError";
 import { useQuery } from "@tanstack/react-query";
@@ -14,11 +14,23 @@ const classes = {
   selectError: "border-red-200 bg-red-500/10",
   icon: "absolute right-3 top-1/2 -translate-y-1/2 transition-transform duration-300 pointer-events-none",
   dropdown: "absolute left-0 right-0 mt-1 max-h-60 overflow-auto bg-white border rounded shadow z-10",
-  option: "px-3 py-2 hover:bg-gray-100 cursor-pointer",
-  noOptions: "px-3 py-2 text-gray-400 italic",
+  option: "px-1 py-1 hover:bg-gray-100 cursor-pointer",
+  optionHighlighted: "bg-gray-100",
   selected: "flex flex-wrap max-w-96",
   selectedTag: "flex items-center gap-1 mb-1 mr-1",
 };
+
+function getTagOptions(tags: TagWithId[]) {
+  return tags.map(tag => (
+    { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
+  )).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function filterTagOptions(options: { id: string, name: string }[], search: string, selected: string[]) {
+  const notSelected = options.filter(({ id }) => !selected.includes(id));
+  if (!search) return notSelected || [];
+  return notSelected.filter(({ name, id }) => name.toLowerCase().includes(search.toLowerCase()));
+}
 
 
 export default function TagsInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {
@@ -28,39 +40,41 @@ export default function TagsInputWithError<T>({ formik, formikName, label }: Sin
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<string[]>(value || []);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [selectedTags, setSelectedTags] = useState<string[]>(value || []);
 
-  const { data: tagOptions } = useQuery({
-    queryKey: ["tag", "id_name_record"],
+  function highlightUp() { setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1)) }
+  function highlightDown() { setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0)) }
+  function select(tagId: string) {
+    const newSelected = Array.from(new Set([...selectedTags, tagId]));
+    setSelectedTags(newSelected);
+    formik.setFieldValue(formikName as string, newSelected, true);
+    setSearch("");
+    setOpen(false);
+    setHighlightedIndex(-1);
+  }
+
+  const { data: tags } = useQuery({
+    queryKey: ["tag"],
     queryFn: async () => {
-      const { response, error } = await get<TagWithId[]>("/api/tag", ["tag"]);
-      const idNameRecord = (response || []).reduce(
-        (acc, curr) => ({ ...acc, [curr._id]: getTagParts(curr._id, response || []).map(part => part.name).join("/") }),
-        {} as Record<string, string>
-      );
-      const sortedEntries = Object.fromEntries(Object.entries(idNameRecord).sort((a, b) => a[1].localeCompare(b[1])));
-      return sortedEntries;
+      const { response } = await get<TagWithId[]>("/api/tag", ["tag"]);
+      return response;
     },
   });
 
-  // Filter by typed text (case-insensitive)
-  const filteredOptions = useMemo(() => {
-    if (!search) return tagOptions || {};
-    const s = search.toLowerCase();
-    return Object
-      .fromEntries(Object.entries(tagOptions || {})
-        .filter(([_, name]) => name.toLowerCase().includes(s)));
-  }, [search, tagOptions]);
+  const tagOptions = useMemo(() => getTagOptions(tags || []), [tags]);
+  const filteredOptions = useMemo(() => filterTagOptions(tagOptions, search, selectedTags), [search, tagOptions, selectedTags]);
+
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
       <div className={classes.selected}>
-        {selected.map((tagId) => (
+        {selectedTags.map((tagId) => (
           <div key={tagId} className={classes.selectedTag}>
             <CellTag id={tagId} />
             <MdClose className="cursor-pointer" size={16} onClick={() => {
-              setSelected((prev) => prev.filter(id => id !== tagId));
-              formik.setFieldValue(formikName as string, selected.filter(id => id !== tagId), true);
+              setSelectedTags((prev) => prev.filter(id => id !== tagId));
+              formik.setFieldValue(formikName as string, selectedTags.filter(id => id !== tagId), true);
             }} />
           </div>))}
       </div>
@@ -74,28 +88,21 @@ export default function TagsInputWithError<T>({ formik, formikName, label }: Sin
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onBlur={() => setOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") { e.preventDefault(); highlightDown() }
+            if (e.key === "ArrowUp") { e.preventDefault(); highlightUp() }
+            if (e.key === "Enter" && highlightedIndex >= 0) { e.preventDefault(); select(filteredOptions[highlightedIndex].id) }
+            if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false); setHighlightedIndex(-1) }
+          }}
           className={twMerge(classes.select, error && touched && classes.selectError)}
           placeholder="Select or type..."
         />
         {/* Dropdown List */}
-        {open && (
+        {open && filteredOptions.length > 0 && (
           <div className={classes.dropdown}>
-            {Object.keys(filteredOptions).length === 0 && (
-              <div className={classes.noOptions}>No results</div>
-            )}
-            {Object.keys(filteredOptions).map((id) => (
-              <div
-                key={id}
-                className={classes.option}
-                onMouseDown={() => {
-                  const newSelected = Array.from(new Set([...selected, id]));
-                  formik.setFieldValue(formikName as string, newSelected, true);
-                  setSelected(newSelected);
-                  setSearch("");
-                  setOpen(false);
-                }}
-              >
+            {filteredOptions.map(({ id }, i) => (
+              <div key={id} className={twMerge(classes.option, highlightedIndex === i && classes.optionHighlighted)} onMouseDown={() => select(id)}>
                 <CellTag id={id} />
               </div>
             ))}

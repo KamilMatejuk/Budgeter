@@ -36,7 +36,12 @@ export default function Modal({ open, onClose, children, cancellable, onSave, on
     if (!open) return;
     const prevActive: Element | null = document.activeElement;
     dialogRef.current?.focus();
-    const escape = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const escape = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      // Ignore Escape from inputs / textareas / selects
+      if (target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.getAttribute("role") === "combobox") return;
+      if (e.key === "Escape") onClose();
+    };
     document.addEventListener("keydown", escape);
     return () => {
       document.removeEventListener("keydown", escape);

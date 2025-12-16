@@ -64,17 +64,23 @@ async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)
 async def delete_tag(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
+        removed_ids = set()
         tag: Tag = await get(db, "tags", Tag, {"_id": id}, one=True)
         # recursively remove all children
         async def f(tag: Tag):
             for child in await get_children(tag, db):
                 await f(child)
             await delete(db, "tags", str(tag.id))
+            removed_ids.add(str(tag.id))
         await f(tag)
         # remove from parent
         parent = await get_parent(tag, db)
         if parent:
             parent.children = [c for c in (parent.children or []) if c != str(id)]
             await patch(db, "tags", TagPartial, parent)
+        # detach from transactions
+        await db["transactions"].update_many(
+            {"tags": {"$in": list(removed_ids)}},
+            {"$pull": {"tags": {"$in": list(removed_ids)}}})
         return {}
     return await inner()

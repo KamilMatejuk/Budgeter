@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import WarningToast from "../toast/WarningToast";
 import { RequirementsResponse } from "@/types/backend";
 import { spanTransition } from "./SidebarClient";
+import { formatValue } from "../table/cells/CellValue";
 
 
 const classes = {
@@ -23,10 +24,10 @@ export default function Requirements({ transactions, incomes, outcomes, collapse
     transactions.map(it => `- ${it.name} (${it.remaining} remaining)`).join("\n");
 
   const amountIncomingMessage = "Those accounts didn't reach this month's required income:\n" +
-    incomes.map(it => `- ${it.name} (${it.remaining.toFixed(2)} remaining)`).join("\n");
+    incomes.map(it => `- ${it.name} (${formatValue(it.remaining)} remaining)`).join("\n");
 
   const amountOutgoingMessage = "Those accounts didn't reach this month's required outcome:\n" +
-    outcomes.map(it => `- ${it.name} (${it.remaining.toFixed(2)} remaining)`).join("\n");
+    outcomes.map(it => `- ${it.name} (${formatValue(it.remaining)} remaining)`).join("\n");
 
   return (
     <motion.div initial={false} animate={spanTransition(collapsed)} className={classes.container}>

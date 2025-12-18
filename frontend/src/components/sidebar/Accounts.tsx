@@ -16,7 +16,7 @@ const classes = {
 }
 
 
-function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null, currency: Currency }[] }) {
+function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null, currency: Currency | keyof typeof Currency }[] }) {
   return (
     <>
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
@@ -46,6 +46,8 @@ export interface AccountsProps {
 
 
 export default function Accounts({ collapsed, cards, accounts, stocks, capitals, savings }: AccountsProps) {
+  // all values are mapped to PLN on server side
+  const currency = Currency.PLN;
   const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
     + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
     + savings
@@ -54,15 +56,15 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
 
   return (
     <div className={classes.container}>
-      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency: card.currency as Currency }))} />
-      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency: account.currency as Currency }))} />
+      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency }))} />
+      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency }))} />
       <Section title="Investments" collapsed={collapsed} items={[
-        { name: "Savings", value: savings, currency: Currency.PLN },
-        { name: "Capital", value: capitals, currency: Currency.PLN },
-        { name: "Stocks", value: stocks, currency: Currency.PLN },
+        { name: "Savings", value: savings, currency },
+        { name: "Capital", value: capitals, currency },
+        { name: "Stocks", value: stocks, currency },
       ]} />
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
-        <CellValue value={total} currency={Currency.PLN} colour />
+        <CellValue value={total} currency={currency} colour />
       </motion.span>
     </div>
   );

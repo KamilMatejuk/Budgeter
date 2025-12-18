@@ -1237,6 +1237,7 @@ export type components = {
             organisation: string;
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Tags */
             tags: string[];
             /**
@@ -1263,6 +1264,7 @@ export type components = {
             organisation?: string | null;
             /** Value */
             value?: number | null;
+            currency?: components["schemas"]["Currency"] | null;
             /** Tags */
             tags?: string[] | null;
             /** Deleted */
@@ -1312,6 +1314,7 @@ export type components = {
             organisation: string;
             /** Value */
             value: number;
+            currency: components["schemas"]["Currency"];
             /** Tags */
             tags: string[];
             /** Deleted */

@@ -1,7 +1,7 @@
 from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
-
+from models.products import Currency
 
 class Transaction(PyBaseModel):
     hash: str
@@ -10,6 +10,7 @@ class Transaction(PyBaseModel):
     title: str
     organisation: str
     value: float
+    currency: Currency
     tags: list[str] # ids of Tags
     deleted: bool = False
     debt_person: str | None = None # name of person that has to repay it

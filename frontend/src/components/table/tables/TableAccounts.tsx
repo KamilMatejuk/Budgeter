@@ -3,8 +3,7 @@
 import { PersonalAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellValue from "../cells/CellValue";
-import { Currency } from "@/types/enum";
+import CellValue, { formatValue } from "../cells/CellValue";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdatePersonalAccountModal from "@/components/modal/update/UpdatePersonalAccountModal";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -20,14 +19,14 @@ function renderMinAmountMonthly(item: PersonalAccountWithId): string {
   const incoming = item.min_incoming_amount_monthly;
   const outgoing = item.min_outgoing_amount_monthly;
   return [
-    incoming ? `${incoming.toFixed(2)} incoming` : null,
-    outgoing ? `${outgoing.toFixed(2)} outgoing` : null,
+    incoming ? `${formatValue(incoming, item.currency)} incoming` : null,
+    outgoing ? `${formatValue(outgoing, item.currency)} outgoing` : null,
   ].filter(Boolean).join(", ") || "None";
 }
 
 const columns: ColumnDef<PersonalAccountWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency as Currency} />, meta: { alignedRight: true } },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency} />, meta: { alignedRight: true } },
   { accessorKey: "number", header: "Number" },
   { accessorKey: "min_incoming_amount_monthly", header: "Requirements", cell: ({ row }) => renderMinAmountMonthly(row.original) }
 ];

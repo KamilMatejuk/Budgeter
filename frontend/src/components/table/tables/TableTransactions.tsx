@@ -5,7 +5,6 @@ import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellOrganisation from "../cells/CellOrganisation";
 import CellValue from "../cells/CellValue";
-import { Currency } from "@/types/enum";
 import CellAccountName from "../cells/CellAccountName";
 import { MdCallSplit, MdDelete, MdEdit } from "react-icons/md";
 import { BsFillPiggyBankFill } from "react-icons/bs";
@@ -25,7 +24,7 @@ const columns: ColumnDef<TransactionWithId>[] = [
   { accessorKey: "account", header: "Account", cell: ({ row }) => <CellAccountName id={row.original.account} /> },
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={Currency.PLN} colour />, meta: { alignedRight: true } },
+  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency} colour />, meta: { alignedRight: true } },
   {
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (
       <div className="flex flex-col gap-1">

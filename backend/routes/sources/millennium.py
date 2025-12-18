@@ -68,6 +68,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title="Płatność kartą kredytową" if card.credit else "Płatność kartą",
             organisation=await match_organisation_pattern(data.description, db),
             value=Value.parse(data.charges),
+            currency=account.currency,
             tags=[],
         )
         if card.credit:
@@ -94,6 +95,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title="Płatność kartą",
             organisation=await match_organisation_pattern(data.description, db),
             value=Value.parse(data.charges),
+            currency=account.currency,
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
@@ -109,6 +111,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title="Płatność BLIK",
             organisation=await match_organisation_pattern(data.recipient, db),
             value=Value.parse(data.charges),
+            currency=account.currency,
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
@@ -145,6 +148,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title=data.description,
             organisation=data.recipient,
             value=Value.parse(data.charges),
+            currency=src_account.currency,
             tags=[],
         )
         await mark_transaction_in_history(src_account, data.transaction_date, item.value, db)
@@ -160,6 +164,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title=data.description,
             organisation=data.recipient,
             value=Value.parse(data.credits or data.charges),
+            currency=account.currency,
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
@@ -175,6 +180,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title=data.description,
             organisation=await match_organisation_pattern(data.recipient, db),
             value=Value.parse(data.credits),
+            currency=account.currency,
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
@@ -199,6 +205,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             title=data.description,
             organisation=data.recipient,
             value=Value.parse(data.charges),
+            currency=account.currency,
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)

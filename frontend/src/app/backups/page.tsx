@@ -2,7 +2,6 @@ import { BackupResponse } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import { get } from "../api/fetch";
-import WarningToast from "@/components/toast/WarningToast";
 import TableBackups from "../../components/table/tables/TableBackups";
 
 
@@ -13,9 +12,7 @@ export default async function Backups() {
       <PageHeader text="Backups History" subtext="Overview of your recent backups" />
       {error
         ? <ErrorToast message="Could not download backups" />
-        : response.length == 0
-          ? <WarningToast message="No backups found" />
-          : <TableBackups data={response} />
+        : <TableBackups data={response} />
       }
     </>
   );

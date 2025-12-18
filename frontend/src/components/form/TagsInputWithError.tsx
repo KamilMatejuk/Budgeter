@@ -1,11 +1,10 @@
-import React, { use, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import InputWithError, { getError, getTouched, getValue, SingleInputWithErrorProps } from "./InputWithError";
-import { useQuery } from "@tanstack/react-query";
-import { get } from "@/app/api/fetch";
 import { TagWithId } from "@/types/backend";
 import CellTag, { getTagParts } from "../table/cells/CellTag";
 import { MdClose, MdExpandMore } from "react-icons/md";
+import { useTags } from "@/app/api/query";
 
 
 const classes = {
@@ -54,17 +53,9 @@ export default function TagsInputWithError<T>({ formik, formikName, label }: Sin
     setHighlightedIndex(-1);
   }
 
-  const { data: tags } = useQuery({
-    queryKey: ["tag"],
-    queryFn: async () => {
-      const { response } = await get<TagWithId[]>("/api/tag", ["tag"]);
-      return response;
-    },
-  });
-
+  const tags = useTags();
   const tagOptions = useMemo(() => getTagOptions(tags || []), [tags]);
   const filteredOptions = useMemo(() => filterTagOptions(tagOptions, search, selectedTags), [search, tagOptions, selectedTags]);
-
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>

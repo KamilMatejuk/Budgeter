@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
 import { Transaction, TransactionRepayRequest, TransactionWithId } from "@/types/backend";
@@ -13,6 +12,7 @@ import CellValue, { formatValue } from "../../table/cells/CellValue";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import { backupStateBeforeUpdate } from "../update/utils";
 import { getDateString } from "@/const/date";
+import { usePeopleWithDebt } from "@/app/api/query";
 
 
 const FormSchema = z.object({ debt: requiredText });
@@ -31,28 +31,13 @@ async function submit(values: FormSchemaType, item: Transaction) {
 
 
 export default function RepayTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionWithId>) {
-  const [people, setPeople] = React.useState<Record<string, string>>({});
+  const people = usePeopleWithDebt();
 
   const formik = useFormik<FormSchemaType>({
     initialValues: { debt: "" },
     onSubmit: async (values) => { if (item && await submit(values, item)) onClose() },
     validate: withZodSchema(FormSchema),
   });
-
-  // don't use useQuery, because we cannot track revalidation here
-  useEffect(() => {
-    (async () => {
-      const { response } = await get<TransactionWithId[]>(`/api/transactions/debt`, ["transaction", "debt"]);
-      const people = (response || []).reduce(
-        (acc, curr) => {
-          const description = `${formatValue(Math.abs(curr.value), curr.currency)} on ${getDateString(curr.date)}`;
-          return { ...acc, [curr._id]: `${curr.debt_person} (${description})` }
-        },
-        {} as Record<string, string>
-      );
-      setPeople(people);
-    })();
-  }, []);
 
   return item && (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as repayment of debt">

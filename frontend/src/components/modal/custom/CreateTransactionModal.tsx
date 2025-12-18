@@ -5,13 +5,13 @@ import { PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/b
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
-import { get, post } from "@/app/api/fetch";
+import { post } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
 import TagsInputWithError from "@/components/form/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
-import { useQuery } from "@tanstack/react-query";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
+import { usePersonalAccounts } from "@/app/api/query";
 
 
 const FormSchema = z.object({
@@ -53,13 +53,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     validate: withZodSchema(FormSchema),
   });
 
-  const { data: accounts } = useQuery({
-    queryKey: ["personal_account"],
-    queryFn: async () => {
-      const { response } = await get<PersonalAccountWithId[]>(`/api/products/personal_account`, ["personal_account"]);
-      return response;
-    },
-  });
+  const accounts = usePersonalAccounts();
   const accountRecord = (accounts || []).reduce(
     (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
     {} as Record<string, string>

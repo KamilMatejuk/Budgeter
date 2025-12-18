@@ -1,7 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { get } from "@/app/api/fetch";
-import { PersonalAccountWithId } from "@/types/backend";
 import { ColumnDef } from "@tanstack/react-table";
+import { usePersonalAccount } from "@/app/api/query";
 
 
 interface CellAccountNameProps {
@@ -15,13 +13,6 @@ export function defineCellAccountName<T extends { account: string }>() {
 }
 
 export default function CellAccountName({ id }: CellAccountNameProps) {
-  const { data: account } = useQuery({
-    queryKey: ["personal_account", id],
-    queryFn: async () => {
-      const { response } = await get<PersonalAccountWithId>(`/api/products/personal_account/${id}`, ["personal_account"]);
-      return response;
-    },
-  });
-
+  const account = usePersonalAccount(id);
   return (<p>{account?.name || id}</p>);
 }

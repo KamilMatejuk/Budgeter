@@ -1,6 +1,5 @@
-import { get } from "@/app/api/fetch";
+import { useTags } from "@/app/api/query";
 import { TagWithId } from "@/types/backend";
-import { useQuery } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
 
 
@@ -39,13 +38,7 @@ export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, c
 
 
 export default function CellTag({ id, ...props }: CellTagProps) {
-  const { data: tags } = useQuery({
-    queryKey: ["tag"],
-    queryFn: async () => {
-      const { response } = await get<TagWithId[]>("/api/tag", ["tag"]);
-      return response;
-    },
-  });
+  const tags = useTags();
   const tagParts = getTagParts(id, tags || []);
 
   return tagParts.length == 0 ? null : (

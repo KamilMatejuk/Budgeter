@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { submit } from "./utils";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { CardWithId, PersonalAccountWithId } from "@/types/backend";
+import { CardWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -12,8 +11,7 @@ import AmountInputWithError, { requiredAmount, requiredNonNegativeAmount } from 
 import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../../form/CardNumberInputWithError";
 import DropDownInputWithError from "../../form/DropDownInputWithError";
-import { get } from "@/app/api/fetch";
-import { useQuery } from "@tanstack/react-query";
+import { usePersonalAccounts } from "@/app/api/query";
 
 enum Type {
   DEBIT = "DEBIT",
@@ -63,14 +61,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
     },
     validate: withZodSchema(FormSchema),
   });
-
-  const { data: accounts } = useQuery({
-    queryKey: ["personal_account"],
-    queryFn: async () => {
-      const { response } = await get<PersonalAccountWithId[]>(`/api/products/personal_account`, ["personal_account"]);
-      return response;
-    },
-  });
+  const accounts = usePersonalAccounts();
   const accountRecord = (accounts || []).reduce(
     (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
     {} as Record<string, string>

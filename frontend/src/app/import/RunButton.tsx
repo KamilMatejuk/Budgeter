@@ -2,73 +2,119 @@
 
 import { useRouter } from "next/navigation";
 import { useSelectedSourceAndFile } from "./ImportContext";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
 import { post } from "@/app/api/fetch";
 import ButtonWithProgress from "../../components/button/ButtonWithProgress";
 import { backupStateBeforeUpdate } from "@/components/modal/update/utils";
+import { TransactionWithId } from "@/types/backend";
+import InfoToast from "@/components/toast/InfoToast";
+import ButtonWithLoader from "@/components/button/ButtonWithLoader";
+
+async function importFile(
+  file: File,
+  source: string,
+  setCounter: Dispatch<SetStateAction<number>>,
+  setMaxCounter: Dispatch<SetStateAction<number>>,
+  setImported: Dispatch<SetStateAction<number>>
+) {
+  await new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const rows = results.data as Record<string, string>[];
+          setMaxCounter(rows.length);
+          for (const [index, row] of rows.entries()) {
+            setCounter(index + 1);
+            const { response, error } = await post<TransactionWithId>(`/api/source/${source}`, row);
+            if (error) {
+              reject(new Error(error.message)); // reject the whole Promise
+              return;
+            }
+            if (response.tags) setImported((prev) => prev + 1);
+          }
+          resolve(null);
+        } catch (e) {
+          reject(e);
+        }
+      },
+      error: (err) => reject(new Error(err.message)),
+    });
+  });
+}
 
 
 export default function RunButton() {
   const router = useRouter();
-  const { selectedFile, selectedSource } = useSelectedSourceAndFile();
+  const { selectedFile, selectedSource, setSelectedFile, setSelectedSource } = useSelectedSourceAndFile();
+  const [state, setState] = useState<'start' | 'importing' | 'finish' | 'failed'>('start');
   const [error, setError] = useState<Error | string | null>(null);
   const [counter, setCounter] = useState(0);
   const [maxCounter, setMaxCounter] = useState(0);
+  const [imported, setImported] = useState<number>(0);
+
+  const setFailed = (message: string) => { setError(message); setState('failed') }
+
+  async function handleReset() {
+    setSelectedFile(null);
+    setSelectedSource("");
+    setError(null);
+    setState('start');
+    setCounter(0);
+    setMaxCounter(0);
+    setImported(0);
+  }
 
   async function handleImport() {
-    if (!selectedFile || !selectedSource) {
-      setError("Select a file and a source before importing.");
-      return;
-    }
-    const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
-    if (!await backupStateBeforeUpdate(backupName)) return;
+    if (!selectedFile || !selectedSource) return;
+    setState('importing');
     try {
-      await new Promise((resolve, reject) => {
-        Papa.parse(selectedFile, {
-          header: true,
-          skipEmptyLines: true,
-          complete: async (results) => {
-            try {
-              const rows = results.data as Record<string, string>[];
-              setMaxCounter(rows.length);
-              for (const [index, row] of rows.entries()) {
-                setCounter(index + 1);
-                const { error: rowError } = await post(`/api/source/${selectedSource}`, row);
-                if (rowError) {
-                  reject(new Error(rowError.message)); // reject the whole Promise
-                  return;
-                }
-              }
-              resolve(null);
-            } catch (e) {
-              reject(e);
-            }
-          },
-          error: (err) => reject(new Error(err.message)),
-        });
-      });
-      // Redirect if successful
-      router.push("/transactions");
+      const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
+      if (!await backupStateBeforeUpdate(backupName)) throw new Error("Backup failed. Import aborted.");
+      await importFile(selectedFile, selectedSource, setCounter, setMaxCounter, setImported);
+      setState('finish');
     } catch (err) {
-      setError((err as Error).message);
+      setFailed((err as Error).message);
     }
   }
 
-
-  return error ? (
-    <ErrorToast message={error instanceof Error ? error.message : error} />
-  ) : (
+  return (
     <>
-      <ButtonWithProgress
-        current={counter}
-        max={maxCounter}
-        text="Import"
-        onClick={handleImport}
-        disabled={!selectedFile || !selectedSource}
-        action="positive"
-      />
+      {state === 'failed' && error && (
+        <>
+          <ErrorToast message={error instanceof Error ? error.message : error} />
+          <ButtonWithLoader
+            text="Retry"
+            onClick={handleReset}
+            action="negative"
+            className="w-full mt-2"
+          />
+        </>
+      )}
+      {(state === 'start' || state === 'importing') && (
+        <ButtonWithProgress
+          current={counter}
+          max={maxCounter}
+          text="Import"
+          onClick={handleImport}
+          disabled={!selectedFile || !selectedSource || error !== null}
+          action="positive"
+        />
+      )}
+      {state === 'finish' && (
+        <>
+          <InfoToast message={`Import completed. ${imported} transactions imported.`} />
+          <ButtonWithLoader
+            text="See new transactions"
+            onClick={async () => router.push('/transactions/new')}
+            action="neutral"
+            className="w-full mt-2"
+          />
+        </>
+      )}
     </>
   );
 }

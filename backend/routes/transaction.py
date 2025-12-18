@@ -74,13 +74,18 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
 async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = datetime.date(year, month, 1)
     end = (start + datetime.timedelta(days=32)).replace(day=1)
-    res = await get(db, "transactions", TransactionWithId, {"deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}})
-    return sorted(res, key=lambda x: x.date, reverse=True)
+    return await get(db, "transactions", TransactionWithId, {"deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}, "date")
+
+
+@multi_router.get("/new", response_model=list[TransactionWithId])
+async def get_transactions_without_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
+    return await get(db, "transactions", TransactionWithId, {"tags": {"$size": 0}, "deleted": False}, "date")
 
 
 @multi_router.get("/debt", response_model=list[TransactionWithId])
 async def get_transactions_with_debt(db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await get(db, "transactions", TransactionWithId, {"debt_person": {"$ne": None}, "deleted": False})
+    return await get(db, "transactions", TransactionWithId, {"debt_person": {"$ne": None}, "deleted": False}, "date")
+
 
 @single_router.post("/repay", response_model=dict)
 async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatabase = Depends(get_db)):

@@ -7,6 +7,7 @@ import MonthSelector from "./MonthSelector";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import TableTransactions from "@/components/table/tables/TableTransactions";
 import { getDateString, getMonthName } from "@/const/date";
+import NewTransactions from "./NewTransactions";
 
 
 interface PageProps {
@@ -31,6 +32,7 @@ export default async function Transactions({ searchParams }: PageProps) {
   return (
     <>
       <PageHeader text="Transactions History" subtext="Overview of your recent transactions" />
+      <NewTransactions />
       <MonthSelector year={yearNr} month={monthNr} />
       {error
         ? <ErrorToast message="Could not download transactions" />

@@ -13,6 +13,7 @@ import CellOrganisation from "../../table/cells/CellOrganisation";
 import { ERROR } from "@/const/message";
 import ButtonWithLoader from "../../button/ButtonWithLoader";
 import CellValue from "../../table/cells/CellValue";
+import { backupStateBeforeUpdate } from "../update/utils";
 
 
 const createFormSchema = (totalValue: number) => z.object({
@@ -60,6 +61,8 @@ function removeTransactionPart(formik: FormikProps<FormSchemaType>) {
 }
 
 async function submit(values: FormSchemaType, item: Transaction, url: string) {
+  const backupName = `Before split of "${item?._id?.toLowerCase()}"`;
+  if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, items: values.parts } as TransactionSplitRequest;
   const { error } = await patch(`${url}/split`, val);
   if (!error) return true;

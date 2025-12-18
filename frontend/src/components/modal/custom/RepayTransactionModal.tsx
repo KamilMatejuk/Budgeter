@@ -11,6 +11,7 @@ import CellAccountName from "../../table/cells/CellAccountName";
 import CellOrganisation from "../../table/cells/CellOrganisation";
 import CellValue from "../../table/cells/CellValue";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
+import { backupStateBeforeUpdate } from "../update/utils";
 
 
 const FormSchema = z.object({ debt: requiredText });
@@ -18,6 +19,8 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 
 async function submit(values: FormSchemaType, item: Transaction) {
+  const backupName = `Before repay of "${values.debt.toLowerCase()}"`;
+  if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, debt_transaction_id: values.debt } as TransactionRepayRequest;
   const { error } = await post("/api/transaction/repay", val);
   if (!error) return true;

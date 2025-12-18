@@ -7,7 +7,7 @@ import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
 import { post } from "@/app/api/fetch";
 import ButtonWithProgress from "../../components/button/ButtonWithProgress";
-import { BackupRequest } from "@/types/backend";
+import { backupStateBeforeUpdate } from "@/components/modal/update/utils";
 
 
 export default function RunButton() {
@@ -22,12 +22,8 @@ export default function RunButton() {
       setError("Select a file and a source before importing.");
       return;
     }
-    const backupName = `Auto pre-import of "${selectedFile.name.toLowerCase()}"`;
-    const { error: backupError } = await post(`/api/backup`, { name: backupName, auto: true } as BackupRequest);
-    if (backupError) {
-      setError(`Pre-import backup failed: ${backupError.message}`);
-      return;
-    }
+    const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
+    if (!await backupStateBeforeUpdate(backupName)) return;
     try {
       await new Promise((resolve, reject) => {
         Papa.parse(selectedFile, {

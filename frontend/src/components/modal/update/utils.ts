@@ -1,5 +1,6 @@
 import { patch, post } from "@/app/api/fetch";
 import { Item } from "@/components/table/Table";
+import { BackupRequest } from "@/types/backend";
 
 export async function submit<FormatSchemaType, T extends Item>(
   url: string,
@@ -11,4 +12,13 @@ export async function submit<FormatSchemaType, T extends Item>(
   const { error } = await method(url, { _id: id, ...values } as unknown as T);
   if (!error) return callback?.();
   alert(`Error: ${error.message}`);
+}
+
+export async function backupStateBeforeUpdate<T extends Item>(title: string) {
+  const { error: backupError } = await post(`/api/backup`, { name: title, auto: true } as BackupRequest);
+  if (backupError) {
+    alert(`Error: ${backupError.message}`);
+    return false;
+  }
+  return true;
 }

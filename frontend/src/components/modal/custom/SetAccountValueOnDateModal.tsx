@@ -1,12 +1,13 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { BackupRequest, PatchAccountValueRequest, PersonalAccountWithId } from "@/types/backend";
+import { PatchAccountValueRequest, PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import AmountInputWithError, { requiredNonNegativeAmount } from "../../form/AmountInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
-import { patch, post } from "@/app/api/fetch";
+import { patch } from "@/app/api/fetch";
+import { backupStateBeforeUpdate } from "../update/utils";
 
 
 const FormSchema = z.object({
@@ -16,12 +17,8 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 async function submit(values: FormSchemaType, item?: PersonalAccountWithId | null) {
-  const backupName = `Auto pre-value-edit of "${item?.name.toLowerCase()}"`;
-  const { error: backupError } = await post(`/api/backup`, { name: backupName, auto: true } as BackupRequest);
-  if (backupError) {
-    alert(`Error: ${backupError.message}`);
-    return false;
-  }
+  const backupName = `Before value edit of "${item?.name.toLowerCase()}"`;
+  if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item?._id, date: getISODateString(values.date), value: values.value } as PatchAccountValueRequest;
   const { error } = await patch("/api/history/account_value", val);
   if (!error) return true;

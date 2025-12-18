@@ -6,6 +6,7 @@ import WarningToast from "@/components/toast/WarningToast";
 import MonthSelector from "./MonthSelector";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import TableTransactions from "@/components/table/tables/TableTransactions";
+import { getDateString, getMonthName } from "@/const/date";
 
 
 interface PageProps {
@@ -14,13 +15,6 @@ interface PageProps {
     month?: string;
   }>;
 }
-
-export function monthName(month: number) {
-  const date = new Date(1970, 0, 1);
-  date.setMonth(month - 1);
-  return date.toLocaleString('default', { month: 'long' });
-}
-
 
 export default async function Transactions({ searchParams }: PageProps) {
   // read params
@@ -32,7 +26,7 @@ export default async function Transactions({ searchParams }: PageProps) {
   // get details
   const minDate = new Date(Math.min(...(transactions || []).map(t => new Date(t.date).getTime())));
   const maxDate = new Date(Math.max(...(transactions || []).map(t => new Date(t.date).getTime())));
-  const dateRange = `${minDate.toLocaleDateString()} - ${maxDate.toLocaleDateString()}`;
+  const dateRange = `${getDateString(minDate)} - ${getDateString(maxDate)}`;
 
   return (
     <>
@@ -43,7 +37,7 @@ export default async function Transactions({ searchParams }: PageProps) {
         : transactions.length == 0
           ? <WarningToast message="No transactions found" />
           : <>
-            <SectionHeader text={`${monthName(monthNr)} ${yearNr}`} subtext={dateRange} />
+            <SectionHeader text={`${getMonthName(monthNr)} ${yearNr}`} subtext={dateRange} />
             <TableTransactions data={transactions} />
           </>
       }

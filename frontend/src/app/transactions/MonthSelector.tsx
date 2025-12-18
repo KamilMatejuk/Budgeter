@@ -1,8 +1,8 @@
 'use client';
 
 import ButtonWithLoader from "@/components/button/ButtonWithLoader";
-import { monthName } from "./page";
 import { useRouter, useSearchParams } from "next/dist/client/components/navigation";
+import { getMonthName } from "@/const/date";
 
 interface MonthSelectorProps {
   year: number;
@@ -47,7 +47,7 @@ export default function MonthSelector({ year, month, n = 5 }: MonthSelectorProps
       {months.map(({ year: y, month: m }) => (
         <ButtonWithLoader
           key={`${y}-${m}`}
-          text={`${monthName(m)}\n${y}`}
+          text={`${getMonthName(m)}\n${y}`}
           action={m == month && y == year ? "positive" : "neutral"}
           className="flex-1"
           onClick={async () => onClick(m, y)}

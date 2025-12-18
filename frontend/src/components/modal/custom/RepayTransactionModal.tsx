@@ -12,6 +12,7 @@ import CellOrganisation from "../../table/cells/CellOrganisation";
 import CellValue from "../../table/cells/CellValue";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import { backupStateBeforeUpdate } from "../update/utils";
+import { getDateString } from "@/const/date";
 
 
 const FormSchema = z.object({ debt: requiredText });
@@ -44,7 +45,7 @@ export default function RepayTransactionModal({ url, item, open, onClose }: Back
       const { response } = await get<TransactionWithId[]>(`/api/transactions/debt`, ["transaction", "debt"]);
       console.log("Received debt transactions:", (response || []).length);
       const people = (response || []).reduce(
-        (acc, curr) => ({ ...acc, [curr._id]: `${curr.debt_person} (${Math.abs(curr.value).toFixed(2)} on ${new Date(curr.date).toLocaleDateString("pl-PL")})` }),
+        (acc, curr) => ({ ...acc, [curr._id]: `${curr.debt_person} (${Math.abs(curr.value).toFixed(2)} on ${getDateString(curr.date)})` }),
         {} as Record<string, string>
       );
       setPeople(people);
@@ -54,7 +55,7 @@ export default function RepayTransactionModal({ url, item, open, onClose }: Back
   return item && (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as repayment of debt">
       <div className="flex justify-center"><CellValue value={item.value} colour /></div>
-      <div className="flex justify-center">{new Date(item.date).toLocaleDateString("pl-PL")}</div>
+      <div className="flex justify-center">{getDateString(item.date)}</div>
       <div className="flex gap-3 items-center justify-center">
         <div className="m-auto"><CellAccountName id={item.account} /></div>
         <FaArrowRight className="" />

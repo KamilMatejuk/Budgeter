@@ -10,6 +10,7 @@ import { FaArrowRight } from "react-icons/fa";
 import CellAccountName from "../../table/cells/CellAccountName";
 import CellOrganisation from "../../table/cells/CellOrganisation";
 import CellValue from "../../table/cells/CellValue";
+import { getDateString } from "@/const/date";
 
 
 const FormSchema = z.object({ person: requiredText });
@@ -35,7 +36,7 @@ export default function DebtTransactionModal({ url, item, open, onClose }: Backe
   return item && (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as debt to be repaid">
       <div className="flex justify-center"><CellValue value={item.value} colour /></div>
-      <div className="flex justify-center">{new Date(item.date).toLocaleDateString("pl-PL")}</div>
+      <div className="flex justify-center">{getDateString(item.date)}</div>
       <div className="flex justify-center">{item.title}</div>
       <div className="flex gap-3 items-center justify-center">
         <div className="m-auto"><CellAccountName id={item.account} /></div>

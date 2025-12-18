@@ -47,8 +47,8 @@ export default function UpdateTransactionModal({ url, item, open, onClose }: Bac
         <FaArrowRight className="" />
         <div className="m-auto"><CellOrganisation name={item.organisation} /></div>
       </div>
-      <TextInputWithError formik={formik} formikName={"title"} label="Title" />
-      <TagsInputWithError formik={formik} formikName={"tags"} label={"Tags"} />
+      <TextInputWithError formik={formik} formikName="title" label="Title" />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
     </Modal >
   );
 }

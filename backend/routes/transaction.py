@@ -7,8 +7,8 @@ from core.db import get_db
 from core.utils import Value
 from models.base import PyObjectId
 from models.products import PersonalAccountWithId
-from routes.sources.utils import mark_transaction_in_history
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
+from routes.sources.utils import mark_transaction_in_history, match_organisation_pattern
 from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
 
 single_router = APIRouter()
@@ -16,8 +16,14 @@ multi_router = APIRouter()
 
 factory = CRUDRouterFactory(single_router, "transactions", Transaction, TransactionPartial, TransactionWithId, "hash")
 factory.create_get_by_id()
-factory.create_post()
 factory.create_patch()
+
+
+@single_router.post("", response_model=TransactionWithId)
+async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
+    data.hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
+    data.organisation = await match_organisation_pattern(data.organisation, db)
+    return await create(db, "transactions", TransactionWithId, data)
 
 
 @single_router.delete("/{id}", response_model=dict)

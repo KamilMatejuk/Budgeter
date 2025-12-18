@@ -47,7 +47,7 @@ export default function FileSelector() {
   return (
     <div
       className={twMerge(
-        "text-center border-2 border-dashed border-line rounded-xl p-8 ",
+        "text-center border-2 border-dashed border-line rounded-xl p-8 mb-2",
         isDragging ? "bg-second-bg border-black" : ""
       )}
       onDrop={handleDrop}

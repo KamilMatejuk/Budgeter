@@ -68,12 +68,14 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
     queryKey: ["personal_account"],
     queryFn: async () => {
       const { response } = await get<PersonalAccountWithId[]>(`/api/products/personal_account`, ["personal_account"]);
-      return (response || []).reduce(
-        (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
-        {} as Record<string, string>
-      );
+      return response;
     },
   });
+  const accountRecord = (accounts || []).reduce(
+    (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
+    {} as Record<string, string>
+  );
+
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update card" : "Create card"}>
@@ -84,7 +86,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
       <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
       <ChoiceInputWithError formik={formik} formikName="active" optionsEnum={Active} label="Active" />
-      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accounts || {}} />
+      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accountRecord} />
       <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
     </Modal>
   );

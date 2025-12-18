@@ -50,7 +50,7 @@ export default function RunButton() {
         });
       });
       // Redirect if successful
-      router.push("/");
+      router.push("/transactions");
     } catch (err) {
       setError((err as Error).message);
     }

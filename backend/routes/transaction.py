@@ -60,7 +60,6 @@ async def split_transactions(data: TransactionSplitRequest, db: AsyncIOMotorData
             "hash": hashlib.sha256(f"{transaction.hash}_{i}".encode()).hexdigest(),
             "title": item.title,
             "value": item.value,
-            "tags": item.tags
         })
         new_transaction = await create(db, "transactions", TransactionWithId, new_transaction)
         new_transactions.append(new_transaction)

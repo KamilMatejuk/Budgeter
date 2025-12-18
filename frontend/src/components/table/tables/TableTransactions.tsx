@@ -7,10 +7,11 @@ import CellOrganisation from "../cells/CellOrganisation";
 import CellValue from "../cells/CellValue";
 import { Currency } from "@/types/enum";
 import CellAccountName from "../cells/CellAccountName";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdCallSplit, MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionModal";
 import CellTag from "../cells/CellTag";
+import SplitTransactionModal from "@/components/modal/custom/SplitTransactionModal";
 
 
 interface TableTransactionsProps {
@@ -41,6 +42,7 @@ export default function TableTransactions({ data }: TableTransactionsProps) {
       columns={columns}
       options={[
         { name: "Edit", icon: MdEdit, component: UpdateTransactionModal },
+        { name: "Split", icon: MdCallSplit, component: SplitTransactionModal },
         { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
       ]} />
   );

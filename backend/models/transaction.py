@@ -21,7 +21,6 @@ class TransactionWithId(Transaction, metaclass=WithId): pass
 class TransactionSplitRequestItem(PyBaseModel):
     title: str
     value: float
-    tags: list[str]
 
 class TransactionSplitRequest(PyBaseModel):
     items: list[TransactionSplitRequestItem]

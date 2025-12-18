@@ -1247,8 +1247,6 @@ export type components = {
             title: string;
             /** Value */
             value: number;
-            /** Tags */
-            tags: string[];
         };
         /** TransactionWithId */
         TransactionWithId: {

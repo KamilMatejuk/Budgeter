@@ -23,7 +23,7 @@ factory.create_patch()
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
     data.hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
     data.organisation = await match_organisation_pattern(data.organisation, db)
-    return await create(db, "transactions", TransactionWithId, data)
+    return await create(db, "transactions", TransactionWithId, data, "hash")
 
 
 @single_router.delete("/{id}", response_model=dict)
@@ -62,7 +62,7 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
                 "title": item.title,
                 "value": item.value,
             })
-            new_transaction = await create(db, "transactions", TransactionWithId, new_transaction)
+            new_transaction = await create(db, "transactions", TransactionWithId, new_transaction, "hash")
             new_transactions.append(new_transaction)
         transaction.deleted = True
         await patch(db, "transactions", TransactionPartial, transaction)

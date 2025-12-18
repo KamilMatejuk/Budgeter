@@ -77,7 +77,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
         else:
             # dont update history for credit cards (it's updated in CREDIT_CARD_PAYOFF type)
             await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL \
     or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
@@ -99,7 +99,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
     
     if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE:
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
@@ -115,7 +115,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
     
     if data.type == MillenniumTransactionType.CREDIT_CARD_PAYOFF:
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
@@ -152,7 +152,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(src_account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
     
     if data.type == MillenniumTransactionType.TRANSFER_TO_PHONE:
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
@@ -168,7 +168,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
     
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL:
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
@@ -184,7 +184,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
 
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL:
         dst_account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
@@ -209,7 +209,7 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             tags=[],
         )
         await mark_transaction_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        return await create(db, "transactions", TransactionWithId, item, "hash")
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:
         if data.description.startswith("Zasil.lokaty"):
@@ -222,6 +222,6 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
                 start=data.transaction_date,
                 end=data.transaction_date,
             )
-            await create(db, "capital_investment", CapitalInvestmentWithId, item)
+            await create(db, "capital_investment", CapitalInvestmentWithId, item, "hash")
             return {}
         raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")

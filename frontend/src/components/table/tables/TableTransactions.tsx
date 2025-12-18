@@ -13,6 +13,7 @@ import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionM
 import CellTag from "../cells/CellTag";
 import SplitTransactionModal from "@/components/modal/custom/SplitTransactionModal";
 import DebtRepayTransactionModal from "@/components/modal/custom/DebtRepayTransactionModal";
+import { getDateString } from "@/const/date";
 
 
 interface TableTransactionsProps {
@@ -20,7 +21,7 @@ interface TableTransactionsProps {
 }
 
 const columns: ColumnDef<TransactionWithId>[] = [
-  { accessorKey: "date", header: "Date" },
+  { accessorKey: "date", header: "Date", cell: ({ row }) => getDateString(new Date(row.original.date)) },
   defineCellAccountName<TransactionWithId>(),
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },

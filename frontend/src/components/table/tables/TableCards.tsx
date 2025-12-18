@@ -4,7 +4,7 @@ import { CardWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellBoolean from "../cells/CellBoolean";
-import CellAccountName from "../cells/CellAccountName";
+import { defineCellAccountName } from "../cells/CellAccountName";
 import UpdateCardModal from "@/components/modal/update/UpdateCardModal";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
@@ -25,7 +25,7 @@ const columns: ColumnDef<CardWithId>[] = [
   { accessorKey: "number", header: "Number" },
   { accessorKey: "credit", header: "Credit", cell: ({ row }) => <CellBoolean value={row.original.credit} /> },
   { accessorKey: "active", header: "Active", cell: ({ row }) => <CellBoolean value={row.original.active} /> },
-  { accessorKey: "account", header: "Account", cell: ({ row }) => <CellAccountName id={row.original.account} /> },
+  defineCellAccountName<CardWithId>(),
   { accessorKey: "min_number_of_transactions_monthly", header: "Requirements", cell: ({ row }) => renderMinTransactionsMonthly(row.original) },
 ];
 

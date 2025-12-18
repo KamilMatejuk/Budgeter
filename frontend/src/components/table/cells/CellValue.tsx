@@ -1,4 +1,5 @@
 import { Currency, CURRENCY_SYMBOLS } from "@/types/enum";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { twMerge } from "tailwind-merge";
 
 interface CellValueProps {
@@ -21,6 +22,15 @@ export function formatValue(value: number, currency?: Currency | keyof typeof Cu
   // add currency symbol
   valueStr += currency ? ` ${CURRENCY_SYMBOLS[currency]}` : "";
   return valueStr;
+}
+
+export function defineCellValue<T extends { value: number; currency?: Currency | keyof typeof Currency }>() {
+  return {
+    accessorKey: "value",
+    header: "Value",
+    meta: { alignedRight: true },
+    cell: ({ row }) => (<CellValue value={row.original.value} currency={row.original.currency} />),
+  } as ColumnDef<T>;
 }
 
 export default function CellValue({ value, colour, currency }: CellValueProps) {

@@ -3,7 +3,7 @@
 import { MonthlyExpenseWithId, MonthlyIncomeWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellValue from "../cells/CellValue";
+import { defineCellValue } from "../cells/CellValue";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdateRecurringMonthlyModal from "@/components/modal/update/UpdateRecurringMonthlyModal";
@@ -16,7 +16,7 @@ interface TableRecurringProductsProps {
 
 const columns: ColumnDef<RecurringProductWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency} />, meta: { alignedRight: true } },
+  defineCellValue<RecurringProductWithId>(),
   { accessorKey: "day_of_month", header: "Day of Month" },
 ];
 

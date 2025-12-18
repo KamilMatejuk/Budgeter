@@ -3,7 +3,7 @@
 import { CashWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellValue from "../cells/CellValue";
+import { defineCellValue } from "../cells/CellValue";
 import UpdateCashModal from "@/components/modal/update/UpdateCashModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -15,7 +15,7 @@ interface TableCashProps {
 
 const columns: ColumnDef<CashWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency} />, meta: { alignedRight: true } },
+  defineCellValue<CashWithId>(),
 ];
 
 export default function TableCash({ data }: TableCashProps) {

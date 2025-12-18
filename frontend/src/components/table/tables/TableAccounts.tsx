@@ -3,7 +3,7 @@
 import { PersonalAccountWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellValue, { formatValue } from "../cells/CellValue";
+import { defineCellValue, formatValue } from "../cells/CellValue";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdatePersonalAccountModal from "@/components/modal/update/UpdatePersonalAccountModal";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -26,7 +26,7 @@ function renderMinAmountMonthly(item: PersonalAccountWithId): string {
 
 const columns: ColumnDef<PersonalAccountWithId>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "value", header: "Value", cell: ({ row }) => <CellValue value={row.original.value} currency={row.original.currency} />, meta: { alignedRight: true } },
+  defineCellValue<PersonalAccountWithId>(),
   { accessorKey: "number", header: "Number" },
   { accessorKey: "min_incoming_amount_monthly", header: "Requirements", cell: ({ row }) => renderMinAmountMonthly(row.original) }
 ];

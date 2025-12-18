@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useSelectedSourceAndFile } from "./ImportContext";
 import { Dispatch, SetStateAction, useState } from "react";
 import ErrorToast from "../../components/toast/ErrorToast";
@@ -11,6 +10,7 @@ import { backupStateBeforeUpdate } from "@/components/modal/update/utils";
 import { TransactionWithId } from "@/types/backend";
 import InfoToast from "@/components/toast/InfoToast";
 import ButtonWithLoader from "@/components/button/ButtonWithLoader";
+import ButtonWithLink from "@/components/button/ButtonWithLink";
 
 async function importFile(
   file: File,
@@ -34,7 +34,7 @@ async function importFile(
               reject(new Error(error.message)); // reject the whole Promise
               return;
             }
-            if (response.tags) setImported((prev) => prev + 1);
+            if (response.tags.length == 0) setImported((prev) => prev + 1);
           }
           resolve(null);
         } catch (e) {
@@ -48,7 +48,6 @@ async function importFile(
 
 
 export default function RunButton() {
-  const router = useRouter();
   const { selectedFile, selectedSource, setSelectedFile, setSelectedSource } = useSelectedSourceAndFile();
   const [state, setState] = useState<'start' | 'importing' | 'finish' | 'failed'>('start');
   const [error, setError] = useState<Error | string | null>(null);
@@ -107,9 +106,9 @@ export default function RunButton() {
       {state === 'finish' && (
         <>
           <InfoToast message={`Import completed. ${imported} transactions imported.`} />
-          <ButtonWithLoader
+          <ButtonWithLink
             text="See new transactions"
-            onClick={async () => router.push('/transactions/new')}
+            href="/transactions/new"
             action="neutral"
             className="w-full mt-2"
           />

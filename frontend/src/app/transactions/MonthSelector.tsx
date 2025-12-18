@@ -1,7 +1,4 @@
-'use client';
-
-import ButtonWithLoader from "@/components/button/ButtonWithLoader";
-import { useRouter, useSearchParams } from "next/dist/client/components/navigation";
+import ButtonWithLink from "@/components/button/ButtonWithLink";
 import { getMonthName } from "@/const/date";
 
 interface MonthSelectorProps {
@@ -29,28 +26,17 @@ function generateMonths(year: number, month: number, n: number) {
   return dates;
 }
 
-export default function MonthSelector({ year, month, n = 5 }: MonthSelectorProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  function onClick(month: number, year: number) {
-    const params = new URLSearchParams(searchParams);
-    params.set('year', year.toString());
-    params.set('month', month.toString());
-    router.push(`?${params.toString()}`);
-  }
-
+export default async function MonthSelector({ year, month, n = 5 }: MonthSelectorProps) {
   const months = generateMonths(year, month, n);
-
   return (
     <div className="flex gap-1 mb-4">
       {months.map(({ year: y, month: m }) => (
-        <ButtonWithLoader
+        <ButtonWithLink
           key={`${y}-${m}`}
           text={`${getMonthName(m)}\n${y}`}
           action={m == month && y == year ? "positive" : "neutral"}
           className="flex-1"
-          onClick={async () => onClick(m, y)}
+          href={`?year=${y}&month=${m}`}
         />
       ))}
     </div>

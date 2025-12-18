@@ -76,7 +76,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Card">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update card" : "Create card"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
       {formik.values.credit === Type.CREDIT &&

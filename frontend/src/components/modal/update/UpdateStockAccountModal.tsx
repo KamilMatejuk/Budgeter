@@ -37,7 +37,7 @@ export default function UpdateStockAccountModal({ url, item, open, onClose }: Ba
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Stock Account">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update stock account" : "Create stock account"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />

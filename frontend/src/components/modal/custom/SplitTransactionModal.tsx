@@ -76,7 +76,7 @@ export default function SplitTransactionModal({ url, item, open, onClose }: Back
   });
 
   return item && (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Transaction">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Split transaction">
       <div className="flex justify-center"><CellValue value={item.value} colour /></div>
       <div className="flex justify-center">{new Date(item.date).toLocaleDateString("pl-PL")}</div>
       <div className="flex gap-3 items-center justify-center">

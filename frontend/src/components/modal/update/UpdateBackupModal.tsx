@@ -28,7 +28,7 @@ export default function UpdateBackupModal({ url, item, open, onClose }: BackendM
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Backup">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update backup" : "Create backup"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
     </Modal>
   );

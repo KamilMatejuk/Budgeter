@@ -32,7 +32,7 @@ export default function UpdateTagModal({ url, item, open, onClose }: BackendModa
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Tag">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item?.name ? "Update tag" : "Create tag"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       {editColor && <ColorInputWithError formik={formik} formikName="colour" label="Colour" />}
     </Modal>

@@ -29,7 +29,7 @@ export default function UpdateOrganisationModal({ url, item, open, onClose }: Ba
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Organisation">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update organisation" : "Create organisation"}>
       <TextInputWithError formik={formik} formikName="pattern" label="Pattern" />
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <TextInputWithError formik={formik} formikName="icon" label="Icon" />

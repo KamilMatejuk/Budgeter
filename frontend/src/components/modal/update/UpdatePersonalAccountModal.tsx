@@ -39,7 +39,7 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Personal Account">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />

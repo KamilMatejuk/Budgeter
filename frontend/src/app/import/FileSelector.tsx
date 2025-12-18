@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { IoMdClose } from "react-icons/io";
 import { useSelectedSourceAndFile } from "./ImportContext";
 
-export default function SourceImporter() {
+export default function FileSelector() {
   const { selectedFile, setSelectedFile } = useSelectedSourceAndFile();
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

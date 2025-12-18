@@ -2,7 +2,7 @@ import { get } from "../api/fetch";
 import ErrorToast from "@/components/toast/ErrorToast";
 import { SourceProvider } from "@/app/import/ImportContext";
 import SourceSelector from "@/app/import/SourceSelector";
-import SourceImporter from "@/app/import/SourceImporter";
+import FileSelector from "@/app/import/FileSelector";
 import RunButton from "@/app/import/RunButton";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
@@ -22,7 +22,7 @@ export default async function Import() {
             ? <WarningToast message="No sources available. Please add a source." />
             : <SourceSelector sources={sources} />}
         <SectionHeader text="Select File" />
-        <SourceImporter />
+        <FileSelector />
         <RunButton />
       </SourceProvider>
     </>

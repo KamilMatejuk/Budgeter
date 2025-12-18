@@ -29,7 +29,7 @@ export async function getExchangeRate(base: CurrencyType | CurrencyEnum, target:
     if (!data.quotes) throw new Error(`Invalid response from forex API: ${JSON.stringify(data)}`);
     return (1 / data.quotes[`${target}${base}`]) || FALLBACK_RATES[`${base}${target}`];
   } catch (error) {
-    console.warn("Error fetching exchange rate:", error);
+    // console.warn("Error fetching exchange rate:", error);
     return FALLBACK_RATES[`${base}${target}`];
   }
 }

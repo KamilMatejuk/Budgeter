@@ -12,11 +12,13 @@ class Transaction(PyBaseModel):
     value: float
     tags: list[str] # ids of Tags
     deleted: bool = False
+    debt_person: str | None = None # name of person that has to repay it
 
 
 class TransactionPartial(Transaction, metaclass=Partial): pass
 class TransactionWithId(Transaction, metaclass=WithId): pass
 
+# split
 
 class TransactionSplitRequestItem(PyBaseModel):
     title: str
@@ -24,3 +26,9 @@ class TransactionSplitRequestItem(PyBaseModel):
 
 class TransactionSplitRequest(PyBaseModel):
     items: list[TransactionSplitRequestItem]
+
+
+# repay dept
+
+class TransactionRepayRequest(PyBaseModel):
+    debt_transaction_id: str # id of Transaction

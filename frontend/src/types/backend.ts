@@ -40,23 +40,6 @@ export type paths = {
         patch: operations["patch_transaction_api_transaction_patch"];
         trace?: never;
     };
-    "/api/transaction/{year}/{month}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Transactions Monthly */
-        get: operations["get_transactions_monthly_api_transaction__year___month__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/transaction/split": {
         parameters: {
             query?: never;
@@ -70,8 +53,59 @@ export type paths = {
         delete?: never;
         options?: never;
         head?: never;
-        /** Split Transactions */
-        patch: operations["split_transactions_api_transaction_split_patch"];
+        /** Split Transaction */
+        patch: operations["split_transaction_api_transaction_split_patch"];
+        trace?: never;
+    };
+    "/api/transaction/repay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Repay Transaction */
+        post: operations["repay_transaction_api_transaction_repay_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions/{year}/{month}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Monthly */
+        get: operations["get_transactions_monthly_api_transactions__year___month__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions/debt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions With Debt */
+        get: operations["get_transactions_with_debt_api_transactions_debt_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/source": {
@@ -1210,6 +1244,8 @@ export type components = {
              * @default false
              */
             deleted: boolean;
+            /** Debt Person */
+            debt_person?: string | null;
         };
         /** TransactionPartial */
         TransactionPartial: {
@@ -1231,6 +1267,15 @@ export type components = {
             tags?: string[] | null;
             /** Deleted */
             deleted?: boolean | null;
+            /** Debt Person */
+            debt_person?: string | null;
+        };
+        /** TransactionRepayRequest */
+        TransactionRepayRequest: {
+            /** Id */
+            _id?: string;
+            /** Debt Transaction Id */
+            debt_transaction_id: string;
         };
         /** TransactionSplitRequest */
         TransactionSplitRequest: {
@@ -1271,6 +1316,8 @@ export type components = {
             tags: string[];
             /** Deleted */
             deleted: boolean;
+            /** Debt Person */
+            debt_person: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -1329,6 +1376,7 @@ export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
+export type TransactionRepayRequest = components['schemas']['TransactionRepayRequest'];
 export type TransactionSplitRequest = components['schemas']['TransactionSplitRequest'];
 export type TransactionSplitRequestItem = components['schemas']['TransactionSplitRequestItem'];
 export type TransactionWithId = components['schemas']['TransactionWithId'];
@@ -1465,7 +1513,75 @@ export interface operations {
             };
         };
     };
-    get_transactions_monthly_api_transaction__year___month__get: {
+    split_transaction_api_transaction_split_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransactionSplitRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repay_transaction_api_transaction_repay_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransactionRepayRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_transactions_monthly_api_transactions__year___month__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1497,18 +1613,14 @@ export interface operations {
             };
         };
     };
-    split_transactions_api_transaction_split_patch: {
+    get_transactions_with_debt_api_transactions_debt_get: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransactionSplitRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -1517,15 +1629,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TransactionWithId"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

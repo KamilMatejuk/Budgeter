@@ -21,6 +21,14 @@ export const requiredNonNegativeAmount = z.preprocess(
     .transform((n) => Number(n.toFixed(2)))
 );
 
+export const requiredNonZeroAmount = z.preprocess(
+  (val) => preprocess(val as string),
+  z.number({ required_error: ERROR.requiredError })
+    .finite({ message: ERROR.positiveError })
+    .refine((n) => n !== 0, { message: ERROR.nonZeroError })
+    .transform((n) => Number(n.toFixed(2)))
+);
+
 export const requiredAmount = z.preprocess(
   (val) => preprocess(val as string),
   z.number({ required_error: ERROR.requiredError })

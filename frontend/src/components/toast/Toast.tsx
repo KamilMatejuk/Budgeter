@@ -10,7 +10,7 @@ export default function Toast({ message, color, ...props }: ToastProps) {
   return (
     <div
       {...props}
-      className={twMerge("p-4 rounded-lg border", props.className)}
+      className={twMerge("p-2 rounded-lg border", props.className)}
       style={{ color, borderColor: color, backgroundColor: `${color}20` }}
     >
       <p className="text-center">{<MultilineText text={message} />}</p>

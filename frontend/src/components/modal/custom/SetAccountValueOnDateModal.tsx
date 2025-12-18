@@ -15,22 +15,24 @@ const FormSchema = z.object({
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
+async function submit(values: FormSchemaType, item?: PersonalAccountWithId | null) {
+  const backupName = `Auto pre-value-edit of "${item?.name.toLowerCase()}"`;
+  const { error: backupError } = await post(`/api/backup`, { name: backupName, auto: true } as BackupRequest);
+  if (backupError) {
+    alert(`Error: ${backupError.message}`);
+    return false;
+  }
+  const val = { _id: item?._id, date: getISODateString(values.date), value: values.value } as PatchAccountValueRequest;
+  const { error } = await patch("/api/history/account_value", val);
+  if (!error) return true;
+  alert(`Error: ${error.message}`);
+  return false;
+}
 
 export default function SetAccountValueOnDateModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { date: new Date(), value: item?.value || 0 },
-    onSubmit: async (values) => {
-      const backupName = `Auto pre-value-edit of "${item?.name.toLowerCase()}"`;
-      const { error: backupError } = await post(`/api/backup`, { name: backupName, auto: true } as BackupRequest);
-      if (backupError) {
-        alert(`Error: ${backupError.message}`);
-        return;
-      }
-      const val: PatchAccountValueRequest = { _id: item?._id, date: getISODateString(values.date), value: values.value };
-      const { error } = await patch("/api/history/account_value", val);
-      if (error) alert(`Error: ${error.message}`);
-      else return onClose();
-    },
+    onSubmit: async (values) => { if (await submit(values, item)) onClose() },
     validate: withZodSchema(FormSchema),
   });
 

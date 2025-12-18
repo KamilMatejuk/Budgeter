@@ -24,12 +24,12 @@ export function formatValue(value: number, currency?: Currency | keyof typeof Cu
   return valueStr;
 }
 
-export function defineCellValue<T extends { value: number; currency?: Currency | keyof typeof Currency }>() {
+export function defineCellValue<T extends { value: number; currency?: Currency | keyof typeof Currency }>(colour: boolean = false) {
   return {
     accessorKey: "value",
     header: "Value",
     meta: { alignedRight: true },
-    cell: ({ row }) => (<CellValue value={row.original.value} currency={row.original.currency} />),
+    cell: ({ row }) => (<CellValue value={row.original.value} currency={row.original.currency} colour={colour} />),
   } as ColumnDef<T>;
 }
 

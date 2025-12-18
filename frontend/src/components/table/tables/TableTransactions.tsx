@@ -24,7 +24,7 @@ const columns: ColumnDef<TransactionWithId>[] = [
   defineCellAccountName<TransactionWithId>(),
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
-  defineCellValue<TransactionWithId>(),
+  defineCellValue<TransactionWithId>(true),
   {
 
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (

@@ -4,15 +4,11 @@ import { Transaction, TransactionRepayRequest, TransactionWithId } from "@/types
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { requiredText } from "../../form/TextInputWithError";
-import { get, post } from "@/app/api/fetch";
-import { FaArrowRight } from "react-icons/fa";
-import CellAccountName from "../../table/cells/CellAccountName";
-import CellOrganisation from "../../table/cells/CellOrganisation";
-import CellValue, { formatValue } from "../../table/cells/CellValue";
+import { post } from "@/app/api/fetch";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import { backupStateBeforeUpdate } from "../update/utils";
-import { getDateString } from "@/const/date";
 import { usePeopleWithDebt } from "@/app/api/query";
+import TransactionDetails from "./TransactionDetails";
 
 
 const FormSchema = z.object({ debt: requiredText });
@@ -41,13 +37,7 @@ export default function RepayTransactionModal({ url, item, open, onClose }: Back
 
   return item && (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as repayment of debt">
-      <div className="flex justify-center"><CellValue value={item.value} currency={item.currency} colour /></div>
-      <div className="flex justify-center">{getDateString(item.date)}</div>
-      <div className="flex gap-3 items-center justify-center">
-        <div className="m-auto"><CellAccountName id={item.account} /></div>
-        <FaArrowRight className="" />
-        <div className="m-auto"><CellOrganisation name={item.organisation} /></div>
-      </div>
+      <TransactionDetails item={item} />
       <DropDownInputWithError formik={formik} formikName="debt" label="Debt" optionsEnum={people} />
     </Modal >
   );

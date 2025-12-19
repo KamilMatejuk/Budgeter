@@ -8,12 +8,8 @@ import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import WarningToast from "@/components/toast/WarningToast";
 import ManualCreation from "./ManualCreation";
+import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 
-const classes = {
-  container: "grid grid-cols-[1fr_1px_1fr] gap-4",
-  column: "p-2 pb-16",
-  divider: "bg-second-bg",
-}
 
 export default async function Import() {
   const { response: sources, error } = await get<string[]>("/api/source");
@@ -21,8 +17,8 @@ export default async function Import() {
   return (
     <>
       <PageHeader text="Import" subtext="Add new transactions" />
-      <div className={classes.container}>
-        <div className={classes.column}>
+      <MultiColumnSection>
+        <>
           <SourceProvider>
             <SectionHeader text="From file" subtext="Load report from your preferred source" />
             {error
@@ -33,13 +29,12 @@ export default async function Import() {
             <FileSelector />
             <RunButton />
           </SourceProvider>
-        </div>
-        <div className={classes.divider} />
-        <div className={classes.column}>
+        </>
+        <>
           <SectionHeader text="Manually" subtext="If your source is not yet supported, you can manually fill the fields" />
           <ManualCreation />
-        </div>
-      </div>
+        </>
+      </MultiColumnSection>
     </>
   );
 }

@@ -1118,6 +1118,7 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            currency: components["schemas"]["Currency"];
             /** Remaining */
             remaining: number;
         };

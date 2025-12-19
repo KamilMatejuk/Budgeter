@@ -8,7 +8,7 @@ from core.utils import Value
 from models.base import PyBaseModel
 from routes.base import fail_wrapper, get, patch, create
 from models.transaction import TransactionWithId
-from models.products import PersonalAccountWithId
+from models.products import PersonalAccountWithId, Currency
 from models.history import AccountDailyHistory, CardMonthlyHistory
 
 
@@ -19,6 +19,7 @@ router = APIRouter()
 
 class RequirementsResponse(PyBaseModel):
     name: str
+    currency: Currency
     remaining: int | float
 
 @router.get("/requirements/cards", response_model=list[RequirementsResponse])
@@ -31,15 +32,15 @@ async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_
         for c in cards:
             required = c.min_number_of_transactions_monthly or 0
             if required == 0:
+                responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=0))
                 continue
             condition = {"card": str(c.id), "year": today.year, "month": today.month}
             history: CardMonthlyHistory = await get(db, "card_monthly_history", CardMonthlyHistory, condition, one=True)
             if not history:
-                responses.append(RequirementsResponse(name=c.name, remaining=required))
-            else:
-                remaining = max(required - history.transactions, 0)
-                if remaining > 0:
-                    responses.append(RequirementsResponse(name=c.name, remaining=remaining))
+                responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=required))
+                continue
+            remaining = max(required - history.transactions, 0)
+            responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=remaining))
         return responses
     return await inner()
 
@@ -61,16 +62,16 @@ async def _get_required_account_amount(db, key, filtr):
     for a in accounts:
         required = getattr(a, key, 0)
         if required == 0:
+            responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=0))
             continue
         condition = {"account": str(a.id), "deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}
         history: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
         if not history:
-            responses.append(RequirementsResponse(name=a.name, remaining=required))
-        else:
-            done = abs(sum(t.value for t in history if filtr(t)))
-            remaining = max(required - done, 0)
-            if remaining > 0:
-                responses.append(RequirementsResponse(name=a.name, remaining=remaining))
+            responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=required))
+            continue
+        done = abs(sum(t.value for t in history if filtr(t)))
+        remaining = max(required - done, 0)
+        responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=remaining))
     return responses
 
 

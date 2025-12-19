@@ -6,7 +6,6 @@ import { twMerge } from "tailwind-merge";
 import Navigation from "./Navigation";
 import Header from "./Header";
 import Accounts, { AccountsProps } from "./Accounts";
-import Requirements, { RequirementsProps } from "./Requirements";
 
 
 export const transition = {
@@ -22,12 +21,11 @@ export const spanTransition = (collapsed: boolean) => ({
 });
 
 interface SidebarClientProps {
-  requirementsProps: Omit<RequirementsProps, 'collapsed'>;
   accountsProps: Omit<AccountsProps, 'collapsed'>;
 }
 
 
-export default function SidebarClient({ requirementsProps, accountsProps }: SidebarClientProps) {
+export default function SidebarClient({ accountsProps }: SidebarClientProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -39,7 +37,6 @@ export default function SidebarClient({ requirementsProps, accountsProps }: Side
     >
       <Header collapsed={collapsed} setCollapsed={setCollapsed} />
       <Navigation collapsed={collapsed} />
-      <Requirements {...requirementsProps} collapsed={collapsed} />
       <Accounts {...accountsProps} collapsed={collapsed} />
     </motion.aside>
   );

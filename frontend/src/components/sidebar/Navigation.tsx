@@ -23,7 +23,7 @@ const items: NavItem[] = [
 ]
 
 const classes = {
-  container: "overflow-hidden py-3",
+  container: "flex-1 overflow-hidden py-3",
   list: "space-y-1 px-1",
   item: "group flex items-center gap-3 px-2 py-2 rounded-md hover:bg-second-bg",
   icon: "flex-shrink-0 w-6 h-6 flex items-center justify-center",

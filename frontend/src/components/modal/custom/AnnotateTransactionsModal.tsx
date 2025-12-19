@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
 import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
-import { FormikConfig, useFormik } from "formik";
+import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { patch } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
 import TagsInputWithError from "@/components/form/TagsInputWithError";
 import TransactionDetails from "./TransactionDetails";
-import ButtonWithLoader from "@/components/button/ButtonWithLoader";
 
 
 const FormSchema = z.object({
@@ -56,7 +55,7 @@ export default function AnnotateTransactionsModal({
       <div className="absolute top-2 right-3">{counter} / {total}</div>
       <TransactionDetails item={item!} />
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={item.organisation} />
     </Modal >
   );
 }

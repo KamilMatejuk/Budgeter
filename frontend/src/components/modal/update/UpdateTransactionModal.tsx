@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionPartial, TransactionSplitRequest, TransactionWithId } from "@/types/backend";
+import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -38,7 +38,7 @@ export default function UpdateTransactionModal({ url, item, open, onClose }: Bac
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Update Transaction">
       <TransactionDetails item={item} />
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={item.organisation} />
     </Modal >
   );
 }

@@ -91,6 +91,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/transactions/new": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Without Tags */
+        get: operations["get_transactions_without_tags_api_transactions_new_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/transactions/debt": {
         parameters: {
             query?: never;
@@ -998,6 +1015,8 @@ export type components = {
             pattern: string;
             /** Name */
             name: string;
+            /** Tags */
+            tags: string[];
             /** Icon */
             icon?: string | null;
         };
@@ -1009,6 +1028,8 @@ export type components = {
             pattern?: string | null;
             /** Name */
             name?: string | null;
+            /** Tags */
+            tags?: string[] | null;
             /** Icon */
             icon?: string | null;
         };
@@ -1020,6 +1041,8 @@ export type components = {
             pattern: string;
             /** Name */
             name: string;
+            /** Tags */
+            tags: string[];
             /** Icon */
             icon: string | null;
         };
@@ -1612,6 +1635,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_transactions_without_tags_api_transactions_new_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"][];
                 };
             };
         };

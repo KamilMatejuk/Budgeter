@@ -7,6 +7,7 @@ import CellIcon from "../cells/CellIcon";
 import UpdateOrganisationModal from "@/components/modal/update/UpdateOrganisationModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { defineCellTag } from "../cells/CellTag";
 
 
 interface TableOrganisationsProps {
@@ -16,7 +17,8 @@ interface TableOrganisationsProps {
 const columns: ColumnDef<OrganisationWithId>[] = [
   { accessorKey: "pattern", header: "Pattern" },
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "icon", header: "Icon", cell: ({ row }) => <CellIcon source={row.original.icon || ""} alt={row.original.name} /> }
+  { accessorKey: "icon", header: "Icon", cell: ({ row }) => <CellIcon source={row.original.icon || ""} alt={row.original.name} /> },
+  defineCellTag<OrganisationWithId>(),
 ];
 
 export default function TableOrganisations({ data }: TableOrganisationsProps) {

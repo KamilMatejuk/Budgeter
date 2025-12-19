@@ -4,6 +4,7 @@ from models.base import PyBaseModel, Partial, WithId
 class Organisation(PyBaseModel):
     pattern: str
     name: str
+    tags: list[str]
     icon: str | None = None
 
 

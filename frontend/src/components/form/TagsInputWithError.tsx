@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { SingleInputWithErrorProps } from "./InputWithError";
 import { TagWithId } from "@/types/backend";
 import CellTag, { getTagParts } from "../table/cells/CellTag";
-import { useTags } from "@/app/api/query";
+import { useOrganisation, useTags } from "@/app/api/query";
 import SearchableTextInputWithError from "./SearchableTextInputWithError";
 
 
@@ -28,11 +28,17 @@ function getTagOptions(tags: TagWithId[]) {
     return a.name.localeCompare(b.name); // same depth → alphabetical
   });
 }
+interface TagsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
+  organisationName?: string;
+}
 
-
-export default function TagsInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {
+export default function TagsInputWithError<T>({ formik, formikName, label, organisationName }: TagsInputWithErrorProps<T>) {
   const tags = useTags();
   const tagOptions = useMemo(() => getTagOptions(tags || []), [tags]);
+
+  const suggestedTagOptions = organisationName
+    ? (useOrganisation(organisationName)?.tags || []).map(id => tagOptions.find(t => t.id === id)).filter(t => t !== undefined)
+    : [];
 
   return (
     <SearchableTextInputWithError
@@ -41,6 +47,7 @@ export default function TagsInputWithError<T>({ formik, formikName, label }: Sin
       label={label}
       Option={CellTag}
       options={tagOptions}
+      suggestedOptions={suggestedTagOptions}
     />
   );
 }

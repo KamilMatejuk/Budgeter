@@ -10,7 +10,7 @@ import { MdCallSplit, MdDelete, MdEdit } from "react-icons/md";
 import { BsFillPiggyBankFill } from "react-icons/bs";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionModal";
-import CellTag from "../cells/CellTag";
+import CellTag, { defineCellTag } from "../cells/CellTag";
 import SplitTransactionModal from "@/components/modal/custom/SplitTransactionModal";
 import DebtRepayTransactionModal from "@/components/modal/custom/DebtRepayTransactionModal";
 import { getDateString } from "@/const/date";
@@ -26,14 +26,7 @@ const columns: ColumnDef<TransactionWithId>[] = [
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
   defineCellValue<TransactionWithId>(true),
-  {
-
-    accessorKey: "tags", header: "Tags", cell: ({ row }) => (
-      <div className="flex flex-col gap-1">
-        {row.original.tags.map((tagId) => <CellTag key={tagId} id={tagId} />)}
-      </div>
-    ), meta: { wrap: true }
-  },
+  defineCellTag<TransactionWithId>(),
 ];
 
 export default function TableTransactions({ data }: TableTransactionsProps) {

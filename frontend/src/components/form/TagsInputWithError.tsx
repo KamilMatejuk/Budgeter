@@ -22,13 +22,18 @@ const classes = {
 function getTagOptions(tags: TagWithId[]) {
   return tags.map(tag => (
     { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
-  )).sort((a, b) => a.name.localeCompare(b.name));
+  )).sort((a, b) => {
+    const depthA = (a.name.match(/\//g) || []).length;
+    const depthB = (b.name.match(/\//g) || []).length;
+    if (depthA !== depthB) return depthA - depthB; // fewer slashes first
+    return a.name.localeCompare(b.name); // same depth → alphabetical
+  });
 }
 
 function filterTagOptions(options: { id: string, name: string }[], search: string, selected: string[]) {
   const notSelected = options.filter(({ id }) => !selected.includes(id));
   if (!search) return notSelected || [];
-  return notSelected.filter(({ name, id }) => name.toLowerCase().includes(search.toLowerCase()));
+  return notSelected.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
 }
 
 

@@ -18,6 +18,7 @@ export interface ModalProps extends PropsWithChildren {
   open: boolean;
   onClose: () => Promise<void>;
   cancellable?: boolean;
+  onCancel?: () => Promise<void>;
   onSave?: () => Promise<void>;
   onDelete?: () => Promise<void>;
   title?: string;
@@ -28,7 +29,7 @@ export interface BackendModalProps<T extends Item> extends ModalProps {
   item?: T | null;
 }
 
-export default function Modal({ open, onClose, children, cancellable, onSave, onDelete, title }: ModalProps) {
+export default function Modal({ open, onClose, children, cancellable, onCancel, onSave, onDelete, title }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   // focus the dialog for accessibility, and exit with escape
@@ -66,7 +67,7 @@ export default function Modal({ open, onClose, children, cancellable, onSave, on
         {children}
         {(cancellable || onSave || onDelete) &&
           <div className={classes.buttons}>
-            {cancellable && <ButtonWithLoader action="neutral" onClick={onClose} text="Cancel" />}
+            {cancellable && <ButtonWithLoader action="neutral" onClick={onCancel ? onCancel : onClose} text="Cancel" />}
             {onSave && <ButtonWithLoader action="positive" onClick={onSave} text="Save" />}
             {onDelete && <ButtonWithLoader action="negative" onClick={onDelete} text="Delete" />}
           </div>

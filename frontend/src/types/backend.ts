@@ -1064,6 +1064,8 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Icon */
+            icon: string;
             /** Number */
             number: string;
             /** Value */
@@ -1080,6 +1082,8 @@ export type components = {
             _id?: string;
             /** Name */
             name?: string | null;
+            /** Icon */
+            icon?: string | null;
             /** Number */
             number?: string | null;
             /** Value */
@@ -1096,6 +1100,8 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Icon */
+            icon: string;
             /** Number */
             number: string;
             /** Value */

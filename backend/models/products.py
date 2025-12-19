@@ -24,6 +24,7 @@ class Cash(PyBaseModel):
 
 class PersonalAccount(PyBaseModel):
     name: str
+    icon: str # icon base64 of source (e.g. Millennium, Revolut)
     number: str
     value: float
     currency: Currency

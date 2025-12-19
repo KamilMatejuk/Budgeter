@@ -3,16 +3,6 @@ import { TagWithId } from "@/types/backend";
 import { ColumnDef } from "@tanstack/react-table";
 import { twMerge } from "tailwind-merge";
 
-export function defineCellTag<T extends { tags: string[] }>() {
-  return {
-    accessorKey: "tags", header: "Tags", cell: ({ row }) => (
-      <div className="flex flex-col gap-1">
-        {row.original.tags.map((tagId) => <CellTag key={tagId} id={tagId} />)}
-      </div>
-    ), meta: { wrap: true }
-  } as ColumnDef<T>;
-}
-
 interface CellTagProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
 }
@@ -79,4 +69,14 @@ export default function CellTag({ id, ...props }: CellTagProps) {
       })}
     </div>
   );
+}
+
+export function defineCellTag<T extends { tags: string[] }>() {
+  return {
+    accessorKey: "tags", header: "Tags", cell: ({ row }) => (
+      <div className="flex flex-col gap-1">
+        {row.original.tags.map((tagId) => <CellTag key={tagId} id={tagId} />)}
+      </div>
+    ), meta: { wrap: true }
+  } as ColumnDef<T>;
 }

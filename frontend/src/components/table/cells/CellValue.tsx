@@ -1,5 +1,5 @@
 import { Currency, CURRENCY_SYMBOLS } from "@/types/enum";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { twMerge } from "tailwind-merge";
 
 interface CellValueProps {
@@ -24,6 +24,13 @@ export function formatValue(value: number, currency?: Currency | keyof typeof Cu
   return valueStr;
 }
 
+export default function CellValue({ value, colour, currency }: CellValueProps) {
+  if (value === undefined) return null
+  let valueStr = formatValue(value || 0, currency);
+  const className = twMerge("p-0 text-right font-mono", colour ? (value > 0 ? "text-positive" : value < 0 ? "text-negative" : "") : "");
+  return (<p className={className}>{valueStr}</p>);
+}
+
 export function defineCellValue<T extends { value: number; currency?: Currency | keyof typeof Currency }>(colour: boolean = false) {
   return {
     accessorKey: "value",
@@ -31,11 +38,4 @@ export function defineCellValue<T extends { value: number; currency?: Currency |
     meta: { alignedRight: true },
     cell: ({ row }) => (<CellValue value={row.original.value} currency={row.original.currency} colour={colour} />),
   } as ColumnDef<T>;
-}
-
-export default function CellValue({ value, colour, currency }: CellValueProps) {
-  if (value === undefined) return null
-  let valueStr = formatValue(value || 0, currency);
-  const className = twMerge("p-0 text-right font-mono", colour ? (value > 0 ? "text-positive" : value < 0 ? "text-negative" : "") : "");
-  return (<p className={className}>{valueStr}</p>);
 }

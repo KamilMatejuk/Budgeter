@@ -14,6 +14,7 @@ import AccountNumberInputWithError, { requiredAccountNumber } from "../../form/A
 
 
 const FormSchema = z.object({
+  icon: requiredText.regex(/^data:image\/.+/, { message: ERROR.imageBase64Format }),
   name: requiredText,
   number: requiredAccountNumber,
   value: requiredNonNegativeAmount,
@@ -27,6 +28,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function UpdatePersonalAccountModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
+      icon: item?.icon || "",
       name: item?.name || "",
       number: item?.number || "",
       value: item?.value || 0,
@@ -40,6 +42,7 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
+      <TextInputWithError formik={formik} formikName="icon" label="Icon" />
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />

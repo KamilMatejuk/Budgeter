@@ -1,3 +1,5 @@
+"use server";
+
 import { Currency as CurrencyType } from "@/types/backend";
 import { Currency as CurrencyEnum } from "@/types/enum";
 

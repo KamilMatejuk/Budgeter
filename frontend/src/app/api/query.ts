@@ -5,49 +5,31 @@ import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
 
-
-export function usePersonalAccounts() {
+function _useFetchWrapper<T>(queryKey: string[], revalidateKey: string[], url: string) {
   const { data } = useQuery({
-    queryKey: ["personal_account"],
+    queryKey,
     queryFn: async () => {
-      const { response } = await get<PersonalAccountWithId[]>(`/api/products/personal_account`, ["personal_account"]);
-      return response;
-    },
-  })
-  return data;
-}
-
-export function usePersonalAccount(id: string) {
-  const { data } = useQuery({
-    queryKey: ["personal_account", id],
-    queryFn: async () => {
-      const { response } = await get<PersonalAccountWithId>(`/api/products/personal_account/${id}`, ["personal_account"]);
+      const { response } = await get<T>(url, revalidateKey);
       return response;
     },
   });
   return data;
 }
 
+export function usePersonalAccounts() {
+  return _useFetchWrapper<PersonalAccountWithId[]>(["personal_account"], ["personal_account"], `/api/products/personal_account`);
+}
+
+export function usePersonalAccount(id: string) {
+  return _useFetchWrapper<PersonalAccountWithId>(["personal_account", id], ["personal_account"], `/api/products/personal_account/${id}`);
+}
+
 export function useTags() {
-  const { data } = useQuery({
-    queryKey: ["tag"],
-    queryFn: async () => {
-      const { response } = await get<TagWithId[]>("/api/tag", ["tag"]);
-      return response;
-    },
-  })
-  return data;
+  return _useFetchWrapper<TagWithId[]>(["tag"], ["tag"], `/api/tag`);
 }
 
 export function useOrganisation(name: string) {
-  const { data } = useQuery({
-    queryKey: ["organisation", name],
-    queryFn: async () => {
-      const { response } = await get<OrganisationWithId>(`/api/organisation/regex/${name}`, ["organisation"]);
-      return response;
-    },
-  })
-  return data;
+  return _useFetchWrapper<OrganisationWithId>(["organisation", name], ["organisation"], `/api/organisation/regex/${name}`);
 }
 
 export function usePeopleWithDebt() {

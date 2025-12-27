@@ -1,12 +1,11 @@
-import { TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
-import { get } from "../api/fetch";
 import WarningToast from "@/components/toast/WarningToast";
 import Link from "next/link";
+import { getNewTransactions } from "../api/getters";
 
 
 export default async function NewTransactions() {
-  const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transactions/new`, ["transaction"]);
+  const { response: transactions, error } = await getNewTransactions();
 
   return (error
     ? <ErrorToast message="Could not check new transactions" />

@@ -1,12 +1,11 @@
-import { get } from "../api/fetch";
-import { CardWithId, CashWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import TableCash from "@/components/table/tables/TableCash";
 import TableCards from "@/components/table/tables/TableCards";
+import { getCards, getCash } from "../api/getters";
 
 export default async function PhysicalProducts() {
-  const { response: cash, error: cashError } = await get<CashWithId[]>("/api/products/cash", ["cash"]);
-  const { response: cards, error: cardsError } = await get<CardWithId[]>("/api/products/card", ["card"]);
+  const { response: cash, error: cashError } = await getCash();
+  const { response: cards, error: cardsError } = await getCards();
 
   return (
     <>

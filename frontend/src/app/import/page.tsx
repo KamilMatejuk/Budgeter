@@ -1,4 +1,3 @@
-import { get } from "../api/fetch";
 import ErrorToast from "@/components/toast/ErrorToast";
 import { SourceProvider } from "@/app/import/ImportContext";
 import SourceSelector from "@/app/import/SourceSelector";
@@ -9,10 +8,11 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import WarningToast from "@/components/toast/WarningToast";
 import ManualCreation from "./ManualCreation";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
+import { getSources } from "../api/getters";
 
 
 export default async function Import() {
-  const { response: sources, error } = await get<string[]>("/api/source");
+  const { response: sources, error } = await getSources();
 
   return (
     <>

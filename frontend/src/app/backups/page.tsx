@@ -1,12 +1,11 @@
-import { BackupResponse } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
-import { get } from "../api/fetch";
 import TableBackups from "../../components/table/tables/TableBackups";
+import { getBackups } from "../api/getters";
 
 
 export default async function Backups() {
-  const { response, error } = await get<BackupResponse[]>(`/api/backup`, ["backup"]);
+  const { response, error } = await getBackups();
   return (
     <>
       <PageHeader text="Backups History" subtext="Overview of your recent backups" />

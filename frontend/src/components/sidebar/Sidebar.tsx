@@ -1,7 +1,7 @@
-import { get } from "@/app/api/fetch";
 import SidebarClient from "./SidebarClient";
-import { CapitalInvestmentWithId, CardWithId, Currency, PersonalAccountWithId, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
+import { Currency } from "@/types/backend";
 import { convertToPLN } from "@/app/api/forex";
+import { getCapitalInvestments, getCards, getPersonalAccounts, getSavingsAccounts, getStockAccounts } from "@/app/api/getters";
 
 async function mapCurrenciesToPLN<T extends { value: number; currency: Currency }>(items: T[] | null): Promise<T[]> {
   if (!items || items.length === 0) return [];
@@ -12,11 +12,11 @@ async function mapCurrenciesToPLN<T extends { value: number; currency: Currency 
 
 export default async function Sidebar() {
   // server side wrapper for all components requireing data fetching
-  const { response: cards } = await get<CardWithId[]>("/api/products/card", ["card"]);
-  const { response: accounts } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
-  const { response: stocks } = await get<StockAccountWithId[]>("/api/products/stock_account", ["stock_account"]);
-  const { response: capitals } = await get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"]);
-  const { response: savings } = await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
+  const { response: cards } = await getCards();
+  const { response: accounts } = await getPersonalAccounts();
+  const { response: stocks } = await getStockAccounts();
+  const { response: capitals } = await getCapitalInvestments();
+  const { response: savings } = await getSavingsAccounts();
   const accountsProps = {
     cards: cards?.filter((it) => it.credit && it.value) || [],
     accounts: await mapCurrenciesToPLN(accounts?.filter((it) => it.value) || []),

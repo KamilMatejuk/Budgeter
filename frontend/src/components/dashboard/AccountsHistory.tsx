@@ -1,9 +1,8 @@
-import { get } from "@/app/api/fetch";
 import ErrorToast from "../toast/ErrorToast";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { DEFAULT_CHART_RANGE } from "@/types/enum";
 import AccountsHistoryChart from "./AccountsHistoryChart";
-import { PersonalAccountWithId } from "@/types/backend";
+import { getHistoricAccountValues, getPersonalAccounts } from "@/app/api/getters";
 
 
 export default async function AccountsHistory() {
@@ -13,20 +12,17 @@ export default async function AccountsHistory() {
   const {
     response: totalAccountValueResponse,
     error: totalAccountValueError
-  } = await get<number[]>(`/api/history/account_value/${DEFAULT_CHART_RANGE}`, ["personal_account", "transaction"]);
+  } = await getHistoricAccountValues();
   if (totalAccountValueError)
     return <ErrorToast message={`Could not download accounts history: ${totalAccountValueError.message}`} />;
 
-  const {
-    response: accountsResponse,
-    error: accountsError
-  } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
+  const { response: accountsResponse, error: accountsError } = await getPersonalAccounts();
   if (accountsError)
     return <ErrorToast message={`Could not download personal accounts: ${accountsError.message}`} />;
 
   queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE], totalAccountValueResponse);
   accountsResponse.forEach(async account => {
-    const { response } = await get<number[]>(`/api/history/account_value/${DEFAULT_CHART_RANGE}/${account._id}`, ["personal_account", "transaction"]);
+    const { response } = await getHistoricAccountValues(account._id);
     queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE, account._id], response);
   });
   return (

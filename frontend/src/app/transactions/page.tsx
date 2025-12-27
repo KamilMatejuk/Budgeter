@@ -8,6 +8,7 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import TableTransactions from "@/components/table/tables/TableTransactions";
 import { getDateString, getMonthName } from "@/const/date";
 import NewTransactions from "./NewTransactions";
+import { getTransactions } from "../api/getters";
 
 
 interface PageProps {
@@ -23,7 +24,7 @@ export default async function Transactions({ searchParams }: PageProps) {
   const yearNr = year ? parseInt(year) : new Date().getFullYear();
   const monthNr = month ? parseInt(month) : new Date().getMonth() + 1;
   // get transactions
-  const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transactions/${yearNr}/${monthNr}`, ["transaction"]);
+  const { response: transactions, error } = await getTransactions(yearNr, monthNr);
   // get details
   const minDate = new Date(Math.min(...(transactions || []).map(t => new Date(t.date).getTime())));
   const maxDate = new Date(Math.max(...(transactions || []).map(t => new Date(t.date).getTime())));

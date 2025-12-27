@@ -1,13 +1,12 @@
-import { TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
-import { get } from "@/app/api/fetch";
 import InfoToast from "@/components/toast/InfoToast";
 import AnnotateTransactions from "./AnnotateTransactions";
+import { getNewTransactions } from "@/app/api/getters";
 
 
 export default async function Transactions() {
-  const { response: transactions, error } = await get<TransactionWithId[]>(`/api/transactions/new`, ["transaction"]);
+  const { response: transactions, error } = await getNewTransactions();
 
   return (
     <>

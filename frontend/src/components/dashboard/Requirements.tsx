@@ -1,10 +1,9 @@
-import { get } from "@/app/api/fetch";
-import { RequirementsResponse } from "@/types/backend";
 import CellValue from "../table/cells/CellValue";
 import React from "react";
 import CellBoolean from "../table/cells/CellBoolean";
 import { twMerge } from "tailwind-merge";
 import ErrorToast from "../toast/ErrorToast";
+import { getRequiredAccountsInput, getRequiredAccountsOutput, getRequiredCardsTransactions } from "@/app/api/getters";
 
 const classes = {
   container: "flex gap-2 w-full",
@@ -16,9 +15,9 @@ const classes = {
 }
 
 export default async function Requirements() {
-  const { response: incomes, error: incomesError } = await get<RequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"]);
-  const { response: outcomes, error: outcomesError } = await get<RequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"]);
-  const { response: transactions, error: transactionsError } = await get<RequirementsResponse[]>("/api/history/requirements/cards", ["card"]);
+  const { response: incomes, error: incomesError } = await getRequiredAccountsInput();
+  const { response: outcomes, error: outcomesError } = await getRequiredAccountsOutput();
+  const { response: transactions, error: transactionsError } = await getRequiredCardsTransactions();
 
   const segments = [
     { title: "income", data: incomes || [], error: incomesError, format: true },

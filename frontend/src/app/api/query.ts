@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { ChartRange, OrganisationWithId, PersonalAccountWithId, TagWithId, TransactionWithId } from "@/types/backend";
+import { ChartRange, OrganisationWithId, PersonalAccountWithId, TagWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
+import { getDebtTransactions } from "./getters";
 
 function _useFetchWrapper<T>(queryKey: string[], revalidateKey: string[], url: string) {
   const { data } = useQuery({
@@ -53,7 +54,7 @@ export function usePeopleWithDebt() {
   const [people, setPeople] = useState<Record<string, string>>({});
   useEffect(() => {
     (async () => {
-      const { response } = await get<TransactionWithId[]>(`/api/transactions/debt`, ["transaction", "debt"]);
+      const { response } = await getDebtTransactions();
       const people = (response || []).reduce(
         (acc, curr) => {
           const description = `${formatValue(Math.abs(curr.value), curr.currency)} on ${getDateString(curr.date)}`;

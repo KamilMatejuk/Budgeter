@@ -1,14 +1,13 @@
-import { get } from "../api/fetch";
-import { CapitalInvestmentWithId, SavingsAccountWithId, StockAccountWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import TableStocks from "@/components/table/tables/TableStocks";
 import TableInvestments from "@/components/table/tables/TableInvestments";
 import TableSavings from "@/components/table/tables/TableSavings";
+import { getCapitalInvestments, getSavingsAccounts, getStockAccounts } from "../api/getters";
 
 export default async function Investments() {
-  const { response: stock, error: stockAccountError } = await get<StockAccountWithId[]>("/api/products/stock_account", ["stock_account"]);
-  const { response: capital, error: capitalInvestmentError } = await get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"]);
-  const { response: savings, error: savingsAccountError } = await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
+  const { response: stock, error: stockAccountError } = await getStockAccounts();
+  const { response: capital, error: capitalInvestmentError } = await getCapitalInvestments();
+  const { response: savings, error: savingsAccountError } = await getSavingsAccounts();
 
   return (
     <>

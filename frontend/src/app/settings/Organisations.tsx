@@ -1,10 +1,9 @@
-import { get } from "../api/fetch";
-import { OrganisationWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import TableOrganisations from "@/components/table/tables/TableOrganisations";
+import { getOrganisations } from "../api/getters";
 
 export default async function Organisations() {
-  const { response, error } = await get<OrganisationWithId[]>("/api/organisation", ["organisation"]);
+  const { response, error } = await getOrganisations();
 
   return (
     error

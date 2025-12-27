@@ -18,3 +18,11 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   [Currency.USD]: "$",
   [Currency.EUR]: "€",
 };
+
+// ChartRange from backend.ts
+export enum ChartRange {
+  "3M" = "3M",
+  "1Y" = "1Y",
+  "FULL" = "FULL",
+}
+export const DEFAULT_CHART_RANGE = ChartRange["3M"];

@@ -15,7 +15,7 @@ Chart.register(
 
 export interface LineChartProps {
   data: number[];
-  startDate: Date;
+  labels: string[];
 }
 
 const options = {
@@ -41,36 +41,12 @@ const options = {
     },
     y: {
       grid: { display: true },
-      ticks: { stepSize: 1 },
     },
   },
-}
+};
 
-function getStepSize(data: number[]) {
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const step = (max - min) / 5;
-  if (step < 1) return 1;
-  // round to nearest 10, 100, 1000, ...
-  const lower = Math.pow(10, Math.floor(Math.log10(step)));
-  const middle = lower * 5;
-  const higher = lower * 10;
-  if (step - lower < middle - step) return lower;
-  if (step - middle > higher - step) return higher;
-  return middle;
-}
 
-function getDateLabels(startDate: Date, length: number) {
-  return Array.from({ length }, (_, i) => {
-    const date = new Date(startDate);
-    date.setDate(date.getDate() + i);
-    return date.toISOString().split('T')[0];
-  });
-}
-
-export default function LineChart({ data, startDate }: LineChartProps) {
-  const labels = getDateLabels(startDate, data.length);
-  options.scales!.y!.ticks.stepSize = getStepSize(data);
+export default function LineChart({ data, labels }: LineChartProps) {
   return (
     <div style={{ width: "100%", height: "300px" }}>
       <Line options={options} data={{

@@ -22,8 +22,8 @@ export default async function Home() {
           <Debt />
         </>
       </MultiColumnSection>
-      <SectionHeader text="Accounts' Balance" subtext={`Account's history from ${year}`} />
-      <AccountsHistory year={year} />
+      <SectionHeader text="Accounts' Balance" subtext={`Account's value history`} />
+      <AccountsHistory />
       <SectionHeader text="Monthly Overview" subtext={`Incomes and expenses from ${month}.${year}`} />
       <SectionHeader text="Yearly Overview" subtext={`Incomes and expenses from ${year}`} />
       <SectionHeader text="Trend Comparison" subtext={`How ${month}/${year} compares to average ${month} and to average month in ${year}`} />

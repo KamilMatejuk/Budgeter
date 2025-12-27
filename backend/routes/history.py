@@ -9,7 +9,7 @@ from models.base import PyBaseModel
 from routes.base import fail_wrapper, get, patch, create
 from models.transaction import TransactionWithId
 from models.products import PersonalAccountWithId, Currency
-from models.history import AccountDailyHistory, CardMonthlyHistory
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange
 
 
 router = APIRouter()
@@ -77,56 +77,71 @@ async def _get_required_account_amount(db, key, filtr):
 
 ################################ Account Value #################################
 
-@router.get("/account_value/{year}", response_model=dict[str, list[float]])
-async def get_account_values_yearly(year: int, db: AsyncIOMotorDatabase = Depends(get_db)):
-    start = datetime.date(year, 1, 1)
-    end = (start + datetime.timedelta(days=366)).replace(day=1)
-    if end > datetime.date.today():
-        end = datetime.date.today() + datetime.timedelta(days=1)
-    return await _get_account_values(start, end, db)
+def _range_to_dates(range: ChartRange):
+    today = datetime.date.today()
+    if range == ChartRange._3M:
+        start = datetime.date(today.year, today.month - 2, 1) if today.month > 2 else datetime.date(today.year - 1, today.month + 9, 1)
+    elif range == ChartRange._1Y:
+        start = datetime.date(today.year - 1, today.month + 1, 1) if today.month < 12 else datetime.date(today.year, 1, 1)
+    elif range == ChartRange._FULL:
+        start = None
+    else:
+        raise ValueError(f"Invalid range {range}")
+    return start
 
-@router.get("/account_value/{year}/{month}", response_model=dict[str, list[float]])
-async def get_account_values_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
-    start = datetime.date(year, month, 1)
-    end = (start + datetime.timedelta(days=32)).replace(day=1)
-    if end > datetime.date.today():
-        end = datetime.date.today() + datetime.timedelta(days=1)
-    return await _get_account_values(start, end, db)
 
-@fail_wrapper
-async def _get_account_values(start: datetime.date, end: datetime.date, db: AsyncIOMotorDatabase):
-    response = {}
-    # get accounts
+@router.get("/account_value/{range}", response_model=list[float])
+async def get_total_account_values(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
-    # get history
+    response = {}
     for account in accounts:
-        condition = {"date": {"$gte": start.isoformat(), "$lt": end.isoformat()}, "account": str(account.id)}
-        history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory, condition)
+        account_values = await get_account_values(str(account.id), range, db)
+        # index end-to-start
+        account_values = [(len(account_values) - i, a) for i, a in enumerate(account_values)]
+        for i, val in account_values:
+            response[i] = Value.add(response.get(i, 0.0), val)
+    sorted_response = sorted(response.items(), key=lambda x: x[0], reverse=True)
+    return [val for _, val in sorted_response]
+
+@router.get("/account_value/{range}/{id}", response_model=list[float])
+async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        start = _range_to_dates(range)
+        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": id}, one=True)
+        # get history
+        condition = {"account": str(account.id)}
+        if start is not None:
+            condition["date"] = {"$gte": start.isoformat()}
+        history: list[AccountDailyHistory] = (await get(db, "account_daily_history", AccountDailyHistory, condition, "date"))[::-1]
         # expand to full month
-        before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
-                                                {"account": str(account.id), "date": {"$lte": start.isoformat()}}, "date", one=True)
+        before: AccountDailyHistory = await get(
+            db, "account_daily_history", AccountDailyHistory,
+            {"account": str(account.id), "date": {"$lte": start.isoformat()}},
+            "date", one=True
+        ) if start is not None else history[0]
         current_value = before.value if before else 0.0
-        full_records = []
+        response = []
         record_index = 0
-        records = sorted(history, key=lambda x: x.date)
-        for day in range(1, (end - start).days + 1):
-            current_date = start + datetime.timedelta(days=day - 1)
-            if (record_index < len(records)) and (records[record_index].date == current_date):
-                current_value = records[record_index].value
+        current_date = start if start is not None else history[0].date
+        while current_date <= datetime.date.today():
+            if (record_index < len(history)) and (history[record_index].date == current_date):
+                current_value = history[record_index].value
                 record_index += 1
-            full_records.append(current_value)
-        response[account.name] = full_records
-    return response
+            response.append(current_value)
+            current_date += datetime.timedelta(days=1)
+        return response
+    return await inner()
+
 
 class PatchAccountValueRequest(PyBaseModel):
     date: datetime.date
     value: float
 
 @router.patch("/account_value", response_model=dict)
-async def get_account_values_yearly(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
-        print(data)
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
         before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
                                                 {"account": str(account.id), "date": {"$lte": data.date.isoformat()}}, "date", one=True)

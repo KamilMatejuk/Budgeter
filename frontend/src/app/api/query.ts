@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { OrganisationWithId, PersonalAccountWithId, TagWithId, TransactionWithId } from "@/types/backend";
+import { ChartRange, OrganisationWithId, PersonalAccountWithId, TagWithId, TransactionWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
@@ -49,4 +49,18 @@ export function usePeopleWithDebt() {
     })();
   }, []);
   return people;
+}
+
+export function useTotalAccountValueHistory(range: ChartRange = '3M') {
+  return _useFetchWrapper<number[]>(
+    ["account_value_history", range],
+    ["personal_account", "transaction"],
+    `/api/history/account_value/${range}`);
+}
+
+export function useAccountValueHistory(range: ChartRange = '3M', accountId: string) {
+  return _useFetchWrapper<number[]>(
+    ["account_value_history", range, accountId],
+    ["personal_account", "transaction"],
+    `/api/history/account_value/${range}/${accountId}`);
 }

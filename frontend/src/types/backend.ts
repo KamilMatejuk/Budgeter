@@ -542,15 +542,15 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/history/account_value/{year}": {
+    "/api/history/account_value/{range}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Account Values Yearly */
-        get: operations["get_account_values_yearly_api_history_account_value__year__get"];
+        /** Get Total Account Values */
+        get: operations["get_total_account_values_api_history_account_value__range__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -559,15 +559,15 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/history/account_value/{year}/{month}": {
+    "/api/history/account_value/{range}/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Account Values Monthly */
-        get: operations["get_account_values_monthly_api_history_account_value__year___month__get"];
+        /** Get Account Values */
+        get: operations["get_account_values_api_history_account_value__range___id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -589,8 +589,8 @@ export type paths = {
         delete?: never;
         options?: never;
         head?: never;
-        /** Get Account Values Yearly */
-        patch: operations["get_account_values_yearly_api_history_account_value_patch"];
+        /** Patch Account Value */
+        patch: operations["patch_account_value_api_history_account_value_patch"];
         trace?: never;
     };
     "/api/organisation": {
@@ -898,6 +898,11 @@ export type components = {
             value: number;
             currency: components["schemas"]["Currency"];
         };
+        /**
+         * ChartRange
+         * @enum {string}
+         */
+        ChartRange: "3M" | "1Y" | "FULL";
         /**
          * Currency
          * @enum {string}
@@ -1381,6 +1386,7 @@ export type CardWithId = components['schemas']['CardWithId'];
 export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
 export type CashWithId = components['schemas']['CashWithId'];
+export type ChartRange = components['schemas']['ChartRange'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type MillenniumRequest = components['schemas']['MillenniumRequest'];
@@ -3120,12 +3126,12 @@ export interface operations {
             };
         };
     };
-    get_account_values_yearly_api_history_account_value__year__get: {
+    get_total_account_values_api_history_account_value__range__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                year: number;
+                range: components["schemas"]["ChartRange"];
             };
             cookie?: never;
         };
@@ -3137,9 +3143,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: number[];
-                    };
+                    "application/json": number[];
                 };
             };
             /** @description Validation Error */
@@ -3153,13 +3157,13 @@ export interface operations {
             };
         };
     };
-    get_account_values_monthly_api_history_account_value__year___month__get: {
+    get_account_values_api_history_account_value__range___id__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                year: number;
-                month: number;
+                id: string;
+                range: components["schemas"]["ChartRange"];
             };
             cookie?: never;
         };
@@ -3171,9 +3175,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: number[];
-                    };
+                    "application/json": number[];
                 };
             };
             /** @description Validation Error */
@@ -3187,7 +3189,7 @@ export interface operations {
             };
         };
     };
-    get_account_values_yearly_api_history_account_value_patch: {
+    patch_account_value_api_history_account_value_patch: {
         parameters: {
             query?: never;
             header?: never;

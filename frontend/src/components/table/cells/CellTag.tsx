@@ -39,7 +39,7 @@ export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, c
 
 export default function CellTag({ id, ...props }: CellTagProps) {
   const tags = useTags();
-  const tagParts = getTagParts(id, tags || []);
+  const tagParts = getTagParts(id, tags);
 
   return tagParts.length == 0 ? null : (
     <div className={classes.container} {...props}>

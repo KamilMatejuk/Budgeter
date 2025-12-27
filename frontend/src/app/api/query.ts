@@ -17,19 +17,35 @@ function _useFetchWrapper<T>(queryKey: string[], revalidateKey: string[], url: s
 }
 
 export function usePersonalAccounts() {
-  return _useFetchWrapper<PersonalAccountWithId[]>(["personal_account"], ["personal_account"], `/api/products/personal_account`);
+  return _useFetchWrapper<PersonalAccountWithId[]>(
+    ["personal_account"],
+    ["personal_account"],
+    `/api/products/personal_account`
+  ) || [];
 }
 
 export function usePersonalAccount(id: string) {
-  return _useFetchWrapper<PersonalAccountWithId>(["personal_account", id], ["personal_account"], `/api/products/personal_account/${id}`);
+  return _useFetchWrapper<PersonalAccountWithId>(
+    ["personal_account", id],
+    ["personal_account"],
+    `/api/products/personal_account/${id}`
+  ) || undefined;
 }
 
 export function useTags() {
-  return _useFetchWrapper<TagWithId[]>(["tag"], ["tag"], `/api/tag`);
+  return _useFetchWrapper<TagWithId[]>(
+    ["tag"],
+    ["tag"],
+    `/api/tag`
+  ) || [];
 }
 
 export function useOrganisation(name: string) {
-  return _useFetchWrapper<OrganisationWithId>(["organisation", name], ["organisation"], `/api/organisation/regex/${name}`);
+  return _useFetchWrapper<OrganisationWithId>(
+    ["organisation", name],
+    ["organisation"],
+    `/api/organisation/regex/${name}`
+  ) || undefined;
 }
 
 export function usePeopleWithDebt() {
@@ -55,12 +71,14 @@ export function useTotalAccountValueHistory(range: ChartRange = '3M') {
   return _useFetchWrapper<number[]>(
     ["account_value_history", range],
     ["personal_account", "transaction"],
-    `/api/history/account_value/${range}`);
+    `/api/history/account_value/${range}`
+  ) || [];
 }
 
 export function useAccountValueHistory(range: ChartRange = '3M', accountId: string) {
   return _useFetchWrapper<number[]>(
     ["account_value_history", range, accountId],
     ["personal_account", "transaction"],
-    `/api/history/account_value/${range}/${accountId}`);
+    `/api/history/account_value/${range}/${accountId}`
+  ) || [];
 }

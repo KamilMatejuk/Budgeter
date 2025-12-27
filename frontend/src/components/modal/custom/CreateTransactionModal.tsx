@@ -54,7 +54,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
   });
 
   const accounts = usePersonalAccounts();
-  const accountRecord = (accounts || []).reduce(
+  const accountRecord = accounts.reduce(
     (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
     {} as Record<string, string>
   );

@@ -34,7 +34,7 @@ interface TagsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
 
 export default function TagsInputWithError<T>({ formik, formikName, label, organisationName }: TagsInputWithErrorProps<T>) {
   const tags = useTags();
-  const tagOptions = useMemo(() => getTagOptions(tags || []), [tags]);
+  const tagOptions = useMemo(() => getTagOptions(tags), [tags]);
 
   const suggestedTagOptions = organisationName
     ? (useOrganisation(organisationName)?.tags || []).map(id => tagOptions.find(t => t.id === id)).filter(t => t !== undefined)

@@ -62,7 +62,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
     validate: withZodSchema(FormSchema),
   });
   const accounts = usePersonalAccounts();
-  const accountRecord = (accounts || []).reduce(
+  const accountRecord = accounts.reduce(
     (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
     {} as Record<string, string>
   );

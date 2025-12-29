@@ -8,6 +8,7 @@ import { defineCellValue } from "../cells/CellValue";
 import { defineCellAccountName } from "../cells/CellAccountName";
 import { MdCallSplit, MdDelete, MdEdit } from "react-icons/md";
 import { BsFillPiggyBankFill } from "react-icons/bs";
+import { FaTags } from "react-icons/fa";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import UpdateTransactionModal from "@/components/modal/update/UpdateTransactionModal";
 import { defineCellTag } from "../cells/CellTag";
@@ -15,6 +16,7 @@ import SplitTransactionModal from "@/components/modal/custom/SplitTransactionMod
 import DebtRepayTransactionModal from "@/components/modal/custom/DebtRepayTransactionModal";
 import { getDateString } from "@/const/date";
 import GroupDeleteByIdModal from "@/components/modal/delete/GroupDeleteByIdModal";
+import GroupTagTransactionModal from "@/components/modal/custom/GroupTagTransactionModal";
 
 
 interface TableTransactionsProps {
@@ -45,6 +47,7 @@ export default function TableTransactions({ data }: TableTransactionsProps) {
       ]}
       groupOptions={[
         { name: "Delete", icon: MdDelete, component: GroupDeleteByIdModal },
+        { name: "Tag", icon: FaTags, component: GroupTagTransactionModal },
       ]} />
   );
 }

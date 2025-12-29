@@ -704,6 +704,11 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /**
+         * AccountType
+         * @enum {string}
+         */
+        AccountType: "Osobiste" | "Walutowe";
         /** BackupPatchRequest */
         BackupPatchRequest: {
             /** Id */
@@ -1067,10 +1072,10 @@ export type components = {
         PersonalAccount: {
             /** Id */
             _id?: string;
-            /** Name */
-            name: string;
-            /** Icon */
-            icon: string;
+            type: components["schemas"]["AccountType"];
+            /** Owner */
+            owner: string;
+            bank: components["schemas"]["Source"];
             /** Number */
             number: string;
             /** Value */
@@ -1085,10 +1090,10 @@ export type components = {
         PersonalAccountPartial: {
             /** Id */
             _id?: string;
-            /** Name */
-            name?: string | null;
-            /** Icon */
-            icon?: string | null;
+            type?: components["schemas"]["AccountType"] | null;
+            /** Owner */
+            owner?: string | null;
+            bank?: components["schemas"]["Source"] | null;
             /** Number */
             number?: string | null;
             /** Value */
@@ -1103,10 +1108,10 @@ export type components = {
         PersonalAccountWithId: {
             /** Id */
             _id: string;
-            /** Name */
-            name: string;
-            /** Icon */
-            icon: string;
+            type: components["schemas"]["AccountType"];
+            /** Owner */
+            owner: string;
+            bank: components["schemas"]["Source"];
             /** Number */
             number: string;
             /** Value */
@@ -1172,6 +1177,11 @@ export type components = {
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
         };
+        /**
+         * Source
+         * @enum {string}
+         */
+        Source: "Millennium";
         /** StockAccount */
         StockAccount: {
             /** Id */
@@ -1373,6 +1383,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type AccountType = components['schemas']['AccountType'];
 export type BackupPatchRequest = components['schemas']['BackupPatchRequest'];
 export type BackupRequest = components['schemas']['BackupRequest'];
 export type BackupResponse = components['schemas']['BackupResponse'];
@@ -1407,6 +1418,7 @@ export type RequirementsResponse = components['schemas']['RequirementsResponse']
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
+export type Source = components['schemas']['Source'];
 export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];

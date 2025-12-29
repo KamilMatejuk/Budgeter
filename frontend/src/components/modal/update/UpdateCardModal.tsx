@@ -12,6 +12,7 @@ import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../../form/CardNumberInputWithError";
 import DropDownInputWithError from "../../form/DropDownInputWithError";
 import { usePersonalAccounts } from "@/app/api/query";
+import { getAccountName } from "@/components/table/cells/CellAccountName";
 
 enum Type {
   DEBIT = "DEBIT",
@@ -63,7 +64,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
   });
   const accounts = usePersonalAccounts();
   const accountRecord = accounts.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
+    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr, true) }),
     {} as Record<string, string>
   );
 

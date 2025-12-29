@@ -12,6 +12,7 @@ import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
 import { usePersonalAccounts } from "@/app/api/query";
+import { getAccountName } from "@/components/table/cells/CellAccountName";
 
 
 const FormSchema = z.object({
@@ -55,7 +56,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
 
   const accounts = usePersonalAccounts();
   const accountRecord = accounts.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} (${curr.currency})` }),
+    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr, true) }),
     {} as Record<string, string>
   );
 

@@ -5,6 +5,7 @@ import { spanTransition } from "./SidebarClient";
 import { CardWithId, PersonalAccountWithId } from "@/types/backend";
 import CellValue from "../table/cells/CellValue";
 import { Currency } from "@/types/enum";
+import { getAccountName } from "../table/cells/CellAccountName";
 
 
 const classes = {
@@ -57,7 +58,8 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
   return (
     <div className={classes.container}>
       <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency }))} />
-      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => ({ ...account, currency }))} />
+      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => (
+        { ...account, name: getAccountName(account, true), currency }))} />
       <Section title="Investments" collapsed={collapsed} items={[
         { name: "Savings", value: savings, currency },
         { name: "Capital", value: capitals, currency },

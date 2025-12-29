@@ -10,6 +10,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { AiFillDollarCircle } from "react-icons/ai";
 import SetAccountValueOnDateModal from "@/components/modal/custom/SetAccountValueOnDateModal";
 import { defineCellIcon } from "../cells/CellIcon";
+import { defineCellBank } from "../cells/CellBank";
 
 
 interface TableAccountsProps {
@@ -26,8 +27,9 @@ function renderMinAmountMonthly(item: PersonalAccountWithId): string {
 }
 
 const columns: ColumnDef<PersonalAccountWithId>[] = [
-  defineCellIcon<PersonalAccountWithId>(),
-  { accessorKey: "name", header: "Name" },
+  defineCellBank<PersonalAccountWithId>(),
+  { accessorKey: "type", header: "Type" },
+  { accessorKey: "owner", header: "Owner" },
   defineCellValue<PersonalAccountWithId>(),
   { accessorKey: "number", header: "Number" },
   { accessorKey: "min_incoming_amount_monthly", header: "Requirements", cell: ({ row }) => renderMinAmountMonthly(row.original) }

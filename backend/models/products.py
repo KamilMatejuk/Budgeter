@@ -2,6 +2,7 @@ import enum
 from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
+from models.source import Source
 
 # Enums
 
@@ -16,6 +17,10 @@ class Currency(enum.Enum):
     USD = "USD"
     EUR = "EUR"
 
+class AccountType(enum.Enum):
+    PERSONAL = "Osobiste"
+    EXCHANGE = "Walutowe"
+
 
 class Cash(PyBaseModel):
     name: str
@@ -23,8 +28,9 @@ class Cash(PyBaseModel):
     currency: Currency
 
 class PersonalAccount(PyBaseModel):
-    name: str
-    icon: str # icon base64 of source (e.g. Millennium, Revolut)
+    type: AccountType
+    owner: str
+    bank: Source
     number: str
     value: float
     currency: Currency

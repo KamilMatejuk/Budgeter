@@ -6,7 +6,7 @@ import { getCapitalInvestments, getCards, getPersonalAccounts, getSavingsAccount
 async function mapCurrenciesToPLN<T extends { value: number; currency: Currency }>(items: T[] | null): Promise<T[]> {
   if (!items || items.length === 0) return [];
   return await Promise.all(
-    items.map(async (it: T) => ({ ...it, value: await convertToPLN(it.value, it.currency), currency: "PLN" })));
+    items.map(async (it: T) => ({ ...it, value: await convertToPLN(it.value, it.currency) })));
 }
 
 

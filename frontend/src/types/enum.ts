@@ -1,3 +1,8 @@
+// Source from backend.ts
+export enum Source {
+  MILLENNIUM = "Millennium",
+}
+
 // Capitalization from backend.ts
 export enum Capitalization {
   ONCE = "Once",
@@ -11,6 +16,12 @@ export enum Currency {
   PLN = "PLN",
   USD = "USD",
   EUR = "EUR",
+}
+
+// AccountType from backend.ts
+export enum AccountType {
+  PERSONAL = "Osobiste",
+  EXCHANGE = "Walutowe",
 }
 
 export const CURRENCY_SYMBOLS: Record<Currency, string> = {

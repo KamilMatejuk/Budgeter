@@ -7,15 +7,16 @@ import { PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
-import { Currency } from "@/types/enum";
+import { AccountType, Currency, Source } from "@/types/enum";
 import AmountInputWithError, { requiredNonNegativeAmount } from "../../form/AmountInputWithError";
 import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import AccountNumberInputWithError, { requiredAccountNumber } from "../../form/AccountNumberInputWithError";
 
 
 const FormSchema = z.object({
-  icon: requiredText.regex(/^data:image\/.+/, { message: ERROR.imageBase64Format }),
-  name: requiredText,
+  owner: requiredText,
+  type: z.nativeEnum(AccountType, { required_error: ERROR.requiredError }),
+  bank: z.nativeEnum(Source, { required_error: ERROR.requiredError }),
   number: requiredAccountNumber,
   value: requiredNonNegativeAmount,
   currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
@@ -28,8 +29,9 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function UpdatePersonalAccountModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
-      icon: item?.icon || "",
-      name: item?.name || "",
+      owner: item?.owner || "",
+      type: item?.type as AccountType || AccountType.PERSONAL,
+      bank: item?.bank as Source || Source.MILLENNIUM,
       number: item?.number || "",
       value: item?.value || 0,
       currency: item?.currency as Currency || Currency.PLN,
@@ -42,8 +44,9 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
-      <TextInputWithError formik={formik} formikName="icon" label="Icon" />
-      <TextInputWithError formik={formik} formikName="name" label="Name" />
+      <TextInputWithError formik={formik} formikName="owner" label="Owner" />
+      <ChoiceInputWithError formik={formik} formikName="type" optionsEnum={AccountType} label="Type" />
+      <ChoiceInputWithError formik={formik} formikName="bank" optionsEnum={Source} label="Bank" />
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
       <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />

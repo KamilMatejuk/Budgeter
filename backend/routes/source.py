@@ -1,4 +1,3 @@
-import enum
 import hashlib
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -6,11 +5,9 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from routes.sources.millennium import MillenniumRequest, create_millennium_transaction
 from models.transaction import TransactionWithId
 from routes.base import fail_wrapper, get
+from models.source import Source
 from core.db import get_db
 
-
-class Source(enum.Enum):
-    MILLENNIUM = "Millennium"
 
 router = APIRouter()
 

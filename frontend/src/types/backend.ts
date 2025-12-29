@@ -222,7 +222,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Cash By Id */
+        get: operations["get_cash_by_id_api_products_cash__id__get"];
         put?: never;
         post?: never;
         /** Delete Cash */
@@ -1286,6 +1287,11 @@ export type components = {
             /** Tags */
             tags: string[];
             /**
+             * Cash
+             * @default false
+             */
+            cash: boolean;
+            /**
              * Deleted
              * @default false
              */
@@ -1312,6 +1318,8 @@ export type components = {
             currency?: components["schemas"]["Currency"] | null;
             /** Tags */
             tags?: string[] | null;
+            /** Cash */
+            cash?: boolean | null;
             /** Deleted */
             deleted?: boolean | null;
             /** Debt Person */
@@ -1362,6 +1370,8 @@ export type components = {
             currency: components["schemas"]["Currency"];
             /** Tags */
             tags: string[];
+            /** Cash */
+            cash: boolean;
             /** Deleted */
             deleted: boolean;
             /** Debt Person */
@@ -1974,6 +1984,37 @@ export interface operations {
                 "application/json": components["schemas"]["CashPartial"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_cash_by_id_api_products_cash__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

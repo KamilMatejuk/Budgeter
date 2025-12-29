@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/backend";
+import { CashWithId, PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -11,11 +11,18 @@ import TagsInputWithError from "@/components/form/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
-import { usePersonalAccounts } from "@/app/api/query";
+import { useCashs, usePersonalAccounts } from "@/app/api/query";
 import { getAccountName } from "@/components/table/cells/CellAccountName";
+import { CURRENCY_SYMBOLS } from "@/types/enum";
+import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 
+enum Source {
+  ACCOUNT = "ACCOUNT",
+  CASH = "CASH",
+}
 
 const FormSchema = z.object({
+  cash: z.nativeEnum(Source, { required_error: ERROR.requiredError }),
   account: requiredText,
   title: requiredText,
   organisation: requiredText,
@@ -26,12 +33,15 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-async function submit(values: FormSchemaType, url: string, accounts: PersonalAccountWithId[]): Promise<boolean> {
+async function submit(values: FormSchemaType, url: string, accounts: PersonalAccountWithId[], cash: CashWithId[]): Promise<boolean> {
   const val = {
     ...values,
     hash: "",
+    cash: values.cash == Source.CASH,
     date: getISODateString(values.date),
-    currency: accounts.find(acc => acc._id === values.account)?.currency,
+    currency: values.cash == Source.CASH
+      ? cash.find(c => c._id === values.account)?.currency
+      : accounts.find(acc => acc._id === values.account)?.currency,
   } as Transaction;
   const { error } = await post(url, val);
   if (!error) return true;
@@ -43,6 +53,7 @@ async function submit(values: FormSchemaType, url: string, accounts: PersonalAcc
 export default function CreateTransactionModal({ url, open, onClose }: BackendModalProps<TransactionWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
+      cash: Source.ACCOUNT,
       account: "",
       title: "",
       organisation: "",
@@ -50,7 +61,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
       tags: [],
       date: new Date(),
     },
-    onSubmit: async (values) => { if (await submit(values, url, accounts || [])) onClose() },
+    onSubmit: async (values) => { if (await submit(values, url, accounts || [], cash || [])) onClose() },
     validate: withZodSchema(FormSchema),
   });
 
@@ -59,10 +70,28 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr, true) }),
     {} as Record<string, string>
   );
+  const cash = useCashs();
+  const cashRecord = cash.reduce(
+    (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} ${CURRENCY_SYMBOLS[curr.currency]}` }),
+    {} as Record<string, string>
+  );
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Create Transaction">
-      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accountRecord} />
+      <ChoiceInputWithError
+        formik={formik}
+        formikName="cash"
+        optionsEnum={Source}
+        label="Source"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          formik.setFieldValue("cash", e.target.value, true);
+          formik.setFieldValue("account", "", true); // reset account when source changes
+        }}
+      />
+      {formik.values.cash === Source.CASH
+        ? <DropDownInputWithError formik={formik} formikName="account" label="Cash" optionsEnum={cashRecord} />
+        : <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accountRecord} />
+      }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
       <TextInputWithError formik={formik} formikName="organisation" label="Organisation" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />

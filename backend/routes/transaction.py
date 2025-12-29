@@ -37,8 +37,9 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
         await patch(db, "transactions", TransactionPartial, transaction)
         # update history
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
-        date = transaction.date.strftime("%Y-%m-%d")
-        await mark_transaction_in_history(account, date, Value.parse_negate(transaction.value), db)
+        if account: # it can be cash transaction with no account history to update
+            date = transaction.date.strftime("%Y-%m-%d")
+            await mark_transaction_in_history(account, date, Value.parse_negate(transaction.value), db)
         return {}
     return await inner()
 

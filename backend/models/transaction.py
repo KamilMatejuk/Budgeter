@@ -5,13 +5,14 @@ from models.products import Currency
 
 class Transaction(PyBaseModel):
     hash: str
-    account: str # id of PersonalAccount
+    account: str # id of PersonalAccount or Cash
     date: date
     title: str
     organisation: str
     value: float
     currency: Currency
     tags: list[str] # ids of Tags
+    cash: bool = False # account id is Cash or PersonalAccount
     deleted: bool = False
     debt_person: str | None = None # name of person that has to repay it
 

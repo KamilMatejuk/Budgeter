@@ -16,7 +16,7 @@ export interface ChoiceInputWithErrorProps<T> extends SingleInputWithErrorProps<
 }
 
 
-export default function ChoiceInputWithError<T>({ formik, formikName, label, optionsEnum }: ChoiceInputWithErrorProps<T>) {
+export default function ChoiceInputWithError<T>({ formik, formikName, label, optionsEnum, ...props }: ChoiceInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
 
   return (
@@ -37,6 +37,7 @@ export default function ChoiceInputWithError<T>({ formik, formikName, label, opt
                   onChange={() => formik.setFieldValue(formikName as string, optValue, true)}
                   onBlur={() => formik.setFieldTouched(formikName as string, true, true)}
                   className={classes.radio}
+                  {...props}
                 />
                 <span className={classes.optionLabel}>{optValue}</span>
               </label>

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { MdAdd } from "react-icons/md";
 import { customRevalidateTag } from "@/app/api/fetch";
-import { BackendModalProps } from "../modal/Modal";
+import { BackendModalProps, GroupBackendModalProps } from "../modal/Modal";
 import { IconBaseProps } from "react-icons";
 
 
@@ -23,17 +23,25 @@ interface TableProps<T extends Item> {
   tag: string;
   data: T[];
   columns: ColumnDef<T>[];
-  options: { name: string; icon: React.ComponentType<IconBaseProps>; component: React.ComponentType<BackendModalProps<T>> }[];
+  options: {
+    name: string;
+    icon: React.ComponentType<IconBaseProps>;
+    component: React.ComponentType<BackendModalProps<T>>
+  }[];
+  groupOptions?: {
+    name: string;
+    icon: React.ComponentType<IconBaseProps>;
+    component: React.ComponentType<GroupBackendModalProps<T>>
+  }[];
   CreateModal?: React.ComponentType<BackendModalProps<T>>;
   newText?: string;
 }
 
 
-export default function Table<T extends Item>({ url, tag, data, columns, options, CreateModal, newText }: TableProps<T>) {
-  // modals types are indexed as: 0 - create, 1+ - custom options
+export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText }: TableProps<T>) {
+  // modals types are indexed as: 0 - create, 1+ - custom options, 1+n+ - group options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
-  const closeModal = async () => { setSelectedItem(null); setSelectedModal(null); customRevalidateTag(tag) };
 
   const table = useReactTable({
     data,
@@ -68,9 +76,25 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
     ] as ColumnDef<T>[], [columns, options]),
   })
   const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
+  const closeModal = async () => {
+    setSelectedItem(null);
+    setSelectedModal(null);
+    table.resetRowSelection();
+    await customRevalidateTag(tag);
+  };
 
   return (
-    <>
+    <div>
+      {groupOptions && <div className={twMerge(
+        "flex justify-start items-center gap-2 p-2 pt-0",
+        table.getSelectedRowModel().rows.length < 2 && "pointer-events-none text-gray-300"
+      )}>
+        <span>Group options ({table.getSelectedRowModel().rows.length} selected):</span>
+        {groupOptions.map(({ name, icon: Icon }, index) => (
+          <Icon size={20} key={index} title={name} className="cursor-pointer"
+            onClick={() => { setSelectedModal(index + 1 + options.length) }} />
+        ))}
+      </div>}
       <table className="w-full min-w-[640px] text-sm m-0">
         {/* header */}
         <thead className="bg-second-bg">
@@ -118,6 +142,9 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
       {options.map(({ component: Option }, index) => (
         selectedModal === index + 1 && <Option open onClose={closeModal} url={url} item={selectedItem} key={index} />
       ))}
-    </>
+      {groupOptions?.map(({ component: Option }, index) => (
+        selectedModal === index + 1 + options.length && <Option open onClose={closeModal} url={url} items={table.getSelectedRowModel().rows.map(row => row.original)} key={index} />
+      ))}
+    </div>
   );
 }

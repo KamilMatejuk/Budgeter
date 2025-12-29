@@ -9,6 +9,7 @@ import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
 import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
 import CellBoolean from "../cells/CellBoolean";
 import { getDateString } from "@/const/date";
+import GroupDeleteByNameModal from "@/components/modal/delete/GroupDeleteByNameModal";
 
 
 interface TableBackupsProps {
@@ -36,6 +37,9 @@ export default function TableBackups({ data }: TableBackupsProps) {
         { name: "Delete", icon: MdDelete, component: DeleteByNameModal },
       ]}
       CreateModal={UpdateBackupModal}
-      newText="backup" />
+      newText="backup"
+      groupOptions={[
+        { name: "Delete", icon: MdDelete, component: GroupDeleteByNameModal },
+      ]} />
   );
 }

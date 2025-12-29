@@ -29,6 +29,11 @@ export interface BackendModalProps<T extends Item> extends ModalProps {
   item?: T | null;
 }
 
+export interface GroupBackendModalProps<T extends Item> extends ModalProps {
+  url: string;
+  items: T[];
+}
+
 export default function Modal({ open, onClose, children, cancellable, onCancel, onSave, onDelete, title }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 

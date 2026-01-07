@@ -1,12 +1,14 @@
 'use client';
 
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, ExpandedState, flexRender, getCoreRowModel, TableOptions, useReactTable } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { MdAdd } from "react-icons/md";
+import { MdAdd, MdRemove } from "react-icons/md";
+import { LuDot } from "react-icons/lu";
 import { customRevalidateTag } from "@/app/api/fetch";
 import { BackendModalProps, GroupBackendModalProps } from "../modal/Modal";
 import { IconBaseProps } from "react-icons";
+import { getExpandedRowModel } from "@tanstack/react-table";
 
 
 const classes = {
@@ -18,64 +20,103 @@ const classes = {
 export interface Item { _id: string } // generic type for items with id
 
 
+interface Option<T extends Item> {
+  name: string;
+  icon: React.ComponentType<IconBaseProps>;
+  component: React.ComponentType<BackendModalProps<T>>
+}
+interface GroupOption<T extends Item> {
+  name: string;
+  icon: React.ComponentType<IconBaseProps>;
+  component: React.ComponentType<GroupBackendModalProps<T>>
+}
 interface TableProps<T extends Item> {
   url: string;
   tag: string;
   data: T[];
   columns: ColumnDef<T>[];
-  options?: {
-    name: string;
-    icon: React.ComponentType<IconBaseProps>;
-    component: React.ComponentType<BackendModalProps<T>>
-  }[];
-  groupOptions?: {
-    name: string;
-    icon: React.ComponentType<IconBaseProps>;
-    component: React.ComponentType<GroupBackendModalProps<T>>
-  }[];
+  options?: Option<T>[];
+  groupOptions?: GroupOption<T>[];
   CreateModal?: React.ComponentType<BackendModalProps<T>>;
   newText?: string;
+  expandChild?: keyof T;
 }
 
+function defineColumnExpand<T extends Item>(): ColumnDef<T> {
+  return {
+    id: "expander",
+    header: () => null,
+    cell: ({ row }) => (
+      row.getCanExpand()
+        ? row.getIsExpanded()
+          ? <MdRemove size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 }} />
+          : <MdAdd size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 }} />
+        : <LuDot size={20} style={{ opacity: 0.5, marginLeft: 20 }} />
+    ),
+  };
+}
 
-export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText }: TableProps<T>) {
+function defineColumnSelect<T extends Item>(): ColumnDef<T> {
+  return {
+    id: "select",
+    header: ({ table }) => (<input
+      type="checkbox"
+      checked={table.getIsAllRowsSelected?.() ?? false}
+      onChange={table.getToggleAllRowsSelectedHandler?.()}
+    />),
+    cell: ({ row }) => (<input
+      type="checkbox"
+      checked={row.getIsSelected?.() ?? false}
+      onChange={row.getToggleSelectedHandler?.()}
+    />),
+  };
+}
+
+function defineColumnOptions<T extends Item>(
+  options: Option<T>[],
+  setSelectedItem: React.Dispatch<React.SetStateAction<T | null>>,
+  setSelectedModal: React.Dispatch<React.SetStateAction<number | null>>
+): ColumnDef<T> {
+  return {
+    id: "options",
+    header: "Options",
+    cell: ({ row }) => (
+      <div className="flex justify-end space-x-2">
+        {options.map(({ name, icon: Icon }, index) => (
+          <Icon size={20} title={name} className="cursor-pointer" key={index}
+            onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
+      </div>
+    ),
+    meta: { alignedRight: true },
+  };
+}
+
+export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText, expandChild }: TableProps<T>) {
   // modals types are indexed as: 0 - create, 1+ - custom options, 1+n+ - group options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<ExpandedState>(() => ({}));
 
   const allColumns = useMemo(() => ([
-    groupOptions && groupOptions.length > 0 && {
-      id: "select",
-      header: ({ table }) => (<input
-        type="checkbox"
-        checked={table.getIsAllRowsSelected?.() ?? false}
-        onChange={table.getToggleAllRowsSelectedHandler?.()}
-      />),
-      cell: ({ row }) => (<input
-        type="checkbox"
-        checked={row.getIsSelected?.() ?? false}
-        onChange={row.getToggleSelectedHandler?.()}
-      />),
-    },
+    expandChild && defineColumnExpand<T>(),
+    groupOptions && groupOptions.length > 0 && defineColumnSelect<T>(),
     ...columns,
-    options && options.length > 0 && {
-      id: "options",
-      header: "Options",
-      cell: ({ row }) => (
-        <div className="flex justify-end space-x-2">
-          {options.map(({ name, icon: Icon }, index) => (
-            <Icon size={20} title={name} className="cursor-pointer" key={index}
-              onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
-        </div>
-      ),
-      meta: { alignedRight: true },
-    },
+    options && options.length > 0 && defineColumnOptions<T>(options, setSelectedItem, setSelectedModal),
   ] as ColumnDef<T>[]).filter(Boolean), [columns, options]);
 
+  const expandableTableProps: Partial<TableOptions<T>> = expandChild ? {
+    state: { expanded },
+    onExpandedChange: setExpanded,
+    getSubRows: row => row[expandChild] as T[],
+    getRowCanExpand: row => (row.original[expandChild] as T[]).length > 0,
+    getExpandedRowModel: getExpandedRowModel(),
+  } : {}
   const table = useReactTable({
     data,
     columns: allColumns,
+    getRowId: row => row._id,
     getCoreRowModel: getCoreRowModel(),
+    ...expandableTableProps,
   })
   const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
   const closeModal = async () => {

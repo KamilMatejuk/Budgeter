@@ -1,23 +1,18 @@
 'use client';
 
 import { SetStateAction } from "react";
-import LineChart, { LineChartProps } from "./LineChart";
+import { DoubleBarChart, DoubleBarChartProps, LineChart, LineChartProps } from "./Chart";
 import ButtonWithLoader from "../button/ButtonWithLoader";
 import { ChartRange as ChartRangeEnum } from "@/types/enum";
 import { ChartRange } from "@/types/backend";
 
 interface ChartWithRangesProps {
-  data: number[];
-  labels: string[];
   range: ChartRange;
   setRange: React.Dispatch<SetStateAction<ChartRange>>;
-  chart: {
-    type: 'line';
-    props: Omit<LineChartProps, "data" | "labels">
-  }
+  chart: { type: 'line'; props: LineChartProps; } | { type: 'doublebar'; props: DoubleBarChartProps; };
 }
 
-export default function ChartWithRanges({ data, labels, chart, range, setRange }: ChartWithRangesProps) {
+export default function ChartWithRanges({ chart, range, setRange }: ChartWithRangesProps) {
   return (
     <div className="w-full gap-4">
       {/* options */}
@@ -33,7 +28,8 @@ export default function ChartWithRanges({ data, labels, chart, range, setRange }
         ))}
       </div>
       {/* chart */}
-      {chart.type === 'line' && <LineChart data={data} labels={labels} {...chart.props} />}
+      {chart.type === 'line' && <LineChart {...chart.props} />}
+      {chart.type === 'doublebar' && <DoubleBarChart {...chart.props} />}
     </div>
   );
 }

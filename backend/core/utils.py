@@ -59,6 +59,7 @@ class Date:
         if month > 12: year = date.year + 1
         elif month < 1: year = date.year - 1
         else: year = date.year
+        month = month % 12
         try:
             return date.replace(year=year, month=month)
         except ValueError:
@@ -90,3 +91,16 @@ class Date:
         while current_date <= end:
             yield current_date
             current_date += datetime.timedelta(days=1)
+
+    @staticmethod
+    def iterate_months(start: datetime.date, end: datetime.date = None):
+        if end is None:
+            end = Date.today()
+        current_month, current_year = start.month, start.year
+        while current_year < end.year or (current_year == end.year and current_month <= end.month):
+            yield datetime.date(current_year, current_month, 1)
+            if current_month == 12:
+                current_month = 1
+                current_year += 1
+            else:
+                current_month += 1

@@ -85,6 +85,12 @@ export async function getHistoricAccountValues(accountId?: string, range?: Chart
   return await get<number[]>(endpoint, ["personal_account", "transaction"]);
 }
 
+export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
+  let endpoint = `/api/history/income_expense/`;
+  endpoint += range || DEFAULT_CHART_RANGE;
+  return await get<[number[], number[]]>(endpoint, ["transaction"]);
+}
+
 export async function getRequiredAccountsInput() {
   return await get<AccountRequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"]);
 }

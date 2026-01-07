@@ -165,3 +165,23 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
         await patch(db, "personal_account", PersonalAccountWithId, account)
         return {}
     return await inner()
+
+################################ Income/Expense ###############################
+
+@router.get("/income_expense/{range}", response_model=tuple[list[float], list[float]])
+async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
+    start = _range_to_dates(range)
+    if start is None:
+        start = (await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)).date
+    incomes = []
+    expenses = []
+    for month in Date.iterate_months(start):
+        condition = {
+            "deleted": False,
+            "date": Date.condition(month, Date.month_end(month)),
+            "$or": [{"debt_person": None}, {"debt_person": ""}],
+        }
+        transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
+        incomes.append(sum(t.value for t in transactions if t.value > 0))
+        expenses.append(sum(t.value for t in transactions if t.value < 0))
+    return (incomes, expenses)

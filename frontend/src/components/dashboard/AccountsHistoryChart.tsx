@@ -24,7 +24,7 @@ export default function AccountsHistoryChart() {
   return (
     <div className="w-full grid grid-cols-[1fr_200px] gap-4">
       {/* chart */}
-      <ChartWithRanges range={range} setRange={setRange} data={values} labels={labels} chart={{ type: 'line', props: {} }} />
+      <ChartWithRanges range={range} setRange={setRange} chart={{ type: 'line', props: { data: values, labels } }} />
       {/* options */}
       <div className="flex flex-col gap-1">
         <ButtonWithLoader text="All" action={account === "" ? "positive" : "neutral"} className="flex-1" onClick={async () => setAccount("")} />

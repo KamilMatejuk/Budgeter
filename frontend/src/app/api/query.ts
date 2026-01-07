@@ -99,3 +99,11 @@ export function useAccountValueHistory(range: ChartRange = '3M', accountId: stri
     `/api/history/account_value/${range}/${accountId}`
   ) || [];
 }
+
+export function useIncomeExpenseHistory(range: ChartRange) {
+  return _useFetchWrapper<[number[], number[]]>(
+    ["income_expense_history", range],
+    ["transaction"],
+    `/api/history/income_expense/${range}`
+  ) || [[], []];
+}

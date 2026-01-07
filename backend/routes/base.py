@@ -27,9 +27,10 @@ async def get(db: AsyncIOMotorDatabase,
               model: type[PyBaseModel],
               condition: dict = None,
               sort: str = None,
-              one: bool = False):
+              one: bool = False,
+              reverse: bool = True):
     results = []
-    cursor = db[table].find(condition or {}, sort=[(sort, -1)] if sort else None)
+    cursor = db[table].find(condition or {}, sort=[(sort, -1 if reverse else 1)] if sort else None)
     async for doc in cursor:
         if "_id" in doc:
             doc["_id"] = str(doc["_id"])

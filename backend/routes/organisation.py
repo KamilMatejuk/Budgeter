@@ -1,4 +1,3 @@
-import datetime
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 

@@ -1,8 +1,8 @@
-import datetime
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from core.utils import Date
 from routes.base import CRUDRouterFactory, create, get, patch
 from models.history import AccountDailyHistory
 from models.products import (
@@ -34,7 +34,7 @@ personal_account_factory.create_get_by_id()
 personal_account_factory.create_delete()
 
 async def _mark_initial_balance_in_history(item: PersonalAccountWithId, db: AsyncIOMotorDatabase):
-    date = datetime.date.today().strftime("%Y-%m-%d")
+    date = Date.to_string(Date.today())
     history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(item.id), "date": date}, one=True)
     if history is None:
         history = AccountDailyHistory(account=str(item.id), date=date, value=item.value, manual_update=True)

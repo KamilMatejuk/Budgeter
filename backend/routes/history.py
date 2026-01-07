@@ -4,7 +4,7 @@ from models.products import CardWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from core.utils import Value
+from core.utils import Value, Date
 from models.base import PyBaseModel
 from routes.base import fail_wrapper, get, patch, create
 from models.transaction import TransactionWithId
@@ -26,7 +26,7 @@ class RequirementsResponse(PyBaseModel):
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
-        today = datetime.datetime.now()
+        today = Date.today()
         cards: list[CardWithId] = await get(db, "card", CardWithId, {"active": True})
         responses = []
         for c in cards:
@@ -54,9 +54,8 @@ async def get_required_account_amount_out(db: AsyncIOMotorDatabase = Depends(get
 
 @fail_wrapper
 async def _get_required_account_amount(db, key, filtr):
-    today = datetime.datetime.now()
-    start = datetime.date(today.year, today.month, 1)
-    end = (start + datetime.timedelta(days=32)).replace(day=1)
+    start = Date.this_month()
+    end = Date.month_end(start)
     accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
     responses = []
     for a in accounts:
@@ -64,7 +63,7 @@ async def _get_required_account_amount(db, key, filtr):
         if required == 0:
             responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=0))
             continue
-        condition = {"account": str(a.id), "deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}
+        condition = {"account": str(a.id), "deleted": False, "date": Date.condition(start, end)}
         history: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
         if not history:
             responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=required))
@@ -78,11 +77,11 @@ async def _get_required_account_amount(db, key, filtr):
 ################################ Account Value #################################
 
 def _range_to_dates(range: ChartRange):
-    today = datetime.date.today()
+    this_month = Date.this_month()
     if range == ChartRange._3M:
-        start = datetime.date(today.year, today.month - 2, 1) if today.month > 2 else datetime.date(today.year - 1, today.month + 9, 1)
+        start = Date.add_months(this_month, -2)
     elif range == ChartRange._1Y:
-        start = datetime.date(today.year - 1, today.month + 1, 1) if today.month < 12 else datetime.date(today.year, 1, 1)
+        start = Date.add_years(this_month, -1)
     elif range == ChartRange._FULL:
         start = None
     else:
@@ -123,13 +122,11 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
         current_value = before.value if before else 0.0
         response = []
         record_index = 0
-        current_date = start if start is not None else history[0].date
-        while current_date <= datetime.date.today():
+        for current_date in Date.iterate_days(start if start is not None else history[0].date):
             if (record_index < len(history)) and (history[record_index].date == current_date):
                 current_value = history[record_index].value
                 record_index += 1
             response.append(current_value)
-            current_date += datetime.timedelta(days=1)
         return response
     return await inner()
 
@@ -158,7 +155,6 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
         history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
                                                        {"date": {"$gte": data.date.isoformat()}, "account": str(account.id)}, "date")
         for i, record in enumerate(history):
-            print("RECORD", record)
             new_value = Value.add(record.value, diff)
             await db["account_daily_history"].update_one({"_id": record.id}, {"$set": {"value": new_value, "manual_update": i == 0}})
         # update final value

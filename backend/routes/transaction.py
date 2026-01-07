@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from core.utils import Value
+from core.utils import Value, Date
 from models.base import PyObjectId
 from models.products import PersonalAccountWithId
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
@@ -74,8 +74,8 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
 @multi_router.get("/{year}/{month}", response_model=list[TransactionWithId])
 async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = datetime.date(year, month, 1)
-    end = (start + datetime.timedelta(days=32)).replace(day=1)
-    return await get(db, "transactions", TransactionWithId, {"deleted": False, "date": {"$gte": start.isoformat(), "$lt": end.isoformat()}}, "date")
+    end = Date.month_end(start)
+    return await get(db, "transactions", TransactionWithId, {"deleted": False, "date": Date.condition(start, end)}, "date")
 
 
 @multi_router.get("/new", response_model=list[TransactionWithId])

@@ -40,6 +40,7 @@ export default function TableBackups({ data }: TableBackupsProps) {
       newText="backup"
       groupOptions={[
         { name: "Delete", icon: MdDelete, component: GroupDeleteByNameModal },
-      ]} />
+      ]}
+    />
   );
 }

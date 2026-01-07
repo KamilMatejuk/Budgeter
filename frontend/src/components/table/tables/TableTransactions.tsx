@@ -48,6 +48,7 @@ export default function TableTransactions({ data }: TableTransactionsProps) {
       groupOptions={[
         { name: "Delete", icon: MdDelete, component: GroupDeleteByIdModal },
         { name: "Tag", icon: FaTags, component: GroupTagTransactionModal },
-      ]} />
+      ]}
+    />
   );
 }

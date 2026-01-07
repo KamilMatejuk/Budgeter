@@ -44,7 +44,7 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
 
   const allColumns = useMemo(() => ([
-    {
+    groupOptions && groupOptions.length > 0 && {
       id: "select",
       header: ({ table }) => (<input
         type="checkbox"

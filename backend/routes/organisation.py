@@ -22,7 +22,7 @@ async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = D
                 return org
             if org.name.lower() == name.lower():
                 return org
-        return Organisation(pattern="", name=name).model_dump(by_alias=True, mode="json")
+        return Organisation(pattern="", name=name, tags=[]).model_dump(by_alias=True, mode="json")
     return await inner()
 
 

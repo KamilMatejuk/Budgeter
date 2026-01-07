@@ -1,13 +1,14 @@
 import {
+  AccountRequirementsResponse,
   BackupResponse,
   CapitalInvestmentWithId,
+  CardRequirementsResponse,
   CardWithId,
   CashWithId,
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
   OrganisationWithId,
   PersonalAccountWithId,
-  RequirementsResponse,
   SavingsAccountWithId,
   StockAccountWithId,
   TagWithId,
@@ -85,13 +86,13 @@ export async function getHistoricAccountValues(accountId?: string, range?: Chart
 }
 
 export async function getRequiredAccountsInput() {
-  return await get<RequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"]);
+  return await get<AccountRequirementsResponse[]>("/api/history/requirements/accounts/in", ["personal_account"]);
 }
 
 export async function getRequiredAccountsOutput() {
-  return await get<RequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"]);
+  return await get<AccountRequirementsResponse[]>("/api/history/requirements/accounts/out", ["personal_account"]);
 }
 
 export async function getRequiredCardsTransactions() {
-  return await get<RequirementsResponse[]>("/api/history/requirements/cards", ["card"]);
+  return await get<CardRequirementsResponse[]>("/api/history/requirements/cards", ["card"]);
 }

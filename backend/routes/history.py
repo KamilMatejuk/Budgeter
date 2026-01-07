@@ -17,12 +17,15 @@ router = APIRouter()
 
 ################################ Requirements #################################
 
-class RequirementsResponse(PyBaseModel):
-    name: str
-    currency: Currency
+class CardRequirementsResponse(PyBaseModel):
+    card: CardWithId
     remaining: int | float
 
-@router.get("/requirements/cards", response_model=list[RequirementsResponse])
+class AccountRequirementsResponse(PyBaseModel):
+    account: PersonalAccountWithId
+    remaining: int | float
+
+@router.get("/requirements/cards", response_model=list[CardRequirementsResponse])
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -32,23 +35,23 @@ async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_
         for c in cards:
             required = c.min_number_of_transactions_monthly or 0
             if required == 0:
-                responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=0))
+                responses.append(CardRequirementsResponse(card=c, remaining=0))
                 continue
             condition = {"card": str(c.id), "year": today.year, "month": today.month}
             history: CardMonthlyHistory = await get(db, "card_monthly_history", CardMonthlyHistory, condition, one=True)
             if not history:
-                responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=required))
+                responses.append(CardRequirementsResponse(card=c, remaining=required))
                 continue
             remaining = max(required - history.transactions, 0)
-            responses.append(RequirementsResponse(name=c.name, currency=c.currency, remaining=remaining))
+            responses.append(CardRequirementsResponse(card=c, remaining=remaining))
         return responses
     return await inner()
 
-@router.get("/requirements/accounts/in", response_model=list[RequirementsResponse])
+@router.get("/requirements/accounts/in", response_model=list[AccountRequirementsResponse])
 async def get_required_account_amount_in(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await _get_required_account_amount(db, "min_incoming_amount_monthly", lambda t: t.value > 0)
 
-@router.get("/requirements/accounts/out", response_model=list[RequirementsResponse])
+@router.get("/requirements/accounts/out", response_model=list[AccountRequirementsResponse])
 async def get_required_account_amount_out(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await _get_required_account_amount(db, "min_outgoing_amount_monthly", lambda t: t.value < 0)
 
@@ -61,16 +64,16 @@ async def _get_required_account_amount(db, key, filtr):
     for a in accounts:
         required = getattr(a, key, 0)
         if required == 0:
-            responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=0))
+            responses.append(AccountRequirementsResponse(account=a, remaining=0))
             continue
         condition = {"account": str(a.id), "deleted": False, "date": Date.condition(start, end)}
         history: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
         if not history:
-            responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=required))
+            responses.append(AccountRequirementsResponse(account=a, remaining=required))
             continue
         done = abs(sum(t.value for t in history if filtr(t)))
         remaining = max(required - done, 0)
-        responses.append(RequirementsResponse(name=a.name, currency=a.currency, remaining=remaining))
+        responses.append(AccountRequirementsResponse(account=a, remaining=remaining))
     return responses
 
 
@@ -81,7 +84,7 @@ def _range_to_dates(range: ChartRange):
     if range == ChartRange._3M:
         start = Date.add_months(this_month, -2)
     elif range == ChartRange._1Y:
-        start = Date.add_years(this_month, -1)
+        start = Date.add_months(this_month, -11)
     elif range == ChartRange._FULL:
         start = None
     else:

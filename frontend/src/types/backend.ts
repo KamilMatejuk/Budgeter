@@ -705,6 +705,14 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** AccountRequirementsResponse */
+        AccountRequirementsResponse: {
+            /** Id */
+            _id?: string;
+            account: components["schemas"]["PersonalAccountWithId"];
+            /** Remaining */
+            remaining: number;
+        };
         /**
          * AccountType
          * @enum {string}
@@ -853,6 +861,14 @@ export type components = {
             account?: string | null;
             /** Min Number Of Transactions Monthly */
             min_number_of_transactions_monthly?: number | null;
+        };
+        /** CardRequirementsResponse */
+        CardRequirementsResponse: {
+            /** Id */
+            _id?: string;
+            card: components["schemas"]["CardWithId"];
+            /** Remaining */
+            remaining: number;
         };
         /** CardWithId */
         CardWithId: {
@@ -1123,16 +1139,6 @@ export type components = {
             /** Min Outgoing Amount Monthly */
             min_outgoing_amount_monthly: number;
         };
-        /** RequirementsResponse */
-        RequirementsResponse: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            currency: components["schemas"]["Currency"];
-            /** Remaining */
-            remaining: number;
-        };
         /** SavingsAccount */
         SavingsAccount: {
             /** Id */
@@ -1393,6 +1399,7 @@ export type components = {
     headers: never;
     pathItems: never;
 };
+export type AccountRequirementsResponse = components['schemas']['AccountRequirementsResponse'];
 export type AccountType = components['schemas']['AccountType'];
 export type BackupPatchRequest = components['schemas']['BackupPatchRequest'];
 export type BackupRequest = components['schemas']['BackupRequest'];
@@ -1403,6 +1410,7 @@ export type CapitalInvestmentWithId = components['schemas']['CapitalInvestmentWi
 export type Capitalization = components['schemas']['Capitalization'];
 export type Card = components['schemas']['Card'];
 export type CardPartial = components['schemas']['CardPartial'];
+export type CardRequirementsResponse = components['schemas']['CardRequirementsResponse'];
 export type CardWithId = components['schemas']['CardWithId'];
 export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
@@ -1424,7 +1432,6 @@ export type PatchAccountValueRequest = components['schemas']['PatchAccountValueR
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
-export type RequirementsResponse = components['schemas']['RequirementsResponse'];
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
@@ -3134,7 +3141,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RequirementsResponse"][];
+                    "application/json": components["schemas"]["CardRequirementsResponse"][];
                 };
             };
         };
@@ -3154,7 +3161,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RequirementsResponse"][];
+                    "application/json": components["schemas"]["AccountRequirementsResponse"][];
                 };
             };
         };
@@ -3174,7 +3181,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RequirementsResponse"][];
+                    "application/json": components["schemas"]["AccountRequirementsResponse"][];
                 };
             };
         };

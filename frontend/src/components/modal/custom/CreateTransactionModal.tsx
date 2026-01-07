@@ -12,7 +12,7 @@ import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
 import { useCashs, usePersonalAccounts } from "@/app/api/query";
-import { getAccountName } from "@/components/table/cells/CellAccountName";
+import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 
@@ -67,7 +67,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
 
   const accounts = usePersonalAccounts();
   const accountRecord = accounts.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr, true) }),
+    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr) }),
     {} as Record<string, string>
   );
   const cash = useCashs();

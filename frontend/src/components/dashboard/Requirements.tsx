@@ -4,6 +4,7 @@ import CellBoolean from "../table/cells/CellBoolean";
 import { twMerge } from "tailwind-merge";
 import ErrorToast from "../toast/ErrorToast";
 import { getRequiredAccountsInput, getRequiredAccountsOutput, getRequiredCardsTransactions } from "@/app/api/getters";
+import { getAccountName } from "../table/cells/AccountNameUtils";
 
 const classes = {
   container: "flex gap-2 w-full",
@@ -20,14 +21,17 @@ export default async function Requirements() {
   const { response: transactions, error: transactionsError } = await getRequiredCardsTransactions();
 
   const segments = [
-    { title: "income", data: incomes || [], error: incomesError, format: true },
-    { title: "outcome", data: outcomes || [], error: outcomesError, format: true },
-    { title: "transactions", data: transactions || [], error: transactionsError, format: false },
+    { title: "income", data: incomes || [], error: incomesError },
+    { title: "outcome", data: outcomes || [], error: outcomesError },
   ]
 
   return (
     <div className={classes.container}>
-      {segments.map(({ title, data, error, format }) => (
+      {/* income / outcome */}
+      {[
+        { title: "income", data: incomes || [], error: incomesError },
+        { title: "outcome", data: outcomes || [], error: outcomesError }
+      ].map(({ title, data, error }) => (
         <div key={title} className={classes.section}>
           <h3>Required {title}:</h3>
           {error
@@ -35,14 +39,29 @@ export default async function Requirements() {
             : (<ul>
               {data.map((item, i) => (
                 <li key={i} className={twMerge(classes.item, item.remaining <= 0 ? classes.fulfilled : classes.unfulfilled)}>
-                  <span className={classes.name}>{item.name}</span>
-                  {format ? <CellValue value={item.remaining} currency={item.currency} /> : <span>{item.remaining}</span>}
+                  <span className={classes.name}>{getAccountName(item.account)}</span>
+                  <CellValue value={item.remaining} currency={item.account.currency} />
                   <CellBoolean value={item.remaining <= 0} />
                 </li>
               ))}
             </ul>)}
         </div>
       ))}
+      {/* transactions */}
+      <div className={classes.section}>
+        <h3>Required transactions:</h3>
+        {transactionsError
+          ? <ErrorToast message={`Failed to load required transactions:\n${transactionsError}`} />
+          : (<ul>
+            {transactions.map((item, i) => (
+              <li key={i} className={twMerge(classes.item, item.remaining <= 0 ? classes.fulfilled : classes.unfulfilled)}>
+                <span className={classes.name}>{item.card.name}</span>
+                <span>{item.remaining}</span>
+                <CellBoolean value={item.remaining <= 0} />
+              </li>
+            ))}
+          </ul>)}
+      </div>
     </div>
   );
 }

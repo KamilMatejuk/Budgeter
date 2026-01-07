@@ -23,7 +23,7 @@ interface TableProps<T extends Item> {
   tag: string;
   data: T[];
   columns: ColumnDef<T>[];
-  options: {
+  options?: {
     name: string;
     icon: React.ComponentType<IconBaseProps>;
     component: React.ComponentType<BackendModalProps<T>>
@@ -43,37 +43,39 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
 
+  const allColumns = useMemo(() => ([
+    {
+      id: "select",
+      header: ({ table }) => (<input
+        type="checkbox"
+        checked={table.getIsAllRowsSelected?.() ?? false}
+        onChange={table.getToggleAllRowsSelectedHandler?.()}
+      />),
+      cell: ({ row }) => (<input
+        type="checkbox"
+        checked={row.getIsSelected?.() ?? false}
+        onChange={row.getToggleSelectedHandler?.()}
+      />),
+    },
+    ...columns,
+    options && options.length > 0 && {
+      id: "options",
+      header: "Options",
+      cell: ({ row }) => (
+        <div className="flex justify-end space-x-2">
+          {options.map(({ name, icon: Icon }, index) => (
+            <Icon size={20} title={name} className="cursor-pointer" key={index}
+              onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
+        </div>
+      ),
+      meta: { alignedRight: true },
+    },
+  ] as ColumnDef<T>[]).filter(Boolean), [columns, options]);
+
   const table = useReactTable({
     data,
+    columns: allColumns,
     getCoreRowModel: getCoreRowModel(),
-    columns: useMemo(() => [
-      {
-        id: "select",
-        header: ({ table }) => (<input
-          type="checkbox"
-          checked={table.getIsAllRowsSelected?.() ?? false}
-          onChange={table.getToggleAllRowsSelectedHandler?.()}
-        />),
-        cell: ({ row }) => (<input
-          type="checkbox"
-          checked={row.getIsSelected?.() ?? false}
-          onChange={row.getToggleSelectedHandler?.()}
-        />),
-      },
-      ...columns,
-      {
-        id: "options",
-        header: "Options",
-        cell: ({ row }) => (
-          <div className="flex justify-end space-x-2">
-            {options.map(({ name, icon: Icon }, index) => (
-              <Icon size={20} title={name} className="cursor-pointer" key={index}
-                onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
-          </div>
-        ),
-        meta: { alignedRight: true },
-      },
-    ] as ColumnDef<T>[], [columns, options]),
   })
   const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
   const closeModal = async () => {
@@ -92,7 +94,7 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
         <span>Group options ({table.getSelectedRowModel().rows.length} selected):</span>
         {groupOptions.map(({ name, icon: Icon }, index) => (
           <Icon size={20} key={index} title={name} className="cursor-pointer"
-            onClick={() => { setSelectedModal(index + 1 + options.length) }} />
+            onClick={() => { setSelectedModal(index + 1 + (options?.length || 0)) }} />
         ))}
       </div>}
       <table className="w-full min-w-[640px] text-sm m-0">
@@ -139,11 +141,11 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
       </table>
       {/* option modals */}
       {CreateModal && selectedModal === 0 && <CreateModal open onClose={closeModal} url={url} item={selectedItem} />}
-      {options.map(({ component: Option }, index) => (
+      {options?.map(({ component: Option }, index) => (
         selectedModal === index + 1 && <Option open onClose={closeModal} url={url} item={selectedItem} key={index} />
       ))}
       {groupOptions?.map(({ component: Option }, index) => (
-        selectedModal === index + 1 + options.length && <Option open onClose={closeModal} url={url} items={table.getSelectedRowModel().rows.map(row => row.original)} key={index} />
+        selectedModal === index + 1 + (options?.length || 0) && <Option open onClose={closeModal} url={url} items={table.getSelectedRowModel().rows.map(row => row.original)} key={index} />
       ))}
     </div>
   );

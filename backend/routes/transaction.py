@@ -50,8 +50,7 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
     async def inner():
         transaction: TransactionWithId = await get(db, "transactions", TransactionWithId, {"_id": str(data.id), "deleted": False}, one=True)
         assert transaction is not None, "Transaction not found"
-        total_value = 0.0
-        for item in data.items: total_value = Value.add(total_value, item.value)
+        total_value = Value.sum([i.value for i in data.items])
         before_split = Value.parse(transaction.value)
         after_split = Value.parse(total_value)
         assert after_split == before_split, f"Sum of split items ({after_split:.2f}) must equal original transaction value ({before_split:.2f})"

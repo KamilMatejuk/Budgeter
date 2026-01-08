@@ -1,5 +1,5 @@
 import datetime
-
+from typing import Iterable
 
 class Value:
     """Utility class to handle float values with two decimal places."""
@@ -19,6 +19,13 @@ class Value:
     @staticmethod
     def add(a: float, b: float) -> float:
         return Value._double_precision((100 * a + 100 * b) / 100)
+    
+    @staticmethod
+    def sum(iter: Iterable[float]) -> float:
+        total = 0.0
+        for v in iter:
+            total = Value.add(total, v)
+        return total
 
     @staticmethod
     def subtract(a: float, b: float) -> float:

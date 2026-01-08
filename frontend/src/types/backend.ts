@@ -594,6 +594,40 @@ export type paths = {
         patch: operations["patch_account_value_api_history_account_value_patch"];
         trace?: never;
     };
+    "/api/history/income_expense/{range}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Total Income Expense */
+        get: operations["get_total_income_expense_api_history_income_expense__range__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/history/month_comparison/{year}/{month}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Month Comparison */
+        get: operations["get_month_comparison_api_history_month_comparison__year___month__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/organisation": {
         parameters: {
             query?: never;
@@ -961,6 +995,29 @@ export type components = {
             Saldo: string;
             /** Waluta */
             Waluta: string;
+        };
+        /** MonthComparisonRow */
+        MonthComparisonRow: {
+            /** Id */
+            _id: string;
+            /** Tag */
+            tag: string;
+            /** Value */
+            value: number;
+            /** Value Avg */
+            value_avg: number;
+            /** Value Prev Month */
+            value_prev_month: number;
+            /** Value 2Nd Month */
+            value_2nd_month: number;
+            /** Value Last Year */
+            value_last_year: number;
+            currency: components["schemas"]["Currency"];
+            /**
+             * Subitems
+             * @default []
+             */
+            subitems: components["schemas"]["MonthComparisonRow"][];
         };
         /** MonthlyExpense */
         MonthlyExpense: {
@@ -1419,6 +1476,7 @@ export type ChartRange = components['schemas']['ChartRange'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type MillenniumRequest = components['schemas']['MillenniumRequest'];
+export type MonthComparisonRow = components['schemas']['MonthComparisonRow'];
 export type MonthlyExpense = components['schemas']['MonthlyExpense'];
 export type MonthlyExpensePartial = components['schemas']['MonthlyExpensePartial'];
 export type MonthlyExpenseWithId = components['schemas']['MonthlyExpenseWithId'];
@@ -3271,6 +3329,72 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_total_income_expense_api_history_income_expense__range__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                range: components["schemas"]["ChartRange"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": [
+                        number[],
+                        number[]
+                    ];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_month_comparison_api_history_month_comparison__year___month__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                month: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthComparisonRow"][];
                 };
             };
             /** @description Validation Error */

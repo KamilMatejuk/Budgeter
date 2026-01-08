@@ -1,16 +1,18 @@
 import datetime
+from functools import cache
 from fastapi import APIRouter, Depends
-from models.products import CardWithId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from models.tag import Tag
 from core.utils import Value, Date
-from models.base import PyBaseModel
+from models.base import PyBaseModel, PyObjectId
+from models.products import CardWithId
+from routes.tag import get_children, get_all_children
 from routes.base import fail_wrapper, get, patch, create
 from models.transaction import TransactionWithId
 from models.products import PersonalAccountWithId, Currency
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange
-
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow
 
 router = APIRouter()
 
@@ -185,3 +187,64 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
         incomes.append(sum(t.value for t in transactions if t.value > 0))
         expenses.append(sum(t.value for t in transactions if t.value < 0))
     return (incomes, expenses)
+
+############################## Monthly Comparison #############################
+
+@router.get("/month_comparison/{year}/{month}", response_model=list[MonthComparisonRow])
+async def get_month_comparison(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
+    root_tags = await get(db, "tags", Tag, {"parent": None})
+    response = []
+    for tag in root_tags:
+        row = await _calculate_tag_comparison(tag, year, month, db)
+        response.append(row)
+    return response
+
+# @cache
+async def _calculate_tag_comparison(tag: Tag, year: int, month: int, db: AsyncIOMotorDatabase) -> MonthComparisonRow:
+    start_current = datetime.date(year, month, 1)
+    start_prev = Date.add_months(start_current, -1)
+    start_last_year = datetime.date(year - 1, month, 1)
+    tags = await get_all_children(tag, db)
+    condition = { "deleted": False, "tags": {"$in": [str(tag.id)] + [str(t.id) for t in tags]} }
+    # TODO - convert to PLN
+    # TODO calculate all months for all tags, then calculate averages and select specific months
+    # TODO include other (not tagged)
+
+    transactions_current: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
+        **condition,
+        "date": Date.condition(start_current, Date.month_end(start_current))
+    })
+    value_current = Value.sum(t.value for t in transactions_current)
+    
+    transactions_prev: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
+        **condition,
+        "date": Date.condition(start_prev, Date.month_end(start_prev))
+    })
+    value_prev = Value.sum(t.value for t in transactions_prev)
+    
+    transactions_last_year: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
+        **condition,
+        "date": Date.condition(start_last_year, Date.month_end(start_last_year))
+    })
+    value_last_year = Value.sum(t.value for t in transactions_last_year)
+    
+    transactions_total: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
+    months_count = max(1, len(set((Date.to_string(t.date)[:7] for t in transactions_total))))
+    value_avg = Value.divide(Value.sum(t.value for t in transactions_total), months_count)
+
+    subitems = []
+    for child in await get_children(tag, db):
+        subitem = await _calculate_tag_comparison(child, year, month, db)
+        subitems.append(subitem)
+
+    return MonthComparisonRow(
+        _id=str(PyObjectId()),
+        tag=str(tag.id),
+        currency=Currency.PLN,
+        value=value_current,
+        value_avg=value_avg,
+        value_prev_month=value_prev,
+        value_2nd_month=0,
+        value_last_year=value_last_year,
+        subitems=subitems
+    )

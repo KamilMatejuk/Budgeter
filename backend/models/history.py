@@ -1,6 +1,7 @@
 import enum
 from datetime import date
-from models.base import PyBaseModel
+from models.base import PyBaseModel, WithId
+from models.products import Currency
 
 
 class CardMonthlyHistory(PyBaseModel):
@@ -21,3 +22,14 @@ class ChartRange(enum.Enum):
     _3M = "3M"
     _1Y = "1Y"
     _FULL = "FULL"
+
+
+class MonthComparisonRow(PyBaseModel, metaclass=WithId):
+    tag: str # id of Tag or plaintext name
+    value: float
+    value_avg: float
+    value_prev_month: float
+    value_2nd_month: float
+    value_last_year: float
+    currency: Currency
+    subitems: list["MonthComparisonRow"] = []

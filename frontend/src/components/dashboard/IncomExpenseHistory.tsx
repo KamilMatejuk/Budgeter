@@ -1,7 +1,6 @@
 import ErrorToast from "../toast/ErrorToast";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { ChartRange } from "@/types/enum";
-import AccountsHistoryChart from "./AccountsHistoryChart";
 import { getHistoricIncomeExpenseValues } from "@/app/api/getters";
 import IncomExpenseHistoryChart from "./IncomExpenseHistoryChart";
 

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { CashWithId, ChartRange, OrganisationWithId, PersonalAccountWithId, TagWithId } from "@/types/backend";
+import { CashWithId, ChartRange, MonthComparisonRow, OrganisationWithId, PersonalAccountWithId, TagWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
 import { getDebtTransactions } from "./getters";
 
-function _useFetchWrapper<T>(queryKey: string[], revalidateKey: string[], url: string) {
+function _useFetchWrapper<T>(queryKey: (string | number)[], revalidateKey: string[], url: string) {
   const { data } = useQuery({
     queryKey,
     queryFn: async () => {
@@ -106,4 +106,12 @@ export function useIncomeExpenseHistory(range: ChartRange) {
     ["transaction"],
     `/api/history/income_expense/${range}`
   ) || [[], []];
+}
+
+export function useMonthComparison(year: number, month: number) {
+  return _useFetchWrapper<MonthComparisonRow[]>(
+    ["month_comparison", year, month],
+    ["transaction"],
+    `/api/history/month_comparison/${year}/${month}`
+  ) || [];
 }

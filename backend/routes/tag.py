@@ -21,6 +21,13 @@ async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[Tag]:
     return children
 
 
+async def get_all_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[Tag]:
+    children = []
+    for child in await get_children(tag, db):
+        children.extend(await get_all_children(child, db))
+    return children
+
+
 router = APIRouter()
 factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
 factory.create_get()

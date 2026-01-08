@@ -1,6 +1,7 @@
 import AccountsHistory from "@/components/dashboard/AccountsHistory";
 import Debt from "@/components/dashboard/Debt";
 import IncomExpenseHistory from "@/components/dashboard/IncomExpenseHistory";
+import MonthComparison from "@/components/dashboard/MonthComparison";
 import Requirements from "@/components/dashboard/Requirements";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import PageHeader from "@/components/page_layout/PageHeader";
@@ -28,7 +29,7 @@ export default async function Home() {
       <SectionHeader text="Yearly Overview" subtext={`Incomes and expenses from ${year}`} />
       <IncomExpenseHistory />
       <SectionHeader text="Month Comparison" subtext={`See how your selected month compares to averages and previous periods`} />
-      {/* tabela z wyborem miesiąca do porównania (wyrany miesiac | średnia całościowa, poprzedni miesiąc, ten miesiąc w zeszłym roku) -> wartość i zmiana */}
+      <MonthComparison />
     </>
   );
 }

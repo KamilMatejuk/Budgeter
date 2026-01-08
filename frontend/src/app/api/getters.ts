@@ -5,6 +5,7 @@ import {
   CardRequirementsResponse,
   CardWithId,
   CashWithId,
+  MonthComparisonRow,
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
   OrganisationWithId,
@@ -89,6 +90,10 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
   let endpoint = `/api/history/income_expense/`;
   endpoint += range || DEFAULT_CHART_RANGE;
   return await get<[number[], number[]]>(endpoint, ["transaction"]);
+}
+
+export async function getMonthComparison(year: number, month: number) {
+  return await get<MonthComparisonRow[]>(`/api/history/month_comparison/${year}/${month}`, ["transaction"]);
 }
 
 export async function getRequiredAccountsInput() {

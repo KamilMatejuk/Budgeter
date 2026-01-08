@@ -27,7 +27,7 @@ export function formatValue(value: number, currency?: Currency | keyof typeof Cu
 export default function CellValue({ value, colour, currency }: CellValueProps) {
   if (value === undefined) return null
   let valueStr = formatValue(value || 0, currency);
-  const className = twMerge("p-0 text-right font-mono", colour ? (value > 0 ? "text-positive" : value < 0 ? "text-negative" : "") : "");
+  const className = twMerge("p-0 text-center font-mono", colour ? (value > 0 ? "text-positive" : value < 0 ? "text-negative" : "") : "");
   return (<p className={className}>{valueStr}</p>);
 }
 
@@ -35,7 +35,7 @@ export function defineCellValue<T extends { value: number; currency?: Currency |
   return {
     accessorKey: "value",
     header: "Value",
-    meta: { alignedRight: true },
+    meta: { align: "center" },
     cell: ({ row }) => (<CellValue value={row.original.value} currency={row.original.currency} colour={colour} />),
   } as ColumnDef<T>;
 }

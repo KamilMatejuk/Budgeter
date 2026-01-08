@@ -87,7 +87,7 @@ function defineColumnOptions<T extends Item>(
             onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
       </div>
     ),
-    meta: { alignedRight: true },
+    meta: { align: "right" },
   };
 }
 
@@ -146,7 +146,8 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
               <th key={`${header.id}-${i}`} className={twMerge(
                 "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
                 i == 0 && "w-4 px-4",
-                header.column.columnDef.meta?.alignedRight && "text-right",
+                header.column.columnDef.meta?.align == "right" && "text-right",
+                header.column.columnDef.meta?.align == "center" && "text-center",
               )}>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
               </th>
@@ -164,7 +165,8 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
                   cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
                   cell.column.columnDef.meta?.wrapForce && "whitespace-normal break-all",
                   cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
-                  cell.column.columnDef.meta?.alignedRight && "text-right",
+                  cell.column.columnDef.meta?.align == "right" && "text-right",
+                  cell.column.columnDef.meta?.align == "center" && "text-center",
                 )}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

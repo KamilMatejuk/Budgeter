@@ -5,6 +5,6 @@ declare module "@tanstack/react-table" {
     wrap?: boolean; // wrap on white space
     wrapForce?: boolean; // force wrap on any character
     ellipsis?: boolean;
-    alignedRight?: boolean;
+    align?: "left" | "center" | "right";
   }
 }

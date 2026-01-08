@@ -13,13 +13,17 @@ const classes = {
   option: "",
 };
 
+export interface DropDownInputWithErrorProps<T> extends ChoiceInputWithErrorProps<T> {
+  hideEmpty?: boolean;
+}
 
-export default function DropDownInputWithError<T>({ formik, formikName, label, optionsEnum }: ChoiceInputWithErrorProps<T>) {
+
+export default function DropDownInputWithError<T>({ formik, formikName, label, optionsEnum, hideEmpty }: DropDownInputWithErrorProps<T>) {
   const [open, setOpen] = useState(false);
   const value = getValue(formik, formikName);
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
-  const options = { "": "", ...optionsEnum };
+  const options = hideEmpty ? optionsEnum : { "": "", ...optionsEnum };
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>

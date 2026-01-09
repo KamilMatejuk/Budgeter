@@ -6,5 +6,6 @@ declare module "@tanstack/react-table" {
     wrapForce?: boolean; // force wrap on any character
     ellipsis?: boolean;
     align?: "left" | "center" | "right";
+    border?: "left" | "right" | "both";
   }
 }

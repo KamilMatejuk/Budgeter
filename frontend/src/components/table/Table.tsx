@@ -148,6 +148,8 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
                 i == 0 && "w-4 px-4",
                 header.column.columnDef.meta?.align == "right" && "text-right",
                 header.column.columnDef.meta?.align == "center" && "text-center",
+                ["left", "both"].includes(header.column.columnDef.meta?.border || "") && "border-l border-line",
+                ["right", "both"].includes(header.column.columnDef.meta?.border || "") && "border-r border-line",
               )}>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
               </th>
@@ -167,6 +169,8 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
                   cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",
                   cell.column.columnDef.meta?.align == "right" && "text-right",
                   cell.column.columnDef.meta?.align == "center" && "text-center",
+                  ["left", "both"].includes(cell.column.columnDef.meta?.border || "") && "border-l border-line",
+                  ["right", "both"].includes(cell.column.columnDef.meta?.border || "") && "border-r border-line",
                 )}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

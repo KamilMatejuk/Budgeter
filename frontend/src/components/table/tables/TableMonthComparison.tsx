@@ -67,13 +67,13 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
   }, [formik.values.date]);
 
   const columns: ColumnDef<MonthComparisonRow>[] = [
-    defineCellTag<MonthComparisonRow>(true),
+    { ...defineCellTag<MonthComparisonRow>(true), meta: { border: "right" } },
     defineCellValueChange(monthYearId, "This Month Last Year", `${getMonthName(month)} ${year - 1}`, monthYearId + 11),
     defineCellValueChange(monthYearId, "Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`, monthYearId + 2),
     defineCellValueChange(monthYearId, "Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`, monthYearId + 1),
     {
       accessorKey: "value",
-      meta: { align: "center" },
+      meta: { align: "center", border: "both" },
       header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
       cell: ({ row }) => (<CellValue value={row.original.values[monthYearId]} currency={row.original.currency} />),
     },

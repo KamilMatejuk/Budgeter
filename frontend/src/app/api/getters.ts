@@ -92,7 +92,7 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
   return await get<[number[], number[]]>(endpoint, ["transaction"]);
 }
 
-export async function getMonthComparison() {
+export async function getMonthTagComparison() {
   return await get<MonthComparisonRow[]>(`/api/history/month_comparison`, ["transaction"]);
 }
 

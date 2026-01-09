@@ -1,6 +1,6 @@
 import AccountsHistory from "@/components/dashboard/AccountsHistory";
 import Debt from "@/components/dashboard/Debt";
-import IncomExpenseHistory from "@/components/dashboard/IncomExpenseHistory";
+import IncomExpenseHistory from "@/components/dashboard/IncomeExpenseHistory";
 import MonthComparison from "@/components/dashboard/MonthComparison";
 import Requirements from "@/components/dashboard/Requirements";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";

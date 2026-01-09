@@ -2,10 +2,10 @@ import ErrorToast from "../toast/ErrorToast";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { ChartRange } from "@/types/enum";
 import { getHistoricIncomeExpenseValues } from "@/app/api/getters";
-import IncomExpenseHistoryChart from "./IncomExpenseHistoryChart";
+import IncomeExpenseHistoryChart from "./IncomeExpenseHistoryChart";
 
 
-export default async function IncomExpenseHistory() {
+export default async function IncomeExpenseHistory() {
   // handle server-side fetch and errors
   // then set cached data to be used by client
   const queryClient = new QueryClient()
@@ -15,7 +15,7 @@ export default async function IncomExpenseHistory() {
   queryClient.setQueryData(["income_expense_history", ChartRange["1Y"]], response);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <IncomExpenseHistoryChart />
+      <IncomeExpenseHistoryChart />
     </HydrationBoundary>
   );
 }

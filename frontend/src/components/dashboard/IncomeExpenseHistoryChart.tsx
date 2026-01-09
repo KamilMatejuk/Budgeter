@@ -7,7 +7,7 @@ import { getMonthsFromValues, getMonthsInRange } from "@/const/date";
 import { ChartRange } from "@/types/enum";
 
 
-export default function IncomExpenseHistoryChart() {
+export default function IncomeExpenseHistoryChart() {
   const [range, setRange] = useState<keyof typeof ChartRange>(ChartRange["1Y"]);
   const [income, expense] = useIncomeExpenseHistory(range);
   const months = getMonthsInRange(range); // can be empty for full range

@@ -768,7 +768,7 @@ export type components = {
          * AccountType
          * @enum {string}
          */
-        AccountType: "Osobiste" | "Walutowe";
+        AccountType: "Osobiste" | "Walutowe" | "Lunchowe";
         /** BackupPatchRequest */
         BackupPatchRequest: {
             /** Id */
@@ -1256,7 +1256,7 @@ export type components = {
          * Source
          * @enum {string}
          */
-        Source: "Millennium";
+        Source: "Millennium" | "Edenred";
         /** StockAccount */
         StockAccount: {
             /** Id */

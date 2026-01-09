@@ -32,6 +32,7 @@ class Currency(enum.Enum):
 class AccountType(enum.Enum):
     PERSONAL = "Osobiste"
     EXCHANGE = "Walutowe"
+    LUNCH = "Lunchowe"
 
 
 class Cash(PyBaseModel):

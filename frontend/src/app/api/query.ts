@@ -107,11 +107,3 @@ export function useIncomeExpenseHistory(range: ChartRange) {
     `/api/history/income_expense/${range}`
   ) || [[], []];
 }
-
-export function useMonthComparison(year: number, month: number) {
-  return _useFetchWrapper<MonthComparisonRow[]>(
-    ["month_comparison", year, month],
-    ["transaction"],
-    `/api/history/month_comparison/${year}/${month}`
-  ) || [];
-}

@@ -190,61 +190,62 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
 
 ############################## Monthly Comparison #############################
 
-@router.get("/month_comparison/{year}/{month}", response_model=list[MonthComparisonRow])
-async def get_month_comparison(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
+@router.get("/month_comparison", response_model=list[MonthComparisonRow])
+async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
     root_tags = await get(db, "tags", Tag, {"parent": None})
     response = []
     for tag in root_tags:
-        row = await _calculate_tag_comparison(tag, year, month, db)
+        row = await _calculate_tag_comparison(str(tag.id))
         response.append(row)
     return response
 
 # @cache
-async def _calculate_tag_comparison(tag: Tag, year: int, month: int, db: AsyncIOMotorDatabase) -> MonthComparisonRow:
-    start_current = datetime.date(year, month, 1)
-    start_prev = Date.add_months(start_current, -1)
-    start_last_year = datetime.date(year - 1, month, 1)
-    tags = await get_all_children(tag, db)
-    condition = { "deleted": False, "tags": {"$in": [str(tag.id)] + [str(t.id) for t in tags]} }
-    # TODO - convert to PLN
-    # TODO calculate all months for all tags, then calculate averages and select specific months
-    # TODO include other (not tagged)
+async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
+    db: AsyncIOMotorDatabase = await get_db()
+    tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
+    first: TransactionWithId = await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)
+    # tag ids
+    child_tags = await get_all_children(tag, db)
+    this_tag_id = [str(tag.id)]
+    child_tag_ids = [str(t.id) for t in child_tags]
+    # values
+    all_child_values = []
+    this_tag_values = []
+    for month in reversed(list(Date.iterate_months(first.date))):
+        condition = {
+            "deleted": False,
+            "date": Date.condition(month, Date.month_end(month)),
+            "$or": [{"debt_person": None}, {"debt_person": ""}],
+        }
+        all_child_transactions: list[TransactionWithId] = await get(
+            db, "transactions", TransactionWithId, {**condition, "tags": {"$in": this_tag_id + child_tag_ids}})
+        this_tag_transactions: list[TransactionWithId] = await get(
+            db, "transactions", TransactionWithId, {**condition, "tags": {"$in": this_tag_id, "$nin": child_tag_ids}})
+        # sum and convert to PLN
+        all_child_values.append(Value.sum(t.value * Currency.convert(t.currency, Currency.PLN) for t in all_child_transactions))
+        this_tag_values.append(Value.sum(t.value * Currency.convert(t.currency, Currency.PLN) for t in this_tag_transactions))
 
-    transactions_current: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
-        **condition,
-        "date": Date.condition(start_current, Date.month_end(start_current))
-    })
-    value_current = Value.sum(t.value for t in transactions_current)
-    
-    transactions_prev: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
-        **condition,
-        "date": Date.condition(start_prev, Date.month_end(start_prev))
-    })
-    value_prev = Value.sum(t.value for t in transactions_prev)
-    
-    transactions_last_year: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {
-        **condition,
-        "date": Date.condition(start_last_year, Date.month_end(start_last_year))
-    })
-    value_last_year = Value.sum(t.value for t in transactions_last_year)
-    
-    transactions_total: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-    months_count = max(1, len(set((Date.to_string(t.date)[:7] for t in transactions_total))))
-    value_avg = Value.divide(Value.sum(t.value for t in transactions_total), months_count)
-
+    # children
     subitems = []
     for child in await get_children(tag, db):
-        subitem = await _calculate_tag_comparison(child, year, month, db)
+        subitem = await _calculate_tag_comparison(str(child.id))
         subitems.append(subitem)
+    # only include Other, if its not zero and there are other subitems
+    if len(subitems) > 0 and any(v > 0 for v in this_tag_values):
+        subitems.append(MonthComparisonRow(
+            _id=str(PyObjectId()),
+            tag="Other",
+            currency=Currency.PLN,
+            values=this_tag_values,
+            value_avg=Value.avg(this_tag_values),
+            subitems=[]
+        ))
 
     return MonthComparisonRow(
         _id=str(PyObjectId()),
         tag=str(tag.id),
         currency=Currency.PLN,
-        value=value_current,
-        value_avg=value_avg,
-        value_prev_month=value_prev,
-        value_2nd_month=0,
-        value_last_year=value_last_year,
+        values=all_child_values,
+        value_avg=Value.avg(all_child_values),
         subitems=subitems
     )

@@ -611,7 +611,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/history/month_comparison/{year}/{month}": {
+    "/api/history/month_comparison": {
         parameters: {
             query?: never;
             header?: never;
@@ -619,7 +619,7 @@ export type paths = {
             cookie?: never;
         };
         /** Get Month Comparison */
-        get: operations["get_month_comparison_api_history_month_comparison__year___month__get"];
+        get: operations["get_month_comparison_api_history_month_comparison_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1002,16 +1002,10 @@ export type components = {
             _id: string;
             /** Tag */
             tag: string;
-            /** Value */
-            value: number;
+            /** Values */
+            values: number[];
             /** Value Avg */
             value_avg: number;
-            /** Value Prev Month */
-            value_prev_month: number;
-            /** Value 2Nd Month */
-            value_2nd_month: number;
-            /** Value Last Year */
-            value_last_year: number;
             currency: components["schemas"]["Currency"];
             /**
              * Subitems
@@ -3376,14 +3370,11 @@ export interface operations {
             };
         };
     };
-    get_month_comparison_api_history_month_comparison__year___month__get: {
+    get_month_comparison_api_history_month_comparison_get: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                year: number;
-                month: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -3395,15 +3386,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MonthComparisonRow"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

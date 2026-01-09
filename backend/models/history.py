@@ -26,10 +26,7 @@ class ChartRange(enum.Enum):
 
 class MonthComparisonRow(PyBaseModel, metaclass=WithId):
     tag: str # id of Tag or plaintext name
-    value: float
+    values: list[float]
     value_avg: float
-    value_prev_month: float
-    value_2nd_month: float
-    value_last_year: float
     currency: Currency
     subitems: list["MonthComparisonRow"] = []

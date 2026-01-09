@@ -92,8 +92,8 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
   return await get<[number[], number[]]>(endpoint, ["transaction"]);
 }
 
-export async function getMonthComparison(year: number, month: number) {
-  return await get<MonthComparisonRow[]>(`/api/history/month_comparison/${year}/${month}`, ["transaction"]);
+export async function getMonthComparison() {
+  return await get<MonthComparisonRow[]>(`/api/history/month_comparison`, ["transaction"]);
 }
 
 export async function getRequiredAccountsInput() {

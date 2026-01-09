@@ -52,3 +52,13 @@ body {
   font-family: "Lato", Arial, Helvetica, sans-serif;
   color: var(--color-text);
 }
+
+/* Fix for next/image.
+When set with width and height produced warning:
+"Image has either width or height modified, but not the other"
+Works when set to fill and scaled via css in parent component
+*/
+img[data-nimg] {
+  width: auto;
+  height: auto;
+}

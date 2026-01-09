@@ -8,7 +8,10 @@ interface CellIconProps {
 
 
 export default function CellIcon({ source, alt }: CellIconProps) {
-  return source && (<Image src={source} alt={alt || "icon"} width={20} height={20} />);
+  return source &&
+    <div className="relative w-5 h-5">
+      <Image src={source} alt={alt || "icon"} fill />
+    </div>;
 }
 
 export function defineCellIcon<T extends { icon?: string | null, name?: string }>() {

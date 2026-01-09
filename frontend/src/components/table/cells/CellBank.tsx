@@ -13,7 +13,9 @@ const BANK_ICONS: Record<Source | "Cash", string> = {
 };
 
 export default function CellBank({ bank }: CellBankProps) {
-  return <Image src={BANK_ICONS[bank]} alt={bank} width={20} height={20} />;
+  return <div className="relative w-5 h-5">
+    <Image src={BANK_ICONS[bank]} alt={bank} fill />
+  </div>;
 }
 
 export function defineCellBank<T extends { bank: Source }>() {

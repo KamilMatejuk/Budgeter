@@ -4,11 +4,11 @@ import ChartWithRanges from "./ChartWithRanges";
 import { useIncomeExpenseHistory } from "@/app/api/query";
 import { useState } from "react";
 import { getMonthsFromValues, getMonthsInRange } from "@/const/date";
-import { ChartRange } from "@/types/backend";
+import { ChartRange } from "@/types/enum";
 
 
 export default function IncomExpenseHistoryChart() {
-  const [range, setRange] = useState<ChartRange>("1Y");
+  const [range, setRange] = useState<keyof typeof ChartRange>(ChartRange["1Y"]);
   const [income, expense] = useIncomeExpenseHistory(range);
   const months = getMonthsInRange(range); // can be empty for full range
   const labels = months.length ? months : getMonthsFromValues(income); // fallback for full range

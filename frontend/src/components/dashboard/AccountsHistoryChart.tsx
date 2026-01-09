@@ -1,9 +1,8 @@
 'use client';
 
-import { DEFAULT_CHART_RANGE } from "@/types/enum";
+import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
 import ChartWithRanges from "./ChartWithRanges";
 import { useAccountValueHistory, usePersonalAccounts, useTotalAccountValueHistory } from "@/app/api/query";
-import { ChartRange } from "@/types/backend";
 import { useState } from "react";
 import { getDaysFromValues, getDaysInRange } from "@/const/date";
 import ButtonWithLoader from "../button/ButtonWithLoader";
@@ -11,7 +10,7 @@ import { getAccountName } from "../table/cells/AccountNameUtils";
 
 
 export default function AccountsHistoryChart() {
-  const [range, setRange] = useState<ChartRange>(DEFAULT_CHART_RANGE);
+  const [range, setRange] = useState<keyof typeof ChartRange>(DEFAULT_CHART_RANGE);
   const [account, setAccount] = useState<string>("");
   const accounts = usePersonalAccounts();
   const data = account
@@ -33,6 +32,5 @@ export default function AccountsHistoryChart() {
         ))}
       </div>
     </div>
-
   );
 }

@@ -7,8 +7,8 @@ import { ChartRange as ChartRangeEnum } from "@/types/enum";
 import { ChartRange } from "@/types/backend";
 
 interface ChartWithRangesProps {
-  range: ChartRange;
-  setRange: React.Dispatch<SetStateAction<ChartRange>>;
+  range: ChartRange | keyof typeof ChartRangeEnum;
+  setRange: React.Dispatch<SetStateAction<ChartRange | keyof typeof ChartRangeEnum>>;
   chart: { type: 'line'; props: LineChartProps; } | { type: 'doublebar'; props: DoubleBarChartProps; };
 }
 

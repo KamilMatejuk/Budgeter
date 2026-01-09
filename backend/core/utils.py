@@ -38,6 +38,16 @@ class Value:
     @staticmethod
     def divide(a: float, b: float) -> float:
         return Value._double_precision((100 * a / b) / 100)
+    
+    @staticmethod
+    def avg(iter: Iterable[float]) -> float:
+        total = 0.0
+        count = 0
+        for v in iter:
+            total = Value.add(total, v)
+            count += 1
+        if count == 0: return 0.0
+        return Value.divide(total, count)
 
 
 class Date:

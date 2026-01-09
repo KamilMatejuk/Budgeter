@@ -234,7 +234,7 @@ async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
     if len(subitems) > 0 and any(v > 0 for v in this_tag_values):
         subitems.append(MonthComparisonRow(
             _id=str(PyObjectId()),
-            tag="Other",
+            tag=f"{tag.id}/Other",
             currency=Currency.PLN,
             values=this_tag_values,
             value_avg=Value.avg(this_tag_values),

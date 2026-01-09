@@ -31,7 +31,7 @@ export function getTextColor(bgColor: string): string {
 
 export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, colour: string }[] {
   const tag = tags.find(t => t._id === tagId);
-  if (!tag) return [];
+  if (!tag) return [{ name: tagId, colour: 'transparent' }];
   const curr = { name: tag.name, colour: tag.colour };
   const parents = tag.parent ? getTagParts(tag.parent, tags) : [];
   return [...parents, curr];
@@ -40,11 +40,17 @@ export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, c
 
 export default function CellTag({ id, ...props }: CellTagProps) {
   const tags = useTags();
-  const tagParts = getTagParts(id, tags);
-  const tagPartsParsed = tagParts.length ? tagParts : [{ name: id, colour: 'transparent' }];
+  let tagParts = [];
+  if (id.includes("/")) {
+    const [parentId, childName] = id.split("/");
+    const parentParts = getTagParts(parentId, tags);
+    tagParts = [...parentParts, { name: childName, colour: parentParts.length > 0 ? parentParts[0].colour + '88' : 'transparent' }];
+  } else {
+    tagParts = getTagParts(id, tags);
+  }
 
   return <div className={classes.container} {...props}>
-    {tagPartsParsed.map((part, i) => {
+    {tagParts.map((part, i) => {
       const isFirst = i == 0;
       const isLast = i == tagParts.length - 1;
       const isOnly = isFirst && isLast;

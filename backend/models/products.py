@@ -16,6 +16,18 @@ class Currency(enum.Enum):
     PLN = "PLN"
     USD = "USD"
     EUR = "EUR"
+    
+    @staticmethod
+    def convert(src: "Currency", dst: "Currency") -> float:
+        # approimate convertion rates
+        if src == dst: return 1.0
+        if src == Currency.PLN and dst == Currency.USD: return 0.28
+        if src == Currency.PLN and dst == Currency.EUR: return 0.24
+        if src == Currency.USD and dst == Currency.PLN: return 3.62
+        if src == Currency.USD and dst == Currency.EUR: return 0.86
+        if src == Currency.EUR and dst == Currency.PLN: return 4.21
+        if src == Currency.EUR and dst == Currency.USD: return 1.17
+        return 1.0
 
 class AccountType(enum.Enum):
     PERSONAL = "Osobiste"

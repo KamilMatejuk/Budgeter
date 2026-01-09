@@ -1,5 +1,5 @@
 import datetime
-from functools import cache
+from async_lru import alru_cache
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -199,7 +199,7 @@ async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
         response.append(row)
     return response
 
-@cache
+@alru_cache(maxsize=128)
 async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
     db: AsyncIOMotorDatabase = await get_db()
     tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)

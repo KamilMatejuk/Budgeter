@@ -3,6 +3,7 @@ import Debt from "@/components/dashboard/Debt";
 import IncomExpenseHistory from "@/components/dashboard/IncomeExpenseHistory";
 import MonthComparison from "@/components/dashboard/MonthComparison";
 import Requirements from "@/components/dashboard/Requirements";
+import TagComparison from "@/components/dashboard/TagComparison";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
@@ -30,6 +31,8 @@ export default async function Home() {
       <IncomExpenseHistory />
       <SectionHeader text="Month Comparison" subtext={`See how your selected month compares to averages and previous periods`} />
       <MonthComparison />
+      <SectionHeader text="Tag Comparison" subtext={`See how your selected tag behaves in previous periods`} />
+      <TagComparison />
     </>
   );
 }

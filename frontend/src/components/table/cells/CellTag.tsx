@@ -21,6 +21,7 @@ const classes = {
 
 export function getTextColor(bgColor: string): string {
   // Calculate the brightness of the background color
+  if (bgColor === "transparent") return "black"
   const r = parseInt(bgColor.slice(1, 3), 16);
   const g = parseInt(bgColor.slice(3, 5), 16);
   const b = parseInt(bgColor.slice(5, 7), 16);
@@ -40,35 +41,34 @@ export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, c
 export default function CellTag({ id, ...props }: CellTagProps) {
   const tags = useTags();
   const tagParts = getTagParts(id, tags);
+  const tagPartsParsed = tagParts.length ? tagParts : [{ name: id, colour: 'transparent' }];
 
-  return tagParts.length == 0 ? null : (
-    <div className={classes.container} {...props}>
-      {tagParts.map((part, i) => {
-        const isFirst = i == 0;
-        const isLast = i == tagParts.length - 1;
-        const isOnly = isFirst && isLast;
-        return (
-          <span
-            key={i}
-            className={twMerge(
-              classes.base,
-              isFirst && classes.first,
-              isLast && classes.last,
-              !isOnly && classes.polygon.base,
-              !isOnly && isFirst && classes.polygon.first,
-              !isOnly && isLast && classes.polygon.last,
-            )}
-            style={{
-              backgroundColor: part.colour,
-              color: getTextColor(part.colour),
-            }}
-          >
-            {part.name}
-          </span>
-        )
-      })}
-    </div>
-  );
+  return <div className={classes.container} {...props}>
+    {tagPartsParsed.map((part, i) => {
+      const isFirst = i == 0;
+      const isLast = i == tagParts.length - 1;
+      const isOnly = isFirst && isLast;
+      return (
+        <span
+          key={i}
+          className={twMerge(
+            classes.base,
+            isFirst && classes.first,
+            isLast && classes.last,
+            !isOnly && classes.polygon.base,
+            !isOnly && isFirst && classes.polygon.first,
+            !isOnly && isLast && classes.polygon.last,
+          )}
+          style={{
+            backgroundColor: part.colour,
+            color: getTextColor(part.colour),
+          }}
+        >
+          {part.name}
+        </span>
+      )
+    })}
+  </div>
 }
 
 export function defineCellTag<T extends { tag?: string, tags?: string[] }>(indent?: boolean) {

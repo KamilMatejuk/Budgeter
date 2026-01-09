@@ -11,10 +11,11 @@ import TagsInputWithError from "@/components/form/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
-import { useCashs, usePersonalAccounts } from "@/app/api/query";
+import { useCashs, useLastTransaction, usePersonalAccounts } from "@/app/api/query";
 import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
+import { getDateString } from "@/const/date";
 
 enum Source {
   ACCOUNT = "ACCOUNT",
@@ -76,6 +77,8 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     {} as Record<string, string>
   );
 
+  const lastTransaction = useLastTransaction(formik.values.account);
+
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Create Transaction">
       <ChoiceInputWithError
@@ -89,8 +92,16 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
         }}
       />
       {formik.values.cash === Source.CASH
-        ? <DropDownInputWithError formik={formik} formikName="account" label="Cash" optionsEnum={cashRecord} />
-        : <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accountRecord} />
+        ? <DropDownInputWithError
+          formik={formik}
+          formikName="account"
+          label="Cash"
+          optionsEnum={cashRecord} />
+        : <DropDownInputWithError
+          formik={formik}
+          formikName="account"
+          label={"Account" + (lastTransaction ? ` (last transaction on ${getDateString(lastTransaction.date)})` : "")}
+          optionsEnum={accountRecord} />
       }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
       <TextInputWithError formik={formik} formikName="organisation" label="Organisation" />

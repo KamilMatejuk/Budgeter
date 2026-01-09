@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { CashWithId, ChartRange, MonthComparisonRow, OrganisationWithId, PersonalAccountWithId, TagWithId } from "@/types/backend";
+import { CashWithId, ChartRange, MonthComparisonRow, OrganisationWithId, PersonalAccountWithId, TagWithId, Transaction, TransactionWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
@@ -62,6 +62,14 @@ export function useOrganisation(name: string) {
     ["organisation", name],
     ["organisation"],
     `/api/organisation/regex/${name}`
+  ) || undefined;
+}
+
+export function useLastTransaction(account: string) {
+  return _useFetchWrapper<TransactionWithId>(
+    ["transaction", "last", account],
+    ["transaction"],
+    `/api/transaction/last/${account}`
   ) || undefined;
 }
 

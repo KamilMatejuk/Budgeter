@@ -57,6 +57,23 @@ export type paths = {
         patch: operations["split_transaction_api_transaction_split_patch"];
         trace?: never;
     };
+    "/api/transaction/last/{account}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Last Transaction From Accont */
+        get: operations["get_last_transaction_from_accont_api_transaction_last__account__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/transaction/repay": {
         parameters: {
             query?: never;
@@ -1653,6 +1670,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TransactionWithId"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_last_transaction_from_accont_api_transaction_last__account__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                account: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"];
                 };
             };
             /** @description Validation Error */

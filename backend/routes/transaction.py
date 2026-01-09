@@ -77,6 +77,11 @@ async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDataba
     return await get(db, "transactions", TransactionWithId, {"deleted": False, "date": Date.condition(start, end)}, "date")
 
 
+@single_router.get("/last/{account}", response_model=TransactionWithId)
+async def get_last_transaction_from_accont(account: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    return await get(db, "transactions", TransactionWithId, {"deleted": False, "account": account}, "date", one=True)
+
+
 @multi_router.get("/new", response_model=list[TransactionWithId])
 async def get_transactions_without_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await get(db, "transactions", TransactionWithId, {"tags": {"$size": 0}, "deleted": False}, "date")

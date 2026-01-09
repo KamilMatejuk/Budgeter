@@ -199,7 +199,7 @@ async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
         response.append(row)
     return response
 
-# @cache
+@cache
 async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
     db: AsyncIOMotorDatabase = await get_db()
     tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)

@@ -52,7 +52,6 @@ class MillenniumTransactionType(enum.Enum):
 
 
 async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: AsyncIOMotorDatabase):
-    logger.info(f"Creating transaction from data: {data}")    
     data.type = MillenniumTransactionType(data.type)
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT:
@@ -224,4 +223,4 @@ async def create_millennium_transaction(hash: str, data: MillenniumRequest, db: 
             )
             await create(db, "capital_investment", CapitalInvestmentWithId, item, "hash")
             return {}
-        raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")
+    raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")

@@ -8,11 +8,19 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import WarningToast from "@/components/toast/WarningToast";
 import ManualCreation from "./ManualCreation";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
-import { getSources } from "../api/getters";
+import { getPersonalAccounts, getSources } from "../api/getters";
+import { Source } from "@/types/enum";
 
 
 export default async function Import() {
-  const { response: sources, error } = await getSources();
+  const { response: sources, error: sourcesError } = await getSources();
+  const { response: accounts, error: accountsError } = await getPersonalAccounts();
+  const error = sourcesError || accountsError;
+
+  const supportedSources = (sources || []).filter(source => source != Source.EDENRED);
+  const owners = new Array(...new Set((accounts || [])
+    .filter(account => account.bank == Source.REVOLUT)
+    .map(account => account.owner)));
 
   return (
     <>
@@ -25,7 +33,7 @@ export default async function Import() {
               ? <ErrorToast message="Could not download sources" />
               : sources.length == 0
                 ? <WarningToast message="No sources available. Please add a source." />
-                : <SourceSelector sources={sources} />}
+                : <SourceSelector sources={supportedSources} owners={owners} />}
             <FileSelector />
             <RunButton />
           </SourceProvider>

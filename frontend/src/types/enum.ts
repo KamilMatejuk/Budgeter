@@ -1,6 +1,7 @@
 // Source from backend.ts
 export enum Source {
   MILLENNIUM = "Millennium",
+  REVOLUT = "Revolut",
   EDENRED = "Edenred",
 }
 

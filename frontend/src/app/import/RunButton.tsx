@@ -1,6 +1,6 @@
 "use client";
 
-import { useSelectedSourceAndFile } from "./ImportContext";
+import { useImportContext } from "./ImportContext";
 import { Dispatch, SetStateAction, useState } from "react";
 import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
@@ -11,10 +11,12 @@ import { TransactionWithId } from "@/types/backend";
 import InfoToast from "@/components/toast/InfoToast";
 import ButtonWithLoader from "@/components/button/ButtonWithLoader";
 import ButtonWithLink from "@/components/button/ButtonWithLink";
+import { Source } from "@/types/enum";
 
 async function importFile(
   file: File,
   source: string,
+  owner: string,
   setCounter: Dispatch<SetStateAction<number>>,
   setMaxCounter: Dispatch<SetStateAction<number>>,
   setImported: Dispatch<SetStateAction<number>>
@@ -29,12 +31,13 @@ async function importFile(
           setMaxCounter(rows.length);
           for (const [index, row] of rows.entries()) {
             setCounter(index + 1);
-            const { response, error } = await post<TransactionWithId>(`/api/source/${source}`, row);
+            const url = `/api/source/${source}/` + (source === Source.REVOLUT ? encodeURIComponent(owner) : "");
+            const { response, error } = await post<TransactionWithId>(url, row);
             if (error) {
               reject(new Error(error.message)); // reject the whole Promise
               return;
             }
-            if (response.tags.length == 0) setImported((prev) => prev + 1);
+            if (response.tags?.length == 0) setImported((prev) => prev + 1);
           }
           resolve(null);
         } catch (e) {
@@ -48,7 +51,7 @@ async function importFile(
 
 
 export default function RunButton() {
-  const { selectedFile, selectedSource, setSelectedFile, setSelectedSource } = useSelectedSourceAndFile();
+  const { selectedFile, selectedSource, selectedOwner, setSelectedFile, setSelectedSource, setSelectedOwner } = useImportContext();
   const [state, setState] = useState<'start' | 'importing' | 'finish' | 'failed'>('start');
   const [error, setError] = useState<Error | string | null>(null);
   const [counter, setCounter] = useState(0);
@@ -60,6 +63,7 @@ export default function RunButton() {
   async function handleReset() {
     setSelectedFile(null);
     setSelectedSource("");
+    setSelectedOwner("");
     setError(null);
     setState('start');
     setCounter(0);
@@ -69,11 +73,12 @@ export default function RunButton() {
 
   async function handleImport() {
     if (!selectedFile || !selectedSource) return;
+    if (selectedSource === Source.REVOLUT && !selectedOwner) return;
     setState('importing');
     try {
       const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
       if (!await backupStateBeforeUpdate(backupName)) throw new Error("Backup failed. Import aborted.");
-      await importFile(selectedFile, selectedSource, setCounter, setMaxCounter, setImported);
+      await importFile(selectedFile, selectedSource, selectedOwner, setCounter, setMaxCounter, setImported);
       setState('finish');
     } catch (err) {
       setFailed((err as Error).message);
@@ -99,7 +104,7 @@ export default function RunButton() {
           max={maxCounter}
           text="Import"
           onClick={handleImport}
-          disabled={!selectedFile || !selectedSource || error !== null}
+          disabled={!selectedFile || !selectedSource || (selectedSource === Source.REVOLUT && !selectedOwner) || error !== null}
           action="positive"
         />
       )}

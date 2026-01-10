@@ -176,6 +176,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/source/Revolut/{owner}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Transaction From Revolut */
+        post: operations["create_transaction_from_revolut_api_source_Revolut__owner__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/tag": {
         parameters: {
             query?: never;
@@ -1207,6 +1224,31 @@ export type components = {
             /** Min Outgoing Amount Monthly */
             min_outgoing_amount_monthly: number;
         };
+        /** RevolutRequest */
+        RevolutRequest: {
+            /** Id */
+            _id?: string;
+            /** Type */
+            Type: string;
+            /** Product */
+            Product: string;
+            /** Started Date */
+            "Started Date": string;
+            /** Completed Date */
+            "Completed Date": string;
+            /** Description */
+            Description: string;
+            /** Amount */
+            Amount: string;
+            /** Fee */
+            Fee: string;
+            /** Currency */
+            Currency: string;
+            /** State */
+            State: string;
+            /** Balance */
+            Balance: string;
+        };
         /** SavingsAccount */
         SavingsAccount: {
             /** Id */
@@ -1256,7 +1298,7 @@ export type components = {
          * Source
          * @enum {string}
          */
-        Source: "Millennium" | "Edenred";
+        Source: "Millennium" | "Revolut" | "Edenred";
         /** StockAccount */
         StockAccount: {
             /** Id */
@@ -1501,6 +1543,7 @@ export type PatchAccountValueRequest = components['schemas']['PatchAccountValueR
 export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
+export type RevolutRequest = components['schemas']['RevolutRequest'];
 export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
@@ -1851,6 +1894,43 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["MillenniumRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"] | {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_transaction_from_revolut_api_source_Revolut__owner__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                owner: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevolutRequest"];
             };
         };
         responses: {

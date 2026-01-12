@@ -30,3 +30,15 @@ class MonthComparisonRow(PyBaseModel, metaclass=WithId):
     value_avg: float
     currency: Currency
     subitems: list["MonthComparisonRow"] = []
+
+
+class TagCompositionItem(PyBaseModel):
+    tag_name: str # name of Tag
+    value: float
+    colour: str
+
+class TagComposition(PyBaseModel, metaclass=WithId):
+    tag_id: str # id of Tag
+    values_total: list[TagCompositionItem]
+    values_year: list[TagCompositionItem]
+    values_month: list[TagCompositionItem]

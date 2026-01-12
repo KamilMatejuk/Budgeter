@@ -10,10 +10,10 @@ from models.products import CardWithId
 from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
-from routes.tag import get_children, get_all_children
+from routes.tag import get_children, get_all_children, get_name as get_tag_name
 from models.products import PersonalAccountWithId, Currency
 from routes.sources.utils import mark_account_value_in_history
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem
 
 router = APIRouter()
 
@@ -179,14 +179,16 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
 @router.get("/month_comparison", response_model=list[MonthComparisonRow])
 async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
     root_tags = await get(db, "tags", Tag, {"parent": None})
+    request_id = hash(datetime.datetime.now().isoformat())
     response = []
     for tag in root_tags:
-        row = await _calculate_tag_comparison(str(tag.id))
+        row = await _calculate_tag_comparison(str(tag.id), request_id)
         response.append(row)
     return response
 
 @alru_cache(maxsize=128)
-async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
+async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthComparisonRow:
+    # request_id is to avoid cross-request caching
     db: AsyncIOMotorDatabase = await get_db()
     tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
     first: TransactionWithId = await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)
@@ -208,13 +210,13 @@ async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
         this_tag_transactions: list[TransactionWithId] = await get(
             db, "transactions", TransactionWithId, {**condition, "tags": {"$in": this_tag_id, "$nin": child_tag_ids}})
         # sum and convert to PLN
-        all_child_values.append(Value.sum(t.value * Currency.convert(t.currency, Currency.PLN) for t in all_child_transactions))
-        this_tag_values.append(Value.sum(t.value * Currency.convert(t.currency, Currency.PLN) for t in this_tag_transactions))
+        all_child_values.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in all_child_transactions))
+        this_tag_values.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in this_tag_transactions))
 
     # children
     subitems = []
     for child in await get_children(tag, db):
-        subitem = await _calculate_tag_comparison(str(child.id))
+        subitem = await _calculate_tag_comparison(str(child.id), request_id)
         subitems.append(subitem)
     # only include Other, if its not zero and there are other subitems
     if len(subitems) > 0 and any(v > 0 for v in this_tag_values):
@@ -235,3 +237,61 @@ async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
         value_avg=Value.avg(all_child_values),
         subitems=subitems
     )
+
+############################## Tag Composition #############################
+
+@router.get("/tag_composition", response_model=list[TagComposition])
+async def get_tag_composition(db: AsyncIOMotorDatabase = Depends(get_db)):
+    root_tags = await get(db, "tags", Tag, {"parent": None})
+    response = []
+    for tag in root_tags:
+        comp = await _calculate_tag_composition(str(tag.id))
+        response.extend(comp)
+    return response
+
+async def _calculate_tag_composition(tag_id: str) -> list[TagComposition]:
+    db: AsyncIOMotorDatabase = await get_db()
+    tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
+    
+    condition = {
+        "deleted": False,
+        "$or": [{"debt_person": None}, {"debt_person": ""}],
+        "tags": {"$in": [str(tag.id)]},
+    }
+    this_month = Date.this_month()
+    this_year = Date.add_months(this_month, -11)
+    
+    transactions_total: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
+    transactions_year: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {**condition, "date": Date.condition(this_year)})
+    transactions_month: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {**condition, "date": Date.condition(this_month)})
+    
+    async def _aggregate(transactions: list[TransactionWithId]) -> list[TagCompositionItem]:
+        tag_map = {}
+        for transaction in transactions:
+            converted_value = Value.multiply(transaction.value, Currency.convert(transaction.currency, Currency.PLN))
+            for other_tags in transaction.tags:
+                if other_tags == str(tag.id): continue
+                tag_map[other_tags] = Value.add(tag_map.get(other_tags, 0.0), converted_value)
+        res = []
+        for t, v in tag_map.items():
+            comp_tag = await get(db, "tags", Tag, {"_id": t}, one=True)
+            res.append(TagCompositionItem(
+                tag_name=await get_tag_name(comp_tag, db) if comp_tag else t,
+                colour=comp_tag.colour if comp_tag else "#000000",
+                value=abs(v),
+            ))
+        return res
+
+    response = [TagComposition(
+        _id=str(PyObjectId()),
+        tag_id=tag_id,
+        values_total=await _aggregate(transactions_total),
+        values_year=await _aggregate(transactions_year),
+        values_month=await _aggregate(transactions_month),
+    )]
+    
+    for child in await get_children(tag, db):
+        response.extend(await _calculate_tag_composition(str(child.id)))
+
+    return response
+

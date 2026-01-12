@@ -1,13 +1,15 @@
 'use client';
 
-import { BarElement, CategoryScale, Chart, ChartOptions, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { ArcElement, BarElement, CategoryScale, Chart, ChartOptions, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
+import { PropsWithChildren } from "react";
+import { Bar, Line, Pie } from "react-chartjs-2";
 
 Chart.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  ArcElement,
   BarElement,
   Title,
   Tooltip,
@@ -35,13 +37,26 @@ const Options = {
   },
 }
 
-export interface LineChartProps {
+
+interface ChartContainerProps extends PropsWithChildren {
+  width?: string;
+  height?: string;
+}
+
+export function ChartContainer({ width = "100%", height = "300px", children }: ChartContainerProps) {
+  return (<div style={{ width, height }}>{children}</div>);
+}
+
+
+// ******************************** LINE CHART ********************************
+
+export interface LineChartProps extends ChartContainerProps {
   data: number[];
   labels: string[];
 }
 
 const LineChartOptions = { ...Options }
-// @ts-expect-error: Property 'stacked' does not exist on type.ts(2339)
+// @ts-expect-error: Property 'elements' does not exist on type.ts(2339)
 LineChartOptions.elements = {
   point: {
     radius: 0,
@@ -52,9 +67,9 @@ LineChartOptions.elements = {
   },
 };
 
-export function LineChart({ data, labels }: LineChartProps) {
+export function LineChart({ data, labels, ...props }: LineChartProps) {
   return (
-    <div style={{ width: "100%", height: "300px" }}>
+    <ChartContainer {...props}>
       <Line options={LineChartOptions} data={{
         labels,
         datasets: [{
@@ -63,11 +78,14 @@ export function LineChart({ data, labels }: LineChartProps) {
           tension: 0.3,
         }],
       }} />
-    </div>
+    </ChartContainer>
   );
 }
 
-export interface DoubleBarChartProps {
+
+// ***************************** DOUBLE BAR CHART ****************************
+
+export interface DoubleBarChartProps extends ChartContainerProps {
   dataPositive: number[];
   dataNegative: number[];
   labels: string[];
@@ -79,10 +97,9 @@ DoubleBarChartOptions.scales.x.stacked = true;
 // @ts-expect-error: Property 'stacked' does not exist on type.ts(2339)
 DoubleBarChartOptions.scales.y.stacked = true;
 
-
-export function DoubleBarChart({ dataPositive, dataNegative, labels }: DoubleBarChartProps) {
+export function DoubleBarChart({ dataPositive, dataNegative, labels, ...props }: DoubleBarChartProps) {
   return (
-    <div style={{ width: "100%", height: "300px" }}>
+    <ChartContainer {...props}>
       <Bar
         options={DoubleBarChartOptions}
         data={{
@@ -101,6 +118,41 @@ export function DoubleBarChart({ dataPositive, dataNegative, labels }: DoubleBar
           ],
         }}
       />
-    </div>
+    </ChartContainer>
+  );
+}
+
+
+// ******************************** PIE CHART ********************************
+
+export interface PieChartProps extends ChartContainerProps {
+  data: number[];
+  labels: string[];
+  colors: string[];
+}
+
+const PieChartOptions = { ...Options }
+// @ts-expect-error: Property 'display' does not exist on type.ts(2339)
+PieChartOptions.scales.y.display = false;
+// @ts-expect-error: Property 'display' does not exist on type.ts(2339)
+PieChartOptions.scales.x.display = false;
+
+export function PieChart({ data, labels, colors, ...props }: PieChartProps) {
+  return (
+    <ChartContainer {...props}>
+      <Pie
+        options={PieChartOptions}
+        data={{
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor: colors.map((c) => `${c}cc`), // add alpha
+              borderWidth: 0,
+            },
+          ],
+        }}
+      />
+    </ChartContainer>
   );
 }

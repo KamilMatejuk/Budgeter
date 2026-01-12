@@ -4,6 +4,7 @@ import IncomExpenseHistory from "@/components/dashboard/IncomeExpenseHistory";
 import MonthComparison from "@/components/dashboard/MonthComparison";
 import Requirements from "@/components/dashboard/Requirements";
 import TagComparison from "@/components/dashboard/TagComparison";
+import TagComposition from "@/components/dashboard/TagComposition";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
@@ -33,6 +34,8 @@ export default async function Home() {
       <MonthComparison />
       <SectionHeader text="Tag Comparison" subtext={`See how your selected tag behaves in previous periods`} />
       <TagComparison />
+      <SectionHeader text="Tag Composition" subtext={`See how your selected tag is composed between different categories`} />
+      <TagComposition />
     </>
   );
 }

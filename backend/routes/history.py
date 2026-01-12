@@ -174,7 +174,8 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
 async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = _range_to_dates(range)
     if start is None:
-        start = (await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)).date
+        first: TransactionWithId = await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)
+        start = first.date if first else Date.today()
     incomes = []
     expenses = []
     for month in Date.iterate_months(start):
@@ -211,7 +212,7 @@ async def _calculate_tag_comparison(tag_id: str) -> MonthComparisonRow:
     # values
     all_child_values = []
     this_tag_values = []
-    for month in reversed(list(Date.iterate_months(first.date))):
+    for month in reversed(list(Date.iterate_months(first.date if first else Date.today()))):
         condition = {
             "deleted": False,
             "date": Date.condition(month, Date.month_end(month)),

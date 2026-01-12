@@ -5,8 +5,8 @@ import ChartWithRanges from "./ChartWithRanges";
 import { useAccountValueHistory, usePersonalAccounts, useTotalAccountValueHistory } from "@/app/api/query";
 import { useState } from "react";
 import { getDaysFromValues, getDaysInRange } from "@/const/date";
-import ButtonWithLoader from "../button/ButtonWithLoader";
 import { getAccountName } from "../table/cells/AccountNameUtils";
+import ChartWithOptions from "./ChartWithOptions";
 
 
 export default function AccountsHistoryChart() {
@@ -21,16 +21,23 @@ export default function AccountsHistoryChart() {
   const labels = days.length ? days : getDaysFromValues(values); // fallback for full range
 
   return (
-    <div className="w-full grid grid-cols-[1fr_200px] gap-4">
-      {/* chart */}
-      <ChartWithRanges range={range} setRange={setRange} chart={{ type: 'line', props: { data: values, labels } }} />
-      {/* options */}
-      <div className="flex flex-col gap-1">
-        <ButtonWithLoader text="All" action={account === "" ? "positive" : "neutral"} className="flex-1" onClick={async () => setAccount("")} />
-        {accounts.map((a) => (
-          <ButtonWithLoader key={a._id} text={getAccountName(a)} action={a._id === account ? "positive" : "neutral"} className="flex-1" onClick={async () => setAccount(a._id)} />
-        ))}
-      </div>
-    </div>
+    <ChartWithOptions
+      chart={<ChartWithRanges range={range} setRange={setRange} chart={{ type: 'line', props: { data: values, labels } }} />}
+      options={[
+        {
+          id: "",
+          name: "All",
+          selected: account === "",
+        },
+        ...accounts.map((a) => (
+          {
+            id: a._id,
+            name: getAccountName(a),
+            selected: account === a._id,
+          }
+        ))
+      ]}
+      selectOption={setAccount}
+    />
   );
 }

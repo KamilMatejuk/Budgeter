@@ -8,6 +8,7 @@ import AmountInputWithError, { requiredNonNegativeAmount } from "../../form/Amou
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import { patch } from "@/app/api/fetch";
 import { backupStateBeforeUpdate } from "../update/utils";
+import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 
 
 const FormSchema = z.object({
@@ -17,7 +18,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 async function submit(values: FormSchemaType, item?: PersonalAccountWithId | null) {
-  const backupName = `Before value edit of "${item?.name.toLowerCase()}"`;
+  const backupName = `Before value edit of "${item ? getAccountName(item): "Unknown Account"}"`;
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item?._id, date: getISODateString(values.date), value: values.value } as PatchAccountValueRequest;
   const { error } = await patch("/api/history/account_value", val);

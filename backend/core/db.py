@@ -25,13 +25,14 @@ async def setup_db():
 
 
 async def create_indexes(db: AsyncIOMotorDatabase):
-    await db["transactions"].drop_indexes()
-    await db["transactions"].create_index("hash", unique=True)
+    await db["source_parsed"].drop_indexes()
+    await db["source_parsed"].create_index("hash", unique=True)
     logger.debug("Created indexes")
 
 
 async def clear_db(db: AsyncIOMotorDatabase):
     await db["transactions"].delete_many({})
+    await db["source_parsed"].delete_many({})
     await db["card_monthly_history"].delete_many({})
     await db["account_daily_history"].delete_many({})
     logger.debug("Cleared database")

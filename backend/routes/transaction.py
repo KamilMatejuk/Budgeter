@@ -1,5 +1,4 @@
 import datetime
-import hashlib
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -14,16 +13,15 @@ from models.transaction import Transaction, TransactionPartial, TransactionSplit
 single_router = APIRouter()
 multi_router = APIRouter()
 
-factory = CRUDRouterFactory(single_router, "transactions", Transaction, TransactionPartial, TransactionWithId, "hash")
+factory = CRUDRouterFactory(single_router, "transactions", Transaction, TransactionPartial, TransactionWithId)
 factory.create_get_by_id()
 factory.create_patch()
 
 
 @single_router.post("", response_model=TransactionWithId)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
-    data.hash = hashlib.sha256(str({k: v for k, v in data.model_dump().items() if k != "id"}).encode()).hexdigest()
     data.organisation = await match_organisation_pattern(data.organisation, db)
-    return await create(db, "transactions", TransactionWithId, data, "hash")
+    return await create(db, "transactions", TransactionWithId, data)
 
 
 @single_router.delete("/{id}", response_model=dict)
@@ -58,11 +56,10 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
         for i, item in enumerate(data.items):
             new_transaction = transaction.model_copy(deep=True, update={
                 "id": PyObjectId(),
-                "hash": hashlib.sha256(f"{transaction.hash}_{i}".encode()).hexdigest(),
                 "title": item.title,
                 "value": item.value,
             })
-            new_transaction = await create(db, "transactions", TransactionWithId, new_transaction, "hash")
+            new_transaction = await create(db, "transactions", TransactionWithId, new_transaction)
             new_transactions.append(new_transaction)
         transaction.deleted = True
         await patch(db, "transactions", TransactionPartial, transaction)

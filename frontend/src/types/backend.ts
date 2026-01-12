@@ -159,6 +159,24 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/source/parsed/{source}/{hash}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check Parsed */
+        get: operations["check_parsed_api_source_parsed__source___hash__get"];
+        put?: never;
+        /** Mark Parsed */
+        post: operations["mark_parsed_api_source_parsed__source___hash__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/source/Millennium": {
         parameters: {
             query?: never;
@@ -1299,6 +1317,19 @@ export type components = {
          * @enum {string}
          */
         Source: "Millennium" | "Revolut" | "Edenred";
+        /** SourceParsed */
+        SourceParsed: {
+            /** Id */
+            _id?: string;
+            /** Hash */
+            hash: string;
+            source: components["schemas"]["Source"];
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+        };
         /** StockAccount */
         StockAccount: {
             /** Id */
@@ -1384,8 +1415,6 @@ export type components = {
         Transaction: {
             /** Id */
             _id?: string;
-            /** Hash */
-            hash: string;
             /** Account */
             account: string;
             /**
@@ -1419,8 +1448,6 @@ export type components = {
         TransactionPartial: {
             /** Id */
             _id?: string;
-            /** Hash */
-            hash?: string | null;
             /** Account */
             account?: string | null;
             /** Date */
@@ -1468,8 +1495,6 @@ export type components = {
         TransactionWithId: {
             /** Id */
             _id: string;
-            /** Hash */
-            hash: string;
             /** Account */
             account: string;
             /**
@@ -1548,6 +1573,7 @@ export type SavingsAccount = components['schemas']['SavingsAccount'];
 export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
 export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
 export type Source = components['schemas']['Source'];
+export type SourceParsed = components['schemas']['SourceParsed'];
 export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];
@@ -1880,6 +1906,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": string[];
+                };
+            };
+        };
+    };
+    check_parsed_api_source_parsed__source___hash__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source: components["schemas"]["Source"];
+                hash: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourceParsed"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_parsed_api_source_parsed__source___hash__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source: components["schemas"]["Source"];
+                hash: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourceParsed"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

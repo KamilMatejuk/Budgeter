@@ -37,7 +37,6 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 async function submit(values: FormSchemaType, url: string, accounts: PersonalAccountWithId[], cash: CashWithId[]): Promise<boolean> {
   const val = {
     ...values,
-    hash: "",
     cash: values.cash == Source.CASH,
     date: getISODateString(values.date),
     currency: values.cash == Source.CASH

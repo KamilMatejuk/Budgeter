@@ -4,7 +4,6 @@ from models.base import PyBaseModel, Partial, WithId
 from models.products import Currency
 
 class Transaction(PyBaseModel):
-    hash: str
     account: str # id of PersonalAccount or Cash
     date: date
     title: str

@@ -110,7 +110,7 @@ export default function RunButton() {
       )}
       {state === 'finish' && (
         <>
-          <InfoToast message={`Import completed. ${imported} transactions imported.`} />
+          <InfoToast message={`Import completed. ${imported} new transactions imported.`} />
           <ButtonWithLink
             text="See new transactions"
             href="/transactions/new"

@@ -7,7 +7,7 @@ from core.utils import Value, Date
 from models.base import PyObjectId
 from models.products import PersonalAccountWithId
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
-from routes.sources.utils import mark_transaction_in_history, match_organisation_pattern
+from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
 from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
 
 single_router = APIRouter()
@@ -37,7 +37,7 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
         if account: # it can be cash transaction with no account history to update
             date = transaction.date.strftime("%Y-%m-%d")
-            await mark_transaction_in_history(account, date, Value.parse_negate(transaction.value), db)
+            await mark_account_value_in_history(account, date, Value.parse_negate(transaction.value), False, db)
         return {}
     return await inner()
 

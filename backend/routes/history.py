@@ -6,12 +6,13 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from models.tag import Tag
 from core.utils import Value, Date
-from models.base import PyBaseModel, PyObjectId
 from models.products import CardWithId
-from routes.tag import get_children, get_all_children
-from routes.base import fail_wrapper, get, patch, create
+from routes.base import fail_wrapper, get
+from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
+from routes.tag import get_children, get_all_children
 from models.products import PersonalAccountWithId, Currency
+from routes.sources.utils import mark_account_value_in_history
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow
 
 router = APIRouter()
@@ -148,23 +149,7 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
         before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
                                                 {"account": str(account.id), "date": {"$lte": data.date.isoformat()}}, "date", one=True)
         diff = data.value - (before.value if before else 0.0)
-        # add curr day
-        if before.date == data.date:
-            before.value = data.value
-            before.manual_update = True
-            await patch(db, "account_daily_history", AccountDailyHistory, before)
-        else:
-            before = AccountDailyHistory(account=str(account.id), date=data.date.isoformat(), value=data.value, manual_update=True)
-            await create(db, "account_daily_history", AccountDailyHistory, before)
-        # update all following days
-        history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
-                                                       {"date": {"$gte": data.date.isoformat()}, "account": str(account.id)}, "date")
-        for i, record in enumerate(history):
-            new_value = Value.add(record.value, diff)
-            await db["account_daily_history"].update_one({"_id": record.id}, {"$set": {"value": new_value, "manual_update": i == 0}})
-        # update final value
-        account.value = Value.add(account.value, diff)
-        await patch(db, "personal_account", PersonalAccountWithId, account)
+        await mark_account_value_in_history(account, data.date.isoformat(), diff, True, db)
         return {}
     return await inner()
 

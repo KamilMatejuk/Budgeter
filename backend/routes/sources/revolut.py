@@ -4,15 +4,11 @@ from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.utils import Value
-from core.logger import get_logger
 from routes.base import get, create
 from models.base import PyBaseModel
 from models.transaction import Transaction, TransactionWithId
-from routes.sources.utils import mark_transaction_in_history, match_organisation_pattern
+from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
 from models.products import PersonalAccountWithId, Currency
-
-
-logger = get_logger(__name__)
 
 
 class RevolutRequest(PyBaseModel):
@@ -42,6 +38,8 @@ class RevolutTransactionType(enum.Enum):
 
 
 async def create_revolut_transaction(data: RevolutRequest, owner: str, db: AsyncIOMotorDatabase):
+    if data.state != "COMPLETED": return {}
+
     data.type = RevolutTransactionType(data.type)
     account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId,
                                                {"bank": "Revolut", "owner": owner, "currency": data.currency}, one=True)
@@ -55,7 +53,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
     date = data.date_start.split(" ")[0]
 
     if data.type == RevolutTransactionType.EXCHANGE:
-        await mark_transaction_in_history(account, date, value, db)
+        await mark_account_value_in_history(account, date, value, False, db)
         return {}
 
     if data.type == RevolutTransactionType.CARD_PAYMENT:
@@ -68,7 +66,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_transaction_in_history(account, date, item.value, db)
+        await mark_account_value_in_history(account, date, value, False, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == RevolutTransactionType.CARD_REFUND:
@@ -81,7 +79,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_transaction_in_history(account, date, item.value, db)
+        await mark_account_value_in_history(account, date, value, False, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == RevolutTransactionType.TRANSFER:
@@ -94,11 +92,11 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_transaction_in_history(account, date, item.value, db)
+        await mark_account_value_in_history(account, date, value, False, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == RevolutTransactionType.DEPOSIT:
-        await mark_transaction_in_history(account, date, value, db)
+        await mark_account_value_in_history(account, date, value, False, db)
         return {}
 
     raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")

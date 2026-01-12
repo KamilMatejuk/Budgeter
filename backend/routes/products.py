@@ -4,7 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Date
 from routes.base import CRUDRouterFactory, create, get, patch
-from models.history import AccountDailyHistory
+from routes.sources.utils import mark_account_value_in_history
 from models.products import (
     CapitalInvestmentWithId, CardWithId, Cash, CashPartial, CashWithId, MonthlyExpenseWithId, MonthlyIncomeWithId,
     PersonalAccount, PersonalAccountPartial,
@@ -33,25 +33,19 @@ personal_account_factory.create_get()
 personal_account_factory.create_get_by_id()
 personal_account_factory.create_delete()
 
-async def _mark_initial_balance_in_history(item: PersonalAccountWithId, db: AsyncIOMotorDatabase):
-    date = Date.to_string(Date.today())
-    history: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(item.id), "date": date}, one=True)
-    if history is None:
-        history = AccountDailyHistory(account=str(item.id), date=date, value=item.value, manual_update=True)
-        await db["account_daily_history"].insert_one(history.model_dump(by_alias=True, mode="json"))
-    else:
-        await db["account_daily_history"].update_one({"_id": str(history.id)}, {"$set": {"value": item.value, "manual_update": True}})
 
 @personal_account_router.post("", response_model=PersonalAccountWithId)
 async def create_personalaccount(data: PersonalAccount, db: AsyncIOMotorDatabase = Depends(get_db)):
-    item = await create(db, "personal_account", PersonalAccountWithId, data)
-    await _mark_initial_balance_in_history(item, db)
+    item: PersonalAccountWithId = await create(db, "personal_account", PersonalAccountWithId, data)
+    await mark_account_value_in_history(item, Date.today().isoformat(), item.value, True, db)
     return item
 
 @personal_account_router.patch("", response_model=PersonalAccountWithId)
 async def patch_personalaccount(data: PersonalAccountPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
-    item = await patch(db, "personal_account", PersonalAccountWithId, data)
-    await _mark_initial_balance_in_history(item, db)
+    before: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
+    item: PersonalAccountWithId = await patch(db, "personal_account", PersonalAccountWithId, data)
+    if before.value != item.value:
+        await mark_account_value_in_history(item, Date.today().isoformat(), item.value, True, db)
     return item
 
 async def get_personalaccount_by_number(number: str, db: AsyncIOMotorDatabase = Depends(get_db)):

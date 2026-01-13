@@ -11,6 +11,8 @@ import { backupStateBeforeUpdate } from "../update/utils";
 import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 import { usePersonalAccountManualUpdates } from "@/app/api/query";
 import InfoToast from "@/components/toast/InfoToast";
+import { getDateString } from "@/const/date";
+import { CURRENCY_SYMBOLS } from "@/types/enum";
 
 
 const FormSchema = z.object({
@@ -36,11 +38,13 @@ export default function SetAccountValueOnDateModal({ url, item, open, onClose }:
     validate: withZodSchema(FormSchema),
   });
 
-  const updates = usePersonalAccountManualUpdates(item?._id || "");
+  const updates = usePersonalAccountManualUpdates(item?._id || "")
+    .map(update => `${getDateString(update.date)} to ${update.value} ${item ? CURRENCY_SYMBOLS[item.currency] : ""}`);
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Set value on specific date">
-      {updates.length > 0 && <InfoToast message={`Latest updates:\n${updates.map(update => `${update.date}: ${update.value}`).join("\n")}`} />}
+      {updates.length > 0 && <InfoToast message={
+        `Latest updates:\n${updates.join("\n")}`} />}
       <DateInputWithError formik={formik} formikName="date" label="Date" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
     </Modal>

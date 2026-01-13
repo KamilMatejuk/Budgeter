@@ -4,7 +4,7 @@ import { CashWithId, ChartRange, MonthComparisonRow, OrganisationWithId, Persona
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
-import { getDebtTransactions } from "./getters";
+import { _sortPersonalAccounts, getDebtTransactions } from "./getters";
 
 function _useFetchWrapper<T>(queryKey: (string | number)[], revalidateKey: string[], url: string) {
   const { data } = useQuery({
@@ -34,11 +34,12 @@ export function useCash(id: string) {
 }
 
 export function usePersonalAccounts() {
-  return _useFetchWrapper<PersonalAccountWithId[]>(
+  const data = _useFetchWrapper<PersonalAccountWithId[]>(
     ["personal_account"],
     ["personal_account"],
     `/api/products/personal_account`
   ) || [];
+  return _sortPersonalAccounts(data);
 }
 
 export function usePersonalAccount(id: string) {

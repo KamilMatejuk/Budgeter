@@ -36,8 +36,18 @@ export async function getCash() {
   return await get<CashWithId[]>("/api/products/cash", ["cash"]);
 }
 
+export const _sortPersonalAccounts = (accounts: PersonalAccountWithId[]) => {
+  return accounts.sort((a, b) => {
+    if (a.bank !== b.bank) return a.bank.localeCompare(b.bank);
+    if (a.type !== b.type) return a.type.localeCompare(b.type);
+    return a.owner.localeCompare(b.owner);
+  });
+};
 export async function getPersonalAccounts() {
-  return await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
+  const { response, error } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
+  // sort accounts by bank, type, owner
+  if (response) return { response: _sortPersonalAccounts(response), error: null };
+  return { response: null, error };
 }
 
 export async function getStockAccounts() {

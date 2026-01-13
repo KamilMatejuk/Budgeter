@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { SingleInputWithErrorProps } from "./InputWithError";
-import { TagWithId } from "@/types/backend";
 import CellTag, { getTagParts } from "../table/cells/CellTag";
 import { useOrganisation, useTags } from "@/app/api/query";
 import SearchableTextInputWithError from "./SearchableTextInputWithError";
@@ -18,23 +17,15 @@ const classes = {
   selectedTag: "flex items-center gap-1 mb-1 mr-1",
 };
 
-function getTagOptions(tags: TagWithId[]) {
-  return tags.map(tag => (
-    { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
-  )).sort((a, b) => {
-    const depthA = (a.name.match(/\//g) || []).length;
-    const depthB = (b.name.match(/\//g) || []).length;
-    if (depthA !== depthB) return depthA - depthB; // fewer slashes first
-    return a.name.localeCompare(b.name); // same depth → alphabetical
-  });
-}
 interface TagsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   organisationName?: string;
 }
 
 export default function TagsInputWithError<T>({ formik, formikName, label, organisationName }: TagsInputWithErrorProps<T>) {
   const tags = useTags();
-  const tagOptions = useMemo(() => getTagOptions(tags), [tags]);
+  const tagOptions = useMemo(() => tags.map(tag => (
+    { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
+  )), [tags]);
 
   const suggestedTagOptions = organisationName
     ? (useOrganisation(organisationName)?.tags || []).map(id => tagOptions.find(t => t.id === id)).filter(t => t !== undefined)

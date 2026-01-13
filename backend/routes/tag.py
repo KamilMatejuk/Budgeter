@@ -6,26 +6,29 @@ from models.tag import Tag, TagPartial, TagWithId, TagRequest
 from core.db import get_db
 
 
-async def get_parent(tag: Tag, db: AsyncIOMotorDatabase) -> Tag | None:
+async def get_parent(tag: Tag, db: AsyncIOMotorDatabase) -> TagWithId | None:
     if not tag.parent: return None
-    return await get(db, "tags", Tag, {"_id": tag.parent}, one=True)
+    return await get(db, "tags", TagWithId, {"_id": tag.parent}, one=True)
 
 
-async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[Tag]:
+async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId]:
     if not tag.children: return []
     children = []
     for child_id in tag.children:
-        child = await get(db, "tags", Tag, {"_id": child_id}, one=True)
+        child = await get(db, "tags", TagWithId, {"_id": child_id}, one=True)
         if not child: continue
         children.append(child)
     return children
 
 
-async def get_all_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[Tag]:
-    children = []
-    for child in await get_children(tag, db):
-        children.extend(await get_all_children(child, db))
-    return children
+async def get_all_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId]:
+    res = []
+    children = await get_children(tag, db)
+    children = sorted(children, key=lambda t: t.name.lower())
+    for child in children:
+        res.extend([child] + await get_all_children(child, db))
+    return res
+
 
 async def get_name(tag: Tag, db: AsyncIOMotorDatabase) -> str:
     if not tag.parent: return tag.name
@@ -35,8 +38,20 @@ async def get_name(tag: Tag, db: AsyncIOMotorDatabase) -> str:
 
 router = APIRouter()
 factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
-factory.create_get()
 factory.create_get_by_id()
+
+
+@router.get("", response_model=list[TagWithId])
+async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        root_tags = await get(db, "tags", TagWithId, {"parent": None})
+        root_tags = sorted(root_tags, key=lambda t: t.name.lower())
+        response = []
+        for tag in root_tags:
+            response.extend([tag] + await get_all_children(tag, db))
+        return response
+    return await inner()
 
 
 @router.post("", response_model=TagWithId)

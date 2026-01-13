@@ -140,12 +140,26 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
 class PatchAccountValueRequest(PyBaseModel):
     value: float
 
+async def remove_leading_zero_history(account: PersonalAccountWithId, db: AsyncIOMotorDatabase):
+    hist: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
+                                                {"account": str(account.id)}, "date", reverse=True)
+    to_remove = []
+    for h in hist:
+        if h.value != 0.0: break
+        to_remove.append(h)
+    # leave one zero record to avoid empty history
+    if len(to_remove) > 1:
+        to_remove = to_remove[:-1]
+    for h in to_remove:
+        await db["account_daily_history"].delete_one({"_id": str(h.id)})
+
 @router.patch("/account_value", response_model=dict)
 async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
         await mark_account_value_in_history(account, None, data.value, db)
+        await remove_leading_zero_history(account, db)
         return {}
     return await inner()
 

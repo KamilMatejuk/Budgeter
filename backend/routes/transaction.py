@@ -7,11 +7,12 @@ from core.db import get_db
 from models.tag import TagWithId
 from core.utils import Value, Date
 from models.base import PyObjectId
+from routes.tag import get_name as get_tag_name
 from models.products import PersonalAccountWithId
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
 from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
 from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
-from routes.tag import get_name as get_tag_name
+from routes.history import remove_leading_zero_history
 
 single_router = APIRouter()
 multi_router = APIRouter()
@@ -58,12 +59,7 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
         if account: # it can be cash transaction with no account history to update
             date = transaction.date.strftime("%Y-%m-%d")
             await mark_account_value_in_history(account, date, Value.parse_negate(transaction.value), db)
-            # remove leading history with zeros (if first item in history changed)
-            hist: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
-                                                        {"account": str(account.id)}, "date", reverse=False)
-            for h in hist:
-                if h.value != 0.0: break
-                await db["account_daily_history"].delete_one({"_id": str(h.id)})
+            await remove_leading_zero_history(account, db)
         return {}
     return await inner()
 

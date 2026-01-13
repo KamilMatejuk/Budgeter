@@ -3,10 +3,17 @@
 import ButtonWithLoader from "@/components/button/ButtonWithLoader";
 import { useImportContext } from "./ImportContext";
 import { Source } from "@/types/enum";
+import InfoToast from "@/components/toast/InfoToast";
 
 interface SourceSelectorProps {
   sources: string[];
   owners: string[];
+}
+
+const downloadInstructions: Record<Source, string> = {
+  [Source.REVOLUT]: "In app home screen, go to 'Accounts', select any account, tap on 'Statement', choose all accounts and select excel format. Share file to google drive.",
+  [Source.MILLENNIUM]: "On the website, go to 'Moje Finanse', select 'Wyciąg z historii transakcji'. Confirm in app. Correct the type from PDF to CSV and re-download the file.",
+  [Source.EDENRED]: "",
 }
 
 export default function SourceSelector({ sources, owners }: SourceSelectorProps) {
@@ -14,6 +21,7 @@ export default function SourceSelector({ sources, owners }: SourceSelectorProps)
 
   return (
     <>
+      {selectedSource && (<InfoToast message={`To download report:\n${downloadInstructions[selectedSource as Source]}`} />)}
       <div className="flex flex-wrap gap-2 justify-center overflow-x-auto py-2">
         {sources.map((source, i) => (
           <ButtonWithLoader

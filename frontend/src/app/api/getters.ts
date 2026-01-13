@@ -11,6 +11,7 @@ import {
   OrganisationWithId,
   PersonalAccountWithId,
   SavingsAccountWithId,
+  Source,
   StockAccountWithId,
   TagComposition,
   TagWithId,
@@ -21,7 +22,7 @@ import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
 
 
 export async function getSources() {
-  return await get<string[]>("/api/source");
+  return await get<Source[]>("/api/source");
 }
 
 export async function getBackups() {

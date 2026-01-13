@@ -15,7 +15,7 @@ import { Source } from "@/types/enum";
 
 async function importFile(
   file: File,
-  source: string,
+  source: Source,
   owner: string,
   setCounter: Dispatch<SetStateAction<number>>,
   setMaxCounter: Dispatch<SetStateAction<number>>,
@@ -62,7 +62,7 @@ export default function RunButton() {
 
   async function handleReset() {
     setSelectedFile(null);
-    setSelectedSource("");
+    setSelectedSource(null);
     setSelectedOwner("");
     setError(null);
     setState('start');
@@ -78,7 +78,7 @@ export default function RunButton() {
     try {
       const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
       if (!await backupStateBeforeUpdate(backupName)) throw new Error("Backup failed. Import aborted.");
-      await importFile(selectedFile, selectedSource, selectedOwner, setCounter, setMaxCounter, setImported);
+      await importFile(selectedFile, selectedSource as Source, selectedOwner, setCounter, setMaxCounter, setImported);
       setState('finish');
     } catch (err) {
       setFailed((err as Error).message);

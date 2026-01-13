@@ -6,7 +6,7 @@ import { Source } from "@/types/enum";
 import InfoToast from "@/components/toast/InfoToast";
 
 interface SourceSelectorProps {
-  sources: string[];
+  sources: Source[];
   owners: string[];
 }
 
@@ -21,7 +21,7 @@ export default function SourceSelector({ sources, owners }: SourceSelectorProps)
 
   return (
     <>
-      {selectedSource && (<InfoToast message={`To download report:\n${downloadInstructions[selectedSource as Source]}`} />)}
+      {selectedSource && (<InfoToast message={`To download report:\n${downloadInstructions[selectedSource]}`} />)}
       <div className="flex flex-wrap gap-2 justify-center overflow-x-auto py-2">
         {sources.map((source, i) => (
           <ButtonWithLoader

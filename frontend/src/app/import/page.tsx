@@ -17,7 +17,7 @@ export default async function Import() {
   const { response: accounts, error: accountsError } = await getPersonalAccounts();
   const error = sourcesError || accountsError;
 
-  const supportedSources = (sources || []).filter(source => source != Source.EDENRED);
+  const supportedSources = (sources || []).filter(source => source != Source.EDENRED) as Source[];
   const owners = new Array(...new Set((accounts || [])
     .filter(account => account.bank == Source.REVOLUT)
     .map(account => account.owner)));

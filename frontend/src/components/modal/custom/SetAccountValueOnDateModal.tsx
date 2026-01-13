@@ -4,13 +4,13 @@ import { z } from "zod";
 import { PatchAccountValueRequest, PersonalAccountWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import AmountInputWithError, { requiredNonNegativeAmount } from "../../form/AmountInputWithError";
+import AmountInputWithError, { requiredNonZeroAmount } from "../../form/AmountInputWithError";
 import { patch } from "@/app/api/fetch";
 import { backupStateBeforeUpdate } from "../update/utils";
 import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 
 
-const FormSchema = z.object({ value: requiredNonNegativeAmount });
+const FormSchema = z.object({ value: requiredNonZeroAmount });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 async function submit(values: FormSchemaType, item?: PersonalAccountWithId | null) {
@@ -33,7 +33,7 @@ export default function SetAccountValueOnDateModal({ url, item, open, onClose }:
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Change value on specific date">
       <p className="text-sm text-subtext text-center">Set the change, that will be added to value on this day</p>
-      <AmountInputWithError formik={formik} formikName="value" label="Change" />
+      <AmountInputWithError formik={formik} formikName="value" label="Change" allowNegative />
     </Modal>
   );
 }

@@ -1,5 +1,6 @@
 import datetime
 from fastapi import APIRouter, Depends
+from models.history import AccountDailyHistory
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
@@ -57,6 +58,12 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
         if account: # it can be cash transaction with no account history to update
             date = transaction.date.strftime("%Y-%m-%d")
             await mark_account_value_in_history(account, date, Value.parse_negate(transaction.value), db)
+            # remove leading history with zeros (if first item in history changed)
+            hist: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
+                                                        {"account": str(account.id)}, "date", reverse=False)
+            for h in hist:
+                if h.value != 0.0: break
+                await db["account_daily_history"].delete_one({"_id": str(h.id)})
         return {}
     return await inner()
 

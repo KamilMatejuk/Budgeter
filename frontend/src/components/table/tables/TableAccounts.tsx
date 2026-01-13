@@ -26,12 +26,17 @@ function renderMinAmountMonthly(item: PersonalAccountWithId): string {
   ].filter(Boolean).join(", ") || "None";
 }
 
+function renderNumber(item: PersonalAccountWithId): string {
+  if (/^[0 ]+$/.test(item.number)) return "Not important";
+  return item.number;
+}
+
 const columns: ColumnDef<PersonalAccountWithId>[] = [
   defineCellBank<PersonalAccountWithId>(),
   { accessorKey: "type", header: "Type" },
   { accessorKey: "owner", header: "Owner" },
   defineCellValue<PersonalAccountWithId>(),
-  { accessorKey: "number", header: "Number" },
+  { accessorKey: "number", header: "Number", cell: ({ row }) => renderNumber(row.original) },
   { accessorKey: "min_incoming_amount_monthly", header: "Requirements", cell: ({ row }) => renderMinAmountMonthly(row.original) }
 ];
 

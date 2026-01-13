@@ -138,7 +138,6 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
 
 
 class PatchAccountValueRequest(PyBaseModel):
-    date: datetime.date
     value: float
 
 @router.patch("/account_value", response_model=dict)
@@ -146,19 +145,8 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
     @fail_wrapper
     async def inner():
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
-        before: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
-                                                {"account": str(account.id), "date": {"$lte": data.date.isoformat()}}, "date", one=True)
-        diff = data.value - (before.value if before else 0.0)
-        await mark_account_value_in_history(account, data.date.isoformat(), diff, True, db)
+        await mark_account_value_in_history(account, None, data.value, db)
         return {}
-    return await inner()
-
-@router.get("/manual_account_value/{account}", response_model=list[AccountDailyHistory])
-async def get_manual_account_values(account: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    @fail_wrapper
-    async def inner():
-        condition = {"account": account, "manual_update": True}
-        return await get(db, "account_daily_history", AccountDailyHistory, condition, "date")
     return await inner()
 
 
@@ -182,6 +170,7 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
         incomes.append(sum(t.value for t in transactions if t.value > 0))
         expenses.append(sum(t.value for t in transactions if t.value < 0))
     return (incomes, expenses)
+
 
 ############################## Monthly Comparison #############################
 
@@ -247,6 +236,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
         value_avg=Value.avg(v for v in all_child_values if v != 0),
         subitems=subitems
     )
+
 
 ############################## Tag Composition #############################
 

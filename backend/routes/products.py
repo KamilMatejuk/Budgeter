@@ -37,7 +37,7 @@ personal_account_factory.create_delete()
 @personal_account_router.post("", response_model=PersonalAccountWithId)
 async def create_personalaccount(data: PersonalAccount, db: AsyncIOMotorDatabase = Depends(get_db)):
     item: PersonalAccountWithId = await create(db, "personal_account", PersonalAccountWithId, data)
-    await mark_account_value_in_history(item, Date.today().isoformat(), item.value, True, db)
+    await mark_account_value_in_history(item, Date.today().isoformat(), item.value, db)
     return item
 
 @personal_account_router.patch("", response_model=PersonalAccountWithId)
@@ -45,7 +45,7 @@ async def patch_personalaccount(data: PersonalAccountPartial, db: AsyncIOMotorDa
     before: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
     item: PersonalAccountWithId = await patch(db, "personal_account", PersonalAccountWithId, data)
     if before.value != item.value:
-        await mark_account_value_in_history(item, Date.today().isoformat(), item.value, True, db)
+        await mark_account_value_in_history(item, Date.today().isoformat(), item.value, db)
     return item
 
 async def get_personalaccount_by_number(number: str, db: AsyncIOMotorDatabase = Depends(get_db)):

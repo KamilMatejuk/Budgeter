@@ -70,7 +70,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.subtract(card.value, item.value)}})
         else:
             # dont update history for credit cards (it's updated in CREDIT_CARD_PAYOFF type)
-            await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+            await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL \
@@ -91,7 +91,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE:
@@ -106,7 +106,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == MillenniumTransactionType.CREDIT_CARD_PAYOFF:
@@ -117,7 +117,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         if not cards: raise HTTPException(status_code=500, detail=f"Card for account id {account.id} not found")
         card = cards[0]
         # mark in account history
-        await mark_account_value_in_history(account, data.transaction_date, Value.parse(data.charges), False, db)
+        await mark_account_value_in_history(account, data.transaction_date, Value.parse(data.charges), db)
         # update card value
         await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.add(card.value or 0, Value.parse_negate(data.charges))}})
         return {}
@@ -129,8 +129,8 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         dst_account = await get_personalaccount_by_number(data.account, db)
         # internal transfer
         if dst_account:
-            await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse(data.charges), False, db)
-            await mark_account_value_in_history(src_account, data.transaction_date, Value.parse_negate(data.charges), False, db)
+            await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse(data.charges), db)
+            await mark_account_value_in_history(src_account, data.transaction_date, Value.parse_negate(data.charges), db)
             return {}
         # external transfer
         item = Transaction(
@@ -142,7 +142,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=src_account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(src_account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(src_account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == MillenniumTransactionType.TRANSFER_TO_PHONE:
@@ -157,7 +157,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL:
@@ -172,7 +172,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL:
@@ -180,8 +180,8 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         if dst_account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
         src_account = await get_personalaccount_by_number(data.account, db)
         if src_account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.account} not found")
-        await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse_negate(data.credits), False, db)
-        await mark_account_value_in_history(src_account, data.transaction_date, Value.parse(data.credits), False, db)
+        await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse_negate(data.credits), db)
+        await mark_account_value_in_history(src_account, data.transaction_date, Value.parse(data.credits), db)
         return {}
     
     if data.type == MillenniumTransactionType.REGULAR_ORDER:
@@ -196,7 +196,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
             currency=account.currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, False, db)
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:

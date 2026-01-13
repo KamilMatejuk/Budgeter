@@ -54,7 +54,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
     date = data.date_start.split(" ")[0]
 
     if data.type == RevolutTransactionType.EXCHANGE:
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return {}
 
     if data.type == RevolutTransactionType.CARD_PAYMENT:
@@ -67,7 +67,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == RevolutTransactionType.CARD_REFUND:
@@ -80,7 +80,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == RevolutTransactionType.REWARD:
@@ -93,7 +93,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return await create(db, "transactions", TransactionWithId, item)
 
     if data.type == RevolutTransactionType.TRANSFER:
@@ -106,11 +106,11 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             currency=currency,
             tags=[],
         )
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return await create(db, "transactions", TransactionWithId, item)
     
     if data.type == RevolutTransactionType.DEPOSIT:
-        await mark_account_value_in_history(account, date, value, False, db)
+        await mark_account_value_in_history(account, date, value, db)
         return {}
 
     raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")

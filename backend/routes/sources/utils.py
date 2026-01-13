@@ -22,12 +22,11 @@ async def mark_card_usage_in_history(card: CardWithId, date: str, db: AsyncIOMot
             {"$set": {"transactions": history.transactions + 1}})
 
 
-async def _update_daily_history(account: PersonalAccountWithId, date: str, value: float, manual: bool, db: AsyncIOMotorDatabase):
+async def _update_daily_history(account: PersonalAccountWithId, date: str, value: float, db: AsyncIOMotorDatabase):
     history_on_this_day: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory,
                                                          {"account": str(account.id), "date": date}, one=True)
     if history_on_this_day:
         # update this day
-        history_on_this_day.manual_update = manual or history_on_this_day.manual_update
         history_on_this_day.value = Value.add(history_on_this_day.value, value)
         return await patch(db, "account_daily_history", AccountDailyHistory, history_on_this_day)
 
@@ -36,19 +35,20 @@ async def _update_daily_history(account: PersonalAccountWithId, date: str, value
     if history_before:
         # create new based on previous
         value = Value.add(history_before.value, value)
-        history_on_this_day = AccountDailyHistory(account=str(account.id), date=date, value=value, manual_update=manual)
+        history_on_this_day = AccountDailyHistory(account=str(account.id), date=date, value=value)
         return await create(db, "account_daily_history", AccountDailyHistory, history_on_this_day)
 
     # create new from scratch
-    history_on_this_day = AccountDailyHistory(account=str(account.id), date=date, value=value, manual_update=manual)
+    history_on_this_day = AccountDailyHistory(account=str(account.id), date=date, value=value)
     return await create(db, "account_daily_history", AccountDailyHistory, history_on_this_day)
 
     
-async def mark_account_value_in_history(account: PersonalAccountWithId, date: str, value: float, manual: bool, db: AsyncIOMotorDatabase):
-    await _update_daily_history(account, date, value, manual, db)
-    # update all future dates until manual_update is True
-    async for doc in db["account_daily_history"].find({"account": str(account.id), "date": {"$gt": date}}):
-        if doc.get("manual_update", False): break
+async def mark_account_value_in_history(account: PersonalAccountWithId, date: str | None, value: float, db: AsyncIOMotorDatabase):
+    # if no date, update all dates
+    if date: await _update_daily_history(account, date, value, db)
+    condition = {"account": str(account.id)}
+    if date: condition["date"] = {"$gt": date}
+    async for doc in db["account_daily_history"].find(condition):
         await db["account_daily_history"].update_one({"_id": doc["_id"]}, {"$set": {"value": Value.add(doc["value"], value)}})
     # update current value of the account
     latest: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(account.id)}, "date", one=True)

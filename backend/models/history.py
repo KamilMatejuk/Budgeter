@@ -15,7 +15,6 @@ class AccountDailyHistory(PyBaseModel):
     date: date
     account: str # id of Account
     value: float
-    manual_update: bool = False # if value was set manually, don't update with new transactions
 
 
 class ChartRange(enum.Enum):

@@ -646,23 +646,6 @@ export type paths = {
         patch: operations["patch_account_value_api_history_account_value_patch"];
         trace?: never;
     };
-    "/api/history/manual_account_value/{account}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Manual Account Values */
-        get: operations["get_manual_account_values_api_history_manual_account_value__account__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/history/income_expense/{range}": {
         parameters: {
             query?: never;
@@ -825,25 +808,6 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
-        /** AccountDailyHistory */
-        AccountDailyHistory: {
-            /** Id */
-            _id?: string;
-            /**
-             * Date
-             * Format: date
-             */
-            date: string;
-            /** Account */
-            account: string;
-            /** Value */
-            value: number;
-            /**
-             * Manual Update
-             * @default false
-             */
-            manual_update: boolean;
-        };
         /** AccountRequirementsResponse */
         AccountRequirementsResponse: {
             /** Id */
@@ -1233,11 +1197,6 @@ export type components = {
         PatchAccountValueRequest: {
             /** Id */
             _id?: string;
-            /**
-             * Date
-             * Format: date
-             */
-            date: string;
             /** Value */
             value: number;
         };
@@ -1611,7 +1570,6 @@ export type components = {
     headers: never;
     pathItems: never;
 };
-export type AccountDailyHistory = components['schemas']['AccountDailyHistory'];
 export type AccountRequirementsResponse = components['schemas']['AccountRequirementsResponse'];
 export type AccountType = components['schemas']['AccountType'];
 export type BackupPatchRequest = components['schemas']['BackupPatchRequest'];
@@ -3621,37 +3579,6 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_manual_account_values_api_history_manual_account_value__account__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                account: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountDailyHistory"][];
                 };
             };
             /** @description Validation Error */

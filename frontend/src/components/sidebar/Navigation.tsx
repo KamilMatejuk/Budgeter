@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { GoHome } from "react-icons/go";
-import { IoSaveOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoSaveOutline, IoSettingsOutline, IoTrashOutline } from "react-icons/io5";
 import { TfiImport } from "react-icons/tfi";
 import { CiViewList } from "react-icons/ci";
 import { spanTransition } from "./SidebarClient";
@@ -16,10 +16,11 @@ type NavItem = {
 
 const items: NavItem[] = [
   { label: "Home", href: "/", icon: <GoHome size={24} /> },
+  { label: "Import", href: "/import", icon: <TfiImport size={20} /> },
   { label: "Transactions", href: "/transactions", icon: <CiViewList size={24} /> },
-  { label: "Import", href: "/import", icon: <TfiImport size={24} /> },
-  { label: "Backups", href: "/backups", icon: <IoSaveOutline size={24} /> },
   { label: "Settings", href: "/settings", icon: <IoSettingsOutline size={24} /> },
+  { label: "Backups", href: "/backups", icon: <IoSaveOutline size={22} /> },
+  { label: "Trash", href: "/trash", icon: <IoTrashOutline size={24} /> },
 ]
 
 const classes = {

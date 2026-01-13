@@ -83,6 +83,10 @@ export async function getTransactions(year: number, month: number) {
   return await get<TransactionWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }
 
+export async function getDeletedTransactions() {
+  return await get<TransactionWithId[]>(`/api/transactions/deleted`, ["transaction"]);
+}
+
 export async function getNewTransactions() {
   return await get<TransactionWithId[]>(`/api/transactions/new`, ["transaction"]);
 }

@@ -22,13 +22,22 @@ export default function ColorInputWithError<T>({ formik, formikName, label }: Si
         <HexColorPicker
           color={value}
           onChange={(color) => formik.setFieldValue(formikName as string, color)}
-          style={{ width: '100%', height: '24px' }}
+          style={{ width: '100%', height: '70px' }}
         />
       </InputWithError>
       <style>
         {`
-        .react-colorful__saturation { display: none; }
-        .react-colorful__hue { border-radius: 8px; height: 16px; margin-top: 4px; }
+        .react-colorful__hue {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+        }
+        .react-colorful__saturation {
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+        }
         `}
       </style>
     </>

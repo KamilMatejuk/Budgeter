@@ -153,6 +153,15 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
         return {}
     return await inner()
 
+@router.get("/manual_account_value/{account}", response_model=list[AccountDailyHistory])
+async def get_manual_account_values(account: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        condition = {"account": account, "manual_update": True}
+        return await get(db, "account_daily_history", AccountDailyHistory, condition, "date")
+    return await inner()
+
+
 ################################ Income/Expense ###############################
 
 @router.get("/income_expense/{range}", response_model=tuple[list[float], list[float]])

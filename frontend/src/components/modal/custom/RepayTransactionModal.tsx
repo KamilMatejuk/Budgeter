@@ -36,7 +36,7 @@ export default function RepayTransactionModal({ url, item, open, onClose }: Back
   });
 
   return item && (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as repayment of debt">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Mark transaction as repayment of debt" saveText="Repay">
       <TransactionDetails item={item} />
       <DropDownInputWithError formik={formik} formikName="debt" label="Debt" optionsEnum={people} />
     </Modal >

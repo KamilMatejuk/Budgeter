@@ -12,7 +12,7 @@ export default function RestoreBackupModal({ url, item, open, onClose }: Backend
   };
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={submit} title="Restore Backup">
+    <Modal open={open} onClose={onClose} cancellable onSave={submit} title="Restore Backup" saveText="Restore">
       <p>Are you sure you want to restore the backup &quot;{item?.name}&quot;?</p>
     </Modal>
   );

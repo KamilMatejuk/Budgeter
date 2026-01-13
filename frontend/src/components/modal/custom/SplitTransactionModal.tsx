@@ -76,7 +76,7 @@ export default function SplitTransactionModal({ url, item, open, onClose }: Back
   });
 
   return item && (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Split transaction">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Split transaction" saveText="Split">
       <TransactionDetails item={item} />
       {/* split buttons */}
       <div className="w-full flex gap-1">

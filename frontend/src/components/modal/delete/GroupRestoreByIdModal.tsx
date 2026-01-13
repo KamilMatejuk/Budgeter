@@ -14,7 +14,7 @@ export default function GroupRestoreByIdModal<T extends Item>({ url, items, open
   }
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={submit}>
+    <Modal open={open} onClose={onClose} cancellable onSave={submit} saveText="Restore">
       <p>Are you sure you want to restore {items.length} items?</p>
     </Modal>
   );

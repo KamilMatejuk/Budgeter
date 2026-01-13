@@ -22,6 +22,9 @@ export interface ModalProps extends PropsWithChildren {
   onSave?: () => Promise<void>;
   onDelete?: () => Promise<void>;
   title?: string;
+  cancelText?: string;
+  saveText?: string;
+  deleteText?: string;
 }
 
 export interface BackendModalProps<T extends Item> extends ModalProps {
@@ -34,7 +37,11 @@ export interface GroupBackendModalProps<T extends Item> extends ModalProps {
   items: T[];
 }
 
-export default function Modal({ open, onClose, children, cancellable, onCancel, onSave, onDelete, title }: ModalProps) {
+export default function Modal({
+  open, onClose, children,
+  cancellable, onCancel, onSave, onDelete,
+  title, cancelText="Cancel", saveText="Save", deleteText="Delete"
+}: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   // focus the dialog for accessibility, and exit with escape
@@ -72,9 +79,9 @@ export default function Modal({ open, onClose, children, cancellable, onCancel, 
         {children}
         {(cancellable || onSave || onDelete) &&
           <div className={classes.buttons}>
-            {cancellable && <ButtonWithLoader action="neutral" onClick={onCancel ? onCancel : onClose} text="Cancel" />}
-            {onSave && <ButtonWithLoader action="positive" onClick={onSave} text="Save" />}
-            {onDelete && <ButtonWithLoader action="negative" onClick={onDelete} text="Delete" />}
+            {cancellable && <ButtonWithLoader action="neutral" onClick={onCancel ? onCancel : onClose} text={cancelText} />}
+            {onSave && <ButtonWithLoader action="positive" onClick={onSave} text={saveText} />}
+            {onDelete && <ButtonWithLoader action="negative" onClick={onDelete} text={deleteText} />}
           </div>
         }
       </div>

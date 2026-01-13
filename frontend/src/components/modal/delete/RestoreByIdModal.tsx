@@ -12,7 +12,7 @@ export default function RestoreByIdModal<T extends Item>({ url, item, open, onCl
   }
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={submit}>
+    <Modal open={open} onClose={onClose} cancellable onSave={submit} saveText="Restore">
       <p>Are you sure you want to restore {item?._id}?</p>
     </Modal>
   );

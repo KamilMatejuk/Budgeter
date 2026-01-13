@@ -31,7 +31,7 @@ export default function SetAccountValueOnDateModal({ url, item, open, onClose }:
   });
 
   return (
-    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Change value on specific date">
+    <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Change value on specific date" saveText="Change">
       <p className="text-sm text-subtext text-center">Set the change, that will be added to value on this day</p>
       <AmountInputWithError formik={formik} formikName="value" label="Change" allowNegative />
     </Modal>

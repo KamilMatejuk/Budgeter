@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from models.tag import Tag
+from models.tag import TagWithId
 from core.utils import Value, Date
 from models.products import CardWithId
 from routes.base import fail_wrapper, get
@@ -187,10 +187,10 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
 
 @router.get("/month_comparison", response_model=list[MonthComparisonRow])
 async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
-    root_tags = await get(db, "tags", Tag, {"parent": None})
+    root_tags: list[TagWithId] = await get(db, "tags", TagWithId, {"parent": None})
     request_id = hash(datetime.datetime.now().isoformat())
     response = []
-    for tag in root_tags:
+    for tag in sorted(root_tags, key=lambda t: t.name.lower()):
         row = await _calculate_tag_comparison(str(tag.id), request_id)
         response.append(row)
     return response
@@ -199,7 +199,7 @@ async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
 async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthComparisonRow:
     # request_id is to avoid cross-request caching
     db: AsyncIOMotorDatabase = await get_db()
-    tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
+    tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag_id}, one=True)
     first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
     # tag ids
     child_tags = await get_all_children(tag, db)
@@ -224,7 +224,8 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
 
     # children
     subitems = []
-    for child in await get_children(tag, db):
+    children: list[TagWithId] = await get_children(tag, db)
+    for child in sorted(children, key=lambda t: t.name.lower()):
         subitem = await _calculate_tag_comparison(str(child.id), request_id)
         subitems.append(subitem)
     # only include Other, if its not zero and there are other subitems
@@ -251,16 +252,16 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
 
 @router.get("/tag_composition", response_model=list[TagComposition])
 async def get_tag_composition(db: AsyncIOMotorDatabase = Depends(get_db)):
-    root_tags = await get(db, "tags", Tag, {"parent": None})
+    root_tags: list[TagWithId] = await get(db, "tags", TagWithId, {"parent": None})
     response = []
-    for tag in root_tags:
+    for tag in sorted(root_tags, key=lambda t: t.name.lower()):
         comp = await _calculate_tag_composition(str(tag.id))
         response.extend(comp)
     return response
 
 async def _calculate_tag_composition(tag_id: str) -> list[TagComposition]:
     db: AsyncIOMotorDatabase = await get_db()
-    tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
+    tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag_id}, one=True)
     
     condition = {
         "deleted": False,
@@ -283,7 +284,7 @@ async def _calculate_tag_composition(tag_id: str) -> list[TagComposition]:
                 tag_map[other_tags] = Value.add(tag_map.get(other_tags, 0.0), converted_value)
         res = []
         for t, v in tag_map.items():
-            comp_tag = await get(db, "tags", Tag, {"_id": t}, one=True)
+            comp_tag: TagWithId = await get(db, "tags", TagWithId, {"_id": t}, one=True)
             res.append(TagCompositionItem(
                 tag_name=await get_tag_name(comp_tag, db) if comp_tag else t,
                 colour=comp_tag.colour if comp_tag else "#000000",
@@ -299,7 +300,8 @@ async def _calculate_tag_composition(tag_id: str) -> list[TagComposition]:
         values_month=await _aggregate(transactions_month),
     )]
     
-    for child in await get_children(tag, db):
+    children: list[TagWithId] = await get_children(tag, db)
+    for child in sorted(children, key=lambda t: t.name.lower()):
         response.extend(await _calculate_tag_composition(str(child.id)))
 
     return response

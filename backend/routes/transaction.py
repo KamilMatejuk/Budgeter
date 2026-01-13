@@ -3,24 +3,43 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from models.tag import TagWithId
 from core.utils import Value, Date
 from models.base import PyObjectId
 from models.products import PersonalAccountWithId
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
 from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
 from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
+from routes.tag import get_name as get_tag_name
 
 single_router = APIRouter()
 multi_router = APIRouter()
 
 factory = CRUDRouterFactory(single_router, "transactions", Transaction, TransactionPartial, TransactionWithId)
 factory.create_get_by_id()
-factory.create_patch()
+
+
+async def sort_tags(tags: list[str], db: AsyncIOMotorDatabase):
+    tags = list(set(tags))
+    tags = [await get(db, "tags", TagWithId, {"_id": t}, one=True) for t in tags]
+    for t in tags:
+        t.name = await get_tag_name(t, db)
+    tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
+    return [str(t.id) for t in tags]
+
+@single_router.patch("", response_model=TransactionWithId)
+async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
+    if data.organisation is not None:
+        data.organisation = await match_organisation_pattern(data.organisation, db)
+    if data.tags is not None:
+        data.tags = await sort_tags(data.tags, db)
+    return await patch(db, "transactions", TransactionWithId, data)
 
 
 @single_router.post("", response_model=TransactionWithId)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
     data.organisation = await match_organisation_pattern(data.organisation, db)
+    data.tags = await sort_tags(data.tags, db)
     return await create(db, "transactions", TransactionWithId, data)
 
 

@@ -35,6 +35,7 @@ class RevolutTransactionType(enum.Enum):
     CARD_REFUND = 'Card Refund'
     TRANSFER = 'Transfer'
     DEPOSIT = 'Deposit'
+    REWARD = 'Reward'
 
 
 async def create_revolut_transaction(data: RevolutRequest, owner: str, db: AsyncIOMotorDatabase):
@@ -74,6 +75,19 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
             account=str(account.id),
             date=date,
             title="Zwrot",
+            organisation=await match_organisation_pattern(data.description, db),
+            value=value,
+            currency=currency,
+            tags=[],
+        )
+        await mark_account_value_in_history(account, date, value, False, db)
+        return await create(db, "transactions", TransactionWithId, item)
+    
+    if data.type == RevolutTransactionType.REWARD:
+        item = Transaction(
+            account=str(account.id),
+            date=date,
+            title=data.description,
             organisation=await match_organisation_pattern(data.description, db),
             value=value,
             currency=currency,

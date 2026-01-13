@@ -118,7 +118,7 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
         condition = {"account": str(account.id)}
         if start is not None:
             condition["date"] = {"$gte": start.isoformat()}
-        history: list[AccountDailyHistory] = (await get(db, "account_daily_history", AccountDailyHistory, condition, "date"))[::-1]
+        history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory, condition, "date", reverse=False)
         # expand to full month
         before: AccountDailyHistory = await get(
             db, "account_daily_history", AccountDailyHistory,

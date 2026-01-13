@@ -55,16 +55,17 @@ export interface LineChartProps extends ChartContainerProps {
   labels: string[];
 }
 
-const LineChartOptions = { ...Options }
-// @ts-expect-error: Property 'elements' does not exist on type.ts(2339)
-LineChartOptions.elements = {
-  point: {
-    radius: 0,
-    hoverRadius: 6,
-    hitRadius: 10,
-    backgroundColor: "rgba(0,0,0,0)",
-    borderColor: "rgba(0,0,0,0)",
-  },
+const LineChartOptions = {
+  ...Options,
+  elements: {
+    point: {
+      radius: 0,
+      hoverRadius: 6,
+      hitRadius: 10,
+      backgroundColor: "rgba(0,0,0,0)",
+      borderColor: "rgba(0,0,0,0)",
+    },
+  }
 };
 
 export function LineChart({ data, labels, ...props }: LineChartProps) {
@@ -91,11 +92,13 @@ export interface DoubleBarChartProps extends ChartContainerProps {
   labels: string[];
 }
 
-const DoubleBarChartOptions = { ...Options }
-// @ts-expect-error: Property 'stacked' does not exist on type.ts(2339)
-DoubleBarChartOptions.scales.x.stacked = true;
-// @ts-expect-error: Property 'stacked' does not exist on type.ts(2339)
-DoubleBarChartOptions.scales.y.stacked = true;
+const DoubleBarChartOptions = {
+  ...Options,
+  scales: {
+    x: { ...Options.scales.x, stacked: true },
+    y: { ...Options.scales.y, stacked: true },
+  },
+};
 
 export function DoubleBarChart({ dataPositive, dataNegative, labels, ...props }: DoubleBarChartProps) {
   return (
@@ -131,11 +134,13 @@ export interface PieChartProps extends ChartContainerProps {
   colors: string[];
 }
 
-const PieChartOptions = { ...Options }
-// @ts-expect-error: Property 'display' does not exist on type.ts(2339)
-PieChartOptions.scales.y.display = false;
-// @ts-expect-error: Property 'display' does not exist on type.ts(2339)
-PieChartOptions.scales.x.display = false;
+const PieChartOptions = {
+  ...Options,
+  scales: {
+    y: { display: false },
+    x: { display: false },
+  },
+};
 
 export function PieChart({ data, labels, colors, ...props }: PieChartProps) {
   return (

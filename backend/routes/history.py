@@ -200,7 +200,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
     # request_id is to avoid cross-request caching
     db: AsyncIOMotorDatabase = await get_db()
     tag: Tag = await get(db, "tags", Tag, {"_id": tag_id}, one=True)
-    first: TransactionWithId = await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)
+    first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
     # tag ids
     child_tags = await get_all_children(tag, db)
     this_tag_id = [str(tag.id)]
@@ -208,7 +208,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
     # values
     all_child_values = []
     this_tag_values = []
-    for month in reversed(list(Date.iterate_months(first.date if first else Date.today()))):
+    for month in Date.iterate_months(first.date if first else Date.today()):
         condition = {
             "deleted": False,
             "date": Date.condition(month, Date.month_end(month)),

@@ -234,7 +234,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
             tag=f"{tag.id}/Other",
             currency=Currency.PLN,
             values=this_tag_values,
-            value_avg=Value.avg(this_tag_values),
+            value_avg=Value.avg(v for v in this_tag_values if v != 0),
             subitems=[]
         ))
 
@@ -243,7 +243,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
         tag=str(tag.id),
         currency=Currency.PLN,
         values=all_child_values,
-        value_avg=Value.avg(all_child_values),
+        value_avg=Value.avg(v for v in all_child_values if v != 0),
         subitems=subitems
     )
 

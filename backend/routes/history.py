@@ -290,7 +290,7 @@ async def _calculate_tag_composition(tag_id: str) -> list[TagComposition]:
                 colour=comp_tag.colour if comp_tag else "#000000",
                 value=abs(v),
             ))
-        return res
+        return sorted(res, key=lambda x: x.tag_name.lower())
 
     response = [TagComposition(
         _id=str(PyObjectId()),

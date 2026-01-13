@@ -153,7 +153,8 @@ export function PieChart({ data, labels, colors, ...props }: PieChartProps) {
             {
               data,
               backgroundColor: colors.map((c) => `${c}cc`), // add alpha
-              borderWidth: 0,
+              borderWidth: 1,
+              borderColor: "#ffffff",
             },
           ],
         }}

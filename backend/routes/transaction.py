@@ -52,7 +52,7 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
         assert transaction is not None, "Transaction not found"
         # delete
         transaction.deleted = True
-        await patch(db, "transactions", TransactionPartial, transaction)
+        await patch(db, "transactions", TransactionWithId, transaction)
         # update history
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
         if account: # it can be cash transaction with no account history to update
@@ -88,7 +88,7 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
             new_transaction = await create(db, "transactions", TransactionWithId, new_transaction)
             new_transactions.append(new_transaction)
         transaction.deleted = True
-        await patch(db, "transactions", TransactionPartial, transaction)
+        await patch(db, "transactions", TransactionWithId, transaction)
         return new_transactions
     return await inner()
 
@@ -128,16 +128,16 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
         diff = Value.add(repay_transaction.value, debt_transaction.value)
         # remove repay transaction
         repay_transaction.deleted = True
-        await patch(db, "transactions", TransactionPartial, repay_transaction)
+        await patch(db, "transactions", TransactionWithId, repay_transaction)
         # if fully repaid, just delete debt transaction
         if diff == 0.0:
             debt_transaction.deleted = True
-            await patch(db, "transactions", TransactionPartial, debt_transaction)
+            await patch(db, "transactions", TransactionWithId, debt_transaction)
         else:
             # otherwise, update debt transaction with remaining value and mark as not debt anymore
             debt_transaction.title += f" (after {debt_transaction.debt_person} debt repayment)"
             debt_transaction.debt_person = None
             debt_transaction.value = diff
-            await patch(db, "transactions", TransactionPartial, debt_transaction)
+            await patch(db, "transactions", TransactionWithId, debt_transaction)
         return {}
     return await inner()

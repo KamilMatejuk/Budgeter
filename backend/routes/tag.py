@@ -65,7 +65,7 @@ async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db
         # add to parent's children
         if parent:
             parent.children = (parent.children or []) + [str(item.id)]
-            await patch(db, "tags", TagPartial, parent)
+            await patch(db, "tags", TagWithId, parent)
         return item
     return await inner()
 
@@ -80,7 +80,7 @@ async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)
             async def f(tag: Tag):
                 for child in await get_children(tag, db):
                     child.colour = data.colour
-                    await patch(db, "tags", TagPartial, child)
+                    await patch(db, "tags", TagWithId, child)
                     await f(child)
             await f(item)
         return item
@@ -104,7 +104,7 @@ async def delete_tag(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         parent = await get_parent(tag, db)
         if parent:
             parent.children = [c for c in (parent.children or []) if c != str(id)]
-            await patch(db, "tags", TagPartial, parent)
+            await patch(db, "tags", TagWithId, parent)
         # detach from transactions
         await db["transactions"].update_many(
             {"tags": {"$in": list(removed_ids)}},

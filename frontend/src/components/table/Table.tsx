@@ -49,9 +49,9 @@ function defineColumnExpand<T extends Item>(): ColumnDef<T> {
     cell: ({ row }) => (
       row.getCanExpand()
         ? row.getIsExpanded()
-          ? <MdRemove size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 }} />
-          : <MdAdd size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 }} />
-        : <LuDot size={20} style={{ opacity: 0.5, marginLeft: 20 }} />
+          ? <MdRemove size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 * row.depth }} />
+          : <MdAdd size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 * row.depth }} />
+        : <LuDot size={20} style={{ opacity: 0.5, marginLeft: 20 * row.depth }} />
     ),
   };
 }

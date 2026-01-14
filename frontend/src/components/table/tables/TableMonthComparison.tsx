@@ -59,7 +59,7 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
   const thisCol = len - monthYearId - 1;
   const columns: ColumnDef<MonthComparisonRow>[] = [
     {
-      ...defineCellTag<MonthComparisonRow>(true),
+      ...defineCellTag<MonthComparisonRow>(),
       meta: { border: "right" }
     },
     {

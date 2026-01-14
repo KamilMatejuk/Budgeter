@@ -77,10 +77,10 @@ export default function CellTag({ id, ...props }: CellTagProps) {
   </div>
 }
 
-export function defineCellTag<T extends { tag?: string, tags?: string[] }>(indent?: boolean) {
+export function defineCellTag<T extends { tag?: string, tags?: string[] }>() {
   return {
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (
-      <div className="flex gap-1" style={{ paddingLeft: indent ? row.depth * 16 : 0 }}>
+      <div className="flex gap-1">
         {row.original.tags?.map((tagId) => <CellTag key={tagId} id={tagId} />)}
         {row.original.tag ? <CellTag key={row.original.tag} id={row.original.tag} /> : null}
       </div>

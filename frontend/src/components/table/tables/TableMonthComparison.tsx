@@ -4,7 +4,7 @@ import { MonthComparisonRow } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "../cells/CellTag";
-import CellValueChange from "../cells/CellValueChange";
+import { defineCellValueGradient } from "../cells/CellValueGradient";
 import { getMonthName } from "@/const/date";
 import { z } from "zod";
 import { requiredText } from "@/components/form/TextInputWithError";
@@ -17,23 +17,12 @@ interface TableMonthComparisonProps {
   data: MonthComparisonRow[];
 }
 
-
-const defineCellValueChange = (selected: number, label1: string, label2: string, i?: number, key?: keyof MonthComparisonRow) => ({
-  accessorKey: "value_change",
-  header: (() =>
-    <div className="text-center normal-case">
-      <span className="text-sm">{label1}</span><br />
-      <span className="text-xs text-subtext">{label2}</span>
-    </div>
-  ),
-  meta: { align: "center" },
-  cell: ({ row }) =>
-    <CellValueChange
-      value={(i ? row.original.values[i] : row.original[key!] as number) ?? 0}
-      original={row.original.values[selected]}
-      currency={row.original.currency}
-    />
-} as ColumnDef<MonthComparisonRow>);
+const customHeader = (label1: string, label2: string) => (
+  <div className="text-center normal-case">
+    <span className="text-sm">{label1}</span><br />
+    <span className="text-xs text-subtext">{label2}</span>
+  </div>
+);
 
 
 const getDatesRecord = (n: number) => Array.from({ length: n }, (_, i) => {
@@ -69,17 +58,36 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
 
   const thisCol = len - monthYearId - 1;
   const columns: ColumnDef<MonthComparisonRow>[] = [
-    { ...defineCellTag<MonthComparisonRow>(true), meta: { border: "right" } },
-    defineCellValueChange(thisCol, "This Month Last Year", `${getMonthName(month)} ${year - 1}`, thisCol - 12),
-    defineCellValueChange(thisCol, "Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`, thisCol - 2),
-    defineCellValueChange(thisCol, "Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`, thisCol - 1),
     {
-      accessorKey: "value",
-      meta: { align: "center", border: "both" },
-      header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
-      cell: ({ row }) => (<CellValue value={row.original.values[thisCol]} currency={row.original.currency} />),
+      ...defineCellTag<MonthComparisonRow>(true),
+      meta: { border: "right" }
     },
-    defineCellValueChange(thisCol, "Average Month", `from last ${Object.keys(datesRecord).length} months`, undefined, "value_avg"),
+    {
+      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 12),
+      header: () => customHeader("This Month Last Year", `${getMonthName(month)} ${year - 1}`),
+      accessorKey: "value",
+    },
+    {
+      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 2),
+      header: () => customHeader("Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`),
+      accessorKey: "value",
+    },
+    {
+      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 1),
+      header: () => customHeader("Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`),
+      accessorKey: "value",
+    },
+    {
+      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol),
+      header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
+      meta: { align: "center", border: "both" },
+      accessorKey: "value",
+    },
+    {
+      header: () => customHeader("Average Month", `from last ${Object.keys(datesRecord).length} months`),
+      cell: ({ row }) => (<CellValue value={row.original.value_avg} currency={row.original.currency} />),
+      accessorKey: "value",
+    },
   ];
   return <Table<MonthComparisonRow> url="" tag="" data={data} columns={columns} expandChild="subitems" />;
 }

@@ -35,7 +35,7 @@ async def mark_parsed(source: Source, hash: str, db: AsyncIOMotorDatabase = Depe
     return await create(db, "source_parsed", SourceParsed, item, "hash")
 
 
-@router.post("/Millennium", response_model=TransactionWithId | dict)
+@router.post("/Millennium", response_model=dict)
 async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -44,14 +44,14 @@ async def create_transaction_from_millennium(data: MillenniumRequest, db: AsyncI
         parsed = await check_parsed(Source.MILLENNIUM, hash_value, db)
         if parsed: return {}
         # create new
-        item = await create_millennium_transaction(data, db)
+        await create_millennium_transaction(data, db)
         # mark as parsed
         await mark_parsed(Source.MILLENNIUM, hash_value, db)
-        return item
+        return {}
     return await inner()
 
 
-@router.post("/Revolut/{owner}", response_model=TransactionWithId | dict)
+@router.post("/Revolut/{owner}", response_model=dict)
 async def create_transaction_from_revolut(data: RevolutRequest, owner: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -60,8 +60,8 @@ async def create_transaction_from_revolut(data: RevolutRequest, owner: str, db: 
         parsed = await check_parsed(Source.REVOLUT, hash_value, db)
         if parsed: return {}
         # create new
-        item = await create_revolut_transaction(data, owner, db)
+        await create_revolut_transaction(data, owner, db)
         # mark as parsed
         await mark_parsed(Source.REVOLUT, hash_value, db)
-        return item
+        return {}
     return await inner()

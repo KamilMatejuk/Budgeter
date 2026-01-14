@@ -4,10 +4,9 @@ from core.utils import Value
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from models.products import CapitalInvestmentWithId, CardWithId, PersonalAccountWithId, CapitalInvestment, Currency, Capitalization
+from models.products import CardWithId, PersonalAccountWithId
 from routes.sources.utils import mark_card_usage_in_history, mark_account_value_in_history, match_organisation_pattern
 from models.transaction import Transaction, TransactionWithId
-from routes.products import get_personalaccount_by_number
 from models.base import PyBaseModel
 from routes.base import get, create
 
@@ -35,181 +34,141 @@ class MillenniumTransactionType(enum.Enum):
     CARD_PAYMENT = 'PŁATNOŚĆ KARTĄ'
     CARD_PAYMENT_PHYSICAL = 'ZAKUP - FIZ. UŻYCIE KARTY'
     CARD_PAYMENT_ONLINE = 'PŁATNOŚĆ KARTĄ W INTERNECIE'
+    CARD_PAYMENT_ONLINE_REFUND = 'PŁATNOŚĆ KARTĄ W INTERNECIE ZWROT'
     BLIK_PAYMENT_ONLINE = 'PŁATNOŚĆ BLIK W INTERNECIE'
+    BLIK_PAYMENT_ONLINE_REFUND = 'PŁATNOŚĆ BLIK W INTERNECIE - ZWROT'
+    BLIK_PAYMENT_CONTACTLESS = 'PŁATNOŚĆ ZBLIŻENIOWA BLIK'
     CREDIT_CARD_PAYOFF = 'WCZEŚN.SPŁ.KARTY:'
 
-    TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
     TRANSFER_TO_PHONE = 'PRZELEW NA TELEFON'
+    TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
     TRANSFER_INCOMING_INTERNAL = 'PRZELEW WEWNĘTRZNY PRZYCHODZĄCY'
+    TRANSFER_OUTGOING_INTERNAL = 'PRZELEW WEWNĘTRZNY WYCHODZĄCY'
+    TRANSFER_SEPA = 'PRZEKAZ SEPA'
 
     REGULAR_ORDER = 'STAŁE ZLECENIE ZEWNĘTRZNE'
     INVESTMENT_OPERATION = 'OPERACJE NA LOKATACH'
+
+
+async def get_account(db: AsyncIOMotorDatabase, number: str = None, id: str = None) -> PersonalAccountWithId:
+    if number: condition = {"number": number}
+    if id: condition = {"_id": id}
+    assert condition is not None, "Either number or id must be provided"
+    account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, condition, one=True)
+    if account is None: raise HTTPException(status_code=500, detail=f"Account {number} not found")
+    return account
+
+
+async def get_card(db: AsyncIOMotorDatabase, credit: bool, number: str = None, account: PersonalAccountWithId = None) -> CardWithId:
+    if number: condition = {"number": number}
+    if account: condition = {"account": str(account.id)}
+    assert condition is not None, "Either number or id must be provided"
+    card: CardWithId = await get(db, "card", CardWithId, {**condition, "credit": credit}, one=True)
+    if card is None:
+        err_detail = f"Card {number} not found" if number else f"Card for account {account.number} not found"
+        raise HTTPException(status_code=500, detail=err_detail)
+    return card
+
+
+async def create_transaction(db: AsyncIOMotorDatabase, data: MillenniumRequest, account: PersonalAccountWithId,
+                             organisation: str, title: str = None, parse_organisation: bool = False,
+                             mark: bool = True) -> TransactionWithId:
+    if parse_organisation:
+        organisation = await match_organisation_pattern(organisation, db)
+    value = data.charges or data.credits
+    title = title or data.description
+    item = Transaction(account=str(account.id), date=data.transaction_date, title=title,
+                       organisation=organisation, value=Value.parse(value), currency=account.currency,
+                       tags=[])
+    if mark:
+        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
+    return await create(db, "transactions", TransactionWithId, item)
 
 
 async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMotorDatabase):
     data.type = MillenniumTransactionType(data.type or "PŁATNOŚĆ KARTĄ")
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT:
-        card: CardWithId = await get(db, "card", CardWithId, {"number": data.number}, one=True)
-        if card is None: raise HTTPException(status_code=500, detail=f"Card with number {data.number} not found")
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": card.account}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with id {card.account} not found")
+        if data.description.startswith("OPŁATA MIESIĘCZNA ZA OBSLUGĘ KARTY") and data.charges == "":
+            # some monthly card fees are 0, skip them
+            return
+        card = await get_card(db, credit=False, number=data.number)
+        account = await get_account(db, id=card.account)
         await mark_card_usage_in_history(card, data.transaction_date, db)
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title="Płatność kartą kredytową" if card.credit else "Płatność kartą",
-            organisation=await match_organisation_pattern(data.description, db),
-            value=Value.parse(data.charges),
-            currency=account.currency,
-            tags=[],
-        )
+        await create_transaction(db, data, account, data.description,
+                                 title="Płatność kartą kredytową" if card.credit else "Płatność kartą",
+                                 parse_organisation=True, mark=not card.credit)
+        # for credit cards, don't mark in history,
+        # just decrease card's value,
+        # history is updated in CREDIT_CARD_PAYOFF
         if card.credit:
-            # decrease card's value
-            await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.subtract(card.value, item.value)}})
-        else:
-            # dont update history for credit cards (it's updated in CREDIT_CARD_PAYOFF type)
-            await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+            value = Value.parse(data.charges or data.credits)
+            await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.add(card.value, value)}})
+        return
 
-    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL \
-    or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        cards: list[CardWithId] = await get(db, "card", CardWithId, {"account": str(account.id)})
-        cards = [card for card in cards if not card.credit]
-        if not cards: raise HTTPException(status_code=500, detail=f"Card for account id {account.id} not found")
-        card = cards[0]
-        await mark_card_usage_in_history(card, data.transaction_date, db)
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title="Płatność kartą",
-            organisation=await match_organisation_pattern(data.description, db),
-            value=Value.parse(data.charges),
-            currency=account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
-    
-    if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title="Płatność BLIK",
-            organisation=await match_organisation_pattern(data.recipient, db),
-            value=Value.parse(data.charges),
-            currency=account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
-    
     if data.type == MillenniumTransactionType.CREDIT_CARD_PAYOFF:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        cards: list[CardWithId] = await get(db, "card", CardWithId, {"account": str(account.id)})
-        cards = [card for card in cards if card.credit]
-        if not cards: raise HTTPException(status_code=500, detail=f"Card for account id {account.id} not found")
-        card = cards[0]
-        # mark in account history
+        account = await get_account(db, number=data.number)
+        card = await get_card(db, credit=True, account=account)
         await mark_account_value_in_history(account, data.transaction_date, Value.parse(data.charges), db)
-        # update card value
         await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.add(card.value or 0, Value.parse_negate(data.charges))}})
-        return {}
+        return
+
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
+        account = await get_account(db, number=data.number)
+        card = await get_card(db, credit=False, account=account)
+        await mark_card_usage_in_history(card, data.transaction_date, db)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą", parse_organisation=True)
+        return
+
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE_REFUND:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą - zwrot", parse_organisation=True)
+        return
     
-    if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK:
-        src_account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if src_account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        dst_account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.account}, one=True)
-        dst_account = await get_personalaccount_by_number(data.account, db)
-        # internal transfer
-        if dst_account:
-            await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse(data.charges), db)
-            await mark_account_value_in_history(src_account, data.transaction_date, Value.parse_negate(data.charges), db)
-            return {}
-        # external transfer
-        item = Transaction(
-            account=str(src_account.id),
-            date=data.transaction_date,
-            title=data.description,
-            organisation=data.recipient,
-            value=Value.parse(data.charges),
-            currency=src_account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(src_account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
-    
+    if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE or data.type == MillenniumTransactionType.BLIK_PAYMENT_CONTACTLESS:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK", parse_organisation=True)
+        return
+        
+    if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE_REFUND:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK - zwrot", parse_organisation=True)
+        return
+
+    if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK or data.type == MillenniumTransactionType.TRANSFER_SEPA:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient)
+        return
+
     if data.type == MillenniumTransactionType.TRANSFER_TO_PHONE:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title=data.description,
-            organisation=data.recipient,
-            value=Value.parse(data.credits or data.charges),
-            currency=account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient)
+        return
     
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title=data.description,
-            organisation=await match_organisation_pattern(data.recipient, db),
-            value=Value.parse(data.credits),
-            currency=account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        return
 
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL:
-        dst_account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if dst_account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        src_account = await get_personalaccount_by_number(data.account, db)
-        if src_account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.account} not found")
-        await mark_account_value_in_history(dst_account, data.transaction_date, Value.parse_negate(data.credits), db)
-        await mark_account_value_in_history(src_account, data.transaction_date, Value.parse(data.credits), db)
-        return {}
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        return
+    
+    if data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INTERNAL:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        return
     
     if data.type == MillenniumTransactionType.REGULAR_ORDER:
-        account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"number": data.number}, one=True)
-        if account is None: raise HTTPException(status_code=500, detail=f"Account with number {data.number} not found")
-        item = Transaction(
-            account=str(account.id),
-            date=data.transaction_date,
-            title=data.description,
-            organisation=data.recipient,
-            value=Value.parse(data.charges),
-            currency=account.currency,
-            tags=[],
-        )
-        await mark_account_value_in_history(account, data.transaction_date, item.value, db)
-        return await create(db, "transactions", TransactionWithId, item)
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        return
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:
-        if data.description.startswith("Zasil.lokaty"):
-            item = CapitalInvestment(
-                name="Auto",
-                value=float(data.charges) * -1.0,
-                currency=Currency(data.currency),
-                yearly_interest=0.0,
-                capitalization=Capitalization.ONCE,
-                start=data.transaction_date,
-                end=data.transaction_date,
-            )
-            await create(db, "capital_investment", CapitalInvestmentWithId, item)
-            return {}
-    raise HTTPException(status_code=500, detail=f"Unknown operation in transaction type {data.type}")
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Lokata Millennium")
+        return
+
+    raise HTTPException(status_code=500, detail=f"Unknown operation with transaction type {data.type}")

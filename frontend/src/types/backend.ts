@@ -2116,7 +2116,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"] | {
+                    "application/json": {
                         [key: string]: unknown;
                     };
                 };
@@ -2153,7 +2153,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"] | {
+                    "application/json": {
                         [key: string]: unknown;
                     };
                 };

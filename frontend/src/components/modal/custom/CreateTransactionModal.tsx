@@ -11,12 +11,14 @@ import TagsInputWithError from "@/components/form/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { getISODateString, requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
-import { useCashs, useLastTransaction, usePersonalAccounts, useTags } from "@/app/api/query";
+import { useCashs, useLastTransaction, useOrganisations, usePersonalAccounts, useTags } from "@/app/api/query";
 import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { getDateString } from "@/const/date";
 import WarningToast from "@/components/toast/WarningToast";
+import SearchableTextInputWithError from "@/components/form/SearchableTextInputWithError";
+import { CellOrganisationId } from "@/components/table/cells/CellOrganisation";
 
 enum Source {
   ACCOUNT = "ACCOUNT",
@@ -78,6 +80,10 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
 
   const lastTransaction = useLastTransaction(formik.values.account);
 
+  const organisations = useOrganisations();
+  const organisation = useMemo(() => formik.values.organisation, [formik.values.organisation]);
+  const organisationOptions = useMemo(() => organisations.map(org => ({ id: org.name, name: org.name })), [organisations]);
+
   const tags = useTags();
   const warningTagValue = useMemo(() => {
     // check if applicable
@@ -98,6 +104,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     else if (!isTagPositive && formik.values.value > 0) return true;
     return false;
   }, [formik.values.tags, formik.values.value])
+
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Create Transaction">
@@ -124,9 +131,16 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
           optionsEnum={accountRecord} />
       }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <TextInputWithError formik={formik} formikName="organisation" label="Organisation" />
+      <SearchableTextInputWithError
+        formik={formik}
+        formikName="organisation"
+        label="Organisation"
+        Option={CellOrganisationId}
+        options={organisationOptions}
+        singleSelect
+      />
       <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={organisation} />
       {warningTagValue && <WarningToast message="Positive value should have tag 'Zarobki'.\nOther tags probably require negative value." />}
       <DateInputWithError formik={formik} formikName="date" label="Date" />
     </Modal >

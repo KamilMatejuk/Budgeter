@@ -26,6 +26,7 @@ interface SearchableTextInputWithErrorProps<T> extends SingleInputWithErrorProps
   options: SearchableOption[];
   suggestedOptions?: SearchableOption[];
   Option: React.ComponentType<{ id: string }>;
+  singleSelect?: boolean;
 }
 
 function filterOptions(options: SearchableOption[], search: string, selected: string[]) {
@@ -41,6 +42,7 @@ export default function SearchableTextInputWithError<T>({
   options,
   suggestedOptions,
   Option,
+  singleSelect,
 }: SearchableTextInputWithErrorProps<T>) {
 
   const value = getValue(formik, formikName);
@@ -50,15 +52,20 @@ export default function SearchableTextInputWithError<T>({
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [selectedIds, setSelectedIds] = useState<string[]>(value || []);
+  const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : value || []);
 
   function highlightUp() { setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1)) }
   function highlightDown() { setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0)) }
   function select(tagId: string) {
-    const newSelected = Array.from(new Set([...selectedIds, tagId]));
-    setSelectedIds(newSelected);
-    formik.setFieldValue(formikName as string, newSelected, true);
-    setSearch("");
+    if (singleSelect) {
+      formik.setFieldValue(formikName as string, tagId, true);
+      setSearch(tagId);
+    } else {
+      const newSelected = Array.from(new Set([...selectedIds, tagId]));
+      setSelectedIds(newSelected);
+      formik.setFieldValue(formikName as string, newSelected, true);
+      setSearch("");
+    }
     setOpen(false);
     setHighlightedIndex(-1);
   }
@@ -90,6 +97,7 @@ export default function SearchableTextInputWithError<T>({
           onChange={(e) => {
             setSearch(e.target.value);
             setOpen(true);
+            if (singleSelect) formik.setFieldValue(formikName as string, e.target.value, true);
           }}
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
@@ -117,7 +125,7 @@ export default function SearchableTextInputWithError<T>({
                 )}
                 {/* regular options */}
                 <div
-                  onMouseDown={() => select(id)}
+                  onMouseDown={(e) => { e.preventDefault(); select(id); }}
                   className={twMerge(classes.option, highlightedIndex === i && classes.optionHighlighted)}
                 >
                   <Option id={id} />

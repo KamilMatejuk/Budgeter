@@ -27,9 +27,13 @@ export default function TagsInputWithError<T>({ formik, formikName, label, organ
     { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
   )), [tags]);
 
-  const suggestedTagOptions = organisationName
-    ? (useOrganisation(organisationName)?.tags || []).map(id => tagOptions.find(t => t.id === id)).filter(t => t !== undefined)
-    : [];
+  const organisation = useOrganisation(organisationName || "");
+  const suggestedTagOptions = useMemo(() =>
+    (organisation?.tags || [])
+      .map(id => tagOptions.find(t => t.id === id))
+      .filter(t => t !== undefined),
+    [organisation, tagOptions]
+  );
 
   return (
     <SearchableTextInputWithError

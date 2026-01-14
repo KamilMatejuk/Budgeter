@@ -15,3 +15,5 @@ export default function CellOrganisation({ name }: CellOrganisationProps) {
     </div>
   );
 }
+
+export function CellOrganisationId({ id }: { id: string }) { return <CellOrganisation name={id} /> }

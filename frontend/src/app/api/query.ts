@@ -58,6 +58,14 @@ export function useTags() {
   ) || [];
 }
 
+export function useOrganisations() {
+  return _useFetchWrapper<OrganisationWithId[]>(
+    ["organisation"],
+    ["organisation"],
+    `/api/organisation`
+  ) || [];
+}
+
 export function useOrganisation(name: string) {
   return _useFetchWrapper<OrganisationWithId>(
     ["organisation", name],

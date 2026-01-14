@@ -32,9 +32,9 @@ export default async function Home() {
       <IncomExpenseHistory />
       <SectionHeader text="Month Comparison" subtext={`See how your selected month compares to averages and previous periods`} />
       <MonthComparison />
-      <SectionHeader text="Tag Comparison" subtext={`See how your selected tag behaves in previous periods`} />
+      <SectionHeader text="Tag Comparison" subtext={`See how your selected tag (including subtags) behaves in previous periods`} />
       <TagComparison />
-      <SectionHeader text="Tag Composition" subtext={`See how your selected tag is composed between different categories`} />
+      <SectionHeader text="Tag Composition" subtext={`See how your selected tag (without subtags) is composed between different categories`} />
       <TagComposition />
     </>
   );

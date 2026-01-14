@@ -50,7 +50,8 @@ const getDatesRecord = (n: number) => Array.from({ length: n }, (_, i) => {
 
 
 export default function TableMonthComparison({ data }: TableMonthComparisonProps) {
-  const datesRecord = getDatesRecord(data[0].values.length);
+  const len = data[0].values.length;
+  const datesRecord = getDatesRecord(len);
   const [monthYear, setMonthYear] = useState<{ month: number; year: number }>({ month: new Date().getMonth() + 1, year: new Date().getFullYear() });
   const { month, year } = monthYear;
   const monthYearId = Object.keys(datesRecord).indexOf(`${month} ${year}`);
@@ -66,18 +67,19 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
     setMonthYear({ month: parseInt(selectedMonth), year: parseInt(selectedYear) });
   }, [formik.values.date]);
 
+  const thisCol = len - monthYearId - 1;
   const columns: ColumnDef<MonthComparisonRow>[] = [
     { ...defineCellTag<MonthComparisonRow>(true), meta: { border: "right" } },
-    defineCellValueChange(monthYearId, "This Month Last Year", `${getMonthName(month)} ${year - 1}`, monthYearId + 11),
-    defineCellValueChange(monthYearId, "Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`, monthYearId + 2),
-    defineCellValueChange(monthYearId, "Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`, monthYearId + 1),
+    defineCellValueChange(thisCol, "This Month Last Year", `${getMonthName(month)} ${year - 1}`, thisCol - 12),
+    defineCellValueChange(thisCol, "Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`, thisCol - 2),
+    defineCellValueChange(thisCol, "Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`, thisCol - 1),
     {
       accessorKey: "value",
       meta: { align: "center", border: "both" },
       header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
-      cell: ({ row }) => (<CellValue value={row.original.values[monthYearId]} currency={row.original.currency} />),
+      cell: ({ row }) => (<CellValue value={row.original.values[thisCol]} currency={row.original.currency} />),
     },
-    defineCellValueChange(monthYearId, "Average Month", `from last ${Object.keys(datesRecord).length} months`, undefined, "value_avg"),
+    defineCellValueChange(thisCol, "Average Month", `from last ${Object.keys(datesRecord).length} months`, undefined, "value_avg"),
   ];
   return <Table<MonthComparisonRow> url="" tag="" data={data} columns={columns} expandChild="subitems" />;
 }

@@ -232,13 +232,13 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
         subitem = await _calculate_tag_comparison(str(child.id), request_id)
         subitems.append(subitem)
     # only include Other, if its not zero and there are other subitems
-    if len(subitems) > 0 and any(v > 0 for v in this_tag_values):
+    if len(subitems) > 0 and any(v != 0 for v in this_tag_values):
         subitems.append(MonthComparisonRow(
             _id=str(PyObjectId()),
             tag=f"{tag.id}/Other",
             currency=Currency.PLN,
             values=this_tag_values,
-            value_avg=Value.avg(v for v in this_tag_values if v != 0),
+            value_avg=Value.avg(this_tag_values),
             subitems=[]
         ))
 
@@ -247,7 +247,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
         tag=str(tag.id),
         currency=Currency.PLN,
         values=all_child_values,
-        value_avg=Value.avg(v for v in all_child_values if v != 0),
+        value_avg=Value.avg(all_child_values),
         subitems=subitems
     )
 

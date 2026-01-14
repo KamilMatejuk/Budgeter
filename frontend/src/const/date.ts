@@ -4,6 +4,10 @@ export function getDateString(date: Date | string): string {
   return new Date(date).toLocaleDateString("pl-PL");
 }
 
+export function getDateTimeString(date: Date | string): string {
+  return new Date(date).toLocaleDateString("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
 export function getMonthName(month: number) {
   const date = new Date(1970, 0, 1);
   date.setMonth(month - 1);
@@ -47,7 +51,7 @@ export function getDaysInRange(range: ChartRange | keyof typeof ChartRange): str
   return _getDaysSinceDate(start);
 }
 
-export function getDaysFromValues(values: number[]){
+export function getDaysFromValues(values: number[]) {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - values.length + 1);
   return _getDaysSinceDate(start);
@@ -59,7 +63,7 @@ export function getMonthsInRange(range: ChartRange | keyof typeof ChartRange): s
   return _getMonthsSinceDate(start);
 }
 
-export function getMonthsFromValues(values: number[]){
+export function getMonthsFromValues(values: number[]) {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth() - values.length + 1, 1);
   return _getMonthsSinceDate(start);

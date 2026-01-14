@@ -8,7 +8,7 @@ import DeleteByNameModal from "@/components/modal/delete/DeleteByNameModal";
 import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
 import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
 import CellBoolean from "../cells/CellBoolean";
-import { getDateString } from "@/const/date";
+import { getDateTimeString } from "@/const/date";
 import GroupDeleteByNameModal from "@/components/modal/delete/GroupDeleteByNameModal";
 
 
@@ -19,7 +19,7 @@ interface TableBackupsProps {
 const columns: ColumnDef<BackupResponse>[] = [
   { accessorKey: "name", header: "Name", meta: { wrap: true } },
   { accessorKey: "auto", header: "Manual", cell: ({ row }) => <CellBoolean value={!row.original.auto} /> },
-  { accessorKey: "timestamp", header: "Timestamp", cell: ({ row }) => getDateString(row.original.timestamp) },
+  { accessorKey: "timestamp", header: "Timestamp", cell: ({ row }) => getDateTimeString(row.original.timestamp) },
   { accessorKey: "size_mb", header: "Size", cell: ({ row }) => row.original.size_mb.toFixed(2) + " MB" },
   { accessorKey: "description", header: "Description", meta: { wrap: true } },
 ];

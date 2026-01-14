@@ -18,8 +18,7 @@ async function importFile(
   source: Source,
   owner: string,
   setCounter: Dispatch<SetStateAction<number>>,
-  setMaxCounter: Dispatch<SetStateAction<number>>,
-  setImported: Dispatch<SetStateAction<number>>
+  setMaxCounter: Dispatch<SetStateAction<number>>
 ) {
   await new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -32,12 +31,11 @@ async function importFile(
           for (const [index, row] of rows.entries()) {
             setCounter(index + 1);
             const url = `/api/source/${source}/` + (source === Source.REVOLUT ? encodeURIComponent(owner) : "");
-            const { response, error } = await post<TransactionWithId>(url, row);
+            const { error } = await post<TransactionWithId>(url, row);
             if (error) {
               reject(new Error(error.message)); // reject the whole Promise
               return;
             }
-            if (response.tags?.length == 0) setImported((prev) => prev + 1);
           }
           resolve(null);
         } catch (e) {
@@ -56,7 +54,6 @@ export default function RunButton() {
   const [error, setError] = useState<Error | string | null>(null);
   const [counter, setCounter] = useState(0);
   const [maxCounter, setMaxCounter] = useState(0);
-  const [imported, setImported] = useState<number>(0);
 
   const setFailed = (message: string) => { setError(message); setState('failed') }
 
@@ -65,7 +62,6 @@ export default function RunButton() {
     setState('start');
     setCounter(0);
     setMaxCounter(0);
-    setImported(0);
   }
 
   async function handleImport() {
@@ -75,7 +71,7 @@ export default function RunButton() {
     try {
       const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
       if (!await backupStateBeforeUpdate(backupName)) throw new Error("Backup failed. Import aborted.");
-      await importFile(selectedFile, selectedSource as Source, selectedOwner, setCounter, setMaxCounter, setImported);
+      await importFile(selectedFile, selectedSource as Source, selectedOwner, setCounter, setMaxCounter);
       setState('finish');
     } catch (err) {
       setFailed((err as Error).message);
@@ -107,7 +103,7 @@ export default function RunButton() {
       )}
       {state === 'finish' && (
         <>
-          <InfoToast message={`Import completed. ${imported} new transactions imported.`} />
+          <InfoToast message={`Import completed.`} />
           <ButtonWithLink
             text="See new transactions"
             href="/transactions/new"

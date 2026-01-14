@@ -7,9 +7,9 @@ import { MdDelete, MdEdit, MdRestore } from "react-icons/md";
 import DeleteByNameModal from "@/components/modal/delete/DeleteByNameModal";
 import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
 import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
-import CellBoolean from "../cells/CellBoolean";
 import { getDateTimeString } from "@/const/date";
 import GroupDeleteByNameModal from "@/components/modal/delete/GroupDeleteByNameModal";
+import { FaRobot, FaPerson } from "react-icons/fa6";
 
 
 interface TableBackupsProps {
@@ -17,11 +17,32 @@ interface TableBackupsProps {
 }
 
 const columns: ColumnDef<BackupResponse>[] = [
-  { accessorKey: "name", header: "Name", meta: { wrap: true } },
-  { accessorKey: "auto", header: "Manual", cell: ({ row }) => <CellBoolean value={!row.original.auto} /> },
-  { accessorKey: "timestamp", header: "Timestamp", cell: ({ row }) => getDateTimeString(row.original.timestamp) },
-  { accessorKey: "size_mb", header: "Size", cell: ({ row }) => row.original.size_mb.toFixed(2) + " MB" },
-  { accessorKey: "description", header: "Description", meta: { wrap: true } },
+  {
+    header: "Creator",
+    accessorKey: "auto",
+    meta: { align: "center" },
+    cell: ({ row }) => row.original.auto ? <FaRobot size={20} className="m-auto" /> : <FaPerson size={20} className="m-auto" />,
+  },
+  {
+    header: "Timestamp",
+    accessorKey: "timestamp",
+    cell: ({ row }) => getDateTimeString(row.original.timestamp)
+  },
+  {
+    header: "Name",
+    accessorKey: "name",
+  },
+  {
+    header: "Size",
+    accessorKey: "size_mb",
+    meta: { align: "center" },
+    cell: ({ row }) => row.original.size_mb.toFixed(2) + " MB"
+  },
+  {
+    header: "Description",
+    accessorKey: "description",
+    meta: { wrap: true },
+  },
 ];
 
 export default function TableBackups({ data }: TableBackupsProps) {

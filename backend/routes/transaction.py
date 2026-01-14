@@ -1,6 +1,5 @@
 import datetime
 from fastapi import APIRouter, Depends
-from models.history import AccountDailyHistory
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
@@ -35,6 +34,7 @@ async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase =
         data.organisation = await match_organisation_pattern(data.organisation, db)
     if data.tags is not None:
         data.tags = await sort_tags(data.tags, db)
+    assert data.value is None, "Transaction value cannot be changed via patch"
     return await patch(db, "transactions", TransactionWithId, data)
 
 
@@ -42,7 +42,13 @@ async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase =
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
     data.organisation = await match_organisation_pattern(data.organisation, db)
     data.tags = await sort_tags(data.tags, db)
-    return await create(db, "transactions", TransactionWithId, data)
+    transaction: TransactionWithId = await create(db, "transactions", TransactionWithId, data)
+    # update history
+    account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
+    if account: # it can be cash transaction with no account history to update
+        date = transaction.date.strftime("%Y-%m-%d")
+        await mark_account_value_in_history(account, date, Value.parse(transaction.value), db)
+    return transaction
 
 
 @single_router.delete("/{id}", response_model=dict)

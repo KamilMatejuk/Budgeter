@@ -74,6 +74,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/transaction/restore/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore Deleted Transaction */
+        post: operations["restore_deleted_transaction_api_transaction_restore__id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/transaction/repay": {
         parameters: {
             query?: never;
@@ -100,6 +117,23 @@ export type paths = {
         };
         /** Get Transactions Monthly */
         get: operations["get_transactions_monthly_api_transactions__year___month__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions/deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Deleted */
+        get: operations["get_transactions_deleted_api_transactions_deleted_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1821,6 +1855,37 @@ export interface operations {
             };
         };
     };
+    restore_deleted_transaction_api_transaction_restore__id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     repay_transaction_api_transaction_repay_post: {
         parameters: {
             query?: never;
@@ -1884,6 +1949,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_transactions_deleted_api_transactions_deleted_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionWithId"][];
                 };
             };
         };

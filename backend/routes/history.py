@@ -142,7 +142,7 @@ class PatchAccountValueRequest(PyBaseModel):
 
 async def remove_leading_zero_history(account: PersonalAccountWithId, db: AsyncIOMotorDatabase):
     hist: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
-                                                {"account": str(account.id)}, "date", reverse=True)
+                                                {"account": str(account.id)}, "date", reverse=False)
     to_remove = []
     for h in hist:
         if h.value != 0.0: break

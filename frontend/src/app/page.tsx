@@ -34,7 +34,7 @@ export default async function Home() {
       <MonthComparison />
       <SectionHeader text="Tag Comparison" subtext={`See how your selected tag (including subtags) behaves in previous periods`} />
       <TagComparison />
-      <SectionHeader text="Tag Composition" subtext={`See how your selected tag (without subtags) is composed between different categories`} />
+      <SectionHeader text="Tag Composition" subtext={`See how your selected tag (including subtags) is composed between different categories`} />
       <TagComposition />
     </>
   );

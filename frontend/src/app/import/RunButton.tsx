@@ -51,7 +51,7 @@ async function importFile(
 
 
 export default function RunButton() {
-  const { selectedFile, selectedSource, selectedOwner, setSelectedFile, setSelectedSource, setSelectedOwner } = useImportContext();
+  const { selectedFile, selectedSource, selectedOwner } = useImportContext();
   const [state, setState] = useState<'start' | 'importing' | 'finish' | 'failed'>('start');
   const [error, setError] = useState<Error | string | null>(null);
   const [counter, setCounter] = useState(0);
@@ -61,9 +61,6 @@ export default function RunButton() {
   const setFailed = (message: string) => { setError(message); setState('failed') }
 
   async function handleReset() {
-    setSelectedFile(null);
-    setSelectedSource(null);
-    setSelectedOwner("");
     setError(null);
     setState('start');
     setCounter(0);
@@ -89,7 +86,7 @@ export default function RunButton() {
     <>
       {state === 'failed' && error && (
         <>
-          <ErrorToast message={error instanceof Error ? error.message : error} />
+          <ErrorToast message={`Row ${counter + 1}: ${error instanceof Error ? error.message : error}`} />
           <ButtonWithLoader
             text="Retry"
             onClick={handleReset}

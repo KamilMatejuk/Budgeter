@@ -14,7 +14,7 @@ export async function submit<FormatSchemaType, T extends Item>(
   alert(`Error: ${error.message}`);
 }
 
-export async function backupStateBeforeUpdate<T extends Item>(title: string) {
+export async function backupStateBeforeUpdate(title: string) {
   const { error: backupError } = await post(`/api/backup`, { name: title, auto: true } as BackupRequest);
   if (backupError) {
     alert(`Error: ${backupError.message}`);

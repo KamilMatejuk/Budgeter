@@ -8,11 +8,12 @@ import TextInputWithError, { requiredText } from "../../form/TextInputWithError"
 import { OrganisationWithId } from "@/types/backend";
 import { ERROR } from "@/const/message";
 import TagsInputWithError from "@/components/form/TagsInputWithError";
+import MultiTextInputWithError from "@/components/form/MultiTextInputWithError";
 
 
 const FormSchema = z.object({
   name: requiredText,
-  pattern: requiredText,
+  patterns: z.array(z.string()).min(1, ERROR.requiredError),
   icon: requiredText.regex(/^data:image\/.+/, { message: ERROR.imageBase64Format }),
   tags: z.array(z.string()),
 });
@@ -23,7 +24,7 @@ export default function UpdateOrganisationModal({ url, item, open, onClose }: Ba
   const formik = useFormik<FormSchemaType>({
     initialValues: {
       name: item?.name || "",
-      pattern: item?.pattern || "",
+      patterns: item?.patterns || [],
       icon: item?.icon || "",
       tags: item?.tags || [],
     },
@@ -33,7 +34,7 @@ export default function UpdateOrganisationModal({ url, item, open, onClose }: Ba
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update organisation" : "Create organisation"}>
-      <TextInputWithError formik={formik} formikName="pattern" label="Pattern" />
+      <MultiTextInputWithError formik={formik} formikName="patterns" label="Patterns" />
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <TextInputWithError formik={formik} formikName="icon" label="Icon" />
       <TagsInputWithError formik={formik} formikName="tags" label="Tags" />

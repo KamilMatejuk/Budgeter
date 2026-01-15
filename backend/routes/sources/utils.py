@@ -58,6 +58,7 @@ async def mark_account_value_in_history(account: PersonalAccountWithId, date: st
 
 async def match_organisation_pattern(name: str, db: AsyncIOMotorDatabase):
     for org in await get(db, "organisations", OrganisationWithId):
-        if org.pattern.lower() in name.lower():
-            return org.name
+        for pattern in org.patterns:
+            if pattern.lower() in name.lower():
+                return org.name
     return name

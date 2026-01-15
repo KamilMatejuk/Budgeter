@@ -70,7 +70,7 @@ export function useOrganisation(name: string) {
   return _useFetchWrapper<OrganisationWithId>(
     ["organisation", name],
     ["organisation"],
-    `/api/organisation/regex/${name}`
+    `/api/organisation/regex/${encodeURIComponent(name.replaceAll('/', ''))}`
   ) || undefined;
 }
 

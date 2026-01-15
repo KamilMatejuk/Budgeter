@@ -8,6 +8,7 @@ import UpdateOrganisationModal from "@/components/modal/update/UpdateOrganisatio
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { defineCellTag } from "../cells/CellTag";
+import MultilineText from "@/components/MultilineText";
 
 
 interface TableOrganisationsProps {
@@ -15,7 +16,7 @@ interface TableOrganisationsProps {
 }
 
 const columns: ColumnDef<OrganisationWithId>[] = [
-  { accessorKey: "pattern", header: "Pattern" },
+  { accessorKey: "patterns", header: "Pattern", cell: ({ row }) => <MultilineText text={row.original.patterns.join("\n")} /> },
   { accessorKey: "name", header: "Name" },
   defineCellIcon<OrganisationWithId>(),
   defineCellTag<OrganisationWithId>(),

@@ -1192,8 +1192,8 @@ export type components = {
         Organisation: {
             /** Id */
             _id?: string;
-            /** Pattern */
-            pattern: string;
+            /** Patterns */
+            patterns: string[];
             /** Name */
             name: string;
             /** Tags */
@@ -1205,8 +1205,8 @@ export type components = {
         OrganisationPartial: {
             /** Id */
             _id?: string;
-            /** Pattern */
-            pattern?: string | null;
+            /** Patterns */
+            patterns?: string[] | null;
             /** Name */
             name?: string | null;
             /** Tags */
@@ -1218,8 +1218,8 @@ export type components = {
         OrganisationWithId: {
             /** Id */
             _id: string;
-            /** Pattern */
-            pattern: string;
+            /** Patterns */
+            patterns: string[];
             /** Name */
             name: string;
             /** Tags */

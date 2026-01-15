@@ -18,11 +18,12 @@ async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = D
     async def inner():
         organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
         for org in organisations:
-            if org.pattern.lower() in name.lower():
-                return org
+            for pattern in org.patterns:
+                if pattern.lower() in name.lower():
+                    return org
             if org.name.lower() == name.lower():
                 return org
-        return Organisation(pattern="", name=name, tags=[]).model_dump(by_alias=True, mode="json")
+        return Organisation(patterns=[], name=name, tags=[]).model_dump(by_alias=True, mode="json")
     return await inner()
 
 
@@ -33,8 +34,9 @@ async def create_organisation(data: Organisation, db: AsyncIOMotorDatabase = Dep
         item = await create(db, "organisations", OrganisationWithId, data)
         # update matching transactions
         async for doc in db["transactions"].find({}):
-            if item.pattern.lower() in doc["organisation"].lower():
-                await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
+            for pattern in item.patterns:
+                if pattern.lower() in doc["organisation"].lower():
+                    await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
         return item
     return await inner()
 

@@ -8,10 +8,7 @@ import InputWithError, { getError, getTouched, SingleInputWithErrorProps } from 
 export const requiredText = z.string({ required_error: ERROR.requiredError }).min(1, ERROR.requiredError);
 
 
-export interface TextInputWithErrorProps<T> extends SingleInputWithErrorProps<T>, React.InputHTMLAttributes<HTMLInputElement> { }
-
-
-export default function TextInputWithError<T>({ formik, formikName, label, ...props }: TextInputWithErrorProps<T>) {
+export default function TextInputWithError<T>({ formik, formikName, label, ...props }: SingleInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
 

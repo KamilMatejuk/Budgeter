@@ -1,8 +1,8 @@
 import React from "react";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import TextInputWithError, { TextInputWithErrorProps } from "./TextInputWithError";
-import { getValue } from "./InputWithError";
+import TextInputWithError from "./TextInputWithError";
+import { getValue, SingleInputWithErrorProps } from "./InputWithError";
 
 
 export const requiredCardNumber = z.preprocess(
@@ -24,7 +24,7 @@ export default function CardNumberInputWithError<T>({
   formik,
   formikName,
   label,
-}: TextInputWithErrorProps<T>) {
+}: SingleInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
 
   function set(newValue: string) {

@@ -1,8 +1,8 @@
-import React, { HTMLAttributes, PropsWithChildren } from "react";
+import React, { InputHTMLAttributes, PropsWithChildren } from "react";
 import { FormikProps } from "formik";
 
 
-export interface MultiInputWithErrorProps<T> extends PropsWithChildren, HTMLAttributes<HTMLInputElement> {
+export interface MultiInputWithErrorProps<T> extends PropsWithChildren, InputHTMLAttributes<HTMLInputElement> {
   formik: FormikProps<T>;
   formikNames: (keyof T | string)[];
   label?: string;

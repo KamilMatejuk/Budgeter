@@ -1,8 +1,8 @@
 import React from "react";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import TextInputWithError, { TextInputWithErrorProps } from "./TextInputWithError";
-import { getValue } from "./InputWithError";
+import TextInputWithError, {  } from "./TextInputWithError";
+import { getValue, SingleInputWithErrorProps } from "./InputWithError";
 
 
 export const requiredPositiveAmount = z.preprocess(
@@ -63,7 +63,7 @@ function format(value: number | string | undefined) {
   return "";
 }
 
-export interface AmountInputWithErrorProps<T> extends TextInputWithErrorProps<T> {
+export interface AmountInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   allowNegative?: boolean;
 }
 

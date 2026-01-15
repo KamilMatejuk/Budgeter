@@ -7,9 +7,9 @@ from core.utils import Value
 from routes.base import get, create
 from models.base import PyBaseModel
 from models.transaction import Transaction, TransactionWithId
-from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
+from routes.sources.utils import mark_account_value_in_history
 from models.products import PersonalAccountWithId, Currency
-
+from routes.organisation import get_organisation_name_by_name_regex
 
 class RevolutRequest(PyBaseModel):
     type: str = Field(..., alias="Type")
@@ -55,7 +55,7 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
     async def create_transaction(title: str, organisation: str = None, parse_organisation: bool = False):
         organisation = organisation or data.description
         if parse_organisation:
-            organisation = await match_organisation_pattern(organisation, db)    
+            organisation = await get_organisation_name_by_name_regex(organisation, db)
         item = Transaction(account=str(account.id), date=date, title=title,
             organisation=organisation, value=value, currency=currency, tags=[])
         return await create(db, "transactions", TransactionWithId, item)

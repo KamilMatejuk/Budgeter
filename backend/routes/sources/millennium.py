@@ -5,7 +5,8 @@ from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from models.products import CardWithId, PersonalAccountWithId
-from routes.sources.utils import mark_card_usage_in_history, mark_account_value_in_history, match_organisation_pattern
+from routes.sources.utils import mark_card_usage_in_history, mark_account_value_in_history
+from routes.organisation import get_organisation_name_by_name_regex
 from models.transaction import Transaction, TransactionWithId
 from models.base import PyBaseModel
 from routes.base import get, create
@@ -75,7 +76,7 @@ async def create_transaction(db: AsyncIOMotorDatabase, data: MillenniumRequest, 
                              organisation: str, title: str = None, parse_organisation: bool = False,
                              mark: bool = True) -> TransactionWithId:
     if parse_organisation:
-        organisation = await match_organisation_pattern(organisation, db)
+        organisation = await get_organisation_name_by_name_regex(organisation, db)
     value = data.charges or data.credits
     title = title or data.description
     item = Transaction(account=str(account.id), date=data.transaction_date, title=title,

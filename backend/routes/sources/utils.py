@@ -54,11 +54,3 @@ async def mark_account_value_in_history(account: PersonalAccountWithId, date: st
     latest: AccountDailyHistory = await get(db, "account_daily_history", AccountDailyHistory, {"account": str(account.id)}, "date", one=True)
     value = latest.value if latest else 0.0
     await db["personal_account"].update_one({"_id": str(account.id)}, {"$set": {"value": value}})
-
-
-async def match_organisation_pattern(name: str, db: AsyncIOMotorDatabase):
-    for org in await get(db, "organisations", OrganisationWithId):
-        for pattern in org.patterns:
-            if pattern.lower() in name.lower():
-                return org.name
-    return name

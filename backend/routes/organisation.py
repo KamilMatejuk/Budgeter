@@ -12,7 +12,7 @@ factory.create_get()
 factory.create_get_by_id()
 factory.create_delete()
 
-@router.get("/regex/{name}", response_model=OrganisationWithId)
+@router.get("/regex/{name}", response_model=OrganisationWithId | str)
 async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -23,8 +23,14 @@ async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = D
                     return org
             if org.name.lower() == name.lower():
                 return org
-        return Organisation(patterns=[], name=name, tags=[]).model_dump(by_alias=True, mode="json")
+        return name
     return await inner()
+
+
+async def get_organisation_name_by_name_regex(name: str, db: AsyncIOMotorDatabase):
+    org = await get_organisation_by_name_regex(name, db)
+    if isinstance(org, OrganisationWithId): return org.name
+    return name
 
 
 @router.post("", response_model=OrganisationWithId)

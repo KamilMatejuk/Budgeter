@@ -8,10 +8,11 @@ from core.utils import Value, Date
 from models.base import PyObjectId
 from routes.tag import get_name as get_tag_name
 from models.products import PersonalAccountWithId
-from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
-from routes.sources.utils import mark_account_value_in_history, match_organisation_pattern
-from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
 from routes.history import remove_leading_zero_history
+from routes.sources.utils import mark_account_value_in_history
+from routes.organisation import get_organisation_name_by_name_regex
+from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
+from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
 
 single_router = APIRouter()
 multi_router = APIRouter()
@@ -28,10 +29,11 @@ async def sort_tags(tags: list[str], db: AsyncIOMotorDatabase):
     tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
     return [str(t.id) for t in tags]
 
+
 @single_router.patch("", response_model=TransactionWithId)
 async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     if data.organisation is not None:
-        data.organisation = await match_organisation_pattern(data.organisation, db)
+        data.organisation = await get_organisation_name_by_name_regex(data.organisation, db)
     if data.tags is not None:
         data.tags = await sort_tags(data.tags, db)
     assert data.value is None, "Transaction value cannot be changed via patch"
@@ -40,7 +42,7 @@ async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase =
 
 @single_router.post("", response_model=TransactionWithId)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
-    data.organisation = await match_organisation_pattern(data.organisation, db)
+    data.organisation = await get_organisation_name_by_name_regex(data.organisation, db)
     data.tags = await sort_tags(data.tags, db)
     transaction: TransactionWithId = await create(db, "transactions", TransactionWithId, data)
     # update history

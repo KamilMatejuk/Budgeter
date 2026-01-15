@@ -1,6 +1,6 @@
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionOrgWithId, TransactionRepayRequest } from "@/types/backend";
+import { Transaction, TransactionRichWithId, TransactionRepayRequest } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { requiredText } from "../../form/TextInputWithError";
@@ -26,7 +26,7 @@ async function submit(values: FormSchemaType, item: Transaction) {
 }
 
 
-export default function RepayTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionOrgWithId>) {
+export default function RepayTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionRichWithId>) {
   const people = usePeopleWithDebt();
 
   const formik = useFormik<FormSchemaType>({

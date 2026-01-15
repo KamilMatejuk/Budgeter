@@ -1,6 +1,6 @@
 'use client';
 
-import { TransactionOrgWithId } from "@/types/backend";
+import { TransactionRichWithId } from "@/types/backend";
 import TableTransactions from "@/components/table/tables/TableTransactions";
 import AnnotateTransactionsModal from "@/components/modal/custom/AnnotateTransactionsModal";
 import { useState } from "react";
@@ -8,13 +8,13 @@ import ButtonWithLoader from "@/components/button/ButtonWithLoader";
 import { customRevalidateTag } from "@/app/api/fetch";
 
 interface AnnotateTransactionsProps {
-  transactions: TransactionOrgWithId[];
+  transactions: TransactionRichWithId[];
 }
 
 export default function AnnotateTransactions({ transactions }: AnnotateTransactionsProps) {
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [item, setItem] = useState<TransactionOrgWithId>(transactions[currentIndex]);
+  const [item, setItem] = useState<TransactionRichWithId>(transactions[currentIndex]);
 
   const onClose = async () => {
     setOpen(false);

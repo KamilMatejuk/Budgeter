@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionOrgWithId, TransactionPartial } from "@/types/backend";
+import { Transaction, TransactionRichWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -18,7 +18,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-async function submit(values: FormSchemaType, item: Transaction, url: string) {
+async function submit(values: FormSchemaType, item: TransactionRichWithId, url: string) {
   const val = { _id: item._id, ...values } as TransactionPartial;
   const { error } = await patch(url, val);
   if (!error) return true;
@@ -27,7 +27,7 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
 }
 
 
-export default function UpdateTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionOrgWithId>) {
+export default function UpdateTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionRichWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { title: item?.title || "", tags: item?.tags || [] },
     onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },
@@ -38,7 +38,7 @@ export default function UpdateTransactionModal({ url, item, open, onClose }: Bac
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Update Transaction">
       <TransactionDetails item={item} />
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={item.organisation.name} />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisation={item.organisation} />
     </Modal >
   );
 }

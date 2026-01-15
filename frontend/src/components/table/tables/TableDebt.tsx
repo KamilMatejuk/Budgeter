@@ -1,6 +1,6 @@
 'use client';
 
-import { TransactionOrgWithId } from "@/types/backend";
+import { TransactionRichWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellOrganisation } from "../cells/CellOrganisation";
@@ -11,20 +11,20 @@ import { getDateString } from "@/const/date";
 
 
 interface TableDebtProps {
-  data: TransactionOrgWithId[];
+  data: TransactionRichWithId[];
 }
 
-const columns: ColumnDef<TransactionOrgWithId>[] = [
+const columns: ColumnDef<TransactionRichWithId>[] = [
   { accessorKey: "debt_person", header: "Person" },
   { accessorKey: "date", header: "Date", cell: ({ row }) => getDateString(new Date(row.original.date)) },
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
-  defineCellOrganisation<TransactionOrgWithId>(),
-  defineCellValue<TransactionOrgWithId>(true),
+  defineCellOrganisation<TransactionRichWithId>(),
+  defineCellValue<TransactionRichWithId>(true),
 ];
 
 export default function TableDebt({ data }: TableDebtProps) {
   return (
-    <Table<TransactionOrgWithId>
+    <Table<TransactionRichWithId>
       url="/api/transaction"
       tag="transaction"
       data={data}

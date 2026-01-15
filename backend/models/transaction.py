@@ -1,7 +1,7 @@
 from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
-from models.products import Currency
+from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 
 class Transaction(PyBaseModel):
@@ -20,8 +20,10 @@ class Transaction(PyBaseModel):
 class TransactionPartial(Transaction, metaclass=Partial): pass
 class TransactionWithId(Transaction, metaclass=WithId): pass
 
-class TransactionOrg(Transaction): organisation: OrganisationWithId
-class TransactionOrgWithId(TransactionOrg, metaclass=WithId): pass
+class TransactionRich(Transaction):
+    organisation: OrganisationWithId
+    account: PersonalAccountWithId | CashWithId
+class TransactionRichWithId(TransactionRich, metaclass=WithId): pass
 
 # split
 

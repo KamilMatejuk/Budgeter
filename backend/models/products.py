@@ -117,3 +117,8 @@ class StockAccountWithId(StockAccount, metaclass=WithId): pass
 class CapitalInvestmentWithId(CapitalInvestment, metaclass=WithId): pass
 class MonthlyIncomeWithId(MonthlyIncome, metaclass=WithId): pass
 class MonthlyExpenseWithId(MonthlyExpense, metaclass=WithId): pass
+
+# custom enriched models
+
+class CardRich(Card): account: PersonalAccountWithId
+class CardRichWithId(CardRich, metaclass=WithId): pass

@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionOrgWithId, TransactionPartial } from "@/types/backend";
+import { Transaction, TransactionRichWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -22,7 +22,7 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
 }
 
 
-export default function DebtTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionOrgWithId>) {
+export default function DebtTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionRichWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { person: item?.debt_person || "" },
     onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },

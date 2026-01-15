@@ -1,6 +1,6 @@
 'use client';
 
-import { TransactionOrgWithId } from "@/types/backend";
+import { TransactionRichWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellOrganisation } from "../cells/CellOrganisation";
@@ -14,21 +14,21 @@ import RestoreByIdModal from "@/components/modal/delete/RestoreByIdModal";
 
 
 interface TableTrashProps {
-  data: TransactionOrgWithId[];
+  data: TransactionRichWithId[];
 }
 
-const columns: ColumnDef<TransactionOrgWithId>[] = [
+const columns: ColumnDef<TransactionRichWithId>[] = [
   { accessorKey: "date", header: "Date", cell: ({ row }) => getDateString(new Date(row.original.date)) },
-  defineCellAccountName<TransactionOrgWithId>(),
+  defineCellAccountName<TransactionRichWithId>(),
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
-  defineCellOrganisation<TransactionOrgWithId>(),
-  defineCellValue<TransactionOrgWithId>(true),
-  defineCellTag<TransactionOrgWithId>(),
+  defineCellOrganisation<TransactionRichWithId>(),
+  defineCellValue<TransactionRichWithId>(true),
+  defineCellTag<TransactionRichWithId>(),
 ];
 
 export default function TableTrash({ data }: TableTrashProps) {
   return (
-    <Table<TransactionOrgWithId>
+    <Table<TransactionRichWithId>
       url="/api/transaction"
       tag="transaction"
       data={data}

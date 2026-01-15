@@ -6,14 +6,14 @@ from core.utils import Date
 from routes.base import CRUDRouterFactory, create, get, patch
 from routes.sources.utils import mark_account_value_in_history
 from models.products import (
-    CapitalInvestmentWithId, CardWithId, Cash, CashPartial, CashWithId, MonthlyExpenseWithId, MonthlyIncomeWithId,
-    PersonalAccount, PersonalAccountPartial,
-    Card, CardPartial, PersonalAccountWithId,
+    Cash, CashPartial, CashWithId,
+    Card, CardPartial, CardWithId, CardRichWithId,
+    PersonalAccount, PersonalAccountPartial, PersonalAccountWithId,
     SavingsAccount, SavingsAccountPartial, SavingsAccountWithId,
-    StockAccount, StockAccountPartial,
-    CapitalInvestment, CapitalInvestmentPartial,
-    MonthlyIncome, MonthlyIncomePartial,
-    MonthlyExpense, MonthlyExpensePartial, StockAccountWithId,
+    StockAccount, StockAccountPartial, StockAccountWithId,
+    CapitalInvestment, CapitalInvestmentPartial, CapitalInvestmentWithId,
+    MonthlyIncome, MonthlyIncomePartial, MonthlyIncomeWithId,
+    MonthlyExpense, MonthlyExpensePartial, MonthlyExpenseWithId,
 )
 
 router = APIRouter()
@@ -62,7 +62,18 @@ router.include_router(personal_account_router)
 
 card_router = APIRouter(prefix="/card")
 card_factory = CRUDRouterFactory(card_router, "card", Card, CardPartial, CardWithId)
-card_factory.create_get()
+
+@card_router.get("", response_model=list[CardRichWithId])
+async def get_cards(db: AsyncIOMotorDatabase = Depends(get_db)):
+    cards: list[CardWithId] = await get(db, "card", CardWithId)
+    accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
+    result = []
+    for c in cards:
+        acc = next((a for a in accounts if str(a.id) == c.account), None)
+        print(c, acc)
+        result.append(CardRichWithId(**c.model_dump(exclude={"account"}, by_alias=True, mode="json"), account=acc))
+    return result
+
 card_factory.create_get_by_id()
 card_factory.create_post()
 card_factory.create_patch()

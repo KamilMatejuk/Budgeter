@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionOrgWithId, TransactionSplitRequest } from "@/types/backend";
+import { Transaction, TransactionRichWithId, TransactionSplitRequest } from "@/types/backend";
 import { FormikProps, useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -68,7 +68,7 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
 }
 
 
-export default function SplitTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionOrgWithId>) {
+export default function SplitTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionRichWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { parts: [{ title: item?.title || "", value: item?.value || 0 }] },
     onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },

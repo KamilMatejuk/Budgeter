@@ -1007,6 +1007,25 @@ export type components = {
             /** Remaining */
             remaining: number;
         };
+        /** CardRichWithId */
+        CardRichWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Number */
+            number: string;
+            /** Value */
+            value?: number | null;
+            /** Credit */
+            credit: boolean;
+            /** Active */
+            active: boolean;
+            currency: components["schemas"]["Currency"];
+            account: components["schemas"]["PersonalAccountWithId"];
+            /** Min Number Of Transactions Monthly */
+            min_number_of_transactions_monthly: number;
+        };
         /** CardWithId */
         CardWithId: {
             /** Id */
@@ -1514,38 +1533,6 @@ export type components = {
             /** Debt Person */
             debt_person?: string | null;
         };
-        /** TransactionOrgWithId */
-        TransactionOrgWithId: {
-            /** Id */
-            _id: string;
-            /** Account */
-            account: string;
-            /**
-             * Date
-             * Format: date
-             */
-            date: string;
-            /** Title */
-            title: string;
-            organisation: components["schemas"]["OrganisationWithId"];
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
-            /** Tags */
-            tags: string[];
-            /**
-             * Cash
-             * @default false
-             */
-            cash: boolean;
-            /**
-             * Deleted
-             * @default false
-             */
-            deleted: boolean;
-            /** Debt Person */
-            debt_person?: string | null;
-        };
         /** TransactionPartial */
         TransactionPartial: {
             /** Id */
@@ -1576,6 +1563,38 @@ export type components = {
             _id?: string;
             /** Debt Transaction Id */
             debt_transaction_id: string;
+        };
+        /** TransactionRichWithId */
+        TransactionRichWithId: {
+            /** Id */
+            _id: string;
+            /** Account */
+            account: components["schemas"]["PersonalAccountWithId"] | components["schemas"]["CashWithId"];
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Title */
+            title: string;
+            organisation: components["schemas"]["OrganisationWithId"];
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Tags */
+            tags: string[];
+            /**
+             * Cash
+             * @default false
+             */
+            cash: boolean;
+            /**
+             * Deleted
+             * @default false
+             */
+            deleted: boolean;
+            /** Debt Person */
+            debt_person?: string | null;
         };
         /** TransactionSplitRequest */
         TransactionSplitRequest: {
@@ -1648,6 +1667,7 @@ export type Capitalization = components['schemas']['Capitalization'];
 export type Card = components['schemas']['Card'];
 export type CardPartial = components['schemas']['CardPartial'];
 export type CardRequirementsResponse = components['schemas']['CardRequirementsResponse'];
+export type CardRichWithId = components['schemas']['CardRichWithId'];
 export type CardWithId = components['schemas']['CardWithId'];
 export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
@@ -1685,9 +1705,9 @@ export type TagPartial = components['schemas']['TagPartial'];
 export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
-export type TransactionOrgWithId = components['schemas']['TransactionOrgWithId'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
 export type TransactionRepayRequest = components['schemas']['TransactionRepayRequest'];
+export type TransactionRichWithId = components['schemas']['TransactionRichWithId'];
 export type TransactionSplitRequest = components['schemas']['TransactionSplitRequest'];
 export type TransactionSplitRequestItem = components['schemas']['TransactionSplitRequestItem'];
 export type TransactionWithId = components['schemas']['TransactionWithId'];
@@ -1972,7 +1992,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionOrgWithId"][];
+                    "application/json": components["schemas"]["TransactionRichWithId"][];
                 };
             };
             /** @description Validation Error */
@@ -2001,7 +2021,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionOrgWithId"][];
+                    "application/json": components["schemas"]["TransactionRichWithId"][];
                 };
             };
         };
@@ -2021,7 +2041,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionOrgWithId"][];
+                    "application/json": components["schemas"]["TransactionRichWithId"][];
                 };
             };
         };
@@ -2041,7 +2061,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionOrgWithId"][];
+                    "application/json": components["schemas"]["TransactionRichWithId"][];
                 };
             };
         };
@@ -2667,7 +2687,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CardWithId"][];
+                    "application/json": components["schemas"]["CardRichWithId"][];
                 };
             };
         };

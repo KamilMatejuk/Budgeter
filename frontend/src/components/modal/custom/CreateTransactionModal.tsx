@@ -81,8 +81,12 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
   const lastTransaction = useLastTransaction(formik.values.account);
 
   const organisations = useOrganisations();
-  const organisation = useMemo(() => formik.values.organisation, [formik.values.organisation]);
-  const organisationOptions = useMemo(() => organisations.map(org => ({ id: org.name, name: org.name })), [organisations]);
+  const organisation = useMemo(
+    () => organisations.find(org => org.name === formik.values.organisation),
+    [formik.values.organisation, organisations]);
+  const organisationOptions = useMemo(
+    () => organisations.map(org => ({ id: org.name, name: org.name })),
+    [organisations]);
 
   const tags = useTags();
   const warningTagValue = useMemo(() => {
@@ -140,7 +144,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
         singleSelect
       />
       <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={organisation} />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisation={organisation} />
       {warningTagValue && <WarningToast message="Positive value should have tag 'Zarobki'.\nOther tags probably require negative value." />}
       <DateInputWithError formik={formik} formikName="date" label="Date" />
     </Modal >

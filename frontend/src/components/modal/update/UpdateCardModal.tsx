@@ -2,7 +2,7 @@ import Modal, { BackendModalProps } from "../Modal";
 import { submit } from "./utils";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
-import { CardWithId } from "@/types/backend";
+import { CardRichWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -39,7 +39,7 @@ type SubmitFormSchemaType = Omit<FormSchemaType, "credit" | "active"> & { credit
 
 
 
-export default function UpdateCardModal({ url, item, open, onClose }: BackendModalProps<CardWithId>) {
+export default function UpdateCardModal({ url, item, open, onClose }: BackendModalProps<CardRichWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
       name: item?.name || "",
@@ -48,7 +48,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       value: item?.value || 0,
       credit: item?.credit ? Type.CREDIT : Type.DEBIT,
       active: item?.active ? Active.ACTIVE : Active.INACTIVE,
-      account: item?.account || "",
+      account: item?.account._id || "",
       min_number_of_transactions_monthly: item?.min_number_of_transactions_monthly || 0,
     },
     onSubmit: async (values) => {
@@ -58,7 +58,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
         active: values.active == Active.ACTIVE,
         value: values.credit == Type.CREDIT ? values.value : 0,
       }
-      await submit<SubmitFormSchemaType, CardWithId>(url, val, item?._id, onClose);
+      await submit<SubmitFormSchemaType, CardRichWithId>(url, val, item?._id, onClose);
     },
     validate: withZodSchema(FormSchema),
   });

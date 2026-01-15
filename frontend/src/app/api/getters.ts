@@ -3,7 +3,7 @@ import {
   BackupResponse,
   CapitalInvestmentWithId,
   CardRequirementsResponse,
-  CardWithId,
+  CardRichWithId,
   CashWithId,
   MonthComparisonRow,
   MonthlyExpenseWithId,
@@ -15,7 +15,7 @@ import {
   StockAccountWithId,
   TagComposition,
   TagWithId,
-  TransactionOrgWithId,
+  TransactionRichWithId,
 } from "@/types/backend";
 import { get } from "./fetch";
 import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
@@ -30,7 +30,7 @@ export async function getBackups() {
 }
 
 export async function getCards() {
-  return await get<CardWithId[]>("/api/products/card", ["card"]);
+  return await get<CardRichWithId[]>("/api/products/card", ["card"]);
 }
 
 export async function getCash() {
@@ -80,19 +80,19 @@ export async function getTags() {
 }
 
 export async function getTransactions(year: number, month: number) {
-  return await get<TransactionOrgWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
+  return await get<TransactionRichWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }
 
 export async function getDeletedTransactions() {
-  return await get<TransactionOrgWithId[]>(`/api/transactions/deleted`, ["transaction"]);
+  return await get<TransactionRichWithId[]>(`/api/transactions/deleted`, ["transaction"]);
 }
 
 export async function getNewTransactions() {
-  return await get<TransactionOrgWithId[]>(`/api/transactions/new`, ["transaction"]);
+  return await get<TransactionRichWithId[]>(`/api/transactions/new`, ["transaction"]);
 }
 
 export async function getDebtTransactions() { 
-  return await get<TransactionOrgWithId[]>("/api/transactions/debt", ["transaction"]);
+  return await get<TransactionRichWithId[]>("/api/transactions/debt", ["transaction"]);
 }
 
 export async function getHistoricAccountValues(accountId?: string, range?: ChartRange) {

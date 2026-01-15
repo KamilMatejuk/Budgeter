@@ -1514,6 +1514,38 @@ export type components = {
             /** Debt Person */
             debt_person?: string | null;
         };
+        /** TransactionOrgWithId */
+        TransactionOrgWithId: {
+            /** Id */
+            _id: string;
+            /** Account */
+            account: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Title */
+            title: string;
+            organisation: components["schemas"]["OrganisationWithId"];
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Tags */
+            tags: string[];
+            /**
+             * Cash
+             * @default false
+             */
+            cash: boolean;
+            /**
+             * Deleted
+             * @default false
+             */
+            deleted: boolean;
+            /** Debt Person */
+            debt_person?: string | null;
+        };
         /** TransactionPartial */
         TransactionPartial: {
             /** Id */
@@ -1653,6 +1685,7 @@ export type TagPartial = components['schemas']['TagPartial'];
 export type TagRequest = components['schemas']['TagRequest'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
+export type TransactionOrgWithId = components['schemas']['TransactionOrgWithId'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
 export type TransactionRepayRequest = components['schemas']['TransactionRepayRequest'];
 export type TransactionSplitRequest = components['schemas']['TransactionSplitRequest'];
@@ -1939,7 +1972,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"][];
+                    "application/json": components["schemas"]["TransactionOrgWithId"][];
                 };
             };
             /** @description Validation Error */
@@ -1968,7 +2001,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"][];
+                    "application/json": components["schemas"]["TransactionOrgWithId"][];
                 };
             };
         };
@@ -1988,7 +2021,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"][];
+                    "application/json": components["schemas"]["TransactionOrgWithId"][];
                 };
             };
         };
@@ -2008,7 +2041,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransactionWithId"][];
+                    "application/json": components["schemas"]["TransactionOrgWithId"][];
                 };
             };
         };

@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { GroupBackendModalProps } from "../Modal";
 import { z } from "zod";
-import { TransactionPartial, TransactionWithId } from "@/types/backend";
+import { TransactionOrgWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { patch } from "@/app/api/fetch";
@@ -13,7 +13,7 @@ const FormSchema = z.object({ tags: z.array(z.string()).min(1, ERROR.requiredErr
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-async function submit(values: FormSchemaType, items: TransactionWithId[], url: string) {
+async function submit(values: FormSchemaType, items: TransactionOrgWithId[], url: string) {
   await Promise.all(items.map(async (item) => {
     const val = { _id: item._id, tags: [...item.tags, ...values.tags] } as TransactionPartial;
     const { error } = await patch(url, val);
@@ -21,7 +21,7 @@ async function submit(values: FormSchemaType, items: TransactionWithId[], url: s
   }));
 }
 
-export default function GroupTagTransactionModal({ url, items, open, onClose }: GroupBackendModalProps<TransactionWithId>) {
+export default function GroupTagTransactionModal({ url, items, open, onClose }: GroupBackendModalProps<TransactionOrgWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { tags: [] },
     onSubmit: async (values) => { await submit(values, items, url); onClose(); },

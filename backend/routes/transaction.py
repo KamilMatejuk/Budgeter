@@ -8,11 +8,12 @@ from core.utils import Value, Date
 from models.base import PyObjectId
 from routes.tag import get_name as get_tag_name
 from models.products import PersonalAccountWithId
+from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
-from routes.organisation import get_organisation_name_by_name_regex
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
-from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId
+from routes.organisation import match_organisation_by_name_regex, get_organisation_name_by_name_regex
+from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId, TransactionOrgWithId
 
 single_router = APIRouter()
 multi_router = APIRouter()
@@ -28,6 +29,15 @@ async def sort_tags(tags: list[str], db: AsyncIOMotorDatabase):
         t.name = await get_tag_name(t, db)
     tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
     return [str(t.id) for t in tags]
+
+
+async def add_organisation_to_transactions(transactions: list[TransactionWithId], db: AsyncIOMotorDatabase) -> list[TransactionOrgWithId]:
+    organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
+    result = []
+    for t in transactions:
+        result.append(TransactionOrgWithId(**t.model_dump(exclude={"organisation"}, by_alias=True, mode="json"),
+            organisation=await match_organisation_by_name_regex(t.organisation, organisations)))
+    return result
 
 
 @single_router.patch("", response_model=TransactionWithId)
@@ -97,21 +107,27 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
     return await inner()
 
 
-@multi_router.get("/{year}/{month}", response_model=list[TransactionWithId])
+@multi_router.get("/{year}/{month}", response_model=list[TransactionOrgWithId])
 async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = datetime.date(year, month, 1)
     end = Date.month_end(start)
-    return await get(db, "transactions", TransactionWithId, {"deleted": False, "date": Date.condition(start, end)}, "date")
+    condition = {"deleted": False, "date": Date.condition(start, end)}
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition, "date")
+    transactions = await add_organisation_to_transactions(transactions, db)
+    return transactions
 
-
+    
 @single_router.get("/last/{account}", response_model=TransactionWithId)
 async def get_last_transaction_from_accont(account: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     return await get(db, "transactions", TransactionWithId, {"deleted": False, "account": account}, "date", one=True)
 
 
-@multi_router.get("/deleted", response_model=list[TransactionWithId])
+@multi_router.get("/deleted", response_model=list[TransactionOrgWithId])
 async def get_transactions_deleted(db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await get(db, "transactions", TransactionWithId, {"deleted": True}, "date")
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"deleted": True}, "date")
+    transactions = await add_organisation_to_transactions(transactions, db)
+    print(transactions[0])
+    return transactions
 
 
 @single_router.post("/restore/{id}", response_model=TransactionWithId)
@@ -129,14 +145,18 @@ async def restore_deleted_transaction(id: str, db: AsyncIOMotorDatabase = Depend
     return await inner()
 
 
-@multi_router.get("/new", response_model=list[TransactionWithId])
+@multi_router.get("/new", response_model=list[TransactionOrgWithId])
 async def get_transactions_without_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await get(db, "transactions", TransactionWithId, {"tags": {"$size": 0}, "deleted": False}, "date")
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"tags": {"$size": 0}, "deleted": False}, "date")
+    transactions = await add_organisation_to_transactions(transactions, db)
+    return transactions
 
 
-@multi_router.get("/debt", response_model=list[TransactionWithId])
+@multi_router.get("/debt", response_model=list[TransactionOrgWithId])
 async def get_transactions_with_debt(db: AsyncIOMotorDatabase = Depends(get_db)):
-    return await get(db, "transactions", TransactionWithId, {"debt_person": {"$ne": None}, "deleted": False}, "date")
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"debt_person": {"$ne": None}, "deleted": False}, "date")
+    transactions = await add_organisation_to_transactions(transactions, db)
+    return transactions
 
 
 @single_router.post("/repay", response_model=dict)

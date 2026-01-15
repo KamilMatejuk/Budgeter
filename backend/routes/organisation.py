@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from models.base import PyObjectId
 from routes.base import CRUDRouterFactory, create, fail_wrapper, get, patch
 from models.organisation import Organisation, OrganisationPartial, OrganisationWithId
 
@@ -12,19 +13,22 @@ factory.create_get()
 factory.create_get_by_id()
 factory.create_delete()
 
-@router.get("/regex/{name}", response_model=OrganisationWithId | str)
+@router.get("/regex/{name}", response_model=OrganisationWithId)
 async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
         organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
-        for org in organisations:
-            for pattern in org.patterns:
-                if pattern.lower() in name.lower():
-                    return org
-            if org.name.lower() == name.lower():
-                return org
-        return name
+        return await match_organisation_by_name_regex(name, organisations)
     return await inner()
+
+async def match_organisation_by_name_regex(name: str, organisations: list[OrganisationWithId]):
+    for org in organisations:
+        for pattern in org.patterns:
+            if pattern.lower() in name.lower():
+                return org
+        if org.name.lower() == name.lower():
+            return org
+    return OrganisationWithId(_id=str(PyObjectId()), patterns=[], name=name, tags=[], icon=None)
 
 
 async def get_organisation_name_by_name_regex(name: str, db: AsyncIOMotorDatabase):

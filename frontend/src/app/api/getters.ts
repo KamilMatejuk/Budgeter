@@ -15,7 +15,7 @@ import {
   StockAccountWithId,
   TagComposition,
   TagWithId,
-  TransactionWithId
+  TransactionOrgWithId,
 } from "@/types/backend";
 import { get } from "./fetch";
 import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
@@ -80,19 +80,19 @@ export async function getTags() {
 }
 
 export async function getTransactions(year: number, month: number) {
-  return await get<TransactionWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
+  return await get<TransactionOrgWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }
 
 export async function getDeletedTransactions() {
-  return await get<TransactionWithId[]>(`/api/transactions/deleted`, ["transaction"]);
+  return await get<TransactionOrgWithId[]>(`/api/transactions/deleted`, ["transaction"]);
 }
 
 export async function getNewTransactions() {
-  return await get<TransactionWithId[]>(`/api/transactions/new`, ["transaction"]);
+  return await get<TransactionOrgWithId[]>(`/api/transactions/new`, ["transaction"]);
 }
 
-export async function getDebtTransactions() {
-  return await get<TransactionWithId[]>("/api/transactions/debt", ["transaction"]);
+export async function getDebtTransactions() { 
+  return await get<TransactionOrgWithId[]>("/api/transactions/debt", ["transaction"]);
 }
 
 export async function getHistoricAccountValues(accountId?: string, range?: ChartRange) {

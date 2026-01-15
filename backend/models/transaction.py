@@ -2,6 +2,7 @@ from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
 from models.products import Currency
+from models.organisation import OrganisationWithId
 
 class Transaction(PyBaseModel):
     account: str # id of PersonalAccount or Cash
@@ -18,6 +19,9 @@ class Transaction(PyBaseModel):
 
 class TransactionPartial(Transaction, metaclass=Partial): pass
 class TransactionWithId(Transaction, metaclass=WithId): pass
+
+class TransactionOrg(Transaction): organisation: OrganisationWithId
+class TransactionOrgWithId(TransactionOrg, metaclass=WithId): pass
 
 # split
 

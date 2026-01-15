@@ -1,9 +1,9 @@
 'use client';
 
-import { TransactionWithId } from "@/types/backend";
+import { TransactionOrgWithId, TransactionWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
-import CellOrganisation from "../cells/CellOrganisation";
+import { defineCellOrganisation } from "../cells/CellOrganisation";
 import { defineCellValue } from "../cells/CellValue";
 import { defineCellAccountName } from "../cells/CellAccountName";
 import { MdCallSplit, MdDelete, MdEdit } from "react-icons/md";
@@ -20,21 +20,21 @@ import GroupTagTransactionModal from "@/components/modal/custom/GroupTagTransact
 
 
 interface TableTransactionsProps {
-  data: TransactionWithId[];
+  data: TransactionOrgWithId[];
 }
 
-const columns: ColumnDef<TransactionWithId>[] = [
+const columns: ColumnDef<TransactionOrgWithId>[] = [
   { accessorKey: "date", header: "Date", cell: ({ row }) => getDateString(new Date(row.original.date)) },
-  defineCellAccountName<TransactionWithId>(),
+  defineCellAccountName<TransactionOrgWithId>(),
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
-  { accessorKey: "organisation", header: "Organisation", meta: { wrap: true }, cell: ({ row }) => <CellOrganisation name={row.original.organisation} /> },
-  defineCellValue<TransactionWithId>(true),
-  defineCellTag<TransactionWithId>(),
+  defineCellOrganisation<TransactionOrgWithId>(),
+  defineCellValue<TransactionOrgWithId>(true),
+  defineCellTag<TransactionOrgWithId>(),
 ];
 
 export default function TableTransactions({ data }: TableTransactionsProps) {
   return (
-    <Table<TransactionWithId>
+    <Table<TransactionOrgWithId>
       url="/api/transaction"
       tag="transaction"
       data={data}

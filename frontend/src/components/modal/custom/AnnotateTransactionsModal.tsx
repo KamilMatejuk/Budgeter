@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionPartial, TransactionWithId } from "@/types/backend";
+import { Transaction, TransactionOrgWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -26,10 +25,10 @@ async function submit(values: FormSchemaType, item: Transaction, url: string) {
   return false;
 }
 
-interface AnnotateTransactionModalProps extends BackendModalProps<TransactionWithId> {
+interface AnnotateTransactionModalProps extends BackendModalProps<TransactionOrgWithId> {
   onSuccessfulSave: () => Promise<void>;
   onCancel: () => Promise<void>;
-  item: TransactionWithId;
+  item: TransactionOrgWithId;
   counter: number;
   total: number;
 }
@@ -55,7 +54,7 @@ export default function AnnotateTransactionsModal({
       <div className="absolute top-2 right-3">{counter} / {total}</div>
       <TransactionDetails item={item!} />
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={item.organisation} />
+      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisationName={item.organisation.name} />
     </Modal >
   );
 }

@@ -15,7 +15,7 @@ const FormSchema = z.object({ debt: requiredText });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-async function submit(values: FormSchemaType, item: Transaction) {
+async function submit(values: FormSchemaType, item: TransactionRichWithId) {
   const backupName = `Before repay of "${values.debt.toLowerCase()}"`;
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, debt_transaction_id: values.debt } as TransactionRepayRequest;

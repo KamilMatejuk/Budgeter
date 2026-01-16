@@ -57,7 +57,7 @@ function removeTransactionPart(formik: FormikProps<FormSchemaType>) {
   formik.setFieldValue("parts", newParts);
 }
 
-async function submit(values: FormSchemaType, item: Transaction, url: string) {
+async function submit(values: FormSchemaType, item: TransactionRichWithId, url: string) {
   const backupName = `Before split of "${item?._id?.toLowerCase()}"`;
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, items: values.parts } as TransactionSplitRequest;

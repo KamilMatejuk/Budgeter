@@ -1,11 +1,8 @@
 import { useTags } from "@/app/api/query";
-import { TagWithId } from "@/types/backend";
+import { TagRichWithId, TagWithId } from "@/types/backend";
 import { ColumnDef } from "@tanstack/react-table";
 import { twMerge } from "tailwind-merge";
 
-interface CellTagProps extends React.HTMLAttributes<HTMLDivElement> {
-  id: string;
-}
 
 const classes = {
   container: "flex",
@@ -37,22 +34,28 @@ export function getTagParts(tagId: string, tags: TagWithId[]): { name: string, c
   return [...parents, curr];
 }
 
+interface CellTagIdProps extends React.HTMLAttributes<HTMLDivElement> {
+  id: string;
+}
 
-export default function CellTag({ id, ...props }: CellTagProps) {
+export function CellTagId({ id, ...props }: CellTagIdProps) {
   const tags = useTags();
   let tagParts = [];
-  if (id.includes("/")) {
-    const [parentId, childName] = id.split("/");
-    const parentParts = getTagParts(parentId, tags);
-    tagParts = [...parentParts, { name: childName, colour: parentParts.length > 0 ? parentParts[0].colour + '88' : 'transparent' }];
-  } else {
-    tagParts = getTagParts(id, tags);
-  }
+  tagParts = getTagParts(id, tags);
+  const tag = { _id: id, name: tagParts.map(part => part.name).join("/"), colour: tagParts[0].colour } as TagRichWithId;
+  return <CellTag tag={tag} {...props} />;
+}
 
+interface CellTagProps extends React.HTMLAttributes<HTMLDivElement> {
+  tag: TagRichWithId;
+}
+
+export function CellTag({ tag, ...props }: CellTagProps) {
+  const parts = tag.name.split("/");
   return <div className={classes.container} {...props}>
-    {tagParts.map((part, i) => {
+    {parts.map((part, i) => {
       const isFirst = i == 0;
-      const isLast = i == tagParts.length - 1;
+      const isLast = i == parts.length - 1;
       const isOnly = isFirst && isLast;
       return (
         <span
@@ -66,23 +69,23 @@ export default function CellTag({ id, ...props }: CellTagProps) {
             !isOnly && isLast && classes.polygon.last,
           )}
           style={{
-            backgroundColor: part.colour,
-            color: getTextColor(part.colour),
+            backgroundColor: part == "Other" ? `${tag.colour}88` : tag.colour,
+            color: getTextColor(tag.colour),
           }}
         >
-          {part.name}
+          {part}
         </span>
       )
     })}
   </div>
 }
 
-export function defineCellTag<T extends { tag?: string, tags?: string[] }>() {
+export function defineCellTag<T extends { tag?: TagRichWithId, tags?: TagRichWithId[] }>() {
   return {
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (
       <div className="flex gap-1">
-        {row.original.tags?.map((tagId) => <CellTag key={tagId} id={tagId} />)}
-        {row.original.tag ? <CellTag key={row.original.tag} id={row.original.tag} /> : null}
+        {row.original.tags?.map((t) => <CellTag key={t._id} tag={t} />)}
+        {row.original.tag ? <CellTag tag={row.original.tag} /> : null}
       </div>
     ), meta: { wrap: true }
   } as ColumnDef<T>;

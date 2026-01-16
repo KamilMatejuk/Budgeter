@@ -29,7 +29,7 @@ async function submit(values: FormSchemaType, item: TransactionRichWithId, url: 
 
 export default function UpdateTransactionModal({ url, item, open, onClose }: BackendModalProps<TransactionRichWithId>) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { title: item?.title || "", tags: item?.tags || [] },
+    initialValues: { title: item?.title || "", tags: item?.tags.map(tag => tag._id) || [] },
     onSubmit: async (values) => { if (item && await submit(values, item, url)) onClose() },
     validate: withZodSchema(FormSchema),
   });

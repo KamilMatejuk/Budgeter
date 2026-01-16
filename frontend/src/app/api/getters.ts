@@ -8,7 +8,7 @@ import {
   MonthComparisonRow,
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
-  OrganisationWithId,
+  OrganisationRichWithId,
   PersonalAccountWithId,
   SavingsAccountWithId,
   Source,
@@ -72,7 +72,7 @@ export async function getMonthlyExpenses() {
 }
 
 export async function getOrganisations() {
-  return await get<OrganisationWithId[]>("/api/organisation", ["organisation"]);
+  return await get<OrganisationRichWithId[]>("/api/organisation", ["organisation"]);
 }
 
 export async function getTags() {

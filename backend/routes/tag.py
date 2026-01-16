@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch, delete
-from models.tag import Tag, TagPartial, TagWithId, TagRequest
+from models.tag import Tag, TagPartial, TagWithId, TagRichWithId, TagRequest
 from core.db import get_db
 
 
@@ -38,10 +38,23 @@ async def get_name(tag: Tag, db: AsyncIOMotorDatabase) -> str:
 
 async def sort_by_name(tags: list[str], db: AsyncIOMotorDatabase):
     tags = list(set(tags))
-    tags = [await get(db, "tags", TagWithId, {"_id": t}, one=True) for t in tags]
+    tags: list[TagWithId] = [await get(db, "tags", TagWithId, {"_id": t}, one=True) for t in tags]
     for t in tags: t.name = await get_name(t, db)
     tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
     return [str(t.id) for t in tags]
+
+
+async def get_rich_tag(tag: str, db: AsyncIOMotorDatabase) -> TagRichWithId:
+    t: TagWithId = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    t.name = await get_name(t, db)
+    return TagRichWithId(_id=str(t.id), name=t.name, colour=t.colour)
+
+
+async def get_rich_tags(tags: list[str], db: AsyncIOMotorDatabase) -> list[TagRichWithId]:
+    tags = list(set(tags))
+    tags = [await get_rich_tag(t, db) for t in tags]
+    tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
+    return tags
 
 
 router = APIRouter()

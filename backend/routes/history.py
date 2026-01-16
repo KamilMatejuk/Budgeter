@@ -6,11 +6,12 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from models.tag import TagWithId
 from core.utils import Value, Date
+from models.tag import TagRichWithId
 from models.products import CardWithId
 from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
-from routes.tag import get_children, get_all_children, get_name as get_tag_name
+from routes.tag import get_children, get_all_children, get_name as get_tag_name, get_rich_tag
 from models.products import PersonalAccountWithId, Currency
 from routes.sources.utils import mark_account_value_in_history
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem
@@ -231,11 +232,13 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
     for child in sorted(children, key=lambda t: t.name.lower()):
         subitem = await _calculate_tag_comparison(str(child.id), request_id)
         subitems.append(subitem)
+
+    rich_tag: TagRichWithId = await get_rich_tag(str(tag.id), db)
     # only include Other, if its not zero and there are other subitems
     if len(subitems) > 0 and any(v != 0 for v in this_tag_values):
         subitems.append(MonthComparisonRow(
             _id=str(PyObjectId()),
-            tag=f"{tag.id}/Other",
+            tag=TagRichWithId(_id=str(PyObjectId()), name=f"{rich_tag.name}/Other", colour=rich_tag.colour),
             currency=Currency.PLN,
             values=this_tag_values,
             value_avg=Value.avg(this_tag_values),
@@ -244,7 +247,7 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
 
     return MonthComparisonRow(
         _id=str(PyObjectId()),
-        tag=str(tag.id),
+        tag=rich_tag,
         currency=Currency.PLN,
         values=all_child_values,
         value_avg=Value.avg(all_child_values),
@@ -307,9 +310,10 @@ async def _calculate_tag_composition(tag_id: str, request_id: int) -> list[TagCo
     this_tag_values_year = await _aggregate(this_tag_id, child_tag_ids, this_year)
     this_tag_values_month = await _aggregate(this_tag_id, child_tag_ids, this_month)
 
+    rich_tag: TagRichWithId = await get_rich_tag(str(tag.id), db)
     response = [TagComposition(
         _id=str(PyObjectId()),
-        tag_id=tag_id,
+        tag=rich_tag,
         values_total=all_child_values_total,
         values_year=all_child_values_year,
         values_month=all_child_values_month,
@@ -326,7 +330,7 @@ async def _calculate_tag_composition(tag_id: str, request_id: int) -> list[TagCo
     ):
         response.append(TagComposition(
             _id=str(PyObjectId()),
-            tag_id=f"{tag_id}/Other",
+            tag=TagRichWithId(_id=str(PyObjectId()), name=f"{rich_tag.name}/Other", colour=rich_tag.colour),
             values_total=this_tag_values_total,
             values_year=this_tag_values_year,
             values_month=this_tag_values_month,

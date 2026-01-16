@@ -1,6 +1,6 @@
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionRichWithId, TransactionPartial } from "@/types/backend";
+import { TransactionRichWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -44,7 +44,7 @@ export default function AnnotateTransactionsModal({
   total
 }: AnnotateTransactionModalProps) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { title: item.title, tags: item.tags },
+    initialValues: { title: item.title, tags: item.tags.map(tag => tag._id) },
     onSubmit: async (values) => { if (await submit(values, item, url)) onSuccessfulSave() },
     validate: withZodSchema(FormSchema),
   });

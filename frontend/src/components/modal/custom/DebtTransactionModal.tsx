@@ -13,7 +13,7 @@ const FormSchema = z.object({ person: requiredText });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
-async function submit(values: FormSchemaType, item: Transaction, url: string) {
+async function submit(values: FormSchemaType, item: TransactionRichWithId, url: string) {
   const val = { _id: item._id, debt_person: values.person } as TransactionPartial;
   const { error } = await patch(url, val);
   if (!error) return true;

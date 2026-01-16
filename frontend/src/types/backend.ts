@@ -731,25 +731,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/organisation": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Organisations */
-        get: operations["get_organisations_api_organisation_get"];
-        put?: never;
-        /** Create Organisation */
-        post: operations["create_organisation_api_organisation_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Patch Organisation */
-        patch: operations["patch_organisation_api_organisation_patch"];
-        trace?: never;
-    };
     "/api/organisation/{id}": {
         parameters: {
             query?: never;
@@ -766,6 +747,25 @@ export type paths = {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/organisation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Monthly */
+        get: operations["get_transactions_monthly_api_organisation_get"];
+        put?: never;
+        /** Create Organisation */
+        post: operations["create_organisation_api_organisation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Organisation */
+        patch: operations["patch_organisation_api_organisation_patch"];
         trace?: never;
     };
     "/api/organisation/regex/{name}": {
@@ -1122,8 +1122,7 @@ export type components = {
         MonthComparisonRow: {
             /** Id */
             _id: string;
-            /** Tag */
-            tag: string;
+            tag: components["schemas"]["TagRichWithId"];
             /** Values */
             values: number[];
             /** Value Avg */
@@ -1230,6 +1229,19 @@ export type components = {
             name?: string | null;
             /** Tags */
             tags?: string[] | null;
+            /** Icon */
+            icon?: string | null;
+        };
+        /** OrganisationRichWithId */
+        OrganisationRichWithId: {
+            /** Id */
+            _id: string;
+            /** Patterns */
+            patterns: string[];
+            /** Name */
+            name: string;
+            /** Tags */
+            tags: components["schemas"]["TagRichWithId"][];
             /** Icon */
             icon?: string | null;
         };
@@ -1441,8 +1453,7 @@ export type components = {
         TagComposition: {
             /** Id */
             _id: string;
-            /** Tag Id */
-            tag_id: string;
+            tag: components["schemas"]["TagRichWithId"];
             /** Values Total */
             values_total: components["schemas"]["TagCompositionItem"][];
             /** Values Year */
@@ -1486,6 +1497,15 @@ export type components = {
             parent?: string | null;
             /** Children */
             children?: string[] | null;
+        };
+        /** TagRichWithId */
+        TagRichWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Colour */
+            colour: string;
         };
         /** TagWithId */
         TagWithId: {
@@ -1582,7 +1602,7 @@ export type components = {
             value: number;
             currency: components["schemas"]["Currency"];
             /** Tags */
-            tags: string[];
+            tags: components["schemas"]["TagRichWithId"][];
             /**
              * Cash
              * @default false
@@ -1685,6 +1705,7 @@ export type MonthlyIncomePartial = components['schemas']['MonthlyIncomePartial']
 export type MonthlyIncomeWithId = components['schemas']['MonthlyIncomeWithId'];
 export type Organisation = components['schemas']['Organisation'];
 export type OrganisationPartial = components['schemas']['OrganisationPartial'];
+export type OrganisationRichWithId = components['schemas']['OrganisationRichWithId'];
 export type OrganisationWithId = components['schemas']['OrganisationWithId'];
 export type PatchAccountValueRequest = components['schemas']['PatchAccountValueRequest'];
 export type PersonalAccount = components['schemas']['PersonalAccount'];
@@ -1703,6 +1724,7 @@ export type TagComposition = components['schemas']['TagComposition'];
 export type TagCompositionItem = components['schemas']['TagCompositionItem'];
 export type TagPartial = components['schemas']['TagPartial'];
 export type TagRequest = components['schemas']['TagRequest'];
+export type TagRichWithId = components['schemas']['TagRichWithId'];
 export type TagWithId = components['schemas']['TagWithId'];
 export type Transaction = components['schemas']['Transaction'];
 export type TransactionPartial = components['schemas']['TransactionPartial'];
@@ -3804,7 +3826,71 @@ export interface operations {
             };
         };
     };
-    get_organisations_api_organisation_get: {
+    get_organisation_by_id_api_organisation__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganisationWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_organisation_api_organisation__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_transactions_monthly_api_organisation_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3819,7 +3905,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OrganisationWithId"][];
+                    "application/json": components["schemas"]["OrganisationRichWithId"][];
                 };
             };
         };
@@ -3877,70 +3963,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OrganisationWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_organisation_by_id_api_organisation__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OrganisationWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_organisation_api_organisation__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
                 };
             };
             /** @description Validation Error */

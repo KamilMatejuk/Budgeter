@@ -1,13 +1,10 @@
 'use client';
 
-import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
-import ChartWithRanges from "./ChartWithRanges";
 import { TagComposition } from "@/types/backend";
 import { useState } from "react";
-import { getMonthName, getMonthsFromValues, getMonthsInRange } from "@/const/date";
-import CellTag from "../table/cells/CellTag";
+import { getMonthName } from "@/const/date";
+import { CellTag } from "../table/cells/CellTag";
 import ChartWithOptions from "./ChartWithOptions";
-import { PieChart } from "./Chart";
 import TagCompositionChart from "./TagCompositionChart";
 
 
@@ -16,8 +13,8 @@ interface TagCompositionChartsProps {
 }
 
 export default function TagCompositionCharts({ data }: TagCompositionChartsProps) {
-  const [tag, setTag] = useState<string>(data[0]?.tag_id || "");
-  const composition = data.find((t) => t.tag_id === tag);
+  const [tag, setTag] = useState<string>(data[0]?.tag._id);
+  const composition = data.find((t) => t.tag._id === tag);
   const fullValues = composition?.values_total || []
   const yearValues = composition?.values_year || []
   const monthValues = composition?.values_month || []
@@ -51,9 +48,9 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
         />
       </div>}
       options={data.map((t) => ({
-        id: t.tag_id,
-        selected: t.tag_id === tag,
-        body: <CellTag id={t.tag_id} />
+        id: t.tag._id,
+        selected: t.tag._id === tag,
+        body: <CellTag tag={t.tag} />
       }))}
       selectOption={setTag}
     />

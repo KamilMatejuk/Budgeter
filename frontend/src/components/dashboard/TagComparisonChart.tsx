@@ -5,7 +5,7 @@ import ChartWithRanges from "./ChartWithRanges";
 import { MonthComparisonRow } from "@/types/backend";
 import { useState } from "react";
 import { getMonthsFromValues, getMonthsInRange } from "@/const/date";
-import CellTag from "../table/cells/CellTag";
+import { CellTag } from "../table/cells/CellTag";
 import ChartWithOptions from "./ChartWithOptions";
 
 function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
@@ -46,7 +46,7 @@ export default function TagComparisonChart({ data }: TagComparisonChartProps) {
       options={flattened.map((t) => ({
         id: t._id,
         selected: t._id === tag,
-        body: <CellTag id={t.tag} />
+        body: <CellTag tag={t.tag} />
       }))}
       selectOption={setTag}
     />

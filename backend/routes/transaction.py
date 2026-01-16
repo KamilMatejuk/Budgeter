@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import sort_by_name as sort_tags
+from routes.tag import sort_by_name as sort_tags, get_rich_tags
 from models.products import PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
@@ -30,10 +30,12 @@ async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIO
         org = await match_organisation_by_name_regex(t.organisation, organisations)
         acc = next((c for c in cashs if str(c.id) == t.account), None) \
             if t.cash else next((a for a in accounts if str(a.id) == t.account), None)
+        tags = await get_rich_tags(t.tags, db)
         result.append(TransactionRichWithId(
-            **t.model_dump(exclude={"organisation", "account"}, by_alias=True, mode="json"),
+            **t.model_dump(exclude={"organisation", "account", "tags"}, by_alias=True, mode="json"),
             organisation=org,
-            account=acc))
+            account=acc,
+            tags=tags))
     return result
 
 
@@ -123,7 +125,6 @@ async def get_last_transaction_from_accont(account: str, db: AsyncIOMotorDatabas
 async def get_transactions_deleted(db: AsyncIOMotorDatabase = Depends(get_db)):
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"deleted": True}, "date")
     transactions = await enrich_transactions(transactions, db)
-    print(transactions[0])
     return transactions
 
 

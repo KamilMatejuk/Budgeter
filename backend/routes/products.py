@@ -70,7 +70,6 @@ async def get_cards(db: AsyncIOMotorDatabase = Depends(get_db)):
     result = []
     for c in cards:
         acc = next((a for a in accounts if str(a.id) == c.account), None)
-        print(c, acc)
         result.append(CardRichWithId(**c.model_dump(exclude={"account"}, by_alias=True, mode="json"), account=acc))
     return result
 

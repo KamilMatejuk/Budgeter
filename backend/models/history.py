@@ -1,7 +1,8 @@
 import enum
 from datetime import date
-from models.base import PyBaseModel, WithId
 from models.products import Currency
+from models.tag import TagRichWithId
+from models.base import PyBaseModel, WithId
 
 
 class CardMonthlyHistory(PyBaseModel):
@@ -24,7 +25,7 @@ class ChartRange(enum.Enum):
 
 
 class MonthComparisonRow(PyBaseModel, metaclass=WithId):
-    tag: str # id of Tag or plaintext name
+    tag: TagRichWithId
     values: list[float]
     value_avg: float
     currency: Currency
@@ -37,7 +38,7 @@ class TagCompositionItem(PyBaseModel):
     colour: str
 
 class TagComposition(PyBaseModel, metaclass=WithId):
-    tag_id: str # id of Tag
+    tag: TagRichWithId
     values_total: list[TagCompositionItem]
     values_year: list[TagCompositionItem]
     values_month: list[TagCompositionItem]

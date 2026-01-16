@@ -30,3 +30,8 @@ class TagRequest(Tag):
 
 class TagPartial(Tag, metaclass=Partial): pass
 class TagWithId(Tag, metaclass=WithId): pass
+
+class TagRich(PyBaseModel):
+    name: str # parsed name of tag, including parents e.g. "Parent/Child"
+    colour: str
+class TagRichWithId(TagRich, metaclass=WithId): pass

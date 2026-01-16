@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { SingleInputWithErrorProps } from "./InputWithError";
-import CellTag, { getTagParts } from "../table/cells/CellTag";
+import { CellTagId, getTagParts } from "../table/cells/CellTag";
 import { useTags } from "@/app/api/query";
 import SearchableTextInputWithError from "./SearchableTextInputWithError";
 import { OrganisationWithId } from "@/types/backend";
@@ -28,7 +28,7 @@ export default function TagsInputWithError<T>({ formik, formikName, label, organ
       formik={formik}
       formikName={formikName}
       label={label}
-      Option={CellTag}
+      Option={CellTagId}
       options={tagOptions}
       suggestedOptions={suggestedTagOptions}
     />

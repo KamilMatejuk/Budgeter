@@ -1,6 +1,6 @@
 'use client';
 
-import { OrganisationWithId } from "@/types/backend";
+import { OrganisationRichWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellIcon } from "../cells/CellIcon";
@@ -12,19 +12,19 @@ import MultilineText from "@/components/MultilineText";
 
 
 interface TableOrganisationsProps {
-  data: OrganisationWithId[];
+  data: OrganisationRichWithId[];
 }
 
-const columns: ColumnDef<OrganisationWithId>[] = [
+const columns: ColumnDef<OrganisationRichWithId>[] = [
   { accessorKey: "patterns", header: "Pattern", cell: ({ row }) => <MultilineText text={row.original.patterns.join("\n")} /> },
   { accessorKey: "name", header: "Name" },
-  defineCellIcon<OrganisationWithId>(),
-  defineCellTag<OrganisationWithId>(),
+  defineCellIcon<OrganisationRichWithId>(),
+  defineCellTag<OrganisationRichWithId>(),
 ];
 
 export default function TableOrganisations({ data }: TableOrganisationsProps) {
   return (
-    <Table<OrganisationWithId>
+    <Table<OrganisationRichWithId>
       url="/api/organisation"
       tag="organisation"
       newText="organisation"

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { CashWithId, PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/backend";
+import { CashWithId, OrganisationWithId, PersonalAccountWithId, Transaction, TransactionWithId } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
@@ -144,7 +144,11 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
         singleSelect
       />
       <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" organisation={organisation} />
+      <TagsInputWithError
+        formik={formik}
+        formikName="tags"
+        label="Tags"
+        organisation={organisation ? { ...organisation, tags: organisation.tags.map(tag => tag._id) } as OrganisationWithId : undefined} />
       {warningTagValue && <WarningToast message="Positive value should have tag 'Zarobki'.\nOther tags probably require negative value." />}
       <DateInputWithError formik={formik} formikName="date" label="Date" />
     </Modal >

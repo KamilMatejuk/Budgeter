@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { CashWithId, ChartRange, OrganisationWithId, PersonalAccountWithId, TagWithId, TransactionWithId } from "@/types/backend";
+import { CashWithId, ChartRange, OrganisationRichWithId, OrganisationWithId, PersonalAccountWithId, TagWithId, TransactionWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
@@ -59,7 +59,7 @@ export function useTags() {
 }
 
 export function useOrganisations() {
-  return _useFetchWrapper<OrganisationWithId[]>(
+  return _useFetchWrapper<OrganisationRichWithId[]>(
     ["organisation"],
     ["organisation"],
     `/api/organisation`

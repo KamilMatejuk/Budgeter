@@ -3,6 +3,7 @@ from datetime import date
 from models.base import PyBaseModel, Partial, WithId
 from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
+from models.tag import TagRichWithId
 
 class Transaction(PyBaseModel):
     account: str # id of PersonalAccount or Cash
@@ -23,6 +24,7 @@ class TransactionWithId(Transaction, metaclass=WithId): pass
 class TransactionRich(Transaction):
     organisation: OrganisationWithId
     account: PersonalAccountWithId | CashWithId
+    tags: list[TagRichWithId]
 class TransactionRichWithId(TransactionRich, metaclass=WithId): pass
 
 # split

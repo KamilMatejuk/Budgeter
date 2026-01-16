@@ -68,7 +68,7 @@ class Date:
     
     @staticmethod
     def month_end(date: datetime.date) -> datetime.date:
-        return (date + datetime.timedelta(days=32)).replace(day=1)
+        return Date.add_months(date, 1) - datetime.timedelta(days=1)
 
     @staticmethod
     def add_months(date: datetime.date, months: int) -> datetime.date:

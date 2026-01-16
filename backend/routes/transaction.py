@@ -123,7 +123,7 @@ async def get_last_transaction_from_accont(account: str, db: AsyncIOMotorDatabas
 
 @multi_router.get("/deleted", response_model=list[TransactionRichWithId])
 async def get_transactions_deleted(db: AsyncIOMotorDatabase = Depends(get_db)):
-    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"deleted": True}, "date")
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"deleted": True, "transfer_between_accounts": False}, "date")
     transactions = await enrich_transactions(transactions, db)
     return transactions
 

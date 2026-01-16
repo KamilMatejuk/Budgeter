@@ -3,10 +3,9 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from models.tag import TagWithId
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import get_name as get_tag_name
+from routes.tag import sort_by_name as sort_tags
 from models.products import PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
@@ -20,15 +19,6 @@ multi_router = APIRouter()
 
 factory = CRUDRouterFactory(single_router, "transactions", Transaction, TransactionPartial, TransactionWithId)
 factory.create_get_by_id()
-
-
-async def sort_tags(tags: list[str], db: AsyncIOMotorDatabase):
-    tags = list(set(tags))
-    tags = [await get(db, "tags", TagWithId, {"_id": t}, one=True) for t in tags]
-    for t in tags:
-        t.name = await get_tag_name(t, db)
-    tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
-    return [str(t.id) for t in tags]
 
 
 async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIOMotorDatabase) -> list[TransactionRichWithId]:

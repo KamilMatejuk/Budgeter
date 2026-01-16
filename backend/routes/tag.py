@@ -36,6 +36,14 @@ async def get_name(tag: Tag, db: AsyncIOMotorDatabase) -> str:
     return f"{await get_name(parent, db)}/{tag.name}"
 
 
+async def sort_by_name(tags: list[str], db: AsyncIOMotorDatabase):
+    tags = list(set(tags))
+    tags = [await get(db, "tags", TagWithId, {"_id": t}, one=True) for t in tags]
+    for t in tags: t.name = await get_name(t, db)
+    tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
+    return [str(t.id) for t in tags]
+
+
 router = APIRouter()
 factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
 factory.create_get_by_id()

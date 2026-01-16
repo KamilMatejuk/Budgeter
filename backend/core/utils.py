@@ -68,12 +68,12 @@ class Date:
     
     @staticmethod
     def month_end(date: datetime.date) -> datetime.date:
-        return Date.add_months(date, 1) - datetime.timedelta(days=1)
+        return Date.add_months(date, 1).replace(day=1) - datetime.timedelta(days=1)
 
     @staticmethod
     def add_months(date: datetime.date, months: int) -> datetime.date:
         month = date.month + months
-        if month > 12: year = date.year + 1
+        if month >= 12: year = date.year + 1
         elif month < 1: year = date.year - 1
         else: year = date.year
         month = month % 12

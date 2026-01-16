@@ -28,9 +28,15 @@ export default function GroupTagTransactionModal({ url, items, open, onClose }: 
     validate: withZodSchema(FormSchema),
   });
 
+  const organisationsTheSame = Array.from(new Set(items.map(item => item.organisation.name))).length === 1;
+
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title="Tag Transaction">
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
+      <TagsInputWithError
+        formik={formik}
+        formikName="tags"
+        label="Tags"
+        organisation={organisationsTheSame ? items[0].organisation : undefined} />
     </Modal >
   );
 }

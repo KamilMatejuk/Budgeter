@@ -128,17 +128,28 @@ async def get_transactions_deleted(db: AsyncIOMotorDatabase = Depends(get_db)):
     return transactions
 
 
+@multi_router.get("/transfer", response_model=list[TransactionRichWithId])
+async def get_transactions_transfer(db: AsyncIOMotorDatabase = Depends(get_db)):
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"transfer_between_accounts": True}, "date")
+    transactions = await enrich_transactions(transactions, db)
+    return transactions
+
+
 @single_router.post("/restore/{id}", response_model=TransactionWithId)
 async def restore_deleted_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
         transaction: TransactionWithId = await get(db, "transactions", TransactionWithId, {"_id": id, "deleted": True}, one=True)
         assert transaction is not None, "Deleted transaction not found"
-        transaction.deleted = False
-        # revert account history
-        account = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
-        await mark_account_value_in_history(account, transaction.date.strftime("%Y-%m-%d"), transaction.value, db)
-        # update
+        # restore transfer
+        if transaction.transfer_between_accounts:
+            transaction.deleted = False
+            transaction.transfer_between_accounts = False
+        # restore deleted
+        elif transaction.deleted:
+            transaction.deleted = False
+            account = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)
+            await mark_account_value_in_history(account, transaction.date.strftime("%Y-%m-%d"), transaction.value, db)
         return await patch(db, "transactions", TransactionWithId, transaction)
     return await inner()
 

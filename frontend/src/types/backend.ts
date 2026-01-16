@@ -142,6 +142,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/transactions/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Transfer */
+        get: operations["get_transactions_transfer_api_transactions_transfer_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/transactions/new": {
         parameters: {
             query?: never;
@@ -1550,6 +1567,11 @@ export type components = {
              * @default false
              */
             deleted: boolean;
+            /**
+             * Transfer Between Accounts
+             * @default false
+             */
+            transfer_between_accounts: boolean;
             /** Debt Person */
             debt_person?: string | null;
         };
@@ -1574,6 +1596,8 @@ export type components = {
             cash?: boolean | null;
             /** Deleted */
             deleted?: boolean | null;
+            /** Transfer Between Accounts */
+            transfer_between_accounts?: boolean | null;
             /** Debt Person */
             debt_person?: string | null;
         };
@@ -1613,6 +1637,11 @@ export type components = {
              * @default false
              */
             deleted: boolean;
+            /**
+             * Transfer Between Accounts
+             * @default false
+             */
+            transfer_between_accounts: boolean;
             /** Debt Person */
             debt_person?: string | null;
         };
@@ -1656,6 +1685,8 @@ export type components = {
             cash: boolean;
             /** Deleted */
             deleted: boolean;
+            /** Transfer Between Accounts */
+            transfer_between_accounts: boolean;
             /** Debt Person */
             debt_person: string | null;
         };
@@ -2029,6 +2060,26 @@ export interface operations {
         };
     };
     get_transactions_deleted_api_transactions_deleted_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionRichWithId"][];
+                };
+            };
+        };
+    };
+    get_transactions_transfer_api_transactions_transfer_get: {
         parameters: {
             query?: never;
             header?: never;

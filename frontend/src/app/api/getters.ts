@@ -95,6 +95,10 @@ export async function getDebtTransactions() {
   return await get<TransactionRichWithId[]>("/api/transactions/debt", ["transaction"]);
 }
 
+export async function getTransferTransactions() {
+  return await get<TransactionRichWithId[]>(`/api/transactions/transfer`, ["transaction"]);
+}
+
 export async function getHistoricAccountValues(accountId?: string, range?: ChartRange) {
   let endpoint = `/api/history/account_value/`;
   endpoint += range || DEFAULT_CHART_RANGE;

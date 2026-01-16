@@ -15,6 +15,7 @@ class Transaction(PyBaseModel):
     tags: list[str] # ids of Tags
     cash: bool = False # account id is Cash or PersonalAccount
     deleted: bool = False
+    transfer_between_accounts: bool = False
     debt_person: str | None = None # name of person that has to repay it
 
 

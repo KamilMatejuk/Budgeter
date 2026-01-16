@@ -17,6 +17,8 @@ import DebtRepayTransactionModal from "@/components/modal/custom/DebtRepayTransa
 import { getDateString } from "@/const/date";
 import GroupDeleteByIdModal from "@/components/modal/delete/GroupDeleteByIdModal";
 import GroupTagTransactionModal from "@/components/modal/custom/GroupTagTransactionModal";
+import { BiTransfer } from "react-icons/bi";
+import MarkAsTransferBetweenAccountsModal from "@/components/modal/delete/MarkAsTransferBetweenAccountsModal";
 
 
 interface TableTransactionsProps {
@@ -42,6 +44,7 @@ export default function TableTransactions({ data }: TableTransactionsProps) {
       options={[
         { name: "Edit", icon: MdEdit, component: UpdateTransactionModal },
         { name: "Split", icon: MdCallSplit, component: SplitTransactionModal },
+        { name: "Transfer", icon: BiTransfer, component: MarkAsTransferBetweenAccountsModal },
         { name: "Debt/Repay", icon: BsFillPiggyBankFill, component: DebtRepayTransactionModal },
         { name: "Delete", icon: MdDelete, component: DeleteByIdModal },
       ]}

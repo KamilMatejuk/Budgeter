@@ -1,21 +1,31 @@
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
 import WarningToast from "@/components/toast/WarningToast";
-import { getDeletedTransactions } from "../api/getters";
+import { getDeletedTransactions, getTransferTransactions } from "../api/getters";
 import TableTrash from "@/components/table/tables/TableTrash";
+import SectionHeader from "@/components/page_layout/SectionHeader";
 
 
 export default async function Trash() {
-  const { response, error } = await getDeletedTransactions();
+  const { response: deleted, error: deletedError } = await getDeletedTransactions();
+  const { response: transfer, error: transferError } = await getTransferTransactions();
 
   return (
     <>
-      <PageHeader text="Trash" subtext="Deleted transactions" />
-      {error
+      <PageHeader text="Trash" subtext="Deleted or ortherwise discarded transactions" />
+      <SectionHeader text="Deleted Transactions" subtext="Their deletion affects account values and historical balances" />
+      {deletedError
         ? <ErrorToast message="Could not download transactions" />
-        : response.length == 0
+        : deleted.length == 0
           ? <WarningToast message="No transactions found" />
-          : <TableTrash data={response} />
+          : <TableTrash data={deleted} />
+      }
+      <SectionHeader text="Transfers Between Accounts" subtext="They are removed from summary, while keeping historical value accuracy" />
+      {transferError
+        ? <ErrorToast message="Could not download transfer transactions" />
+        : transfer.length == 0
+          ? <WarningToast message="No transfer transactions found" />
+          : <TableTrash data={transfer} />
       }
     </>
   );

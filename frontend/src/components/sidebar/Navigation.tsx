@@ -6,6 +6,7 @@ import { IoSaveOutline, IoSettingsOutline, IoTrashOutline } from "react-icons/io
 import { TfiImport } from "react-icons/tfi";
 import { CiViewList } from "react-icons/ci";
 import { spanTransition } from "./SidebarClient";
+import { IoIosSearch } from "react-icons/io";
 
 
 type NavItem = {
@@ -18,6 +19,7 @@ const items: NavItem[] = [
   { label: "Home", href: "/", icon: <GoHome size={24} /> },
   { label: "Import", href: "/import", icon: <TfiImport size={20} /> },
   { label: "Transactions", href: "/transactions", icon: <CiViewList size={24} /> },
+  { label: "Search", href: "/search", icon: <IoIosSearch size={24} /> },
   { label: "Settings", href: "/settings", icon: <IoSettingsOutline size={24} /> },
   { label: "Backups", href: "/backups", icon: <IoSaveOutline size={22} /> },
   { label: "Trash", href: "/trash", icon: <IoTrashOutline size={24} /> },

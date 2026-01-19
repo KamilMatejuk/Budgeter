@@ -1,11 +1,11 @@
 import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import sort_by_name as sort_tags, get_rich_tags
+from routes.tag import sort_by_name as sort_tags, get_rich_tags, get_all_children
 from models.products import PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
@@ -194,3 +194,43 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
             await patch(db, "transactions", TransactionWithId, debt_transaction)
         return {}
     return await inner()
+
+
+@multi_router.get("/filtered", response_model=list[TransactionRichWithId])
+async def get_transactions_filtered(
+    accounts: list[str] | None = Query(None),
+    organisations: list[str] | None = Query(None),
+    tagsIn: list[str] | None = Query(None),
+    tagsOut: list[str] | None = Query(None),
+    title: str | None = Query(None),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    # condition
+    condition = {"deleted": False}
+    if accounts is not None and len(accounts) > 0: condition["account"] = {"$in": accounts}
+    if organisations is not None and len(organisations) > 0: condition["organisation"] = {"$in": organisations}
+    if title is not None and title.strip() != "": condition["title"] = {"$regex": title, "$options": "i"}
+    # include tags and subtags
+    all_tags_to_include = set()
+    for t in tagsIn or []:
+        all_tags_to_include.add(t)
+        children = await get_all_children(t, db)
+        for c in children:
+            all_tags_to_include.add(str(c.id))
+    # exclude tags and subtags
+    all_tags_to_exclude = set()
+    for t in tagsOut or []:
+        all_tags_to_exclude.add(t)
+        children = await get_all_children(t, db)
+        for c in children:
+            all_tags_to_exclude.add(str(c.id))
+    # fix conflicting tags
+    all_tags_to_include = all_tags_to_include - all_tags_to_exclude
+    if len(all_tags_to_include) > 0 or len(all_tags_to_exclude) > 0:
+        condition["tags"] = {}
+        condition["tags"]["$in"] = list(all_tags_to_include)
+        condition["tags"]["$nin"] = list(all_tags_to_exclude)
+    # run
+    transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition, "date")
+    transactions = await enrich_transactions(transactions, db)
+    return transactions

@@ -19,6 +19,8 @@ import {
 } from "@/types/backend";
 import { get } from "./fetch";
 import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
+import { FiltersProps } from "../search/Filters";
+import { pushFiltersToUrl } from "../search/utils";
 
 
 export async function getSources() {
@@ -83,6 +85,11 @@ export async function getTransactions(year: number, month: number) {
   return await get<TransactionRichWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }
 
+export async function getFilteredTransactions(filters: FiltersProps) {
+  const url = `/api/transactions/filtered?${pushFiltersToUrl(filters)}`;
+  return await get<TransactionRichWithId[]>(url, ["transaction", "tag", "personal_account"]);
+}
+
 export async function getDeletedTransactions() {
   return await get<TransactionRichWithId[]>(`/api/transactions/deleted`, ["transaction"]);
 }
@@ -91,7 +98,7 @@ export async function getNewTransactions() {
   return await get<TransactionRichWithId[]>(`/api/transactions/new`, ["transaction"]);
 }
 
-export async function getDebtTransactions() { 
+export async function getDebtTransactions() {
   return await get<TransactionRichWithId[]>("/api/transactions/debt", ["transaction"]);
 }
 

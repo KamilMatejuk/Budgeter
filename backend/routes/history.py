@@ -288,18 +288,21 @@ async def _calculate_tag_composition(tag_id: str, request_id: int) -> list[TagCo
         tag_map = {}
         for transaction in transactions:
             converted_value = Value.multiply(transaction.value, Currency.convert(transaction.currency, Currency.PLN))
-            for other_tags in transaction.tags:
-                if other_tags == str(tag.id): continue
-                tag_map[other_tags] = Value.add(tag_map.get(other_tags, 0.0), converted_value)
+            for other_tag in transaction.tags:
+                if other_tag == str(tag.id): continue
+                tag_map[other_tag] = Value.add(tag_map.get(other_tag, 0.0), converted_value)
+            if len(transaction.tags) == 1: # only this tag
+                tag_map["Untagged"] = Value.add(tag_map.get("Untagged", 0.0), converted_value)
         res = []
         for t, v in tag_map.items():
-            comp_tag: TagWithId = await get(db, "tags", TagWithId, {"_id": t}, one=True)
-            if tag.colour == comp_tag.colour: continue # skip tags from same group
-            res.append(TagCompositionItem(
-                tag_name=await get_tag_name(comp_tag, db) if comp_tag else t,
-                colour=comp_tag.colour if comp_tag else "#000000",
-                value=abs(v),
-            ))
+            if t == "Untagged":
+                res.append(TagCompositionItem(tag_name="Untagged", colour="#000000", value=abs(v)))
+            else:
+                comp_tag: TagWithId = await get(db, "tags", TagWithId, {"_id": t}, one=True)
+                if tag.colour == comp_tag.colour: continue # skip tags from same group
+                name = await get_tag_name(comp_tag, db) if comp_tag else t
+                colour = comp_tag.colour if comp_tag else "#000000"
+                res.append(TagCompositionItem(tag_name=name, colour=colour, value=abs(v)))
         return sorted(res, key=lambda x: x.tag_name.lower())
 
     all_child_values_total = await _aggregate(this_tag_id + child_tag_ids, [], None)

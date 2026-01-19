@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import InputWithError, { getError, getTouched, getValue, SingleInputWithErrorProps } from "./InputWithError";
 import { MdClose, MdExpandMore } from "react-icons/md";
@@ -54,6 +54,8 @@ export default function SearchableTextInputWithError<T>({
   const [search, setSearch] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : Array.isArray(value) ? value : [value]);
+
+  useEffect(() => {setSelectedIds(singleSelect ? [] : Array.isArray(value) ? value : [value])}, [value, singleSelect]);
 
   function highlightUp() { setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1)) }
   function highlightDown() { setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0)) }

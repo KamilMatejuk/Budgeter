@@ -16,7 +16,7 @@
     "formik": "^2.4.6",
     "formik-validator-zod": "^2.2.0",
     "framer-motion": "^12.23.22",
-    "knip": "^5.69.1",
+    "knip": "^5.82.1",
     "next": "15.3.6",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.1",

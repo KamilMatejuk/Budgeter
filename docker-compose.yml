@@ -2,6 +2,7 @@ services:
   frontend:
     build: ./frontend
     container_name: frontend
+    working_dir: /app
     ports:
       - "3000:3000"
     volumes:
@@ -14,8 +15,9 @@ services:
   backend:
     build: ./backend
     container_name: backend
+    working_dir: /app
     volumes:
-      - ./backend:/app/backend
+      - ./backend:/app
     ports:
       - "8000:8000"
     environment:

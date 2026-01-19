@@ -13,3 +13,7 @@ types:
 			--export-type \
 			--root-types \
 			--root-types-no-schema-prefix
+
+check:
+	@docker compose run --rm frontend npx tsc --noEmit && \
+	 docker compose run --rm frontend npx knip --config knip.json

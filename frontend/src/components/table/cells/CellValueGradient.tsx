@@ -1,6 +1,8 @@
 import { Currency } from "@/types/enum";
 import { ColumnDef } from "@tanstack/react-table";
 import CellValue from "./CellValue";
+import { TagRichWithId } from "@/types/backend";
+import Link from "next/link";
 
 interface CellValueGradientProps {
   value: number;
@@ -38,16 +40,31 @@ export default function CellValueGradient({ value, midPoint, currency }: CellVal
   );
 }
 
-export function defineCellValueGradient<T extends { currency?: Currency | keyof typeof Currency }>(midPointKey: keyof T, value: keyof T, index?: number) {
+export function defineCellValueGradient<T extends { currency?: Currency | keyof typeof Currency }>(midPointKey: keyof T, value: keyof T, index: number) {
   return {
     accessorKey: "value",
     header: "Value Change",
     meta: { align: "center" },
     cell: ({ row }) =>
       <CellValueGradient
-        value={(index ? (row.original[value] as number[])[index] : row.original[value] as number) || 0}
+        value={(row.original[value] as number[])[index] || 0}
         midPoint={row.original[midPointKey] as number}
         currency={row.original.currency}
       />
+  } as ColumnDef<T>;
+}
+
+export function defineCellValueGradientWithLink<T extends { currency?: Currency | keyof typeof Currency, tag: TagRichWithId }>(
+  midPointKey: keyof T, value: keyof T, index: number, filters: string) {
+  return {
+    ...defineCellValueGradient<T>(midPointKey, value, index),
+    cell: ({ row }) =>
+      <Link target="_blank" href={`/search?tagsIn=${row.original.tag._id}&${filters}`}>
+        <CellValueGradient
+          value={(row.original[value] as number[])[index] || 0}
+          midPoint={row.original[midPointKey] as number}
+          currency={row.original.currency}
+        />
+      </Link>
   } as ColumnDef<T>;
 }

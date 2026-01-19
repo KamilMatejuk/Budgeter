@@ -4,8 +4,8 @@ import { MonthComparisonRow } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "../cells/CellTag";
-import { defineCellValueGradient } from "../cells/CellValueGradient";
-import { getMonthName } from "@/const/date";
+import { defineCellValueGradient, defineCellValueGradientWithLink } from "../cells/CellValueGradient";
+import { getISODateString, getMonthName } from "@/const/date";
 import { z } from "zod";
 import { requiredText } from "@/components/form/TextInputWithError";
 import { useFormik } from "formik";
@@ -23,6 +23,13 @@ const customHeader = (label1: string, label2: string) => (
     <span className="text-xs text-subtext">{label2}</span>
   </div>
 );
+
+const getSearchSlug = (month: number, year: number) => {
+  console.log(month, year);
+  const dateStart = getISODateString(new Date(year, month - 1, 1));
+  const dateEnd = getISODateString(new Date(year, month, 0));
+  return `dateStart=${dateStart}&dateEnd=${dateEnd}`;
+};
 
 
 const getDatesRecord = (n: number) => Array.from({ length: n }, (_, i) => {
@@ -63,22 +70,22 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
       meta: { border: "right" }
     },
     {
-      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 12),
+      ...defineCellValueGradientWithLink<MonthComparisonRow>("value_avg", "values", thisCol - 12, getSearchSlug(month, year - 1)),
       header: () => customHeader("This Month Last Year", `${getMonthName(month)} ${year - 1}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 2),
+      ...defineCellValueGradientWithLink<MonthComparisonRow>("value_avg", "values", thisCol - 2, getSearchSlug(month - 2, year)),
       header: () => customHeader("Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol - 1),
+      ...defineCellValueGradientWithLink<MonthComparisonRow>("value_avg", "values", thisCol - 1, getSearchSlug(month - 1, year)),
       header: () => customHeader("Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradient<MonthComparisonRow>("value_avg", "values", thisCol),
+      ...defineCellValueGradientWithLink<MonthComparisonRow>("value_avg", "values", thisCol, getSearchSlug(month, year)),
       header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
       meta: { align: "center", border: "both" },
       accessorKey: "value",

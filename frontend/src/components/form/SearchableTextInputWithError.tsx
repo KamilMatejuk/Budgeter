@@ -14,7 +14,7 @@ const classes = {
   optionLabel: "hover:bg-inherit text-subtext text-sm",
   optionHighlighted: "bg-gray-100",
   selected: "flex flex-wrap max-w-96",
-  selectedTag: "flex items-center gap-1 mt-1 mr-1",
+  selectedTag: "flex items-center gap-1 mt-1 mr-1 px-[2px] py-[1px] bg-second-bg rounded",
 };
 
 interface SearchableOption {

@@ -19,6 +19,7 @@ import { getDateString } from "@/const/date";
 import WarningToast from "@/components/toast/WarningToast";
 import SearchableTextInputWithError from "@/components/form/SearchableTextInputWithError";
 import { CellOrganisationId } from "@/components/table/cells/CellOrganisation";
+import OrganisationsInputWithError from "@/components/form/OrganisationsInputWithError";
 
 enum Source {
   ACCOUNT = "ACCOUNT",
@@ -84,9 +85,6 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
   const organisation = useMemo(
     () => organisations.find(org => org.name === formik.values.organisation),
     [formik.values.organisation, organisations]);
-  const organisationOptions = useMemo(
-    () => organisations.map(org => ({ id: org.name, name: org.name })),
-    [organisations]);
 
   const tags = useTags();
   const warningTagValue = useMemo(() => {
@@ -135,14 +133,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
           optionsEnum={accountRecord} />
       }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
-      <SearchableTextInputWithError
-        formik={formik}
-        formikName="organisation"
-        label="Organisation"
-        Option={CellOrganisationId}
-        options={organisationOptions}
-        singleSelect
-      />
+      <OrganisationsInputWithError formik={formik} formikName="organisation" label="Organisation" singleSelect />
       <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />
       <TagsInputWithError
         formik={formik}

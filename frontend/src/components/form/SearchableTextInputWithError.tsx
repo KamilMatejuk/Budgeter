@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import InputWithError, { getError, getTouched, getValue, SingleInputWithErrorProps } from "./InputWithError";
 import { MdClose, MdExpandMore } from "react-icons/md";
@@ -44,6 +44,7 @@ export default function SearchableTextInputWithError<T>({
   Option,
   singleSelect,
 }: SearchableTextInputWithErrorProps<T>) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const value = getValue(formik, formikName);
   const error = getError(formik, formikName);
@@ -68,6 +69,7 @@ export default function SearchableTextInputWithError<T>({
     }
     setOpen(false);
     setHighlightedIndex(-1);
+    inputRef.current?.blur();
   }
   function deselect(tagId: string) {
     const newSelected = selectedIds.filter(id => id !== tagId);
@@ -84,6 +86,7 @@ export default function SearchableTextInputWithError<T>({
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
       <div className={classes.container}>
         <input
+          ref={inputRef}
           id={formikName as string}
           name={formikName as string}
           value={search}

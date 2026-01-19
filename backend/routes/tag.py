@@ -6,12 +6,14 @@ from models.tag import Tag, TagPartial, TagWithId, TagRichWithId, TagRequest
 from core.db import get_db
 
 
-async def get_parent(tag: Tag, db: AsyncIOMotorDatabase) -> TagWithId | None:
+async def get_parent(tag: Tag | str, db: AsyncIOMotorDatabase) -> TagWithId | None:
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
     if not tag.parent: return None
     return await get(db, "tags", TagWithId, {"_id": tag.parent}, one=True)
 
 
-async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId]:
+async def get_children(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[TagWithId]:
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
     if not tag.children: return []
     children = []
     for child_id in tag.children:
@@ -21,8 +23,9 @@ async def get_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId]:
     return children
 
 
-async def get_all_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId]:
+async def get_all_children(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[TagWithId]:
     res = []
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
     children = await get_children(tag, db)
     children = sorted(children, key=lambda t: t.name.lower())
     for child in children:
@@ -30,7 +33,8 @@ async def get_all_children(tag: Tag, db: AsyncIOMotorDatabase) -> list[TagWithId
     return res
 
 
-async def get_name(tag: Tag, db: AsyncIOMotorDatabase) -> str:
+async def get_name(tag: Tag | str, db: AsyncIOMotorDatabase) -> str:
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
     if not tag.parent: return tag.name
     parent = await get_parent(tag, db)
     return f"{await get_name(parent, db)}/{tag.name}"

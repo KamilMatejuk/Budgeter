@@ -52,7 +52,7 @@ export default function SearchableTextInputWithError<T>({
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : value || []);
+  const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : Array.isArray(value) ? value : [value]);
 
   function highlightUp() { setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1)) }
   function highlightDown() { setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0)) }

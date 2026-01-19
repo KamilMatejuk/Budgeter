@@ -9,12 +9,12 @@ const classes = {
   select: "border border-gray-300 px-4 py-2 rounded-md w-full text-center appearance-none",
   selectError: "border-red-200 bg-red-500/10",
   icon: "absolute right-3 top-1/2 -translate-y-1/2 transition-transform duration-300 pointer-events-none",
-  dropdown: "absolute left-0 right-0 mt-1 max-h-60 overflow-auto bg-white border rounded shadow z-10",
+  dropdown: "absolute left-0 right-0 mt-0 max-h-60 overflow-auto bg-white border rounded shadow z-10",
   option: "px-1 py-1 hover:bg-gray-100 cursor-pointer",
   optionLabel: "hover:bg-inherit text-subtext text-sm",
   optionHighlighted: "bg-gray-100",
   selected: "flex flex-wrap max-w-96",
-  selectedTag: "flex items-center gap-1 mb-1 mr-1",
+  selectedTag: "flex items-center gap-1 mt-1 mr-1",
 };
 
 interface SearchableOption {
@@ -82,13 +82,6 @@ export default function SearchableTextInputWithError<T>({
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
-      <div className={classes.selected}>
-        {selectedIds.map((id) => (
-          <div key={id} className={classes.selectedTag}>
-            <Option id={id} />
-            <MdClose className="cursor-pointer" size={16} onClick={() => deselect(id)} />
-          </div>))}
-      </div>
       <div className={classes.container}>
         <input
           id={formikName as string}
@@ -138,6 +131,13 @@ export default function SearchableTextInputWithError<T>({
           className={twMerge(classes.icon, open && "rotate-180")}
           size={20}
         />
+      </div>
+      <div className={classes.selected}>
+        {selectedIds.map((id) => (
+          <div key={id} className={classes.selectedTag}>
+            <Option id={id} />
+            <MdClose className="cursor-pointer" size={16} onClick={() => deselect(id)} />
+          </div>))}
       </div>
     </InputWithError>
   );

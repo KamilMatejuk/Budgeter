@@ -30,7 +30,7 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
   return (
     <ChartWithOptions
       chart={<div className="grid grid-cols-3">
-        <Link target="_blank" href={`/search?tagsIn=${tag}`}>
+        <Link target="_blank" href={`/search?${getTagsSearchSlug(tag, allTags)}`}>
           <TagCompositionChart
             title="Full"
             subtitle="since beginning"
@@ -48,7 +48,7 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
             colors={yearValues.map(i => i.colour)}
           />
         </Link>
-        <Link target="_blank" href={`/search?tagsIn=${tag}&dateStart=${getISODateString(thisMonthDate)}`}>
+        <Link target="_blank" href={`/search?${getTagsSearchSlug(tag, allTags)}&dateStart=${getISODateString(thisMonthDate)}`}>
           <TagCompositionChart
             title="This Month"
             subtitle={`since ${getMonthName(thisMonthDate.getMonth() + 1)} ${thisMonthDate.getFullYear()}`}

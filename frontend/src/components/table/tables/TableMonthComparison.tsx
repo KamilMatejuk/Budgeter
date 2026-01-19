@@ -25,7 +25,6 @@ const customHeader = (label1: string, label2: string) => (
 );
 
 const getSearchSlug = (month: number, year: number) => {
-  console.log(month, year);
   const dateStart = getISODateString(new Date(year, month - 1, 1));
   const dateEnd = getISODateString(new Date(year, month, 0));
   return `dateStart=${dateStart}&dateEnd=${dateEnd}`;

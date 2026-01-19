@@ -2,10 +2,11 @@
 
 import { TagComposition } from "@/types/backend";
 import { useState } from "react";
-import { getMonthName } from "@/const/date";
+import { getISODateString, getMonthName } from "@/const/date";
 import { CellTag } from "../table/cells/CellTag";
 import ChartWithOptions from "./ChartWithOptions";
 import TagCompositionChart from "./TagCompositionChart";
+import Link from "next/link";
 
 
 interface TagCompositionChartsProps {
@@ -21,31 +22,39 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
 
   const thisMonthDate = new Date();
   const thisYearDate = new Date();
+  thisMonthDate.setDate(1);
+  thisYearDate.setDate(1);
   thisYearDate.setMonth(thisYearDate.getMonth() - 11);
   return (
     <ChartWithOptions
       chart={<div className="grid grid-cols-3">
-        <TagCompositionChart
-          title="Full"
-          subtitle="since beginning"
-          data={fullValues.map(i => i.value)}
-          labels={fullValues.map(i => i.tag_name)}
-          colors={fullValues.map(i => i.colour)}
-        />
-        <TagCompositionChart
-          title="This Year"
-          subtitle={`since ${getMonthName(thisYearDate.getMonth() + 1)} ${thisYearDate.getFullYear()}`}
-          data={yearValues.map(i => i.value)}
-          labels={yearValues.map(i => i.tag_name)}
-          colors={yearValues.map(i => i.colour)}
-        />
-        <TagCompositionChart
-          title="This Month"
-          subtitle={`since ${getMonthName(thisMonthDate.getMonth() + 1)} ${thisMonthDate.getFullYear()}`}
-          data={monthValues.map(i => i.value)}
-          labels={monthValues.map(i => i.tag_name)}
-          colors={monthValues.map(i => i.colour)}
-        />
+        <Link target="_blank" href={`/search?tagsIn=${tag}`}>
+          <TagCompositionChart
+            title="Full"
+            subtitle="since beginning"
+            data={fullValues.map(i => i.value)}
+            labels={fullValues.map(i => i.tag_name)}
+            colors={fullValues.map(i => i.colour)}
+          />
+        </Link>
+        <Link target="_blank" href={`/search?tagsIn=${tag}&dateStart=${getISODateString(thisYearDate)}`}>
+          <TagCompositionChart
+            title="This Year"
+            subtitle={`since ${getMonthName(thisYearDate.getMonth() + 1)} ${thisYearDate.getFullYear()}`}
+            data={yearValues.map(i => i.value)}
+            labels={yearValues.map(i => i.tag_name)}
+            colors={yearValues.map(i => i.colour)}
+          />
+        </Link>
+        <Link target="_blank" href={`/search?tagsIn=${tag}&dateStart=${getISODateString(thisMonthDate)}`}>
+          <TagCompositionChart
+            title="This Month"
+            subtitle={`since ${getMonthName(thisMonthDate.getMonth() + 1)} ${thisMonthDate.getFullYear()}`}
+            data={monthValues.map(i => i.value)}
+            labels={monthValues.map(i => i.tag_name)}
+            colors={monthValues.map(i => i.colour)}
+          />
+        </Link>
       </div>}
       options={data.map((t) => ({
         id: t.tag._id,

@@ -26,6 +26,7 @@ async def get_children(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[TagWith
 async def get_all_children(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[TagWithId]:
     res = []
     if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    if not tag: return res
     children = await get_children(tag, db)
     children = sorted(children, key=lambda t: t.name.lower())
     for child in children:

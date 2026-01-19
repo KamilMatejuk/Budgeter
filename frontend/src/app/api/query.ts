@@ -25,14 +25,6 @@ export function useCashs() {
   ) || [];
 }
 
-export function useCash(id: string) {
-  return _useFetchWrapper<CashWithId>(
-    ["cash"],
-    ["cash"],
-    `/api/products/cash/${id}`,
-  ) || undefined;
-}
-
 export function usePersonalAccounts() {
   const data = _useFetchWrapper<PersonalAccountWithId[]>(
     ["personal_account"],

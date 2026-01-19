@@ -13,7 +13,7 @@ const classes = {
   option: "",
 };
 
-export interface DropDownInputWithErrorProps<T> extends ChoiceInputWithErrorProps<T> {
+interface DropDownInputWithErrorProps<T> extends ChoiceInputWithErrorProps<T> {
   hideEmpty?: boolean;
 }
 

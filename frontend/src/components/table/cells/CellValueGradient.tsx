@@ -30,7 +30,7 @@ function _gradientColor(t: number, reverse: boolean) {
   return color(intRatio(1 - k), 255, intRatio(1 - k));
 }
 
-export default function CellValueGradient({ value, midPoint, currency }: CellValueGradientProps) {
+function CellValueGradient({ value, midPoint, currency }: CellValueGradientProps) {
   const max = midPoint * 2;
   const ratio = max ? value / max : 0.5;
   const color = _gradientColor(ratio, max < 0);
@@ -41,7 +41,7 @@ export default function CellValueGradient({ value, midPoint, currency }: CellVal
   );
 }
 
-export function defineCellValueGradient<T extends { currency?: Currency | keyof typeof Currency }>(midPointKey: keyof T, value: keyof T, index: number) {
+function defineCellValueGradient<T extends { currency?: Currency | keyof typeof Currency }>(midPointKey: keyof T, value: keyof T, index: number) {
   return {
     accessorKey: "value",
     header: "Value Change",

@@ -3,7 +3,7 @@ import Button, { ButtonProps } from "./Button";
 import Link from "next/link";
 
 
-export interface ButtonWithLinkProps extends Omit<ButtonProps, "children" | "textInvisible"> {
+interface ButtonWithLinkProps extends Omit<ButtonProps, "children" | "textInvisible"> {
   href: string;
 }
 

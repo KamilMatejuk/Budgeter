@@ -15,7 +15,7 @@ const FALLBACK_RATES = {
   EURPLN: 4.25,
 }
 
-export async function getExchangeRate(base: CurrencyType | CurrencyEnum, target: CurrencyType | CurrencyEnum): Promise<number> {
+async function getExchangeRate(base: CurrencyType | CurrencyEnum, target: CurrencyType | CurrencyEnum): Promise<number> {
   if (base === target) return 1;
   // https://www.freeforexapi.com/
   // max 100 requests per month

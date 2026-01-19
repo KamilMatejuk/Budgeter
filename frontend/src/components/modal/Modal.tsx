@@ -14,7 +14,7 @@ const classes = {
 };
 
 
-export interface ModalProps extends PropsWithChildren {
+interface ModalProps extends PropsWithChildren {
   open: boolean;
   onClose: () => Promise<void>;
   cancellable?: boolean;

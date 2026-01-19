@@ -63,7 +63,7 @@ function format(value: number | string | undefined) {
   return "";
 }
 
-export interface AmountInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
+interface AmountInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   allowNegative?: boolean;
 }
 

@@ -43,7 +43,7 @@ interface ChartContainerProps extends PropsWithChildren {
   height?: string;
 }
 
-export function ChartContainer({ width = "100%", height = "300px", children }: ChartContainerProps) {
+function ChartContainer({ width = "100%", height = "300px", children }: ChartContainerProps) {
   return (<div style={{ width, height }}>{children}</div>);
 }
 

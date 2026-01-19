@@ -15,12 +15,12 @@ export function pushFiltersToUrl(filters: FiltersProps) {
   return params;
 }
 
-export function parseArrayParam(param: string | string[] | undefined): string[] {
+function parseArrayParam(param: string | string[] | undefined): string[] {
   if (!param) return [];
   return Array.isArray(param) ? param : [param];
 }
 
-export function parseDateParam(param: string | undefined): Date | undefined {
+function parseDateParam(param: string | undefined): Date | undefined {
   if (!param) return undefined;
   return new Date(param);
 }

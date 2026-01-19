@@ -1,8 +1,10 @@
 {
     "ignore": [
-        "src/types/backend.ts"
+        "src/types/backend.ts",
+        "src/types/patch.ts"
     ],
     "ignoreDependencies": [
+        "@eslint/eslintrc",
         "eslint",
         "eslint-config-next",
         "openapi-typescript",

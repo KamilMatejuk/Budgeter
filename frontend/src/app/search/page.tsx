@@ -7,6 +7,7 @@ import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { TransactionRichWithId } from "@/types/backend";
 import { parseSearchParams } from "./utils";
+import Summary from "./Summary";
 
 
 interface PageProps {
@@ -39,6 +40,8 @@ export default async function Search({ searchParams }: PageProps) {
         : warning
           ? <WarningToast message={warning} />
           : <>
+            <SectionHeader text="Summary" />
+            <Summary data={transactions} />
             <SectionHeader text="Results" />
             <TableTransactions data={transactions} />
           </>

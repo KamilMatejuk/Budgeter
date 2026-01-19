@@ -3,7 +3,6 @@ import DatePicker, { DatePickerProps } from 'react-datepicker';
 import InputWithError, { MultiInputWithErrorProps } from "./InputWithError";
 
 
-// @ts-expect-error: Cannot find module or type declarations for side-effect import.ts(2882)
 import 'react-datepicker/dist/react-datepicker.css';
 
 

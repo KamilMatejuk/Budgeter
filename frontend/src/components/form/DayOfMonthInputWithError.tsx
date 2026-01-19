@@ -20,7 +20,7 @@ export default function DayOfMonthInputWithError<T>({ formik, formikName, label 
         formikNames={[formikName]}
         label={label}
         selected={value as Date}
-        onChange={(val) => formik.setFieldValue(formikName as string, val?.getDate())}
+        onChange={(val) => formik.setFieldValue(formikName as string, (val as Date).getDate())}
         dateFormat="dd.mm.yyyy"
         inline
       />

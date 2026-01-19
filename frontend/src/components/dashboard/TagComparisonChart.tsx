@@ -8,7 +8,7 @@ import { getMonthsFromValues, getMonthsInRange } from "@/const/date";
 import { CellTag } from "../table/cells/CellTag";
 import ChartWithOptions from "./ChartWithOptions";
 
-function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
+export function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
   const result: MonthComparisonRow[] = [];
   function visit(list: MonthComparisonRow[]) {
     list.forEach((item) => {

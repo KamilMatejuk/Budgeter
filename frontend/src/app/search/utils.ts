@@ -1,5 +1,6 @@
 import { getISODateString } from "@/const/date";
 import { FiltersProps } from "./Filters";
+import { TagRichWithId } from "@/types/backend";
 
 
 export function pushFiltersToUrl(filters: FiltersProps) {
@@ -32,4 +33,17 @@ export function parseSearchParams(params: FiltersProps): FiltersProps {
   params.dateStart = parseDateParam(params.dateStart as string | undefined);
   params.dateEnd = parseDateParam(params.dateEnd as string | undefined);
   return params;
+}
+
+export function getDateSearchSlug(month: number, year: number) {
+  const dateStart = getISODateString(new Date(year, month - 1, 1));
+  const dateEnd = getISODateString(new Date(year, month, 0));
+  return `dateStart=${dateStart}&dateEnd=${dateEnd}`;
+};
+
+export function getTagsSearchSlug(tag: TagRichWithId, allTags: TagRichWithId[]) {
+  if (!tag.name.endsWith("Other")) return `tagsIn=${tag._id}`;
+  const parentTag = allTags.find(t => t.name === tag.name.replace("/Other", ""))!;
+  const siblingTags = allTags.filter(t => t.name.startsWith(`${parentTag.name}/`) && t.name != tag.name);
+  return siblingTags.map(t => `tagsOut=${t._id}`).concat(`tagsIn=${parentTag._id}`).join("&");
 }

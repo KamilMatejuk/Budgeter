@@ -1,12 +1,13 @@
 'use client';
 
-import { TagComposition } from "@/types/backend";
+import { TagComposition, TagRichWithId } from "@/types/backend";
 import { useState } from "react";
 import { getISODateString, getMonthName } from "@/const/date";
 import { CellTag } from "../table/cells/CellTag";
 import ChartWithOptions from "./ChartWithOptions";
 import TagCompositionChart from "./TagCompositionChart";
 import Link from "next/link";
+import { getTagsSearchSlug } from "@/app/search/utils";
 
 
 interface TagCompositionChartsProps {
@@ -14,8 +15,9 @@ interface TagCompositionChartsProps {
 }
 
 export default function TagCompositionCharts({ data }: TagCompositionChartsProps) {
-  const [tag, setTag] = useState<string>(data[0]?.tag._id);
-  const composition = data.find((t) => t.tag._id === tag);
+  const [tag, setTag] = useState<TagRichWithId>(data[0]?.tag);
+  const allTags = data.map(d => d.tag);
+  const composition = data.find((t) => t.tag._id === tag._id);
   const fullValues = composition?.values_total || []
   const yearValues = composition?.values_year || []
   const monthValues = composition?.values_month || []
@@ -37,7 +39,7 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
             colors={fullValues.map(i => i.colour)}
           />
         </Link>
-        <Link target="_blank" href={`/search?tagsIn=${tag}&dateStart=${getISODateString(thisYearDate)}`}>
+        <Link target="_blank" href={`/search?${getTagsSearchSlug(tag, allTags)}&dateStart=${getISODateString(thisYearDate)}`}>
           <TagCompositionChart
             title="This Year"
             subtitle={`since ${getMonthName(thisYearDate.getMonth() + 1)} ${thisYearDate.getFullYear()}`}
@@ -58,10 +60,10 @@ export default function TagCompositionCharts({ data }: TagCompositionChartsProps
       </div>}
       options={data.map((t) => ({
         id: t.tag._id,
-        selected: t.tag._id === tag,
+        selected: t.tag._id === tag._id,
         body: <CellTag tag={t.tag} />
       }))}
-      selectOption={setTag}
+      selectOption={(t) => setTag(allTags.find(tag => tag._id === t)!)}
     />
   );
 }

@@ -3,6 +3,11 @@ run:
 	docker compose up -d && \
 	docker compose logs -f backend frontend
 
+prod:
+	@docker compose down && \
+	PROD=true docker compose up -d && \
+	docker compose logs -f backend frontend
+
 logs:
 	@docker compose logs -f backend frontend
 

@@ -26,7 +26,7 @@ async def setup_db():
 
 async def create_indexes(db: AsyncIOMotorDatabase):
     await db["source_parsed"].drop_indexes()
-    await db["source_parsed"].create_index("hash", unique=True)
+    await db["source_parsed"].create_index("hash", unique=True, background=True)
     logger.debug("Created indexes")
 
 

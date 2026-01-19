@@ -9,6 +9,7 @@ services:
       - ./frontend:/app
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:8000
+      - PROD=${PROD:-false}
     depends_on:
       - backend
 
@@ -22,6 +23,7 @@ services:
       - "8000:8000"
     environment:
       - MONGO_URL=mongodb://mongo:27017
+      - PROD=${PROD:-false}
     depends_on:
       - mongo
 

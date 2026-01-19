@@ -9,22 +9,26 @@ export default async function AccountsHistory() {
   // handle server-side fetch and errors
   // then set cached data to be used by client
   const queryClient = new QueryClient()
-  const {
-    response: totalAccountValueResponse,
-    error: totalAccountValueError
-  } = await getHistoricAccountValues();
-  if (totalAccountValueError)
-    return <ErrorToast message={`Could not download accounts history: ${totalAccountValueError.message}`} />;
 
+  const { response: totalAccValueResponse, error: totalAccValueError } = await getHistoricAccountValues(undefined, DEFAULT_CHART_RANGE);
+  if (totalAccValueError)
+    return <ErrorToast message={`Could not download accounts history: ${totalAccValueError.message}`} />;
+
+  
   const { response: accountsResponse, error: accountsError } = await getPersonalAccounts();
   if (accountsError)
     return <ErrorToast message={`Could not download personal accounts: ${accountsError.message}`} />;
+  
+  queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE], totalAccValueResponse);
 
-  queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE], totalAccountValueResponse);
+  const { response } = await getHistoricAccountValues("Investments", DEFAULT_CHART_RANGE);
+  queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE, "Investments"], response);
+
   accountsResponse.forEach(async account => {
-    const { response } = await getHistoricAccountValues(account._id);
+    const { response } = await getHistoricAccountValues(account._id, DEFAULT_CHART_RANGE);
     queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE, account._id], response);
   });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <AccountsHistoryChart />

@@ -7,14 +7,13 @@ from core.db import get_db
 from models.tag import TagWithId
 from core.utils import Value, Date
 from models.tag import TagRichWithId
-from models.products import CardWithId
 from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
-from routes.tag import get_children, get_all_children, get_name as get_tag_name, get_rich_tag
-from models.products import PersonalAccountWithId, Currency
 from routes.sources.utils import mark_account_value_in_history
+from routes.tag import get_children, get_all_children, get_name as get_tag_name, get_rich_tag
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem
+from models.products import CardWithId, SavingsAccountWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
 router = APIRouter()
 
@@ -100,17 +99,22 @@ def _range_to_dates(range: ChartRange):
 async def get_total_account_values(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
     response = {}
+    # accounts
     for account in accounts:
         account_values = await get_account_values(str(account.id), range, db)
-        # index end-to-start
-        account_values = [(len(account_values) - i, a) for i, a in enumerate(account_values)]
-        for i, val in account_values:
-            response[i] = Value.add(response.get(i, 0.0), val)
+        account_values = [(len(account_values) - i, a) for i, a in enumerate(account_values)] # index end-to-start
+        for i, val in account_values: response[i] = Value.add(response.get(i, 0.0), val)
+    # investments
+    investment_values = await get_investments_values(range, db)
+    investment_values = [(len(investment_values) - i, a) for i, a in enumerate(investment_values)] # index end-to-start
+    for i, val in investment_values: response[i] = Value.add(response.get(i, 0.0), val)
+    # total
     sorted_response = sorted(response.items(), key=lambda x: x[0], reverse=True)
     return [val for _, val in sorted_response]
 
 @router.get("/account_value/{range}/{id}", response_model=list[float])
 async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
+    if id == "Investments": return await get_investments_values(range, db)
     @fail_wrapper
     async def inner():
         start = _range_to_dates(range)
@@ -120,20 +124,45 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
         if start is not None:
             condition["date"] = {"$gte": start.isoformat()}
         history: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory, condition, "date", reverse=False)
+        first = history[0] if history else None
         # expand to full month
         before: AccountDailyHistory = await get(
             db, "account_daily_history", AccountDailyHistory,
             {"account": str(account.id), "date": {"$lte": start.isoformat()}},
             "date", one=True
-        ) if start is not None else history[0]
+        ) if start is not None else first
         current_value = before.value if before else 0.0
         response = []
         record_index = 0
-        for current_date in Date.iterate_days(start if start is not None else history[0].date):
+        for current_date in Date.iterate_days(start if start is not None else first.date if first else Date.today()):
             if (record_index < len(history)) and (history[record_index].date == current_date):
                 current_value = history[record_index].value
                 record_index += 1
             response.append(current_value)
+        return response
+    return await inner()
+
+async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        savings: list[SavingsAccountWithId] = await get(db, "savings_account", SavingsAccountWithId)
+        stock: list[StockAccountWithId] = await get(db, "stock_account", StockAccountWithId)
+        capital: list[CapitalInvestmentWithId] = await get(db, "capital_investment", CapitalInvestmentWithId)
+        stable_value = Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in savings) \
+            + Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in stock)
+        value_map = {}
+        start_date = Date.today()
+        for c in capital:
+            if c.start < start_date: start_date = c.start
+            for date in Date.iterate_days(c.start, c.end):
+                value_map[date] = Value.add(value_map.get(date, 0.0), c.value)
+        start = _range_to_dates(range)
+        if start is None: start = start_date
+        response = []
+        record_index = 0
+        for current_date in Date.iterate_days(start): # todo start None
+            record_index += 1
+            response.append(Value.add(stable_value, value_map.get(current_date, 0.0)))
         return response
     return await inner()
 

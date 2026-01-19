@@ -11,10 +11,10 @@ import ChartWithOptions from "./ChartWithOptions";
 
 export default function AccountsHistoryChart() {
   const [range, setRange] = useState<keyof typeof ChartRange>(DEFAULT_CHART_RANGE);
-  const [account, setAccount] = useState<string>("");
+  const [selected, setSelected] = useState<string>("");
   const accounts = usePersonalAccounts();
-  const data = account
-    ? useAccountValueHistory(range, account)
+  const data = selected
+    ? useAccountValueHistory(range, selected)
     : useTotalAccountValueHistory(range);
   const days = getDaysInRange(range); // can be empty for full range
   const values = data.length ? data : Array(days.length).fill(0); // default to zeros if no data
@@ -24,20 +24,11 @@ export default function AccountsHistoryChart() {
     <ChartWithOptions
       chart={<ChartWithRanges range={range} setRange={setRange} chart={{ type: 'line', props: { data: values, labels } }} />}
       options={[
-        {
-          id: "",
-          name: "All",
-          selected: account === "",
-        },
-        ...accounts.map((a) => (
-          {
-            id: a._id,
-            name: getAccountName(a),
-            selected: account === a._id,
-          }
-        ))
+        { id: "", name: "All", selected: selected === "" },
+        { id: "Investments", name: "Investments", selected: selected === "Investments" },
+        ...accounts.map((a) => ({ id: a._id, name: getAccountName(a), selected: selected === a._id }))
       ]}
-      selectOption={setAccount}
+      selectOption={setSelected}
     />
   );
 }

@@ -13,13 +13,13 @@ const classes = {
 
 
 export interface ButtonProps extends PropsWithChildren, React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
+  text?: string;
   textInvisible?: boolean;
   action: "positive" | "negative" | "neutral";
 }
 
 
-export default function Button({ text, textInvisible = false, action, children, ...props }: ButtonProps) {
+export default function Button({ text = "", textInvisible = false, action, children, ...props }: ButtonProps) {
   return (
     <button
       {...props}

@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import CellBank from "./CellBank";
 import { getAccountName, getCashName } from "./AccountNameUtils";
 import { CashWithId, PersonalAccountWithId } from "@/types/backend";
+import { usePersonalAccount } from "@/app/api/query";
 
 
 interface CellAccountNameProps {
@@ -22,6 +23,12 @@ export default function CellAccountName({ account, cash }: CellAccountNameProps)
     </div>
   );
 }
+
+export function CellAccountId({ id }: { id: string }) {
+  const account = usePersonalAccount(id);
+  return account ? <CellAccountName account={account} /> : id;
+}
+
 
 export function defineCellAccountName<T extends CellAccountNameProps>() {
   return {

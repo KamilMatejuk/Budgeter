@@ -9,9 +9,10 @@ import TextInputWithError, { requiredText } from "../../form/TextInputWithError"
 import { Capitalization, Currency } from "@/types/enum";
 import AmountInputWithError, { requiredPositiveAmount } from "../../form/AmountInputWithError";
 import ChoiceInputWithError from "../../form/ChoiceInputWithError";
-import { getISODateString, requiredDate } from "../../form/DateInputWithError";
+import { requiredDate } from "../../form/DateInputWithError";
 import DateRangeInputWithError from "../../form/DateRangeInputWithError";
 import { submit } from "./utils";
+import { getISODateString } from "@/const/date";
 
 
 const FormSchema = z.object({

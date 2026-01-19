@@ -9,11 +9,6 @@ export const requiredDate = z.date({ required_error: ERROR.requiredError });
 export const requiredDateInPast = requiredDate.refine((date) => new Date(date) <= new Date(), { message: ERROR.dateInPastError });
 
 
-export function getISODateString(date: Date) {
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${(date.getDate()).toString().padStart(2, "0")}`;
-}
-
-
 export default function DateInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
   return (

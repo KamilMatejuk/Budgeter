@@ -29,6 +29,7 @@ const Options = {
       grid: { display: false },
     },
     y: {
+      min: 0,
       grid: {
         display: true,
         color: (ctx: any) => ctx.tick.value === 0 ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.2)", // black line on y=0

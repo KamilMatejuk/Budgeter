@@ -10,6 +10,7 @@ import AccountsInputWithError from "@/components/form/AccountsInputWithError";
 import Button from "@/components/button/Button";
 import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
+import DateRangeInputWithError from "@/components/form/DateRangeInputWithError";
 
 export interface FiltersProps {
   accounts?: string[];
@@ -17,6 +18,8 @@ export interface FiltersProps {
   tagsIn?: string[];
   tagsOut?: string[];
   title?: string;
+  dateStart?: Date;
+  dateEnd?: Date;
 }
 
 const FormSchema = z.object({
@@ -25,19 +28,23 @@ const FormSchema = z.object({
   tagsIn: z.array(z.string()),
   tagsOut: z.array(z.string()),
   title: z.string().optional(),
+  dateStart: z.date().optional(),
+  dateEnd: z.date().optional(),
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
+function loadQueryWindow(query?: string) {
+  const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  window.history.replaceState(null, "", newUrl);
+  window.location.reload();
+}
 
-export default function Filters({ accounts = [], organisations = [], tagsIn = [], tagsOut = [], title = "" }: FiltersProps) {
+export default function Filters({ accounts = [], organisations = [], tagsIn = [], tagsOut = [], title = "", dateStart, dateEnd }: FiltersProps) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { accounts, organisations, tagsIn, tagsOut, title },
+    initialValues: { accounts, organisations, tagsIn, tagsOut, title, dateStart, dateEnd },
     onSubmit: async (values) => {
       const params = pushFiltersToUrl(values)
-      const queryString = params.toString();
-      const newUrl = `${window.location.pathname}?${queryString}`;
-      window.history.replaceState(null, "", newUrl);
-      window.location.reload();
+      loadQueryWindow(params.toString());
     },
     validate: withZodSchema(FormSchema),
   });
@@ -59,26 +66,20 @@ export default function Filters({ accounts = [], organisations = [], tagsIn = []
       <div className="flex-1">
         <TextInputWithError formik={formik} formikName="title" label="Title" />
       </div>
+      <div className="flex-1">
+        <DateRangeInputWithError formik={formik} formikNames={["dateStart", "dateEnd"]} label="Date Range" hidden />
+      </div>
       {/* submit */}
       <div className="flex flex-col">
         <label className="w-full">Load</label>
-        <Button
-          type="submit"
-          action="positive"
-          className="w-10 h-10 p-2"
-          onClick={() => formik.handleSubmit()}
-        >
+        <Button type="submit" action="positive" className="w-10 h-10 p-2" onClick={() => formik.handleSubmit()}>
           <IoReload size={24} />
         </Button>
       </div>
       {/* clear */}
       <div className="flex flex-col">
         <label className="w-full">Clear</label>
-        <Button
-          action="neutral"
-          className="w-10 h-10 p-2"
-          onClick={() => formik.resetForm({ values: { accounts: [], organisations: [], tagsIn: [], tagsOut: [], title: "" } })}
-        >
+        <Button action="neutral" className="w-10 h-10 p-2" onClick={() => loadQueryWindow()}>
           <IoTrashOutline size={24} />
         </Button>
       </div>

@@ -6,7 +6,7 @@ import { getFilteredTransactions } from "../api/getters";
 import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { TransactionRichWithId } from "@/types/backend";
-import { parseArrayParam } from "./utils";
+import { parseSearchParams } from "./utils";
 
 
 interface PageProps {
@@ -15,12 +15,7 @@ interface PageProps {
 
 export default async function Search({ searchParams }: PageProps) {
   // read params
-  const sp = await searchParams;
-  sp.accounts = parseArrayParam(sp.accounts);
-  sp.organisations = parseArrayParam(sp.organisations);
-  sp.tagsIn = parseArrayParam(sp.tagsIn);
-  sp.tagsOut = parseArrayParam(sp.tagsOut);
-
+  const sp = parseSearchParams(await searchParams);
   // get transactions
   let error = null;
   let warning = null;

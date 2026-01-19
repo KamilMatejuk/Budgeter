@@ -203,6 +203,8 @@ async def get_transactions_filtered(
     tagsIn: list[str] | None = Query(None),
     tagsOut: list[str] | None = Query(None),
     title: str | None = Query(None),
+    dateStart: datetime.date | None = Query(None),
+    dateEnd: datetime.date | None = Query(None),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     # condition
@@ -210,6 +212,8 @@ async def get_transactions_filtered(
     if accounts is not None and len(accounts) > 0: condition["account"] = {"$in": accounts}
     if organisations is not None and len(organisations) > 0: condition["organisation"] = {"$in": organisations}
     if title is not None and title.strip() != "": condition["title"] = {"$regex": title, "$options": "i"}
+    if dateStart is not None or dateEnd is not None:
+        condition["date"] = Date.condition(dateStart, dateEnd)
     # include tags and subtags
     all_tags_to_include = set()
     for t in tagsIn or []:

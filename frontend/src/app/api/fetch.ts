@@ -14,18 +14,31 @@ type FetchArgs = {
 // has to be server function
 export const customRevalidateTag = async (tag: string) => revalidateTag(tag);
 
+export const customRevalidateAllTags = async () => {
+  const tags = ['backup', 'card', 'cash', 'organisation', 'tag', 'transaction',
+    'personal_account', 'stock_account', 'capital_investment', 'savings_account',
+    'monthly_income', 'monthly_expense'];
+  for (const tag of tags) {
+    await revalidateTag(tag);
+  }
+}
+
 // fetch from open endpoints with custom headers
 async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
-  const options: RequestInit = { method, headers: { 'Content-Type': 'application/json' } };
+  const options: RequestInit = {
+    method,
+    next: { tags, revalidate: 60 },
+    headers: { 'Content-Type': 'application/json' },
+  };
   if (method === 'POST' || method === 'PATCH') { options.body = JSON.stringify(body || {}) }
   if (url.endsWith('/')) url = url.slice(0, -1);
 
   let res: Response | null = null;
   try {
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { next: { tags }, ...options });
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, options);
   } catch (err) {
     const error = err instanceof Error ? err : new Error(err as string);
-    console.error('FetchError: fetch() failed:', { url, status: res?.status });
+    console.error('FetchError: fetch() failed:', { url, status: res?.status, error });
     return { response: null, error };
   }
 
@@ -35,7 +48,7 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     data = text ? JSON.parse(text) : null;
   } catch (err) {
     const error = err instanceof Error ? err : new Error(err as string);
-    console.error('FetchError: response is not JSON serializable:', { url, status: res?.status, body: text.slice(0, 500) });
+    console.error('FetchError: response is not JSON serializable:', { url, status: res?.status, body: text.slice(0, 500), error });
     return { response: null, error };
   }
 

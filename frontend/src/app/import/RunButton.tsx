@@ -4,7 +4,7 @@ import { useImportContext } from "./ImportContext";
 import { Dispatch, SetStateAction, useState } from "react";
 import ErrorToast from "../../components/toast/ErrorToast";
 import Papa from "papaparse";
-import { post } from "@/app/api/fetch";
+import { customRevalidateTag, post } from "@/app/api/fetch";
 import ButtonWithProgress from "../../components/button/ButtonWithProgress";
 import { backupStateBeforeUpdate } from "@/components/modal/update/utils";
 import { TransactionWithId } from "@/types/backend";
@@ -72,6 +72,7 @@ export default function RunButton() {
       const backupName = `Before import of "${selectedFile.name.toLowerCase()}"`;
       if (!await backupStateBeforeUpdate(backupName)) throw new Error("Backup failed. Import aborted.");
       await importFile(selectedFile, selectedSource as Source, selectedOwner, setCounter, setMaxCounter);
+      await customRevalidateTag('transaction');
       setState('finish');
     } catch (err) {
       setFailed((err as Error).message);

@@ -1,4 +1,4 @@
-import { patch, post } from "@/app/api/fetch";
+import { customRevalidateTag, patch, post } from "@/app/api/fetch";
 import { Item } from "@/components/table/Table";
 import { BackupRequest } from "@/types/backend";
 
@@ -20,5 +20,6 @@ export async function backupStateBeforeUpdate(title: string) {
     alert(`Error: ${backupError.message}`);
     return false;
   }
+  await customRevalidateTag('backup');
   return true;
 }

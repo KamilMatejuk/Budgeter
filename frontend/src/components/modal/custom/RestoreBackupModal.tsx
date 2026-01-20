@@ -1,14 +1,17 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { BackupResponse } from "@/types/backend";
-import { post } from "@/app/api/fetch";
+import { customRevalidateAllTags, post } from "@/app/api/fetch";
 
 
 export default function RestoreBackupModal({ url, item, open, onClose }: BackendModalProps<BackupResponse>) {
   async function submit() {
     const { error } = await post(`${url}/restore/${item?.name}`, {});
     if (error) alert(`Error: ${error.message}`);
-    else return onClose();
+    else {
+      await customRevalidateAllTags();
+      return onClose()
+    };
   };
 
   return (

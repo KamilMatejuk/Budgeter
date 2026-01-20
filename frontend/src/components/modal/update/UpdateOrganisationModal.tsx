@@ -9,6 +9,7 @@ import { OrganisationRichWithId } from "@/types/backend";
 import { ERROR } from "@/const/message";
 import TagsInputWithError from "@/components/form/TagsInputWithError";
 import MultiTextInputWithError from "@/components/form/MultiTextInputWithError";
+import { customRevalidateTag } from "@/app/api/fetch";
 
 
 const FormSchema = z.object({
@@ -28,7 +29,10 @@ export default function UpdateOrganisationModal({ url, item, open, onClose }: Ba
       icon: item?.icon || "",
       tags: item?.tags.map(tag => tag._id) || [],
     },
-    onSubmit: async (values) => await submit<FormSchemaType, OrganisationRichWithId>(url, values, item?._id, onClose),
+    onSubmit: async (values) => {
+      await submit<FormSchemaType, OrganisationRichWithId>(url, values, item?._id, onClose);
+      await customRevalidateTag("transaction");
+    },
     validate: withZodSchema(FormSchema),
   });
 

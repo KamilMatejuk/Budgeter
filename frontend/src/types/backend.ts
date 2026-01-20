@@ -427,43 +427,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/products/savings_account": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Savingsaccounts */
-        get: operations["get_savingsaccounts_api_products_savings_account_get"];
-        put?: never;
-        /** Create Savingsaccount */
-        post: operations["create_savingsaccount_api_products_savings_account_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Patch Savingsaccount */
-        patch: operations["patch_savingsaccount_api_products_savings_account_patch"];
-        trace?: never;
-    };
-    "/api/products/savings_account/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Savingsaccount By Id */
-        get: operations["get_savingsaccount_by_id_api_products_savings_account__id__get"];
-        put?: never;
-        post?: never;
-        /** Delete Savingsaccount */
-        delete: operations["delete_savingsaccount_api_products_savings_account__id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/products/stock_account": {
         parameters: {
             query?: never;
@@ -888,7 +851,7 @@ export type components = {
          * AccountType
          * @enum {string}
          */
-        AccountType: "Osobiste" | "Walutowe" | "Lunchowe";
+        AccountType: "Osobiste" | "Walutowe" | "Lunchowe" | "Oszczędnościowe";
         /** BackupPatchRequest */
         BackupPatchRequest: {
             /** Id */
@@ -1378,51 +1341,6 @@ export type components = {
             /** Balance */
             Balance: string;
         };
-        /** SavingsAccount */
-        SavingsAccount: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name: string;
-            /** Number */
-            number: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
-            /** Yearly Interest */
-            yearly_interest: number;
-            capitalization: components["schemas"]["Capitalization"];
-        };
-        /** SavingsAccountPartial */
-        SavingsAccountPartial: {
-            /** Id */
-            _id?: string;
-            /** Name */
-            name?: string | null;
-            /** Number */
-            number?: string | null;
-            /** Value */
-            value?: number | null;
-            currency?: components["schemas"]["Currency"] | null;
-            /** Yearly Interest */
-            yearly_interest?: number | null;
-            capitalization?: components["schemas"]["Capitalization"] | null;
-        };
-        /** SavingsAccountWithId */
-        SavingsAccountWithId: {
-            /** Id */
-            _id: string;
-            /** Name */
-            name: string;
-            /** Number */
-            number: string;
-            /** Value */
-            value: number;
-            currency: components["schemas"]["Currency"];
-            /** Yearly Interest */
-            yearly_interest: number;
-            capitalization: components["schemas"]["Capitalization"];
-        };
         /**
          * Source
          * @enum {string}
@@ -1760,9 +1678,6 @@ export type PersonalAccount = components['schemas']['PersonalAccount'];
 export type PersonalAccountPartial = components['schemas']['PersonalAccountPartial'];
 export type PersonalAccountWithId = components['schemas']['PersonalAccountWithId'];
 export type RevolutRequest = components['schemas']['RevolutRequest'];
-export type SavingsAccount = components['schemas']['SavingsAccount'];
-export type SavingsAccountPartial = components['schemas']['SavingsAccountPartial'];
-export type SavingsAccountWithId = components['schemas']['SavingsAccountWithId'];
 export type Source = components['schemas']['Source'];
 export type SourceParsed = components['schemas']['SourceParsed'];
 export type StockAccount = components['schemas']['StockAccount'];
@@ -2917,156 +2832,6 @@ export interface operations {
         };
     };
     delete_card_api_products_card__id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_savingsaccounts_api_products_savings_account_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SavingsAccountWithId"][];
-                };
-            };
-        };
-    };
-    create_savingsaccount_api_products_savings_account_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SavingsAccount"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SavingsAccountWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    patch_savingsaccount_api_products_savings_account_patch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SavingsAccountPartial"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SavingsAccountWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_savingsaccount_by_id_api_products_savings_account__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SavingsAccountWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_savingsaccount_api_products_savings_account__id__delete: {
         parameters: {
             query?: never;
             header?: never;

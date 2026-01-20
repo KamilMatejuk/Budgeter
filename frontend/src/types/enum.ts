@@ -25,6 +25,7 @@ export enum AccountType {
   PERSONAL = "Osobiste",
   EXCHANGE = "Walutowe",
   LUNCH = "Lunchowe",
+  SAVING = "Oszczędnościowe",
 }
 
 export const CURRENCY_SYMBOLS: Record<Currency, string> = {

@@ -50,6 +50,8 @@ class MillenniumTransactionType(enum.Enum):
 
     REGULAR_ORDER = 'STAŁE ZLECENIE ZEWNĘTRZNE'
     INVESTMENT_OPERATION = 'OPERACJE NA LOKATACH'
+    INVESTMENT_DEBIT = 'OBCIĄŻENIE'
+    INVESTMENT_CREDIT = 'UZNANIE'
 
 
 async def get_account(db: AsyncIOMotorDatabase, number: str = None, id: str = None) -> PersonalAccountWithId:
@@ -168,6 +170,16 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         return
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Lokata Millennium")
+        return
+
+    if data.type == MillenniumTransactionType.INVESTMENT_DEBIT:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Lokata Millennium")
+        return
+    
+    if data.type == MillenniumTransactionType.INVESTMENT_CREDIT:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, "Lokata Millennium")
         return

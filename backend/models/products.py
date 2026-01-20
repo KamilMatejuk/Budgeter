@@ -33,6 +33,7 @@ class AccountType(enum.Enum):
     PERSONAL = "Osobiste"
     EXCHANGE = "Walutowe"
     LUNCH = "Lunchowe"
+    SAVING = "Oszczędnościowe"
 
 
 class Cash(PyBaseModel):
@@ -60,14 +61,6 @@ class Card(PyBaseModel):
     account: str # id of PersonalAccount the card is assigned to
     min_number_of_transactions_monthly: int
     value: float | None = None # value shouldn't be set from frontend, and is only available for credit cards
-
-class SavingsAccount(PyBaseModel):
-    name: str
-    number: str
-    value: float
-    currency: Currency
-    yearly_interest: float
-    capitalization: Capitalization
 
 class StockAccount(PyBaseModel):
     name: str
@@ -102,7 +95,6 @@ class MonthlyExpense(PyBaseModel):
 class CashPartial(Cash, metaclass=Partial): pass
 class PersonalAccountPartial(PersonalAccount, metaclass=Partial): pass
 class CardPartial(Card, metaclass=Partial): pass
-class SavingsAccountPartial(SavingsAccount, metaclass=Partial): pass
 class StockAccountPartial(StockAccount, metaclass=Partial): pass
 class CapitalInvestmentPartial(CapitalInvestment, metaclass=Partial): pass
 class MonthlyIncomePartial(MonthlyIncome, metaclass=Partial): pass
@@ -112,7 +104,6 @@ class MonthlyExpensePartial(MonthlyExpense, metaclass=Partial): pass
 class CashWithId(Cash, metaclass=WithId): pass
 class PersonalAccountWithId(PersonalAccount, metaclass=WithId): pass
 class CardWithId(Card, metaclass=WithId): pass
-class SavingsAccountWithId(SavingsAccount, metaclass=WithId): pass
 class StockAccountWithId(StockAccount, metaclass=WithId): pass
 class CapitalInvestmentWithId(CapitalInvestment, metaclass=WithId): pass
 class MonthlyIncomeWithId(MonthlyIncome, metaclass=WithId): pass

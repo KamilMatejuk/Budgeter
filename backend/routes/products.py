@@ -9,7 +9,6 @@ from models.products import (
     Cash, CashPartial, CashWithId,
     Card, CardPartial, CardWithId, CardRichWithId,
     PersonalAccount, PersonalAccountPartial, PersonalAccountWithId,
-    SavingsAccount, SavingsAccountPartial, SavingsAccountWithId,
     StockAccount, StockAccountPartial, StockAccountWithId,
     CapitalInvestment, CapitalInvestmentPartial, CapitalInvestmentWithId,
     MonthlyIncome, MonthlyIncomePartial, MonthlyIncomeWithId,
@@ -78,15 +77,6 @@ card_factory.create_post()
 card_factory.create_patch()
 card_factory.create_delete()
 router.include_router(card_router)
-
-savings_account_router = APIRouter(prefix="/savings_account")
-savings_account_factory = CRUDRouterFactory(savings_account_router, "savings_account", SavingsAccount, SavingsAccountPartial, SavingsAccountWithId)
-savings_account_factory.create_get()
-savings_account_factory.create_get_by_id()
-savings_account_factory.create_post()
-savings_account_factory.create_patch()
-savings_account_factory.create_delete()
-router.include_router(savings_account_router)
 
 stock_account_router = APIRouter(prefix="/stock_account")
 stock_account_factory = CRUDRouterFactory(stock_account_router, "stock_account", StockAccount, StockAccountPartial, StockAccountWithId)

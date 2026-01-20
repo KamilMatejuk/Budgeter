@@ -16,8 +16,7 @@ export const customRevalidateTag = async (tag: string) => revalidateTag(tag);
 
 export const customRevalidateAllTags = async () => {
   const tags = ['backup', 'card', 'cash', 'organisation', 'tag', 'transaction',
-    'personal_account', 'stock_account', 'capital_investment', 'savings_account',
-    'monthly_income', 'monthly_expense'];
+    'personal_account', 'stock_account', 'capital_investment', 'monthly_income', 'monthly_expense'];
   for (const tag of tags) {
     await revalidateTag(tag);
   }

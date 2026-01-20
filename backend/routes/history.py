@@ -13,7 +13,7 @@ from models.transaction import TransactionWithId
 from routes.sources.utils import mark_account_value_in_history
 from routes.tag import get_children, get_all_children, get_name as get_tag_name, get_rich_tag
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem
-from models.products import CardWithId, SavingsAccountWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
+from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
 router = APIRouter()
 
@@ -145,11 +145,9 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
 async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
-        savings: list[SavingsAccountWithId] = await get(db, "savings_account", SavingsAccountWithId)
         stock: list[StockAccountWithId] = await get(db, "stock_account", StockAccountWithId)
         capital: list[CapitalInvestmentWithId] = await get(db, "capital_investment", CapitalInvestmentWithId)
-        stable_value = Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in savings) \
-            + Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in stock)
+        stable_value = Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in stock)
         value_map = {}
         start_date = Date.today()
         for c in capital:

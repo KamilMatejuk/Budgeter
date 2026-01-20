@@ -42,16 +42,14 @@ export interface AccountsProps {
   accounts: PersonalAccountWithId[];
   stocks: number;
   capitals: number;
-  savings: number;
 }
 
 
-export default function Accounts({ collapsed, cards, accounts, stocks, capitals, savings }: AccountsProps) {
+export default function Accounts({ collapsed, cards, accounts, stocks, capitals }: AccountsProps) {
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
   const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
     + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
-    + savings
     + capitals
     + stocks;
 
@@ -61,7 +59,6 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
       <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => (
         { ...account, name: getAccountName(account), currency }))} />
       <Section title="Investments" collapsed={collapsed} items={[
-        { name: "Savings", value: savings, currency },
         { name: "Capital", value: capitals, currency },
         { name: "Stocks", value: stocks, currency },
       ]} />

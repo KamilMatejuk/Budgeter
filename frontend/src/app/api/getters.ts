@@ -10,7 +10,6 @@ import {
   MonthlyIncomeWithId,
   OrganisationRichWithId,
   PersonalAccountWithId,
-  SavingsAccountWithId,
   Source,
   StockAccountWithId,
   TagComposition,
@@ -59,10 +58,6 @@ export async function getStockAccounts() {
 
 export async function getCapitalInvestments() {
   return await get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"]);
-}
-
-export async function getSavingsAccounts() {
-  return await get<SavingsAccountWithId[]>("/api/products/savings_account", ["savings_account"]);
 }
 
 export async function getMonthlyIncomes() {

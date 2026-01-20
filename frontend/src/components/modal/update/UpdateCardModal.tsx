@@ -74,7 +74,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
       {formik.values.credit === Type.CREDIT &&
-        <AmountInputWithError formik={formik} formikName="value" label="Value" />}
+        <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />}
       <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
       <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
       <ChoiceInputWithError formik={formik} formikName="active" optionsEnum={Active} label="Active" />

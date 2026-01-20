@@ -93,10 +93,9 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
     value = amount + fee if amount > 0 else amount - fee
     date = data.date_start.split(" ")[0]
     
-    async def create_transaction(title: str, organisation: str = None, parse_organisation: bool = False):
+    async def create_transaction(title: str, organisation: str = None):
         organisation = organisation or data.description
-        if parse_organisation:
-            organisation = await get_organisation_name_by_name_regex(organisation, db)
+        organisation = await get_organisation_name_by_name_regex(organisation, db)
         item = Transaction(account=str(account.id), date=date, title=title,
             organisation=organisation, value=value, currency=currency, tags=[])
         return await create(db, "transactions", TransactionWithId, item)
@@ -114,22 +113,22 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
         return
 
     if data.type == RevolutTransactionType.REV_PAYMENT:
-        await create_transaction("Płatność kartą", parse_organisation=True)
+        await create_transaction("Płatność kartą")
         await mark_account_value_in_history(account, date, value, db)
         return
 
     if data.type == RevolutTransactionType.CARD_PAYMENT:
-        await create_transaction("Płatność kartą", parse_organisation=True)
+        await create_transaction("Płatność kartą")
         await mark_account_value_in_history(account, date, value, db)
         return
 
     if data.type == RevolutTransactionType.CARD_REFUND:
-        await create_transaction("Zwrot", parse_organisation=True)
+        await create_transaction("Zwrot")
         await mark_account_value_in_history(account, date, value, db)
         return
     
     if data.type == RevolutTransactionType.REWARD:
-        await create_transaction(data.description, "Revolut", parse_organisation=True)
+        await create_transaction(data.description, "Revolut")
         await mark_account_value_in_history(account, date, value, db)
         return
 

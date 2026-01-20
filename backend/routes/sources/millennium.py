@@ -77,10 +77,8 @@ async def get_card(db: AsyncIOMotorDatabase, credit: bool, number: str = None, a
 
 
 async def create_transaction(db: AsyncIOMotorDatabase, data: MillenniumRequest, account: PersonalAccountWithId,
-                             organisation: str, title: str = None, parse_organisation: bool = False,
-                             mark: bool = True) -> TransactionWithId:
-    if parse_organisation:
-        organisation = await get_organisation_name_by_name_regex(organisation, db)
+                             organisation: str, title: str = None, mark: bool = True) -> TransactionWithId:
+    organisation = await get_organisation_name_by_name_regex(organisation, db)
     value = data.charges or data.credits
     title = title or data.description
     item = Transaction(account=str(account.id), date=data.transaction_date, title=title,
@@ -103,7 +101,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await mark_card_usage_in_history(card, data.transaction_date, db)
         await create_transaction(db, data, account, data.description,
                                  title="Płatność kartą kredytową" if card.credit else "Płatność kartą",
-                                 parse_organisation=True, mark=not card.credit)
+                                 mark=not card.credit)
         # for credit cards, don't mark in history,
         # just decrease card's value,
         # history is updated in CREDIT_CARD_PAYOFF
@@ -121,29 +119,29 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     
     if data.type == MillenniumTransactionType.CARD_CHARGE:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.description, title="Opłata za kartę", parse_organisation=True)
+        await create_transaction(db, data, account, data.description, title="Opłata za kartę")
         return
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
         account = await get_account(db, number=data.number)
         card = await get_card(db, credit=False, account=account)
         await mark_card_usage_in_history(card, data.transaction_date, db)
-        await create_transaction(db, data, account, data.description, title="Płatność kartą", parse_organisation=True)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą")
         return
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE_REFUND:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.description, title="Płatność kartą - zwrot", parse_organisation=True)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą - zwrot")
         return
     
     if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE or data.type == MillenniumTransactionType.BLIK_PAYMENT_CONTACTLESS:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK", parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK")
         return
         
     if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE_REFUND:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK - zwrot", parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient, title="Płatność BLIK - zwrot")
         return
 
     if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK or data.type == MillenniumTransactionType.TRANSFER_SEPA:
@@ -158,17 +156,17 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient)
         return
 
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient)
         return
     
     if data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INTERNAL:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient)
         return
     
     if data.type == MillenniumTransactionType.TRANSFER_REGULAR_INTERNAL:
@@ -178,7 +176,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     
     if data.type == MillenniumTransactionType.REGULAR_ORDER:
         account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        await create_transaction(db, data, account, data.recipient)
         return
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:

@@ -1,13 +1,23 @@
 import ErrorToast from "@/components/toast/ErrorToast";
 import TableOrganisations from "@/components/table/tables/TableOrganisations";
 import { getOrganisations } from "../api/getters";
+import TablePeople from "@/components/table/tables/TablePeople";
+
+export const personIcon = "data:image/png;base64,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";
 
 export default async function Organisations() {
   const { response, error } = await getOrganisations();
 
+  // people are organisations with automatically assigned person icon
+  const organsations = (response || []).filter(org => org.icon !== personIcon);
+  const people = (response || []).filter(org => org.icon === personIcon);
+
   return (
     error
       ? <ErrorToast message={`Could not download organisations: ${error.message}`} />
-      : <TableOrganisations data={response} />
+      : <>
+        <TableOrganisations data={organsations} />
+        <TablePeople data={people} />
+      </>
   );
 }

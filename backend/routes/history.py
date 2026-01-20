@@ -209,8 +209,8 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
             "$or": [{"debt_person": None}, {"debt_person": ""}],
         }
         transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-        incomes.append(sum(t.value for t in transactions if t.value > 0))
-        expenses.append(sum(t.value for t in transactions if t.value < 0))
+        incomes.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value > 0))
+        expenses.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value < 0))
     return (incomes, expenses)
 
 

@@ -1,10 +1,12 @@
 'use client';
 
 import { ArcElement, BarElement, CategoryScale, Chart, ChartOptions, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { PropsWithChildren } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
 
 Chart.register(
+  ChartDataLabels,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -21,6 +23,9 @@ const Options = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
+      display: false,
+    },
+    datalabels: {
       display: false,
     },
   },
@@ -98,13 +103,38 @@ const DoubleBarChartOptions = {
     x: { ...Options.scales.x, stacked: true },
     y: { ...Options.scales.y, stacked: true },
   },
+  plugins: {
+    ...Options.plugins,
+    datalabels: {
+      display: (ctx: any) => {
+        const i = ctx.dataIndex;
+        const positive = ctx.chart.data.datasets[0].data[i] as number;
+        const negative = Math.abs(ctx.chart.data.datasets[1].data[i] as number);
+        if (positive > negative && ctx.datasetIndex === 0) return true;
+        if (negative > positive && ctx.datasetIndex === 1) return true;
+        return false;
+      },
+      formatter: (_value: number, ctx: any) => {
+        const i = ctx.dataIndex;
+        const positive = ctx.chart.data.datasets[0].data[i] as number;
+        const negative = Math.abs(ctx.chart.data.datasets[1].data[i] as number);
+        const diff = positive - negative;
+        if (diff === 0) return "";
+        return diff > 0 ? `+${diff.toFixed(2)}` : `${diff.toFixed(2)}`;
+      },
+      anchor: (ctx: any) => ctx.datasetIndex === 0 ? "end" : "start",
+      align: (ctx: any) => ctx.datasetIndex === 0 ? "end" : "start",
+      color: (ctx: any) => ctx.datasetIndex === 0 ? "#22C55E" : "#EF4444",
+      font: { weight: "600", size: 14 },
+    },
+  },
 };
 
 export function DoubleBarChart({ dataPositive, dataNegative, labels, ...props }: DoubleBarChartProps) {
   return (
     <ChartContainer {...props}>
       <Bar
-        options={DoubleBarChartOptions}
+        options={DoubleBarChartOptions as ChartOptions<"bar">}
         data={{
           labels,
           datasets: [

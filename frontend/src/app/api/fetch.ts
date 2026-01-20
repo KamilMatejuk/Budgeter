@@ -16,33 +16,36 @@ export const customRevalidateTag = async (tag: string) => revalidateTag(tag);
 
 // fetch from open endpoints with custom headers
 async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
+  const options: RequestInit = { method, headers: { 'Content-Type': 'application/json' } };
+  if (method === 'POST' || method === 'PATCH') { options.body = JSON.stringify(body || {}) }
+  if (url.endsWith('/')) url = url.slice(0, -1);
+
+  let res: Response | null = null;
   try {
-    const options: RequestInit = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    if (method === 'POST' || method === 'PATCH') {
-      options.body = JSON.stringify(body || {});
-    }
-    if (url.endsWith('/')) url = url.slice(0, -1);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-      next: { tags },
-      ...options,
-    });
-    const data: T = await res.json();
-    if (!res.ok) {
-      return { response: null, error: new Error(parseError(data as object), { cause: res.status }) };
-    }
-    return { response: data, error: null };
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { next: { tags }, ...options });
   } catch (err) {
     const error = err instanceof Error ? err : new Error(err as string);
-    if (error.message.includes('Unexpected token')) {
-      return { response: null, error: new Error('Response is not JSON serializable') };
-    }
+    console.error('FetchError: fetch() failed:', { url, status: res?.status });
     return { response: null, error };
   }
+
+  const text = await res.text();
+  let data: T | null = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error(err as string);
+    console.error('FetchError: response is not JSON serializable:', { url, status: res?.status, body: text.slice(0, 500) });
+    return { response: null, error };
+  }
+
+  if (!res.ok) {
+    const error = new Error(parseError(data as object));
+    console.error('FetchError: response not ok:', { url, status: res.status, body: text.slice(0, 500), error });
+    return { response: null, error };
+  }
+
+  return { response: data as T, error: null };
 }
 
 // GET / POST wrappers on fetchFromApi

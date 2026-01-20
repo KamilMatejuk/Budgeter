@@ -1,5 +1,6 @@
 import enum
-from pydantic import Field
+from pydantic import Field, model_validator
+
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -11,35 +12,75 @@ from routes.sources.utils import mark_account_value_in_history
 from models.products import PersonalAccountWithId, Currency
 from routes.organisation import get_organisation_name_by_name_regex
 
+
 class RevolutRequest(PyBaseModel):
-    type: str = Field(..., alias="Type")
-    product: str = Field(..., alias="Product")
-    date_start: str = Field(..., alias="Started Date")
-    date_end: str = Field(..., alias="Completed Date")
-    description: str = Field(..., alias="Description")
-    amount: str = Field(..., alias="Amount")
-    fee: str = Field(..., alias="Fee")
-    currency: str = Field(..., alias="Currency")
-    state: str = Field(..., alias="State")
-    balance: str = Field(..., alias="Balance")
+    type: str = Field(alias="Type")
+    product: str = Field(alias="Product")
+    date_start: str = Field(alias="Started Date")
+    date_end: str = Field(alias="Completed Date")
+    description: str = Field(alias="Description")
+    amount: str = Field(alias="Amount")
+    fee: str = Field(alias="Fee")
+    currency: str = Field(alias="Currency")
+    state: str = Field(alias="State")
+    balance: str = Field(alias="Balance")
 
     model_config = {
-        **PyBaseModel.model_config,
-        "populate_by_name": True  # allows you to use normal field names in code
+        "populate_by_name": True,
+        "extra": "forbid",
     }
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_polish_aliases(cls, data):
+        if not isinstance(data, dict): return data
+        polish_to_english = {
+            "Rodzaj": "Type",
+            "Produkt": "Product",
+            "Data rozpoczęcia": "Started Date",
+            "Data zrealizowania": "Completed Date",
+            "Opis": "Description",
+            "Kwota": "Amount",
+            "Opłata": "Fee",
+            "Waluta": "Currency",
+            "State": "State",
+            "Saldo": "Balance",
+        }
+        normalized = dict(data)
+        for pl, en in polish_to_english.items():
+            if pl in normalized and en not in normalized:
+                normalized[en] = normalized.pop(pl)
+        return normalized
 
     
 class RevolutTransactionType(enum.Enum):
     EXCHANGE = 'Exchange'
+    REV_PAYMENT = 'Rev Payment' # TODO add
     CARD_PAYMENT = 'Card Payment'
     CARD_REFUND = 'Card Refund'
     TRANSFER = 'Transfer'
     DEPOSIT = 'Deposit'
+    WITHDRAWAL = 'Withdrawal'
     REWARD = 'Reward'
+    
+    @classmethod
+    def _missing_(cls, value):
+        polish_map = {
+            "Wymiana": cls.EXCHANGE,
+            "Płatność Rev": cls.REV_PAYMENT,
+            "Płatność kartą": cls.CARD_PAYMENT,
+            "Zwrot na kartę": cls.CARD_REFUND,
+            "Przelew": cls.TRANSFER,
+            "Zasilenie": cls.DEPOSIT,
+            "Bankomat": cls.WITHDRAWAL,
+            "Nagroda": cls.REWARD,
+        }
+        if isinstance(value, str): value = value.strip()
+        return polish_map.get(value)
 
 
 async def create_revolut_transaction(data: RevolutRequest, owner: str, db: AsyncIOMotorDatabase):
-    if data.state != "COMPLETED": return
+    if data.state not in ("COMPLETED", "ZAKOŃCZONO"): return
 
     data.type = RevolutTransactionType(data.type)
     condition = {"bank": "Revolut", "owner": owner, "currency": data.currency}
@@ -65,6 +106,15 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
         return
     
     if data.type == RevolutTransactionType.DEPOSIT:
+        await mark_account_value_in_history(account, date, value, db)
+        return
+
+    if data.type == RevolutTransactionType.WITHDRAWAL:
+        await mark_account_value_in_history(account, date, value, db)
+        return
+
+    if data.type == RevolutTransactionType.REV_PAYMENT:
+        await create_transaction("Płatność kartą", parse_organisation=True)
         await mark_account_value_in_history(account, date, value, db)
         return
 

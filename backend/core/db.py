@@ -20,7 +20,7 @@ async def setup_db():
     client = AsyncIOMotorClient(MONGO_URL)
     db = client[MONGO_DB_NAME]
     logger.debug(f"Connected to MongoDB at {MONGO_URL}, using database {MONGO_DB_NAME}")
-    await create_indexes(db)
+    # await create_indexes(db)
     # await clear_db(db)
 
 

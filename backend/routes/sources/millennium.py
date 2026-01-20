@@ -32,6 +32,7 @@ class MillenniumRequest(PyBaseModel):
 
     
 class MillenniumTransactionType(enum.Enum):
+    CARD_CHARGE = 'OPŁATA'
     CARD_PAYMENT = 'PŁATNOŚĆ KARTĄ'
     CARD_PAYMENT_PHYSICAL = 'ZAKUP - FIZ. UŻYCIE KARTY'
     CARD_PAYMENT_ONLINE = 'PŁATNOŚĆ KARTĄ W INTERNECIE'
@@ -46,6 +47,7 @@ class MillenniumTransactionType(enum.Enum):
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
     TRANSFER_INCOMING_INTERNAL = 'PRZELEW WEWNĘTRZNY PRZYCHODZĄCY'
     TRANSFER_OUTGOING_INTERNAL = 'PRZELEW WEWNĘTRZNY WYCHODZĄCY'
+    TRANSFER_REGULAR_INTERNAL = 'STAŁE ZLECENIE WEWNĄTRZ BANKU'
     TRANSFER_SEPA = 'PRZEKAZ SEPA'
 
     REGULAR_ORDER = 'STAŁE ZLECENIE ZEWNĘTRZNE'
@@ -116,6 +118,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await mark_account_value_in_history(account, data.transaction_date, Value.parse(data.charges), db)
         await db["card"].update_one({"_id": str(card.id)}, {"$set": {"value": Value.add(card.value or 0, Value.parse_negate(data.charges))}})
         return
+    
+    if data.type == MillenniumTransactionType.CARD_CHARGE:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.description, title="Opłata za kartę", parse_organisation=True)
+        return
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
         account = await get_account(db, number=data.number)
@@ -162,6 +169,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INTERNAL:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient, parse_organisation=True)
+        return
+    
+    if data.type == MillenniumTransactionType.TRANSFER_REGULAR_INTERNAL:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.recipient)
         return
     
     if data.type == MillenniumTransactionType.REGULAR_ORDER:

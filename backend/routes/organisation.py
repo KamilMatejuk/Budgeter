@@ -74,5 +74,12 @@ async def patch_organisation(data: OrganisationPartial, db: AsyncIOMotorDatabase
         if prev.name != item.name:
             async for doc in db["transactions"].find({"organisation": prev.name}):
                 await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
+        # update matching transactions if patterns changed
+        new_patterns = set(item.patterns) - set(prev.patterns)
+        if new_patterns:
+            async for doc in db["transactions"].find({}):
+                for pattern in new_patterns:
+                    if pattern.lower() in doc["organisation"].lower():
+                        await db["transactions"].update_many({"_id": doc["_id"]}, {"$set": {"organisation": item.name}})
         return item
     return await inner()

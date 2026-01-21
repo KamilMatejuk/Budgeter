@@ -235,6 +235,8 @@ async def get_transactions_filtered(
         condition["tags"]["$in"] = list(all_tags_to_include)
     if len(all_tags_to_exclude) > 0:
         condition["tags"]["$nin"] = list(all_tags_to_exclude)
+    if len(condition["tags"]) == 0:
+        del condition["tags"]
     # run
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition, "date")
     transactions = await enrich_transactions(transactions, db)

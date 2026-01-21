@@ -11,6 +11,7 @@ import Button from "@/components/button/Button";
 import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
 import DateRangeInputWithError from "@/components/form/DateRangeInputWithError";
+import { customRevalidateTag } from "../api/fetch";
 
 export interface FiltersProps {
   accounts?: string[];
@@ -44,6 +45,7 @@ export default function Filters({ accounts = [], organisations = [], tagsIn = []
     initialValues: { accounts, organisations, tagsIn, tagsOut, title, dateStart, dateEnd },
     onSubmit: async (values) => {
       const params = pushFiltersToUrl(values)
+      await customRevalidateTag("filtered");
       loadQueryWindow(params.toString());
     },
     validate: withZodSchema(FormSchema),

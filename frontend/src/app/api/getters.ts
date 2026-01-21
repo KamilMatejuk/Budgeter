@@ -82,7 +82,7 @@ export async function getTransactions(year: number, month: number) {
 
 export async function getFilteredTransactions(filters: FiltersProps) {
   const url = `/api/transactions/filtered?${pushFiltersToUrl(filters)}`;
-  return await get<TransactionRichWithId[]>(url, ["transaction", "tag", "personal_account"]);
+  return await get<TransactionRichWithId[]>(url, ["transaction", "tag", "personal_account", "organisation", "filtered"]);
 }
 
 export async function getDeletedTransactions() {

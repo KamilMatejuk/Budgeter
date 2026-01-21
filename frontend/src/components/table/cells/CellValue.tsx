@@ -31,12 +31,14 @@ export default function CellValue({ value, colour, currency }: CellValueProps) {
   return (<p className={className}>{valueStr}</p>);
 }
 
-export function defineCellValue<T extends { value: number; value_pln: number; currency?: Currency | keyof typeof Currency }>(colour: boolean = false) {
+export function defineCellValue<T extends { value: number; value_pln?: number; currency?: Currency | keyof typeof Currency }>(colour: boolean = false) {
   return {
     accessorKey: "value",
     header: "Value",
     meta: { align: "center" },
     cell: ({ row }) => {
+      if (row.original.value_pln === undefined)
+        return <CellValue value={row.original.value} currency={row.original.currency} colour={colour} />;
       const diffCurrr = row.original.currency && row.original.currency !== Currency.PLN;
       const orgValueStr = diffCurrr ? formatValue(Math.abs(row.original.value), row.original.currency).slice(1) : null;
       return (<div className="flex flex-col items-center">

@@ -9,7 +9,6 @@ import UpdatePersonalAccountModal from "@/components/modal/update/UpdatePersonal
 import { MdDelete, MdEdit } from "react-icons/md";
 import { AiFillDollarCircle } from "react-icons/ai";
 import SetAccountValueOnDateModal from "@/components/modal/custom/SetAccountValueOnDateModal";
-import { defineCellIcon } from "../cells/CellIcon";
 import { defineCellBank } from "../cells/CellBank";
 
 

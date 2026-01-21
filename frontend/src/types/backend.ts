@@ -1092,7 +1092,7 @@ export type components = {
          * Join
          * @enum {string}
          */
-        Join: "AND" | "OR";
+        Join: "OR" | "AND";
         /** MillenniumRequest */
         MillenniumRequest: {
             /** Id */
@@ -1584,6 +1584,8 @@ export type components = {
             transfer_between_accounts: boolean;
             /** Debt Person */
             debt_person?: string | null;
+            /** Value Pln */
+            value_pln: number;
         };
         /** TransactionSplitRequest */
         TransactionSplitRequest: {

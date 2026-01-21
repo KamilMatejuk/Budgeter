@@ -7,7 +7,7 @@ from core.db import get_db
 from core.utils import Value, Date
 from models.base import PyObjectId
 from routes.tag import sort_by_name as sort_tags, get_rich_tags, get_all_children
-from models.products import PersonalAccountWithId, CashWithId
+from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
@@ -29,12 +29,14 @@ async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIO
     result = []
     for t in transactions:
         org = await match_organisation_by_name_regex(t.organisation, organisations)
+        pln = Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN))
         acc = next((c for c in cashs if str(c.id) == t.account), None) \
             if t.cash else next((a for a in accounts if str(a.id) == t.account), None)
         tags = await get_rich_tags(t.tags, db)
         result.append(TransactionRichWithId(
             **t.model_dump(exclude={"organisation", "account", "tags"}, by_alias=True, mode="json"),
             organisation=org,
+            value_pln=pln,
             account=acc,
             tags=tags))
     return result

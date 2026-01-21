@@ -26,6 +26,7 @@ class TransactionRich(Transaction):
     organisation: OrganisationWithId
     account: PersonalAccountWithId | CashWithId
     tags: list[TagRichWithId]
+    value_pln: float
 class TransactionRichWithId(TransactionRich, metaclass=WithId): pass
 
 # split

@@ -198,7 +198,7 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
 async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = _range_to_dates(range)
     if start is None:
-        first: TransactionWithId = await get(db, "transactions", TransactionWithId, None, "date", one=True, reverse=False)
+        first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
         start = first.date if first else Date.today()
     incomes = []
     expenses = []

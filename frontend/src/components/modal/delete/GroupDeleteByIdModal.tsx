@@ -8,7 +8,7 @@ export default function GroupDeleteByIdModal<T extends Item>({ url, items, open,
   async function submit() {
     await Promise.all(items.map(async (item) => {
       const { error } = await del(`${url}/${item._id}`);
-      if (error) alert(`Error deleting ${item._id}: ${error.message}`);
+      if (error != null) alert(`Error deleting ${item._id}: ${error}`);
     }));
     onClose();
   }

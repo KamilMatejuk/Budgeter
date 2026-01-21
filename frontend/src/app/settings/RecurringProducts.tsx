@@ -8,11 +8,11 @@ export default async function RecurringProducts() {
 
   return (
     <>
-      {incomeError
-        ? <ErrorToast message={`Could not download income: ${incomeError.message}`} />
+      {incomeError != null
+        ? <ErrorToast message={`Could not download income: ${incomeError}`} />
         : <TableRecurringProducts data={income} type="income" />}
-      {expenseError
-        ? <ErrorToast message={`Could not download expenses: ${expenseError.message}`} />
+      {expenseError != null
+        ? <ErrorToast message={`Could not download expenses: ${expenseError}`} />
         : <TableRecurringProducts data={expense} type="expense" />}
     </>
   );

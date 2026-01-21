@@ -7,7 +7,7 @@ import { Item } from "../../table/Table";
 export default function RestoreByIdModal<T extends Item>({ url, item, open, onClose }: BackendModalProps<T>) {
   async function submit() {
     const { error } = await post(`${url}/restore/${item?._id}`, {});
-    if (error) alert(`Error: ${error.message}`);
+    if (error != null) alert(`Error: ${error}`);
     else onClose();
   }
 

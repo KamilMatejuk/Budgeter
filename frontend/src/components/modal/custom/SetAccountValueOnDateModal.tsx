@@ -18,8 +18,8 @@ async function submit(values: FormSchemaType, item?: PersonalAccountWithId | nul
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item?._id, value: values.value } as PatchAccountValueRequest;
   const { error } = await patch("/api/history/account_value", val);
-  if (!error) return true;
-  alert(`Error: ${error.message}`);
+  if (error == null) return true;
+  alert(`Error: ${error}`);
   return false;
 }
 

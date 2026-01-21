@@ -10,8 +10,8 @@ export default async function IncomeExpenseHistory() {
   // then set cached data to be used by client
   const queryClient = new QueryClient()
   const { response, error } = await getHistoricIncomeExpenseValues(ChartRange["1Y"]);
-  if (error)
-    return <ErrorToast message={`Could not download accounts history: ${error.message}`} />;
+  if (error != null)
+    return <ErrorToast message={`Could not download accounts history: ${error}`} />;
   queryClient.setQueryData(["income_expense_history", ChartRange["1Y"]], response);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

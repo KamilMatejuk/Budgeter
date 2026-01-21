@@ -38,7 +38,7 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
   } catch (err) {
     const error = err instanceof Error ? err : new Error(err as string);
     console.error('FetchError: fetch() failed:', { url, status: res?.status, error });
-    return { response: null, error };
+    return { response: null, error: error.message };
   }
 
   const text = await res.text();
@@ -47,14 +47,20 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
     data = text ? JSON.parse(text) : null;
   } catch (err) {
     const error = err instanceof Error ? err : new Error(err as string);
-    console.error('FetchError: response is not JSON serializable:', { url, status: res?.status, body: text.slice(0, 500), error });
-    return { response: null, error };
+    console.error('FetchError: response is not JSON serializable:', { url, status: res?.status, error });
+    return { response: null, error: error.message };
   }
 
   if (!res.ok) {
     const error = new Error(parseError(data as object));
-    console.error('FetchError: response not ok:', { url, status: res.status, body: text.slice(0, 500), error });
-    return { response: null, error };
+    console.error('FetchError: response not ok:', { url, status: res.status, error });
+    return { response: null, error: error.message };
+  }
+
+  if (data && typeof data === 'object' && 'error' in data) {
+    const error = new Error(parseError(data as object));
+    console.error('FetchError: response has error field:', { url, status: res.status, error });
+    return { response: null, error: error.message };
   }
 
   return { response: data as T, error: null };
@@ -68,6 +74,7 @@ export const del = async (url: string) => await fetchFromApi({ url, method: 'DEL
 
 
 function parseError(data: object) {
+  if ('error' in data) return data.error as string;
   if ('message' in data) return data.message as string;
   if ('detail' in data) {
     const detail = data.detail;

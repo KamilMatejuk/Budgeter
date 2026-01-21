@@ -48,8 +48,8 @@ async function submit(values: FormSchemaType, url: string, accounts: PersonalAcc
       : accounts.find(acc => acc._id === values.account)?.currency,
   } as Transaction;
   const { error } = await post(url, val);
-  if (!error) return true;
-  alert(`Error: ${error.message}`);
+  if (error == null) return true;
+  alert(`Error: ${error}`);
   return false;
 }
 

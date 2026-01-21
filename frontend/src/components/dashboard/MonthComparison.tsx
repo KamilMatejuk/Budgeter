@@ -5,8 +5,8 @@ import { getMonthTagComparison } from "@/app/api/getters";
 
 export default async function MonthComparison() {
   const { response, error } = await getMonthTagComparison();
-  if (error)
-    return <ErrorToast message={`Could not download month comparison: ${error.message}`} />;
+  if (error != null)
+    return <ErrorToast message={`Could not download month comparison: ${error}`} />;
   return (
     <TableMonthComparison data={response} />
   );

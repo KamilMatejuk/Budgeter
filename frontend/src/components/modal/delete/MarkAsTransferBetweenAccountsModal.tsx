@@ -8,7 +8,7 @@ export default function MarkAsTransferBetweenAccountsModal({ url, item, open, on
   async function submit() {
     const body = { _id: item?._id, transfer_between_accounts: true, deleted: true } as Partial<TransactionRichWithId>;
     const { error } = await patch(url, body);
-    if (error) alert(`Error: ${error.message}`);
+    if (error != null) alert(`Error: ${error}`);
     else onClose();
   }
 

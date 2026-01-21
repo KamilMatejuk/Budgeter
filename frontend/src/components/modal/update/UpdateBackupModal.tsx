@@ -21,8 +21,8 @@ export default function UpdateBackupModal({ url, item, open, onClose }: BackendM
         ? { prev_name: item?.name, ...values } as BackupPatchRequest
         : { auto: false, ...values } as BackupRequest;
       const { error } = await method(url, body);
-      if (!error) return onClose();
-      alert(`Error: ${error.message}`);
+      if (error != null) return onClose();
+      alert(`Error: ${error}`);
     },
     validate: withZodSchema(FormSchema),
   });

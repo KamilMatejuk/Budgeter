@@ -10,14 +10,14 @@ export async function submit<FormatSchemaType, T extends Item>(
 ) {
   const method = id ? patch : post;
   const { error } = await method(url, { _id: id, ...values } as unknown as T);
-  if (!error) return callback?.();
-  alert(`Error: ${error.message}`);
+  if (error == null) return callback?.();
+  alert(`Error: ${error}`);
 }
 
 export async function backupStateBeforeUpdate(title: string) {
   const { error: backupError } = await post(`/api/backup`, { name: title, auto: true } as BackupRequest);
-  if (backupError) {
-    alert(`Error: ${backupError.message}`);
+  if (backupError != null) {
+    alert(`Error: ${backupError}`);
     return false;
   }
   await customRevalidateTag('backup');

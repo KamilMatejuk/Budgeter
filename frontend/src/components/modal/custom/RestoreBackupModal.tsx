@@ -7,7 +7,7 @@ import { customRevalidateAllTags, post } from "@/app/api/fetch";
 export default function RestoreBackupModal({ url, item, open, onClose }: BackendModalProps<BackupResponse>) {
   async function submit() {
     const { error } = await post(`${url}/restore/${item?.name}`, {});
-    if (error) alert(`Error: ${error.message}`);
+    if (error != null) alert(`Error: ${error}`);
     else {
       await customRevalidateAllTags();
       return onClose()

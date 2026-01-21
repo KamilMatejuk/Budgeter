@@ -20,11 +20,6 @@ export default async function Requirements() {
   const { response: outcomes, error: outcomesError } = await getRequiredAccountsOutput();
   const { response: transactions, error: transactionsError } = await getRequiredCardsTransactions();
 
-  const segments = [
-    { title: "income", data: incomes || [], error: incomesError },
-    { title: "outcome", data: outcomes || [], error: outcomesError },
-  ]
-
   return (
     <div className={classes.container}>
       {/* income / outcome */}
@@ -34,7 +29,7 @@ export default async function Requirements() {
       ].map(({ title, data, error }) => (
         <div key={title} className={classes.section}>
           <h3>Required {title}:</h3>
-          {error
+          {error != null
             ? <ErrorToast message={`Failed to load required ${title}:\n${error}`} />
             : (<ul>
               {data.map((item, i) => (
@@ -50,7 +45,7 @@ export default async function Requirements() {
       {/* transactions */}
       <div className={classes.section}>
         <h3>Required transactions:</h3>
-        {transactionsError
+        {transactionsError != null
           ? <ErrorToast message={`Failed to load required transactions:\n${transactionsError}`} />
           : (<ul>
             {transactions.map((item, i) => (

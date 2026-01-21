@@ -5,8 +5,8 @@ import TagCompositionCharts from "./TagCompositionCharts";
 
 export default async function TagComposition() {
   const { response, error } = await getTagComposition();
-  if (error)
-    return <ErrorToast message={`Could not download tag composition: ${error.message}`} />;
+  if (error != null)
+    return <ErrorToast message={`Could not download tag composition: ${error}`} />;
   return (
     <TagCompositionCharts data={response} />
   );

@@ -15,7 +15,6 @@ import { Source } from "@/types/enum";
 export default async function Import() {
   const { response: sources, error: sourcesError } = await getSources();
   const { response: accounts, error: accountsError } = await getPersonalAccounts();
-  const error = sourcesError || accountsError;
 
   const supportedSources = (sources || []).filter(source => source != Source.EDENRED) as Source[];
   const owners = new Array(...new Set((accounts || [])
@@ -29,8 +28,8 @@ export default async function Import() {
         <>
           <SourceProvider>
             <SectionHeader text="From file" subtext="Load report from your preferred source" />
-            {error
-              ? <ErrorToast message="Could not download sources" />
+            {sourcesError != null || accountsError != null
+              ? <ErrorToast message={`Could not download sources: ${sourcesError ?? accountsError}`} />
               : sources.length == 0
                 ? <WarningToast message="No sources available. Please add a source." />
                 : <SourceSelector sources={supportedSources} owners={owners} />}

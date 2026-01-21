@@ -13,8 +13,8 @@ export default async function Transactions() {
       <PageHeader
         text={"New Transactions" + (transactions ? ` (${transactions.length})` : "")}
         subtext="Transactions (probably from recent import) that don't have any tags" />
-      {error
-        ? <ErrorToast message="Could not download transactions" />
+      {error != null
+        ? <ErrorToast message={`Could not download transactions: ${error}`} />
         : transactions.length == 0
           ? <InfoToast message="No transactions found" />
           : <AnnotateTransactions transactions={transactions} />

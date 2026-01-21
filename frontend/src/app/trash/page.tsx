@@ -14,15 +14,15 @@ export default async function Trash() {
     <>
       <PageHeader text="Trash" subtext="Deleted or ortherwise discarded transactions" />
       <SectionHeader text="Deleted Transactions" subtext="Their deletion affects account values and historical balances" />
-      {deletedError
-        ? <ErrorToast message="Could not download transactions" />
+      {deletedError != null
+        ? <ErrorToast message={`Could not download transactions: ${deletedError}`} />
         : deleted.length == 0
           ? <WarningToast message="No transactions found" />
           : <TableTrash data={deleted} />
       }
       <SectionHeader text="Transfers Between Accounts" subtext="They are removed from summary, while keeping historical value accuracy" />
-      {transferError
-        ? <ErrorToast message="Could not download transfer transactions" />
+      {transferError != null
+        ? <ErrorToast message={`Could not download transfer transactions: ${transferError}`} />
         : transfer.length == 0
           ? <WarningToast message="No transfer transactions found" />
           : <TableTrash data={transfer} />

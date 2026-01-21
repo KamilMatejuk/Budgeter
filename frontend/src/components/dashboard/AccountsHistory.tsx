@@ -11,13 +11,13 @@ export default async function AccountsHistory() {
   const queryClient = new QueryClient()
 
   const { response: totalAccValueResponse, error: totalAccValueError } = await getHistoricAccountValues(undefined, DEFAULT_CHART_RANGE);
-  if (totalAccValueError)
-    return <ErrorToast message={`Could not download accounts history: ${totalAccValueError.message}`} />;
+  if (totalAccValueError != null)
+    return <ErrorToast message={`Could not download accounts history: ${totalAccValueError}`} />;
 
   
   const { response: accountsResponse, error: accountsError } = await getPersonalAccounts();
-  if (accountsError)
-    return <ErrorToast message={`Could not download personal accounts: ${accountsError.message}`} />;
+  if (accountsError != null)
+    return <ErrorToast message={`Could not download personal accounts: ${accountsError}`} />;
   
   queryClient.setQueryData(["account_value_history", DEFAULT_CHART_RANGE], totalAccValueResponse);
 

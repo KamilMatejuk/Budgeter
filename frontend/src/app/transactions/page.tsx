@@ -35,8 +35,8 @@ export default async function Transactions({ searchParams }: PageProps) {
       <PageHeader text="Transactions History" subtext="Overview of your recent transactions" />
       <NewTransactions />
       <MonthSelector year={yearNr} month={monthNr} />
-      {error
-        ? <ErrorToast message="Could not download transactions" />
+      {error != null
+        ? <ErrorToast message={`Could not download transactions: ${error}`} />
         : transactions.length == 0
           ? <WarningToast message="No transactions found" />
           : <>

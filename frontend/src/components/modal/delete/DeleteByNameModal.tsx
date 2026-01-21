@@ -7,7 +7,7 @@ import { Item } from "../../table/Table";
 export default function DeleteByNameModal<T extends Item & { name: string }>({ url, item, open, onClose }: BackendModalProps<T>) {
   async function submit() {
     const { error } = await del(`${url}/${item?.name}`);
-    if (error) alert(`Error: ${error.message}`);
+    if (error != null) alert(`Error: ${error}`);
     else onClose();
   }
 

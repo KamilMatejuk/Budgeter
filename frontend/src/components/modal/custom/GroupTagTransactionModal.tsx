@@ -17,7 +17,7 @@ async function submit(values: FormSchemaType, items: TransactionRichWithId[], ur
   await Promise.all(items.map(async (item) => {
     const val = { _id: item._id, tags: [...item.tags, ...values.tags] } as TransactionPartial;
     const { error } = await patch(url, val);
-    if (error) alert(`Error tagging ${item._id}: ${error.message}`);
+    if (error != null) alert(`Error tagging ${item._id}: ${error}`);
   }));
 }
 

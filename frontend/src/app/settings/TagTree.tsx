@@ -8,8 +8,8 @@ import NewTagSubtree from "./NewTagSubtree";
 export default async function TagTree() {
   const { response, error } = await getTags();
 
-  return error
-    ? <ErrorToast message={`Could not download tags: ${error.message}`} />
+  return error != null
+    ? <ErrorToast message={`Could not download tags: ${error}`} />
     : (
       <div className="flex flex-wrap items-start gap-16">
         {response.filter((tag) => tag.parent === null).map((tag) => (

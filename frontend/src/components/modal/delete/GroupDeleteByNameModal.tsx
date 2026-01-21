@@ -8,7 +8,7 @@ export default function GroupDeleteByNameModal<T extends Item & { name: string }
   async function submit() {
     await Promise.all(items.map(async (item) => {
       const { error } = await del(`${url}/${item.name}`);
-      if (error) alert(`Error deleting ${item.name}: ${error.message}`);
+      if (error != null) alert(`Error deleting ${item.name}: ${error}`);
     }));
     onClose();
   }

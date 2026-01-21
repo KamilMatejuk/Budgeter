@@ -20,8 +20,8 @@ async function submit(values: FormSchemaType, item: TransactionRichWithId) {
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, debt_transaction_id: values.debt } as TransactionRepayRequest;
   const { error } = await post("/api/transaction/repay", val);
-  if (!error) return true;
-  alert(`Error: ${error.message}`);
+  if (error == null) return true;
+  alert(`Error: ${error}`);
   return false;
 }
 

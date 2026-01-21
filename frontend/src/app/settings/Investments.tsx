@@ -9,11 +9,11 @@ export default async function Investments() {
 
   return (
     <>
-      {stockAccountError
-        ? <ErrorToast message={`Could not download stock accounts: ${stockAccountError.message}`} />
+      {stockAccountError != null
+        ? <ErrorToast message={`Could not download stock accounts: ${stockAccountError}`} />
         : <TableStocks data={stock} />}
-      {capitalInvestmentError
-        ? <ErrorToast message={`Could not download capital investments: ${capitalInvestmentError.message}`} />
+      {capitalInvestmentError != null
+        ? <ErrorToast message={`Could not download capital investments: ${capitalInvestmentError}`} />
         : <TableInvestments data={capital} />}
     </>
   );

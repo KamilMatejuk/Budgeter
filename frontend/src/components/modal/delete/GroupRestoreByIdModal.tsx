@@ -8,7 +8,7 @@ export default function GroupRestoreByIdModal<T extends Item>({ url, items, open
   async function submit() {
     await Promise.all(items.map(async (item) => {
       const { error } = await post(`${url}/restore/${item._id}`, {});
-      if (error) alert(`Error restoring ${item._id}: ${error.message}`);
+      if (error != null) alert(`Error restoring ${item._id}: ${error}`);
     }));
     onClose();
   }

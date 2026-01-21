@@ -17,7 +17,7 @@ def fail_wrapper(func):
         except Exception as e:
             LOGGER.error(str(e))
             traceback.print_exc()
-            raise HTTPException(status_code=500, detail=str(e))
+            return {"error": str(e)}
     return wrapper
 
 

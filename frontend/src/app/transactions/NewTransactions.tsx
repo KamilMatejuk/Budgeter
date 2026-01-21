@@ -7,8 +7,8 @@ import { getNewTransactions } from "../api/getters";
 export default async function NewTransactions() {
   const { response: transactions, error } = await getNewTransactions();
 
-  return (error
-    ? <ErrorToast message="Could not check new transactions" />
+  return (error != null
+    ? <ErrorToast message={`Could not check new transactions ${error}`} />
     : transactions.length > 0 &&
     (
       <Link href="/transactions/new" className="mb-2 block">

@@ -9,11 +9,11 @@ export default async function PhysicalProducts() {
 
   return (
     <>
-      {cashError
-        ? <ErrorToast message={`Could not download cash: ${cashError.message}`} />
+      {cashError != null
+        ? <ErrorToast message={`Could not download cash: ${cashError}`} />
         : <TableCash data={cash} />}
-      {cardsError
-        ? <ErrorToast message={`Could not download cards: ${cardsError.message}`} />
+      {cardsError != null
+        ? <ErrorToast message={`Could not download cards: ${cardsError}`} />
         : <TableCards data={cards} />}
     </>
   );

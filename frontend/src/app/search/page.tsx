@@ -28,7 +28,7 @@ export default async function Search({ searchParams }: PageProps) {
     warning = "No filters set";
   } else {
     const { response, error: transactionsError } = await getFilteredTransactions(sp);
-    if (transactionsError) error = transactionsError.message;
+    if (transactionsError != null) error = transactionsError;
     else if (response.length === 0) warning = "No transactions found";
     else transactions = response;
   }
@@ -38,7 +38,7 @@ export default async function Search({ searchParams }: PageProps) {
       <PageHeader text="Search" subtext="Find specific transactions using filters" />
       <SectionHeader text="Filters" />
       <Filters {...sp} />
-      {error
+      {error != null
         ? <ErrorToast message={error} />
         : warning
           ? <WarningToast message={warning} />

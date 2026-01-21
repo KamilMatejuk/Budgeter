@@ -13,8 +13,8 @@ export default async function Organisations() {
   const people = (response || []).filter(org => org.icon === personIcon);
 
   return (
-    error
-      ? <ErrorToast message={`Could not download organisations: ${error.message}`} />
+    error != null
+      ? <ErrorToast message={`Could not download organisations: ${error}`} />
       : <>
         <TableOrganisations data={organsations} />
         <TablePeople data={people} />

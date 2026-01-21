@@ -6,7 +6,7 @@ import { getDebtTransactions } from "@/app/api/getters";
 
 export default async function Debt() {
   const { response: transactions, error } = await getDebtTransactions();
-  return error
+  return error != null
     ? <ErrorToast message={`Failed to load debt:\n${error}`} />
     : transactions.length === 0
       ? <InfoToast message="No debt found" />

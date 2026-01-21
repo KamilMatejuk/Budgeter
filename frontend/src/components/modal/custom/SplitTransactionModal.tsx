@@ -62,8 +62,8 @@ async function submit(values: FormSchemaType, item: TransactionRichWithId, url: 
   if (!await backupStateBeforeUpdate(backupName)) return false;
   const val = { _id: item._id, items: values.parts } as TransactionSplitRequest;
   const { error } = await patch(`${url}/split`, val);
-  if (!error) return true;
-  alert(`Error: ${error.message}`);
+  if (error == null) return true;
+  alert(`Error: ${error}`);
   return false;
 }
 

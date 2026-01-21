@@ -32,8 +32,8 @@ async function importFile(
             setCounter(index + 1);
             const url = `/api/source/${source}/` + (source === Source.REVOLUT ? encodeURIComponent(owner) : "");
             const { error } = await post<TransactionWithId>(url, row);
-            if (error) {
-              reject(new Error(error.message)); // reject the whole Promise
+            if (error != null) {
+              reject(new Error(error)); // reject the whole Promise
               return;
             }
           }
@@ -75,7 +75,7 @@ export default function RunButton() {
       await customRevalidateTag('transaction');
       setState('finish');
     } catch (err) {
-      setFailed((err as Error).message);
+      setFailed(err instanceof Error ? err.message : String(err));
     }
   }
 
@@ -83,7 +83,7 @@ export default function RunButton() {
     <>
       {state === 'failed' && error && (
         <>
-          <ErrorToast message={`Row ${counter + 1}: ${error instanceof Error ? error.message : error}`} />
+          <ErrorToast message={`Row ${counter + 1}: ${error}`} />
           <ButtonWithLoader
             text="Retry"
             onClick={handleReset}

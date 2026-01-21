@@ -5,8 +5,8 @@ import { getPersonalAccounts } from "../api/getters";
 export default async function Accounts() {
   const { response, error } = await getPersonalAccounts();
   return (
-    error
-      ? <ErrorToast message={`Could not download personal accounts: ${error.message}`} />
+    error != null
+      ? <ErrorToast message={`Could not download personal accounts: ${error}`} />
       : <TableAccounts data={response} />
   );
 }

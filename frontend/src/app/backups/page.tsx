@@ -9,8 +9,8 @@ export default async function Backups() {
   return (
     <>
       <PageHeader text="Backups History" subtext="Overview of your recent backups" />
-      {error
-        ? <ErrorToast message="Could not download backups" />
+      {error != null
+        ? <ErrorToast message={`Could not download backups: ${error}`} />
         : <TableBackups data={response} />
       }
     </>

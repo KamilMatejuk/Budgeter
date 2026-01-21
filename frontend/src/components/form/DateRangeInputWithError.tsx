@@ -21,11 +21,11 @@ export default function DateRangeInputWithError<T>({ formik, formikNames, label,
       endDate={endDate}
       onChange={(dates) => {
         const [start, end] = dates as [Date | null, Date | null];
-        formik.setFieldValue(formikNames[0] as string, start);
-        formik.setFieldValue(formikNames[1] as string, end);
+        formik.setFieldValue(formikNames[0] as string, start || undefined);
+        formik.setFieldValue(formikNames[1] as string, end || undefined);
       }}
       dateFormat="dd.MM.yyyy"
-      isClearable={!hidden}
+      isClearable
       inline={!hidden}
       className="border border-gray-300 px-4 py-2 rounded-md w-full text-center"
     />);

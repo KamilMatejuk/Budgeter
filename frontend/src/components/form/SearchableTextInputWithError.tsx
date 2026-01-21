@@ -62,7 +62,7 @@ export default function SearchableTextInputWithError<T>({
   function select(tagId: string) {
     if (singleSelect) {
       formik.setFieldValue(formikName as string, tagId, true);
-      setSearch(tagId);
+      setSearch(options.find(o => o.id === tagId)?.name || tagId);
     } else {
       const newSelected = Array.from(new Set([...selectedIds, tagId]));
       setSelectedIds(newSelected);
@@ -97,7 +97,10 @@ export default function SearchableTextInputWithError<T>({
             setOpen(true);
             if (singleSelect) formik.setFieldValue(formikName as string, e.target.value, true);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            setSearch("");
+          }}
           onBlur={() => setOpen(false)}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") { e.preventDefault(); highlightDown() }

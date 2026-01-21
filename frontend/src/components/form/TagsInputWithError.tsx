@@ -8,9 +8,10 @@ import { OrganisationWithId } from "@/types/backend";
 
 interface TagsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   organisation?: OrganisationWithId;
+  singleSelect?: boolean;
 }
 
-export default function TagsInputWithError<T>({ formik, formikName, label, organisation }: TagsInputWithErrorProps<T>) {
+export default function TagsInputWithError<T>({ formik, formikName, label, organisation, singleSelect }: TagsInputWithErrorProps<T>) {
   const tags = useTags();
   const tagOptions = useMemo(() => tags.map(tag => (
     { id: tag._id, name: getTagParts(tag._id, tags).map(part => part.name).join("/") }
@@ -31,6 +32,7 @@ export default function TagsInputWithError<T>({ formik, formikName, label, organ
       Option={CellTagId}
       options={tagOptions}
       suggestedOptions={suggestedTagOptions}
+      singleSelect={singleSelect}
     />
   );
 }

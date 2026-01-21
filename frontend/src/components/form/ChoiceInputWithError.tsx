@@ -30,7 +30,7 @@ export default function ChoiceInputWithError<T>({ formik, formikName, label, opt
               <label key={key} htmlFor={id} className={twMerge(classes.option, checked && classes.optionChecked)}>
                 <input
                   id={id}
-                  name={name ?? formikName as string}
+                  name={formikName as string}
                   type="radio"
                   value={optValue}
                   checked={checked}

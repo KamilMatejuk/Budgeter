@@ -6,10 +6,12 @@ import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
 import { _sortPersonalAccounts, getDebtTransactions } from "./getters";
 
-function _useFetchWrapper<T>(queryKey: (string | number)[], revalidateKey: string[], url: string) {
+function _useFetchWrapper<T>(queryKey: (string | number)[], revalidateKey: string[], url: string, run: any = true) {
   const { data } = useQuery({
     queryKey,
     queryFn: async () => {
+      // until this variable is defined, don't run the query
+      if (!run) return null;
       const { response } = await get<T>(url, revalidateKey);
       return response;
     },
@@ -38,7 +40,8 @@ export function usePersonalAccount(id: string) {
   return _useFetchWrapper<PersonalAccountWithId>(
     ["personal_account", id],
     ["personal_account"],
-    `/api/products/personal_account/${id}`
+    `/api/products/personal_account/${id}`,
+    id,
   ) || undefined;
 }
 
@@ -62,7 +65,8 @@ export function useOrganisation(name: string) {
   return _useFetchWrapper<OrganisationWithId>(
     ["organisation", name],
     ["organisation"],
-    `/api/organisation/regex/${encodeURIComponent(name.replaceAll('/', ''))}`
+    `/api/organisation/regex/${encodeURIComponent(name.replaceAll('/', ''))}`,
+    name,
   ) || undefined;
 }
 
@@ -70,7 +74,8 @@ export function useLastTransaction(account: string) {
   return _useFetchWrapper<TransactionWithId>(
     ["transaction", "last", account],
     ["transaction"],
-    `/api/transaction/last/${account}`
+    `/api/transaction/last/${account}`,
+    account,
   ) || undefined;
 }
 
@@ -105,7 +110,8 @@ export function useAccountValueHistory(range: ChartRange = '3M', accountId: stri
   return _useFetchWrapper<number[]>(
     ["account_value_history", range, accountId],
     ["personal_account", "transaction"],
-    `/api/history/account_value/${range}/${accountId}`
+    `/api/history/account_value/${range}/${accountId}`,
+    accountId,
   ) || [];
 }
 
@@ -113,6 +119,6 @@ export function useIncomeExpenseHistory(range: ChartRange) {
   return _useFetchWrapper<[number[], number[]]>(
     ["income_expense_history", range],
     ["transaction"],
-    `/api/history/income_expense/${range}`
+    `/api/history/income_expense/${range}`,
   ) || [[], []];
 }

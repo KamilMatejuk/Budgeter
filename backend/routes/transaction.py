@@ -1,3 +1,4 @@
+import enum
 import datetime
 from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -196,12 +197,18 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
     return await inner()
 
 
+class Join(enum.Enum):
+    OR = "OR"
+    AND = "AND"
+
 @multi_router.get("/filtered", response_model=list[TransactionRichWithId])
 async def get_transactions_filtered(
     accounts: list[str] | None = Query(None),
     organisations: list[str] | None = Query(None),
     tagsIn: list[str] | None = Query(None),
+    tagsInJoin: Join = Query(Join.OR),
     tagsOut: list[str] | None = Query(None),
+    tagsOutJoin: Join = Query(Join.OR),
     title: str | None = Query(None),
     dateStart: datetime.date | None = Query(None),
     dateEnd: datetime.date | None = Query(None),
@@ -215,26 +222,27 @@ async def get_transactions_filtered(
     if dateStart is not None or dateEnd is not None:
         condition["date"] = Date.condition(dateStart, dateEnd)
     # include tags and subtags
-    all_tags_to_include = set()
+    includeTags = {}
     for t in tagsIn or []:
-        all_tags_to_include.add(t)
         children = await get_all_children(t, db)
-        for c in children:
-            all_tags_to_include.add(str(c.id))
+        includeTags[t] = [str(c.id) for c in children]
     # exclude tags and subtags
-    all_tags_to_exclude = set()
+    excludeTags = {}
     for t in tagsOut or []:
-        all_tags_to_exclude.add(t)
         children = await get_all_children(t, db)
-        for c in children:
-            all_tags_to_exclude.add(str(c.id))
-    # fix conflicting tags
-    all_tags_to_include = all_tags_to_include - all_tags_to_exclude
+        excludeTags[t] = [str(c.id) for c in children]
+    # build tag conditions
     condition["tags"] = {}
-    if len(all_tags_to_include) > 0:
-        condition["tags"]["$in"] = list(all_tags_to_include)
-    if len(all_tags_to_exclude) > 0:
-        condition["tags"]["$nin"] = list(all_tags_to_exclude)
+    if len(includeTags) > 0:
+        if tagsInJoin == Join.OR:
+            condition["tags"]["$in"] = [x for k, v in includeTags.items() for x in (k, *v)]
+        if tagsInJoin == Join.AND:
+            condition["$and"] = [{"tags": {"$in": [k, *v]}} for k, v in includeTags.items()]
+    if len(excludeTags) > 0:
+        if tagsOutJoin == Join.OR:
+            condition["tags"]["$nin"] = [x for k, v in excludeTags.items() for x in (k, *v)]
+        if tagsOutJoin == Join.AND:
+            condition["$nor"] = [{"$and": [{"tags": {"$in": [k, *v]}} for k, v in excludeTags.items()]}]
     if len(condition["tags"]) == 0:
         del condition["tags"]
     # run

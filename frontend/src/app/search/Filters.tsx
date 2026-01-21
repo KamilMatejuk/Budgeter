@@ -12,12 +12,17 @@ import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
 import DateRangeInputWithError from "@/components/form/DateRangeInputWithError";
 import { customRevalidateTag } from "../api/fetch";
+import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
+import { DEFAULT_JOIN, Join } from "@/types/enum";
+import { useEffect } from "react";
 
 export interface FiltersProps {
   accounts?: string[];
   organisations?: string[];
   tagsIn?: string[];
+  tagsInJoin?: Join;
   tagsOut?: string[];
+  tagsOutJoin?: Join;
   title?: string;
   dateStart?: Date;
   dateEnd?: Date;
@@ -27,7 +32,9 @@ const FormSchema = z.object({
   accounts: z.array(z.string()),
   organisations: z.array(z.string()),
   tagsIn: z.array(z.string()),
+  tagsInJoin: z.nativeEnum(Join).optional(),
   tagsOut: z.array(z.string()),
+  tagsOutJoin: z.nativeEnum(Join).optional(),
   title: z.string().optional(),
   dateStart: z.date().optional(),
   dateEnd: z.date().optional(),
@@ -40,9 +47,19 @@ function loadQueryWindow(query?: string) {
   window.location.reload();
 }
 
-export default function Filters({ accounts = [], organisations = [], tagsIn = [], tagsOut = [], title = "", dateStart, dateEnd }: FiltersProps) {
+export default function Filters({
+  accounts = [],
+  organisations = [],
+  tagsIn = [],
+  tagsInJoin = DEFAULT_JOIN,
+  tagsOut = [],
+  tagsOutJoin = DEFAULT_JOIN,
+  title = "",
+  dateStart,
+  dateEnd
+}: FiltersProps) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { accounts, organisations, tagsIn, tagsOut, title, dateStart, dateEnd },
+    initialValues: { accounts, organisations, tagsIn, tagsInJoin, tagsOut, tagsOutJoin, title, dateStart, dateEnd },
     onSubmit: async (values) => {
       const params = pushFiltersToUrl(values)
       await customRevalidateTag("filtered");
@@ -50,6 +67,9 @@ export default function Filters({ accounts = [], organisations = [], tagsIn = []
     },
     validate: withZodSchema(FormSchema),
   });
+
+  useEffect(() => { if (formik.values.tagsIn.length < 2) formik.setFieldValue("tagsInJoin", DEFAULT_JOIN) }, [formik.values.tagsIn]);
+  useEffect(() => { if (formik.values.tagsOut.length < 2) formik.setFieldValue("tagsOutJoin", DEFAULT_JOIN) }, [formik.values.tagsOut]);
 
   return (
     <div className="flex gap-1 mb-4">
@@ -59,11 +79,15 @@ export default function Filters({ accounts = [], organisations = [], tagsIn = []
       <div className="flex-1">
         <OrganisationsInputWithError formik={formik} formikName="organisations" label="Organisation" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 gap-1 flex flex-col">
         <TagsInputWithError formik={formik} formikName="tagsIn" label="Tags (include)" />
+        {formik.values.tagsIn.length >= 2 &&
+          <ChoiceInputWithError formik={formik} formikName="tagsInJoin" optionsEnum={Join} />}
       </div>
-      <div className="flex-1">
+      <div className="flex-1 gap-1 flex flex-col">
         <TagsInputWithError formik={formik} formikName="tagsOut" label="Tags (exclude)" />
+        {formik.values.tagsOut.length >= 2 &&
+          <ChoiceInputWithError formik={formik} formikName="tagsOutJoin" optionsEnum={Join} />}
       </div>
       <div className="flex-1">
         <TextInputWithError formik={formik} formikName="title" label="Title" />

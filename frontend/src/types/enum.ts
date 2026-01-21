@@ -41,3 +41,10 @@ export enum ChartRange {
   "FULL" = "FULL",
 }
 export const DEFAULT_CHART_RANGE = ChartRange["3M"];
+
+// Join from backend.ts
+export enum Join {
+  OR = "OR",
+  AND = "AND",
+}
+export const DEFAULT_JOIN = Join.OR;

@@ -21,7 +21,10 @@ export default async function Search({ searchParams }: PageProps) {
   let error = null;
   let warning = null;
   let transactions: TransactionRichWithId[] = [];
-  if (Object.values(sp).every(v => (Array.isArray(v) ? v.length === 0 : !v))) {
+  const filtersSet = Object.entries(sp)
+    .filter(([k, _]) => k !== "tagsInJoin" && k !== "tagsOutJoin")
+    .some(([_, v]) => (Array.isArray(v) ? v.length > 0 : !!v));
+  if (!filtersSet) {
     warning = "No filters set";
   } else {
     const { response, error: transactionsError } = await getFilteredTransactions(sp);

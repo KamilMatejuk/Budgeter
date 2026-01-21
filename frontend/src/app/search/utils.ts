@@ -1,6 +1,7 @@
 import { getISODateString } from "@/const/date";
 import { FiltersProps } from "./Filters";
 import { TagRichWithId } from "@/types/backend";
+import { DEFAULT_JOIN, Join } from "@/types/enum";
 
 
 export function pushFiltersToUrl(filters: FiltersProps) {
@@ -8,6 +9,8 @@ export function pushFiltersToUrl(filters: FiltersProps) {
   filters.accounts?.forEach(acc => params.append("accounts", acc));
   filters.organisations?.forEach(org => params.append("organisations", org));
   filters.tagsIn?.forEach(tag => params.append("tagsIn", tag));
+  if (filters.tagsInJoin && filters.tagsInJoin !== DEFAULT_JOIN) params.append("tagsInJoin", filters.tagsInJoin);
+  if (filters.tagsOutJoin && filters.tagsOutJoin !== DEFAULT_JOIN) params.append("tagsOutJoin", filters.tagsOutJoin);
   filters.tagsOut?.forEach(tag => params.append("tagsOut", tag));
   if (filters.title) params.append("title", filters.title);
   if (filters.dateStart) params.append("dateStart", getISODateString(filters.dateStart));
@@ -25,6 +28,11 @@ function parseDateParam(param: string | undefined): Date | undefined {
   return new Date(param);
 }
 
+function parseJoinParam(param: string | undefined): Join {
+  if (!param) return DEFAULT_JOIN;
+  return Join[param as keyof typeof Join] || DEFAULT_JOIN;
+}
+
 export function parseSearchParams(params: FiltersProps): FiltersProps {
   params.accounts = parseArrayParam(params.accounts);
   params.organisations = parseArrayParam(params.organisations);
@@ -32,6 +40,8 @@ export function parseSearchParams(params: FiltersProps): FiltersProps {
   params.tagsOut = parseArrayParam(params.tagsOut);
   params.dateStart = parseDateParam(params.dateStart as string | undefined);
   params.dateEnd = parseDateParam(params.dateEnd as string | undefined);
+  params.tagsInJoin = parseJoinParam(params.tagsInJoin);
+  params.tagsOutJoin = parseJoinParam(params.tagsOutJoin);
   return params;
 }
 

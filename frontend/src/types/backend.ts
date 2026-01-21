@@ -1088,6 +1088,11 @@ export type components = {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * Join
+         * @enum {string}
+         */
+        Join: "AND" | "OR";
         /** MillenniumRequest */
         MillenniumRequest: {
             /** Id */
@@ -1661,6 +1666,7 @@ export type CashWithId = components['schemas']['CashWithId'];
 export type ChartRange = components['schemas']['ChartRange'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
+export type Join = components['schemas']['Join'];
 export type MillenniumRequest = components['schemas']['MillenniumRequest'];
 export type MonthComparisonRow = components['schemas']['MonthComparisonRow'];
 export type MonthlyExpense = components['schemas']['MonthlyExpense'];
@@ -2077,7 +2083,9 @@ export interface operations {
                 accounts?: string[] | null;
                 organisations?: string[] | null;
                 tagsIn?: string[] | null;
+                tagsInJoin?: components["schemas"]["Join"];
                 tagsOut?: string[] | null;
+                tagsOutJoin?: components["schemas"]["Join"];
                 title?: string | null;
                 dateStart?: string | null;
                 dateEnd?: string | null;

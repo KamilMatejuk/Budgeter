@@ -230,9 +230,10 @@ async def get_transactions_filtered(
             all_tags_to_exclude.add(str(c.id))
     # fix conflicting tags
     all_tags_to_include = all_tags_to_include - all_tags_to_exclude
-    if len(all_tags_to_include) > 0 or len(all_tags_to_exclude) > 0:
-        condition["tags"] = {}
+    condition["tags"] = {}
+    if len(all_tags_to_include) > 0:
         condition["tags"]["$in"] = list(all_tags_to_include)
+    if len(all_tags_to_exclude) > 0:
         condition["tags"]["$nin"] = list(all_tags_to_exclude)
     # run
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition, "date")

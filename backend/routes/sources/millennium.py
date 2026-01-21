@@ -93,12 +93,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     data.type = MillenniumTransactionType(data.type or "PŁATNOŚĆ KARTĄ")
 
     if data.type == MillenniumTransactionType.CARD_PAYMENT:
-        if data.description.startswith("OPŁATA MIESIĘCZNA ZA OBSLUGĘ KARTY") and data.charges == "":
-            # some monthly card fees are 0, skip them
-            return
+        monthly_payment = data.description.startswith("OPŁATA MIESIĘCZNA ZA OBSLUGĘ KARTY")
+        if monthly_payment and data.charges == "": return # some monthly card fees are 0, skip them
         card = await get_card(db, credit=False, number=data.number)
         account = await get_account(db, id=card.account)
-        await mark_card_usage_in_history(card, data.transaction_date, db)
+        if not monthly_payment: await mark_card_usage_in_history(card, data.transaction_date, db)
         await create_transaction(db, data, account, data.description,
                                  title="Płatność kartą kredytową" if card.credit else "Płatność kartą",
                                  mark=not card.credit)
@@ -122,10 +121,16 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await create_transaction(db, data, account, data.description, title="Opłata za kartę")
         return
 
-    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL or data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL:
         account = await get_account(db, number=data.number)
         card = await get_card(db, credit=False, account=account)
         await mark_card_usage_in_history(card, data.transaction_date, db)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą")
+        return
+    
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_ONLINE:
+        account = await get_account(db, number=data.number)
+        card = await get_card(db, credit=False, account=account)
         await create_transaction(db, data, account, data.description, title="Płatność kartą")
         return
 

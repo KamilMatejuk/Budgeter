@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { SingleInputWithErrorProps } from "./InputWithError";
-import { CellTagId, getTagParts } from "../table/cells/CellTag";
 import { useOrganisations } from "@/app/api/query";
 import SearchableTextInputWithError from "./SearchableTextInputWithError";
 import { CellOrganisationId } from "../table/cells/CellOrganisation";

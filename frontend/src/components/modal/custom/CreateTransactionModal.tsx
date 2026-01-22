@@ -11,14 +11,12 @@ import TagsInputWithError from "@/components/form/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
-import { useCashs, useLastTransaction, useOrganisations, usePersonalAccounts, useTags } from "@/app/api/query";
+import { useCashs, useLastTransaction, useOrganisations, usePersonalAccounts, useRichTags } from "@/app/api/query";
 import { getAccountName } from "@/components/table/cells/AccountNameUtils";
 import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { getDateString, getISODateString } from "@/const/date";
 import WarningToast from "@/components/toast/WarningToast";
-import SearchableTextInputWithError from "@/components/form/SearchableTextInputWithError";
-import { CellOrganisationId } from "@/components/table/cells/CellOrganisation";
 import OrganisationsInputWithError from "@/components/form/OrganisationsInputWithError";
 
 enum Source {
@@ -86,7 +84,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     () => organisations.find(org => org.name === formik.values.organisation),
     [formik.values.organisation, organisations]);
 
-  const tags = useTags();
+  const tags = useRichTags();
   const warningTagValue = useMemo(() => {
     // check if applicable
     if (formik.values.tags.length === 0 || formik.values.value === 0) return false;
@@ -95,11 +93,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     formik.values.tags.forEach(tagId => {
       let tag = tags.find(t => t._id === tagId);
       if (tag == undefined) return;
-      while (tag.parent) {
-        tag = tags.find(t => t._id === tag?.parent);
-        if (tag == undefined) return;
-      }
-      if (tag.name == "Zarobki") isTagPositive = true;
+      if (tag.name.startsWith("Zarobki")) isTagPositive = true;
     })
     // compare tag and value
     if (isTagPositive && formik.values.value < 0) return true;

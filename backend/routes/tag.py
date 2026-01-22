@@ -66,12 +66,11 @@ async def get_rich_tag(tag: str, db: AsyncIOMotorDatabase) -> TagRichWithId:
 
 async def get_rich_tags(tags: list[str], db: AsyncIOMotorDatabase) -> list[TagRichWithId]:
     tags = list(set(tags))
-    tags = [await get_rich_tag(t, db) for t in tags]
-    tags = sorted(tags, key=lambda t: not t.name.startswith("Wyjazdy"))
-    return tags
+    return [await get_rich_tag(t, db) for t in tags]
 
 
 router = APIRouter()
+
 
 @router.get("", response_model=list[TagWithId])
 async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -83,6 +82,22 @@ async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
         for tag in root_tags:
             response.extend([tag] + await get_all_children(tag, db))
         return response
+    return await inner()
+
+
+@router.get("/rich", response_model=list[TagRichWithId])
+async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        return await get_rich_tags([str(t.id) for t in await get_tags(db)], db)
+    return await inner()
+
+
+@router.get("/rich/{id}", response_model=TagRichWithId)
+async def get_tag_rich(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        return await get_rich_tag(id, db)
     return await inner()
 
 

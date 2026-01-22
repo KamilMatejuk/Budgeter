@@ -50,9 +50,9 @@ export default function UpdateCapitalInvestmentModal({ url, item, open, onClose 
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update capital investment" : "Create capital investment"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
-      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
       <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
-      <ChoiceInputWithError formik={formik} formikName="capitalization" optionsEnum={Capitalization} label="Capitalization" />
+      <ChoiceInputWithError formik={formik} formikName="capitalization" options={Capitalization} label="Capitalization" />
       <DateRangeInputWithError formik={formik} formikNames={["start", "end"]} label="Date Range" />
     </Modal>
   );

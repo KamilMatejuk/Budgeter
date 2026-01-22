@@ -82,12 +82,12 @@ export default function Filters({
       <div className="flex-1 gap-1 flex flex-col">
         <TagsInputWithError formik={formik} formikName="tagsIn" label="Tags (include)" />
         {formik.values.tagsIn.length >= 2 &&
-          <ChoiceInputWithError formik={formik} formikName="tagsInJoin" optionsEnum={Join} />}
+          <ChoiceInputWithError formik={formik} formikName="tagsInJoin" options={Join} />}
       </div>
       <div className="flex-1 gap-1 flex flex-col">
         <TagsInputWithError formik={formik} formikName="tagsOut" label="Tags (exclude)" />
         {formik.values.tagsOut.length >= 2 &&
-          <ChoiceInputWithError formik={formik} formikName="tagsOutJoin" optionsEnum={Join} />}
+          <ChoiceInputWithError formik={formik} formikName="tagsOutJoin" options={Join} />}
       </div>
       <div className="flex-1">
         <TextInputWithError formik={formik} formikName="title" label="Title" />

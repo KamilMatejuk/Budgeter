@@ -38,7 +38,7 @@ export default function UpdateRecurringMonthlyModal({ url, item, open, onClose }
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update recurring monthly income/expense" : "Create recurring monthly income/expense"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
-      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
       <DayOfMonthInputWithError formik={formik} formikName="day_of_month" label="Day of month (1-28)" />
     </Modal>
   );

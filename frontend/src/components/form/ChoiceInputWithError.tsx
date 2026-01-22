@@ -12,18 +12,18 @@ const classes = {
 }
 
 export interface ChoiceInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
-  optionsEnum: Record<string, string>;
+  options: Record<string, string>;
 }
 
 
-export default function ChoiceInputWithError<T>({ formik, formikName, label, optionsEnum, ...props }: ChoiceInputWithErrorProps<T>) {
+export default function ChoiceInputWithError<T>({ formik, formikName, label, options, ...props }: ChoiceInputWithErrorProps<T>) {
   const value = getValue(formik, formikName);
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
       <fieldset>
         <div className={classes.container}>
-          {Object.entries(optionsEnum).map(([key, optValue]) => {
+          {Object.entries(options).map(([key, optValue]) => {
             const id = `${formikName as string}-${key}`;
             const checked = String(value ?? "") === String(optValue);
             return (

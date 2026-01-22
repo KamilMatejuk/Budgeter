@@ -87,7 +87,7 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
     {
       ...defineCellValueGradientWithLink<MonthComparisonRow>(
         "value_avg", "values", thisCol, getDateSearchSlug(month, year), allTags),
-      header: () => <DropDownInputWithError formik={formik} formikName="date" optionsEnum={datesRecord} hideEmpty />,
+      header: () => <DropDownInputWithError formik={formik} formikName="date" options={datesRecord} hideEmpty />,
       meta: { align: "center", border: "both" },
       accessorKey: "value",
     },

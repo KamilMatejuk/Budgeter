@@ -45,11 +45,11 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
       <TextInputWithError formik={formik} formikName="owner" label="Owner" />
-      <ChoiceInputWithError formik={formik} formikName="type" optionsEnum={AccountType} label="Type" />
-      <ChoiceInputWithError formik={formik} formikName="bank" optionsEnum={Source} label="Bank" />
+      <ChoiceInputWithError formik={formik} formikName="type" options={AccountType} label="Type" />
+      <ChoiceInputWithError formik={formik} formikName="bank" options={Source} label="Bank" />
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       {!item && <AmountInputWithError formik={formik} formikName="value" label="Value" />}
-      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
       <AmountInputWithError formik={formik} formikName="min_incoming_amount_monthly" label="Minimal monthly incoming amount" />
       <AmountInputWithError formik={formik} formikName="min_outgoing_amount_monthly" label="Minimal monthly outgoing amount" />
     </Modal>

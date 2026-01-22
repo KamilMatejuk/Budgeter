@@ -18,12 +18,12 @@ interface DropDownInputWithErrorProps<T> extends ChoiceInputWithErrorProps<T> {
 }
 
 
-export default function DropDownInputWithError<T>({ formik, formikName, label, optionsEnum, hideEmpty }: DropDownInputWithErrorProps<T>) {
+export default function DropDownInputWithError<T>({ formik, formikName, label, options, hideEmpty }: DropDownInputWithErrorProps<T>) {
   const [open, setOpen] = useState(false);
   const value = getValue(formik, formikName);
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
-  const options = hideEmpty ? optionsEnum : { "": "", ...optionsEnum };
+  const allOptions = hideEmpty ? options : { "": "", ...options };
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
@@ -38,7 +38,7 @@ export default function DropDownInputWithError<T>({ formik, formikName, label, o
           onBlur={() => formik.setFieldTouched(formikName as string, true, true)}
           className={twMerge(classes.select, error && touched && classes.selectError)}
         >
-          {Object.entries(options).map(([id, optValue]) => (
+          {Object.entries(allOptions).map(([id, optValue]) => (
             <option key={id} value={id} className={classes.option}>
               {optValue}
             </option>

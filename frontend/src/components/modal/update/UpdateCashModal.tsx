@@ -35,7 +35,7 @@ export default function UpdateCashModal({ url, item, open, onClose }: BackendMod
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update cash" : "Create cash"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
-      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
     </Modal>
   );
 }

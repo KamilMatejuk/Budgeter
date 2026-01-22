@@ -113,7 +113,7 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
       <ChoiceInputWithError
         formik={formik}
         formikName="cash"
-        optionsEnum={Source}
+        options={Source}
         label="Source"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           formik.setFieldValue("cash", e.target.value, true);
@@ -125,12 +125,12 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
           formik={formik}
           formikName="account"
           label="Cash"
-          optionsEnum={cashRecord} />
+          options={cashRecord} />
         : <DropDownInputWithError
           formik={formik}
           formikName="account"
           label={"Account" + (lastTransaction ? ` (last transaction on ${getDateString(lastTransaction.date)})` : "")}
-          optionsEnum={accountRecord} />
+          options={accountRecord} />
       }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
       <OrganisationsInputWithError formik={formik} formikName="organisation" label="Organisation" singleSelect />

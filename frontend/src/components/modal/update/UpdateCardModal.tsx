@@ -75,10 +75,10 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <CardNumberInputWithError formik={formik} formikName="number" label="Number" />
       {formik.values.credit === Type.CREDIT &&
         <AmountInputWithError formik={formik} formikName="value" label="Value" allowNegative />}
-      <ChoiceInputWithError formik={formik} formikName="currency" optionsEnum={Currency} label="Currency" />
-      <ChoiceInputWithError formik={formik} formikName="credit" optionsEnum={Type} label="Type" />
-      <ChoiceInputWithError formik={formik} formikName="active" optionsEnum={Active} label="Active" />
-      <DropDownInputWithError formik={formik} formikName="account" label="Account" optionsEnum={accountRecord} />
+      <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="credit" options={Type} label="Type" />
+      <ChoiceInputWithError formik={formik} formikName="active" options={Active} label="Active" />
+      <DropDownInputWithError formik={formik} formikName="account" label="Account" options={accountRecord} />
       <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
     </Modal>
   );

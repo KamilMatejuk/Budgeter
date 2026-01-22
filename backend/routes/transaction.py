@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import sort_by_name as sort_tags, get_rich_tags, get_all_children
+from routes.tag import sort_by_name as sort_tags, get_rich_tags, get_all_children_ids
 from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
@@ -226,13 +226,11 @@ async def get_transactions_filtered(
     # include tags and subtags
     includeTags = {}
     for t in tagsIn or []:
-        children = await get_all_children(t, db)
-        includeTags[t] = [str(c.id) for c in children]
+        includeTags[t] = await get_all_children_ids(t, db)
     # exclude tags and subtags
     excludeTags = {}
     for t in tagsOut or []:
-        children = await get_all_children(t, db)
-        excludeTags[t] = [str(c.id) for c in children]
+        excludeTags[t] = await get_all_children_ids(t, db)
     # build tag conditions
     condition["tags"] = {}
     if len(includeTags) > 0:

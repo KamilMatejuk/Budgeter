@@ -11,7 +11,7 @@ from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
 from routes.sources.utils import mark_account_value_in_history
-from routes.tag import get_children, get_all_children, get_name as get_tag_name, get_rich_tag
+from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
@@ -233,9 +233,8 @@ async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthCompar
     tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag_id}, one=True)
     first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
     # tag ids
-    child_tags = await get_all_children(tag, db)
     this_tag_id = [str(tag.id)]
-    child_tag_ids = [str(t.id) for t in child_tags]
+    child_tag_ids = await get_all_children_ids(tag, db)    
     # values
     all_child_values = []
     this_tag_values = []
@@ -300,9 +299,8 @@ async def _calculate_tag_composition(tag_id: str, request_id: int) -> list[TagCo
     db: AsyncIOMotorDatabase = await get_db()
     tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag_id}, one=True)
     # tag ids
-    child_tags = await get_all_children(tag, db)
     this_tag_id = [str(tag.id)]
-    child_tag_ids = [str(t.id) for t in child_tags]
+    child_tag_ids = await get_all_children_ids(tag, db)
     # values
     condition = {"deleted": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
     this_month = Date.this_month()

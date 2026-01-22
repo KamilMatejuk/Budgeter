@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch, delete
+from routes.base import fail_wrapper, get, create, patch, delete
 from models.tag import Tag, TagPartial, TagWithId, TagRichWithId, TagRequest
 from core.db import get_db
 
@@ -31,6 +31,15 @@ async def get_all_children(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[Tag
     children = sorted(children, key=lambda t: t.name.lower())
     for child in children:
         res.extend([child] + await get_all_children(child, db))
+    return res
+
+async def get_all_children_ids(tag: Tag | str, db: AsyncIOMotorDatabase) -> list[str]:
+    res = []
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    if not tag: return res
+    if not tag.children: return res
+    for child in tag.children:
+        res.extend([child] + await get_all_children_ids(child, db))
     return res
 
 
@@ -63,9 +72,6 @@ async def get_rich_tags(tags: list[str], db: AsyncIOMotorDatabase) -> list[TagRi
 
 
 router = APIRouter()
-factory = CRUDRouterFactory(router, "tags", Tag, TagPartial, TagWithId)
-factory.create_get_by_id()
-
 
 @router.get("", response_model=list[TagWithId])
 async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):

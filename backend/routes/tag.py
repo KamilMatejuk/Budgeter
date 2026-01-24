@@ -58,10 +58,10 @@ async def sort_by_name(tags: list[str], db: AsyncIOMotorDatabase):
     return [str(t.id) for t in tags]
 
 
-async def get_rich_tag(tag: str, db: AsyncIOMotorDatabase) -> TagRichWithId:
-    t: TagWithId = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
-    t.name = await get_name(t, db)
-    return TagRichWithId(_id=str(t.id), name=t.name, colour=t.colour)
+async def get_rich_tag(tag: Tag | str, db: AsyncIOMotorDatabase) -> TagRichWithId:
+    if isinstance(tag, str): tag = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    tag.name = await get_name(tag, db)
+    return TagRichWithId(_id=str(tag.id), name=tag.name, colour=tag.colour)
 
 
 async def get_rich_tags(tags: list[str], db: AsyncIOMotorDatabase) -> list[TagRichWithId]:
@@ -89,7 +89,7 @@ async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
 async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
-        return await get_rich_tags([str(t.id) for t in await get_tags(db)], db)
+        return [await get_rich_tag(t, db) for t in await get_tags(db)]
     return await inner()
 
 

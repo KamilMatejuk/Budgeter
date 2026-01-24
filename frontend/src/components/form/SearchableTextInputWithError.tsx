@@ -15,6 +15,7 @@ const classes = {
   optionHighlighted: "bg-gray-100",
   selected: "flex flex-wrap max-w-96",
   selectedTag: "flex items-center gap-1 mt-1 mr-1 px-[2px] py-[1px] bg-second-bg rounded",
+  singleSelectedTag: "absolute left-1/2 top-1/2 -translate-1/2 cursor-text pointer-events-none",
 };
 
 interface SearchableOption {
@@ -99,6 +100,7 @@ export default function SearchableTextInputWithError<T>({
           onFocus={() => {
             setOpen(true);
             setSearch("");
+            if (singleSelect) formik.setFieldValue(formikName as string, "", true);
           }}
           onBlur={() => setOpen(false)}
           onKeyDown={(e) => {
@@ -134,11 +136,18 @@ export default function SearchableTextInputWithError<T>({
             ))}
           </div>
         )}
+        {/* icon */}
         <MdExpandMore
           className={twMerge(classes.icon, open && "rotate-180")}
           size={20}
         />
+        {/* rendered selected option in single select mode */}
+        {singleSelect && value && typeof value === "string" &&
+          <div className={classes.singleSelectedTag} onClick={() => formik.setFieldValue(formikName as string, "", true)}>
+            {options.find(o => o.id === value)?.object}
+          </div>}
       </div>
+      {/* rendered selected options in multi select mode */}
       <div className={classes.selected}>
         {options.filter(o => selectedIds.includes(o.id)).map(({ id, object }) => (
           <div key={id} className={classes.selectedTag}>

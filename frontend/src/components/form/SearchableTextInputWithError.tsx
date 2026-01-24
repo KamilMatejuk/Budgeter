@@ -50,7 +50,7 @@ export default function SearchableTextInputWithError<T>({
   const touched = getTouched(formik, formikName);
 
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(options.find(o => o.id === String(value))?.name || "");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : Array.isArray(value) ? value : [value]);
 

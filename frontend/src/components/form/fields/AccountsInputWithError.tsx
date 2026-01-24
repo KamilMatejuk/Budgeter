@@ -5,8 +5,11 @@ import SearchableTextInputWithError from "../SearchableTextInputWithError";
 import { getAccountName } from "../../table/cells/AccountNameUtils";
 import CellAccountName from "../../table/cells/CellAccountName";
 
+interface AccountsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
+  singleSelect?: boolean;
+}
 
-export default function AccountsInputWithError<T>({ formik, formikName, label }: SingleInputWithErrorProps<T>) {
+export default function AccountsInputWithError<T>({ formik, formikName, label, singleSelect }: AccountsInputWithErrorProps<T>) {
   const accounts = usePersonalAccounts();
   const accountOptions = useMemo(() => accounts.map(acc =>
     ({ id: acc._id, name: getAccountName(acc), object: <CellAccountName account={acc} /> })),
@@ -18,6 +21,7 @@ export default function AccountsInputWithError<T>({ formik, formikName, label }:
       formikName={formikName}
       label={label}
       options={accountOptions}
+      singleSelect={singleSelect}
     />
   );
 }

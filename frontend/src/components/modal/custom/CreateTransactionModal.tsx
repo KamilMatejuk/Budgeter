@@ -8,16 +8,15 @@ import TextInputWithError, { requiredText } from "../../form/TextInputWithError"
 import { post } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
 import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
-import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
 import { useCashs, useLastTransaction, useOrganisations, usePersonalAccounts, useRichTags } from "@/app/api/query";
-import { getAccountName } from "@/components/table/cells/AccountNameUtils";
-import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { getDateString, getISODateString } from "@/const/date";
 import WarningToast from "@/components/toast/WarningToast";
 import OrganisationsInputWithError from "@/components/form/fields/OrganisationsInputWithError";
+import AccountsInputWithError from "@/components/form/fields/AccountsInputWithError";
+import CashsInputWithError from "@/components/form/fields/CashsInputWithError";
 
 enum Source {
   ACCOUNT = "ACCOUNT",
@@ -66,18 +65,9 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
     validate: withZodSchema(FormSchema),
   });
 
-  const accounts = usePersonalAccounts();
-  const accountRecord = accounts.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr) }),
-    {} as Record<string, string>
-  );
-  const cash = useCashs();
-  const cashRecord = cash.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: `${curr.name} ${CURRENCY_SYMBOLS[curr.currency]}` }),
-    {} as Record<string, string>
-  );
-
   const lastTransaction = useLastTransaction(formik.values.account);
+  const accounts = usePersonalAccounts();
+  const cash = useCashs();
 
   const organisations = useOrganisations();
   const organisation = useMemo(
@@ -115,16 +105,9 @@ export default function CreateTransactionModal({ url, open, onClose }: BackendMo
         }}
       />
       {formik.values.cash === Source.CASH
-        ? <DropDownInputWithError
-          formik={formik}
-          formikName="account"
-          label="Cash"
-          options={cashRecord} />
-        : <DropDownInputWithError
-          formik={formik}
-          formikName="account"
-          label={"Account" + (lastTransaction ? ` (last transaction on ${getDateString(lastTransaction.date)})` : "")}
-          options={accountRecord} />
+        ? <CashsInputWithError formik={formik} formikName="account" label="Cash" />
+        : <AccountsInputWithError formik={formik} formikName="account" singleSelect
+          label={"Account" + (lastTransaction ? ` (last transaction on ${getDateString(lastTransaction.date)})` : "")} />
       }
       <TextInputWithError formik={formik} formikName="title" label="Title" />
       <OrganisationsInputWithError formik={formik} formikName="organisation" label="Organisation" singleSelect />

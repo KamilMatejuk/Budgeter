@@ -10,9 +10,7 @@ import { Currency } from "@/types/enum";
 import AmountInputWithError, { requiredAmount, requiredNonNegativeAmount } from "../../form/AmountInputWithError";
 import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import CardNumberInputWithError, { requiredCardNumber } from "../../form/CardNumberInputWithError";
-import DropDownInputWithError from "../../form/DropDownInputWithError";
-import { usePersonalAccounts } from "@/app/api/query";
-import { getAccountName } from "@/components/table/cells/AccountNameUtils";
+import AccountsInputWithError from "@/components/form/fields/AccountsInputWithError";
 
 enum Type {
   DEBIT = "DEBIT",
@@ -62,12 +60,6 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
     },
     validate: withZodSchema(FormSchema),
   });
-  const accounts = usePersonalAccounts();
-  const accountRecord = accounts.reduce(
-    (acc, curr) => ({ ...acc, [curr._id]: getAccountName(curr) }),
-    {} as Record<string, string>
-  );
-
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update card" : "Create card"}>
@@ -78,7 +70,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
       <ChoiceInputWithError formik={formik} formikName="credit" options={Type} label="Type" />
       <ChoiceInputWithError formik={formik} formikName="active" options={Active} label="Active" />
-      <DropDownInputWithError formik={formik} formikName="account" label="Account" options={accountRecord} />
+      <AccountsInputWithError formik={formik} formikName="account" label="Account" singleSelect />
       <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
     </Modal>
   );

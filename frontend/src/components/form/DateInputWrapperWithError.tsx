@@ -14,6 +14,7 @@ export default function DateInputWrapperWithError<T>({ formik, formikNames, labe
       </div>
       <style>{`
         .react-datepicker { width: 100%; }
+        .react-datepicker-wrapper { width: 100%; }
         .react-datepicker__day-name { width: 3rem; }
         .react-datepicker__week > div { width: 3rem; }
         .react-datepicker__month-container { width: 100%; }

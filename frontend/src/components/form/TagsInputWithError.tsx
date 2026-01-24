@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { SingleInputWithErrorProps } from "./InputWithError";
-import { CellTagId } from "../table/cells/CellTag";
+import { CellTag } from "../table/cells/CellTag";
 import { useRichTags } from "@/app/api/query";
 import SearchableTextInputWithError from "./SearchableTextInputWithError";
 import { OrganisationWithId } from "@/types/backend";
@@ -13,7 +13,9 @@ interface TagsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
 
 export default function TagsInputWithError<T>({ formik, formikName, label, organisation, singleSelect }: TagsInputWithErrorProps<T>) {
   const tags = useRichTags();
-  const tagOptions = useMemo(() => tags.map(tag => ({ id: tag._id, name: tag.name })), [tags]);
+  const tagOptions = useMemo(() => tags.map(tag =>
+    ({ id: tag._id, name: tag.name, object: <CellTag tag={tag} /> })),
+    [tags]);
 
   const suggestedTagOptions = useMemo(() =>
     (organisation?.tags || [])
@@ -27,7 +29,6 @@ export default function TagsInputWithError<T>({ formik, formikName, label, organ
       formik={formik}
       formikName={formikName}
       label={label}
-      Option={CellTagId}
       options={tagOptions}
       suggestedOptions={suggestedTagOptions}
       singleSelect={singleSelect}

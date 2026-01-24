@@ -1,5 +1,4 @@
-import { useRichTag } from "@/app/api/query";
-import { TagRichWithId, TagWithId } from "@/types/backend";
+import { TagRichWithId } from "@/types/backend";
 import { ColumnDef } from "@tanstack/react-table";
 import { twMerge } from "tailwind-merge";
 
@@ -24,15 +23,6 @@ export function getTextColor(bgColor: string): string {
   const b = parseInt(bgColor.slice(5, 7), 16);
   const brightness = (r * 299 + g * 587 + b * 114) / 1000;
   return brightness > 125 ? "black" : "white";
-}
-
-interface CellTagIdProps extends React.HTMLAttributes<HTMLDivElement> {
-  id: string;
-}
-
-export function CellTagId({ id, ...props }: CellTagIdProps) {
-  const tag = useRichTag(id) || { _id: id, name: id, colour: 'transparent' };
-  return <CellTag tag={tag} {...props} />;
 }
 
 interface CellTagProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import InputWithError, { getError, getTouched, getValue, SingleInputWithErrorProps } from "./InputWithError";
 import { MdClose, MdExpandMore } from "react-icons/md";
@@ -20,12 +20,12 @@ const classes = {
 interface SearchableOption {
   id: string;
   name: string;
+  object: ReactNode;
 }
 
 interface SearchableTextInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   options: SearchableOption[];
   suggestedOptions?: SearchableOption[];
-  Option: React.ComponentType<{ id: string }>;
   singleSelect?: boolean;
 }
 
@@ -41,7 +41,6 @@ export default function SearchableTextInputWithError<T>({
   label,
   options,
   suggestedOptions,
-  Option,
   singleSelect,
 }: SearchableTextInputWithErrorProps<T>) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +54,7 @@ export default function SearchableTextInputWithError<T>({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [selectedIds, setSelectedIds] = useState<string[]>(singleSelect ? [] : Array.isArray(value) ? value : [value]);
 
-  useEffect(() => {setSelectedIds(singleSelect ? [] : Array.isArray(value) ? value : [value])}, [value, singleSelect]);
+  useEffect(() => { setSelectedIds(singleSelect ? [] : Array.isArray(value) ? value : [value]) }, [value, singleSelect]);
 
   function highlightUp() { setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1)) }
   function highlightDown() { setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0)) }
@@ -114,7 +113,7 @@ export default function SearchableTextInputWithError<T>({
         {/* Dropdown List */}
         {open && allOptions.length > 0 && (
           <div className={classes.dropdown}>
-            {allOptions.flatMap(({ id }, i) => (
+            {allOptions.flatMap(({ id, object }, i) => (
               <React.Fragment key={i}>
                 {/* label for suggested options */}
                 {!search && suggestedOptions && suggestedOptions.length > 0 && i === 0 && (
@@ -129,7 +128,7 @@ export default function SearchableTextInputWithError<T>({
                   onMouseDown={(e) => { e.preventDefault(); select(id); }}
                   className={twMerge(classes.option, highlightedIndex === i && classes.optionHighlighted)}
                 >
-                  <Option id={id} />
+                  {object}
                 </div>
               </React.Fragment>
             ))}
@@ -141,9 +140,9 @@ export default function SearchableTextInputWithError<T>({
         />
       </div>
       <div className={classes.selected}>
-        {selectedIds.map((id) => (
+        {options.filter(o => selectedIds.includes(o.id)).map(({ id, object }) => (
           <div key={id} className={classes.selectedTag}>
-            <Option id={id} />
+            {object}
             <MdClose className="cursor-pointer" size={16} onClick={() => deselect(id)} />
           </div>))}
       </div>

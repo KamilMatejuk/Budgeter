@@ -24,12 +24,6 @@ export default function CellAccountName({ account, cash }: CellAccountNameProps)
   );
 }
 
-export function CellAccountId({ id }: { id: string }) {
-  const account = usePersonalAccount(id);
-  return account ? <CellAccountName account={account} /> : id;
-}
-
-
 export function defineCellAccountName<T extends CellAccountNameProps>() {
   return {
     accessorKey: "account",

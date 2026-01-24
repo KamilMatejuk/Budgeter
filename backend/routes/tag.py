@@ -93,14 +93,6 @@ async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await inner()
 
 
-@router.get("/rich/{id}", response_model=TagRichWithId)
-async def get_tag_rich(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    @fail_wrapper
-    async def inner():
-        return await get_rich_tag(id, db)
-    return await inner()
-
-
 @router.post("", response_model=TagWithId)
 async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper

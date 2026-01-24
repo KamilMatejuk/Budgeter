@@ -1,6 +1,5 @@
 import { Organisation } from "@/types/backend";
 import CellIcon from "./CellIcon";
-import { useOrganisation } from "@/app/api/query";
 import { ColumnDef } from "@tanstack/react-table";
 
 
@@ -16,12 +15,6 @@ export default function CellOrganisation({ organisation }: CellOrganisationProps
     </div>
   );
 }
-
-export function CellOrganisationId({ id }: { id: string }) {
-  const organisation = useOrganisation(id);
-  return organisation ? <CellOrganisation organisation={organisation} /> : id;
-}
-
 
 export function defineCellOrganisation<T extends { organisation: string | Organisation }>() {
   return {

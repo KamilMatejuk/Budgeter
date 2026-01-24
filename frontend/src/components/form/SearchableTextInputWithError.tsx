@@ -16,7 +16,7 @@ const classes = {
   optionHighlighted: "bg-gray-100",
   selected: "flex flex-wrap max-w-96",
   selectedTag: "flex items-center gap-1 mt-1 mr-1 px-[2px] py-[1px] bg-second-bg rounded",
-  singleSelectedTag: "absolute left-1/2 top-1/2 -translate-1/2 cursor-text pointer-events-none",
+  singleSelectedTag: "absolute left-1/2 top-1/2 -translate-1/2 pb-1 cursor-text pointer-events-none",
 };
 
 interface SearchableOption {
@@ -151,7 +151,9 @@ export default function SearchableTextInputWithError<T>({
         {/* rendered selected option in single select mode */}
         {singleSelect && value && typeof value === "string" &&
           <div className={classes.singleSelectedTag} onClick={() => formik.setFieldValue(formikName as string, "", true)}>
-            {options.find(o => o.id === value)?.object}
+            <div className={classes.selectedTag}>
+              {options.find(o => o.id === value)?.object}
+            </div>
           </div>}
       </div>
       {/* rendered selected options in multi select mode */}

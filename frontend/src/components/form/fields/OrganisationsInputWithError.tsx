@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import { SingleInputWithErrorProps } from "./InputWithError";
+import { SingleInputWithErrorProps } from "../InputWithError";
 import { useOrganisations } from "@/app/api/query";
-import SearchableTextInputWithError from "./SearchableTextInputWithError";
-import CellOrganisation from "../table/cells/CellOrganisation";
+import SearchableTextInputWithError from "../SearchableTextInputWithError";
+import CellOrganisation from "../../table/cells/CellOrganisation";
 
 
 interface OrganisationsInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {

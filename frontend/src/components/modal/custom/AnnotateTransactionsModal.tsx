@@ -6,7 +6,7 @@ import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { patch } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
-import TagsInputWithError from "@/components/form/TagsInputWithError";
+import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 import TransactionDetails from "./TransactionDetails";
 
 

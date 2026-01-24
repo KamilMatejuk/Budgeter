@@ -7,7 +7,7 @@ import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { post } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
-import TagsInputWithError from "@/components/form/TagsInputWithError";
+import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import DateInputWithError, { requiredDateInPast } from "@/components/form/DateInputWithError";
 import AmountInputWithError, { requiredNonZeroAmount } from "@/components/form/AmountInputWithError";
@@ -17,7 +17,7 @@ import { CURRENCY_SYMBOLS } from "@/types/enum";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { getDateString, getISODateString } from "@/const/date";
 import WarningToast from "@/components/toast/WarningToast";
-import OrganisationsInputWithError from "@/components/form/OrganisationsInputWithError";
+import OrganisationsInputWithError from "@/components/form/fields/OrganisationsInputWithError";
 
 enum Source {
   ACCOUNT = "ACCOUNT",

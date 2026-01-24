@@ -7,7 +7,7 @@ import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import { OrganisationRichWithId } from "@/types/backend";
 import { ERROR } from "@/const/message";
-import TagsInputWithError from "@/components/form/TagsInputWithError";
+import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 import MultiTextInputWithError from "@/components/form/MultiTextInputWithError";
 import { customRevalidateTag } from "@/app/api/fetch";
 

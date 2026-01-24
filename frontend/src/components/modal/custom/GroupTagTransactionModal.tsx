@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { patch } from "@/app/api/fetch";
 import { ERROR } from "@/const/message";
-import TagsInputWithError from "@/components/form/TagsInputWithError";
+import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 
 
 const FormSchema = z.object({ tags: z.array(z.string()).min(1, ERROR.requiredError) });

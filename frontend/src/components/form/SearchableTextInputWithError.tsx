@@ -139,15 +139,17 @@ export default function SearchableTextInputWithError<T>({
         )}
         {/* icons */}
         <MdExpandMore className={twMerge(classes.iconExpand, open && "rotate-180")} size={20} />
-        <MdClose className={classes.iconClear} size={15} onClick={() => {
-          if (singleSelect) {
-            formik.setFieldValue(formikName as string, "", true);
-          } else {
-            setSelectedIds([]);
-            formik.setFieldValue(formikName as string, [], true);
-          }
-          setSearch("");
-        }} />
+        {value && value.length > 0 &&
+          <MdClose className={classes.iconClear} size={15} onClick={() => {
+            if (singleSelect) {
+              formik.setFieldValue(formikName as string, "", true);
+            } else {
+              setSelectedIds([]);
+              formik.setFieldValue(formikName as string, [], true);
+            }
+            setSearch("");
+          }} />
+        }
         {/* rendered selected option in single select mode */}
         {singleSelect && value && typeof value === "string" &&
           <div className={classes.singleSelectedTag} onClick={() => formik.setFieldValue(formikName as string, "", true)}>

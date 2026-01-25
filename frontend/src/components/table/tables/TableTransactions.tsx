@@ -31,6 +31,7 @@ const columns: ColumnDef<TransactionRichWithId>[] = [
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   defineCellOrganisation<TransactionRichWithId>(),
   defineCellValue<TransactionRichWithId>(true),
+  { accessorKey: "debt_person", header: "Debt", cell: ({ row }) => row.original.debt_person ? row.original.debt_person : "" },
   defineCellTag<TransactionRichWithId>(),
 ];
 

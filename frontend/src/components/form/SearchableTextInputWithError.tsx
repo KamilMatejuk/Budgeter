@@ -111,7 +111,7 @@ export default function SearchableTextInputWithError<T>({
             if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setOpen(false); setHighlightedIndex(-1) }
           }}
           className={twMerge(classes.select, error && touched && classes.selectError)}
-          placeholder="Select or type..."
+          placeholder={singleSelect && value ? "" : "Select or type..."}
         />
         {/* Dropdown List */}
         {open && allOptions.length > 0 && (

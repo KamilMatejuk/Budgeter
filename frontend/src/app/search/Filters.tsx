@@ -10,11 +10,11 @@ import AccountsInputWithError from "@/components/form/fields/AccountsInputWithEr
 import Button from "@/components/button/Button";
 import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
-import DateRangeInputWithError from "@/components/form/DateRangeInputWithError";
 import { customRevalidateTag } from "../api/fetch";
 import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { DEFAULT_JOIN, Join } from "@/types/enum";
 import { useEffect } from "react";
+import DateMonthRangeInputWithError from "@/components/form/DateMonthRangeInputWithError";
 
 export interface FiltersProps {
   accounts?: string[];
@@ -93,7 +93,7 @@ export default function Filters({
         <TextInputWithError formik={formik} formikName="title" label="Title" />
       </div>
       <div className="flex-1">
-        <DateRangeInputWithError formik={formik} formikNames={["dateStart", "dateEnd"]} label="Date Range" hidden />
+        <DateMonthRangeInputWithError formik={formik} formikNames={["dateStart", "dateEnd"]} label="Date Range" />
       </div>
       {/* submit */}
       <div className="flex flex-col">

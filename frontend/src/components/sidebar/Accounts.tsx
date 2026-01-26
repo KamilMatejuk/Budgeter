@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { spanTransition } from "./SidebarClient";
-import { CardRichWithId, PersonalAccountWithId } from "@/types/backend";
+import { CardRichWithId, PersonalAccountRichWithId } from "@/types/backend";
 import CellValue from "../table/cells/CellValue";
 import { Currency } from "@/types/enum";
 import { getAccountName } from "../table/cells/AccountNameUtils";
@@ -39,7 +39,7 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
 export interface AccountsProps {
   collapsed: boolean;
   cards: CardRichWithId[];
-  accounts: PersonalAccountWithId[];
+  accounts: PersonalAccountRichWithId[];
   stocks: number;
   capitals: number;
 }
@@ -57,7 +57,7 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals 
     <div className={classes.container}>
       <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency, value: card.value || null }))} />
       <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => (
-        { ...account, name: getAccountName(account), currency }))} />
+        { value: account.value_pln, name: getAccountName(account), currency }))} />
       <Section title="Investments" collapsed={collapsed} items={[
         { name: "Capital", value: capitals, currency },
         { name: "Stocks", value: stocks, currency },

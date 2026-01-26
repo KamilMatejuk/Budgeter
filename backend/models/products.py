@@ -113,3 +113,12 @@ class MonthlyExpenseWithId(MonthlyExpense, metaclass=WithId): pass
 
 class CardRich(Card): account: PersonalAccountWithId
 class CardRichWithId(CardRich, metaclass=WithId): pass
+
+class PersonalAccountRich(PersonalAccount): value_pln: float
+class PersonalAccountRichWithId(PersonalAccountRich, metaclass=WithId): pass
+
+class StockAccountRich(StockAccount): value_pln: float
+class StockAccountRichWithId(StockAccountRich, metaclass=WithId): pass
+
+class CapitalInvestmentRich(CapitalInvestment): value_pln: float
+class CapitalInvestmentRichWithId(CapitalInvestmentRich, metaclass=WithId): pass

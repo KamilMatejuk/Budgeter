@@ -2,7 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import CellBank from "./CellBank";
 import { getAccountName, getCashName } from "./AccountNameUtils";
 import { CashWithId, PersonalAccountWithId } from "@/types/backend";
-import { usePersonalAccount } from "@/app/api/query";
 
 
 interface CellAccountNameProps {

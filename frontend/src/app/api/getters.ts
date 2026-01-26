@@ -1,7 +1,7 @@
 import {
   AccountRequirementsResponse,
   BackupResponse,
-  CapitalInvestmentWithId,
+  CapitalInvestmentRichWithId,
   CardRequirementsResponse,
   CardRichWithId,
   CashWithId,
@@ -10,9 +10,9 @@ import {
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
   OrganisationRichWithId,
-  PersonalAccountWithId,
+  PersonalAccountRichWithId,
   Source,
-  StockAccountWithId,
+  StockAccountRichWithId,
   TagComposition,
   TagWithId,
   TransactionRichWithId,
@@ -41,7 +41,7 @@ export async function getCash() {
   return await get<CashWithId[]>("/api/products/cash", ["cash"]);
 }
 
-export const _sortPersonalAccounts = (accounts: PersonalAccountWithId[]) => {
+export const _sortPersonalAccounts = (accounts: PersonalAccountRichWithId[]) => {
   return accounts.sort((a, b) => {
     if (a.bank !== b.bank) return a.bank.localeCompare(b.bank);
     if (a.type !== b.type) return a.type.localeCompare(b.type);
@@ -49,18 +49,18 @@ export const _sortPersonalAccounts = (accounts: PersonalAccountWithId[]) => {
   });
 };
 export async function getPersonalAccounts() {
-  const { response, error } = await get<PersonalAccountWithId[]>("/api/products/personal_account", ["personal_account"]);
+  const { response, error } = await get<PersonalAccountRichWithId[]>("/api/products/personal_account", ["personal_account"]);
   // sort accounts by bank, type, owner
   if (response) return { response: _sortPersonalAccounts(response), error: null };
   return { response: null, error };
 }
 
 export async function getStockAccounts() {
-  return await get<StockAccountWithId[]>("/api/products/stock_account", ["stock_account"]);
+  return await get<StockAccountRichWithId[]>("/api/products/stock_account", ["stock_account"]);
 }
 
 export async function getCapitalInvestments() {
-  return await get<CapitalInvestmentWithId[]>("/api/products/capital_investment", ["capital_investment"]);
+  return await get<CapitalInvestmentRichWithId[]>("/api/products/capital_investment", ["capital_investment"]);
 }
 
 export async function getMonthlyIncomes() {

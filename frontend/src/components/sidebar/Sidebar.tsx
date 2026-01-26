@@ -1,13 +1,5 @@
 import SidebarClient from "./SidebarClient";
-import { Currency } from "@/types/backend";
-import { convertToPLN } from "@/app/api/forex";
 import { getCapitalInvestments, getCards, getPersonalAccounts, getStockAccounts } from "@/app/api/getters";
-
-async function mapCurrenciesToPLN<T extends { value: number; currency: Currency }>(items: T[] | null): Promise<T[]> {
-  if (!items || items.length === 0) return [];
-  return await Promise.all(
-    items.map(async (it: T) => ({ ...it, value: await convertToPLN(it.value, it.currency) })));
-}
 
 
 export default async function Sidebar() {
@@ -18,9 +10,9 @@ export default async function Sidebar() {
   const { response: capitals } = await getCapitalInvestments();
   const accountsProps = {
     cards: cards?.filter((it) => it.credit && it.value) || [],
-    accounts: await mapCurrenciesToPLN(accounts?.filter((it) => it.value) || []),
-    stocks: (await mapCurrenciesToPLN(stocks)).reduce((acc, it) => acc + (it.value || 0), 0),
-    capitals: (await mapCurrenciesToPLN(capitals)).reduce((acc, it) => acc + (it.value || 0), 0),
+    accounts: accounts?.filter((it) => it.value_pln) || [],
+    stocks: stocks?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
+    capitals: capitals?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
   };
 
   return (<SidebarClient accountsProps={accountsProps} />);

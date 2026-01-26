@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { CashWithId, ChartRange, OrganisationRichWithId, OrganisationWithId, PersonalAccountWithId, TagRichWithId, TagWithId, TransactionWithId } from "@/types/backend";
+import { CashWithId, ChartRange, OrganisationRichWithId, OrganisationWithId, PersonalAccountRichWithId, PersonalAccountWithId, TagRichWithId, TagWithId, TransactionWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
@@ -28,21 +28,12 @@ export function useCashs() {
 }
 
 export function usePersonalAccounts() {
-  const data = _useFetchWrapper<PersonalAccountWithId[]>(
+  const data = _useFetchWrapper<PersonalAccountRichWithId[]>(
     ["personal_account"],
     ["personal_account"],
     `/api/products/personal_account`
   ) || [];
   return _sortPersonalAccounts(data);
-}
-
-export function usePersonalAccount(id: string) {
-  return _useFetchWrapper<PersonalAccountWithId>(
-    ["personal_account", id],
-    ["personal_account"],
-    `/api/products/personal_account/${id}`,
-    id,
-  ) || undefined;
 }
 
 export function useRichTags() {

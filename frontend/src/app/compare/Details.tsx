@@ -6,6 +6,10 @@ import { FiltersProps } from "./Filters";
 import Detail, { DetailProps } from "./Detail";
 import MonthSelector, { Range } from "./MonthSelector";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
+import { DoubleBarChart } from "@/components/dashboard/Chart";
+import { getMonthName } from "@/const/date";
+import SectionHeader from "@/components/page_layout/SectionHeader";
+import Summary from "@/components/page_layout/Summary";
 
 interface DetailsProps {
   filters: FiltersProps;
@@ -37,9 +41,32 @@ export default function Details({ data, filters, slug }: DetailsProps) {
     }]
   );
 
+  const min_value = Math.min(...data.map(d => d.value));
+  const max_value = Math.max(...data.map(d => d.value));
+  const avg_value = data.reduce((sum, d) => sum + d.value, 0) / data.length;
+
   return (
     <>
-      <MonthSelector data={data} selectedRanges={selectedRanges} setSelectedRanges={setSelectedRanges} />
+      {/* summary */}
+      <SectionHeader text="Summary" />
+      <Summary data={[
+        { value: min_value.toFixed(2) + ' zł', label: 'Minimal monthly value' },
+        { value: max_value.toFixed(2) + ' zł', label: 'Maximal monthly value' },
+        { value: avg_value.toFixed(2) + ' zł', label: 'Average monthly value' },
+      ]} />
+      {/* history */}
+      <SectionHeader text="History" subtext="Select visible ranges on the graph, drag to select multiple, click selected ranges to remove them." />
+      <div className="relative pb-2">
+        <DoubleBarChart
+          dataPositive={data.map(d => d.value > 0 ? d.value : 0)}
+          dataNegative={data.map(d => d.value < 0 ? d.value : 0)}
+          labels={data.map(d => getMonthName(d.month) + ' ' + d.year)} />
+        <div className="absolute top-0 bottom-0 left-12 right-0 w-[calc(100%-48px)] h-[304px]">
+          <MonthSelector data={data} selectedRanges={selectedRanges} setSelectedRanges={setSelectedRanges} />
+        </div>
+      </div>
+      {/* details */}
+      <SectionHeader text="Results" />
       <div className="w-full flex flex-nowrap gap-2 justify-center">
         <MultiColumnSection>
           {selectedRanges.map((r, i) => (

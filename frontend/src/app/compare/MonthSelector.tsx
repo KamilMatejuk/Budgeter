@@ -1,7 +1,6 @@
 'use client';
 
-import { getMonthName } from "@/const/date";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { pushSelectorsToUrl } from "./utils";
 
 export type Range = {
@@ -108,33 +107,23 @@ export default function MonthSelector({ data, selectedRanges, setSelectedRanges 
     <>
       <div
         ref={trackRef}
-        className="ml-12 relative h-8 bg-second-bg rounded select-none"
+        className="relative h-full select-none"
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}>
         {selectedRanges.map((r, i) => (
           <div
             key={i}
-            className="absolute top-1 bottom-1 bg-positive rounded"
+            className="absolute top-1 bottom-1 bg-text/20 rounded"
             style={rangeToStyle(r.startMonth, r.startYear, r.endMonth, r.endYear)}
           />
         ))}
         {draft && (
           <div
-            className="absolute top-1 bottom-1 bg-positive/40 rounded"
+            className="absolute top-1 bottom-1 bg-text/10 rounded"
             style={rangeToStyle(draft.startMonth, draft.startYear, draft.endMonth, draft.endYear)}
           />
         )}
-      </div>
-      <div className="ml-12 flex">
-        {data.map(d => (
-          <p
-            key={d.year + '-' + d.month}
-            className="flex-1 text-center text-xs text-subtext"
-          >
-            {getMonthName(d.month) + ' ' + d.year}
-          </p>
-        ))}
       </div>
     </>
   );

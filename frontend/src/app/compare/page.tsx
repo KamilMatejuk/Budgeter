@@ -6,8 +6,6 @@ import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { Comparison } from "@/types/backend";
 import { parseSearchParams } from "./utils";
-import { DoubleBarChart } from "@/components/dashboard/Chart";
-import { getMonthName } from "@/const/date";
 import Details from "./Details";
 import { getTagsSearchSlug } from "../search/utils";
 import Summary from "@/components/page_layout/Summary";
@@ -49,22 +47,7 @@ export default async function Compare({ searchParams }: PageProps) {
         ? <ErrorToast message={error} />
         : warning
           ? <WarningToast message={warning} />
-          : <>
-            <SectionHeader text="Summary" />
-            {/* <Summary data={data} /> */}
-            <Summary data={[
-              { value: Math.min(...data.map(d => d.value)).toFixed(2) + ' zł', label: 'Minimal monthly value' },
-              { value: Math.max(...data.map(d => d.value)).toFixed(2) + ' zł', label: 'Maximal monthly value' },
-              { value: (data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(2) + ' zł', label: 'Average monthly value' },
-            ]} />
-            <SectionHeader text="History" />
-            <DoubleBarChart
-              dataPositive={data.map(d => d.value > 0 ? d.value : 0)}
-              dataNegative={data.map(d => d.value < 0 ? d.value : 0)}
-              labels={data.map(d => getMonthName(d.month) + ' ' + d.year)} />
-            <SectionHeader text="Results" />
-            <Details data={data} filters={sp} slug={slug} />
-          </>
+          : <Details data={data} filters={sp} slug={slug} />
       }
     </>
   );

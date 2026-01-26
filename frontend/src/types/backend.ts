@@ -315,6 +315,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/tag/used": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Tags Used */
+        get: operations["get_tags_used_api_tag_used_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/tag/{id}": {
         parameters: {
             query?: never;
@@ -744,6 +761,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/history/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Transactions Filtered */
+        get: operations["get_transactions_filtered_api_history_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/organisation/{id}": {
         parameters: {
             query?: never;
@@ -1094,6 +1128,19 @@ export type components = {
          * @enum {string}
          */
         ChartRange: "3M" | "1Y" | "FULL";
+        /** Comparison */
+        Comparison: {
+            /** Id */
+            _id?: string;
+            /** Month */
+            month: number;
+            /** Year */
+            year: number;
+            /** Value */
+            value: number;
+            /** Transactions */
+            transactions: number;
+        };
         /**
          * Currency
          * @enum {string}
@@ -1682,6 +1729,7 @@ export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
 export type CashWithId = components['schemas']['CashWithId'];
 export type ChartRange = components['schemas']['ChartRange'];
+export type Comparison = components['schemas']['Comparison'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type Join = components['schemas']['Join'];
@@ -2377,6 +2425,26 @@ export interface operations {
         };
     };
     get_tags_rich_api_tag_rich_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagRichWithId"][];
+                };
+            };
+        };
+    };
+    get_tags_used_api_tag_used_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3707,6 +3775,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TagComposition"][];
+                };
+            };
+        };
+    };
+    get_transactions_filtered_api_history_compare_get: {
+        parameters: {
+            query: {
+                tagIn: string;
+                tagOut?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comparison"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

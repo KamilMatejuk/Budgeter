@@ -12,12 +12,12 @@ export default function MultiColumnSection({ children, ...props }: SectionHeader
   return (
     <div
       {...props}
-      className={twMerge("grid gap-4", props.className)}
+      className={twMerge("w-full grid gap-4", props.className)}
       style={{ gridTemplateColumns: new Array(n).fill("1fr").join(" 1px ") }}
     >
       {(children as React.ReactNode[]).flatMap((child, i) => (
         <React.Fragment key={i}>
-          {i > 0 && <div className="bg-second-bg" />}
+          {i > 0 && <div className="bg-line" />}
           <div className="p-2 pb-4">{child}</div>
         </React.Fragment>
       ))}

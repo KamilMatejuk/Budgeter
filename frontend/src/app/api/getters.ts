@@ -5,6 +5,7 @@ import {
   CardRequirementsResponse,
   CardRichWithId,
   CashWithId,
+  Comparison,
   MonthComparisonRow,
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
@@ -18,8 +19,10 @@ import {
 } from "@/types/backend";
 import { get } from "./fetch";
 import { ChartRange, DEFAULT_CHART_RANGE } from "@/types/enum";
-import { FiltersProps } from "../search/Filters";
-import { pushFiltersToUrl } from "../search/utils";
+import { FiltersProps as SearchFiltersProps } from "../search/Filters";
+import { FiltersProps as CompareFiltersProps } from "../compare/Filters";
+import { pushFiltersToUrl as pushSearchFiltersToUrl } from "../search/utils";
+import { pushFiltersToUrl as pushCompareFiltersToUrl } from "../compare/utils";
 
 
 export async function getSources() {
@@ -76,13 +79,22 @@ export async function getTags() {
   return await get<TagWithId[]>("/api/tag", ["tag"]);
 }
 
+export async function getRichTags() {
+  return await get<TagWithId[]>("/api/tag/rich", ["tag", "rich"]);
+}
+
 export async function getTransactions(year: number, month: number) {
   return await get<TransactionRichWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }
 
-export async function getFilteredTransactions(filters: FiltersProps) {
-  const url = `/api/transactions/filtered?${pushFiltersToUrl(filters)}`;
+export async function getFilteredTransactions(filters: SearchFiltersProps) {
+  const url = `/api/transactions/filtered?${pushSearchFiltersToUrl(filters)}`;
   return await get<TransactionRichWithId[]>(url, ["transaction", "tag", "personal_account", "organisation", "filtered"]);
+}
+
+export async function getCompareData(filters: CompareFiltersProps) {
+  const url = `/api/history/compare?${pushCompareFiltersToUrl(filters)}`;
+  return await get<Comparison[]>(url, ["transaction", "tag", "compare"]);
 }
 
 export async function getDeletedTransactions() {

@@ -3,6 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from routes.base import fail_wrapper, get, create, patch, delete
 from models.tag import Tag, TagPartial, TagWithId, TagRichWithId, TagRequest
+from models.base import PyObjectId
 from core.db import get_db
 
 
@@ -90,6 +91,29 @@ async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
         return [await get_rich_tag(t, db) for t in await get_tags(db)]
+    return await inner()
+
+
+@router.get("/used", response_model=list[TagRichWithId])
+async def get_tags_used(db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        tags = await get_tags_rich(db)
+        used_tags = []
+        for tag in tags:
+            this_tag_id = [str(tag.id)]
+            child_tag_ids = await get_all_children_ids(str(tag.id), db)
+            condition = {"deleted": False, "tags": {"$in": this_tag_id + child_tag_ids}}
+            count = await db["transactions"].count_documents(condition)
+            if count > 0: used_tags.append(tag)
+            # other
+            other_condition = {"deleted": False, "tags": {"$in": this_tag_id, "$nin": child_tag_ids}}
+            other_count = await db["transactions"].count_documents(other_condition)
+            if other_count < count and other_count > 0:
+                tag = TagRichWithId(_id=str(PyObjectId()), name=f"{tag.name}/Other", colour=tag.colour)
+                used_tags.append(tag)
+        # sort by name, but Other goes last (ASCII '{' is after 'z')
+        return sorted(used_tags, key=lambda t: t.name.replace("Other", "{"))
     return await inner()
 
 

@@ -42,3 +42,12 @@ class TagComposition(PyBaseModel, metaclass=WithId):
     values_total: list[TagCompositionItem]
     values_year: list[TagCompositionItem]
     values_month: list[TagCompositionItem]
+
+
+class Comparison(PyBaseModel):
+    month: int
+    year: int
+    value: float
+    transactions: int
+    # TODO chidlren composition
+    # TODO other tags composition

@@ -53,6 +53,14 @@ export function useRichTags() {
   ) || [];
 }
 
+export function useUsedTags() {
+  return _useFetchWrapper<TagRichWithId[]>(
+    ["tag", "used"],
+    ["tag"],
+    `/api/tag/used`
+  ) || [];
+}
+
 export function useOrganisations() {
   return _useFetchWrapper<OrganisationRichWithId[]>(
     ["organisation"],

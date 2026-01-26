@@ -1,6 +1,6 @@
 'use client';
 
-import { CardRichWithId, CardWithId } from "@/types/backend";
+import { CardRichWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import CellBoolean from "../cells/CellBoolean";

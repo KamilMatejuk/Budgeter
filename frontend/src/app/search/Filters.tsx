@@ -11,7 +11,6 @@ import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
 import { customRevalidateTag } from "../api/fetch";
 import { DEFAULT_JOIN, Join } from "@/types/enum";
-import { useEffect } from "react";
 import DateMonthRangeInputWithError from "@/components/form/DateMonthRangeInputWithError";
 import TagsIncludeExcludeInputWithError from "@/components/form/fields/TagsIncludeExcludeInputWithError";
 

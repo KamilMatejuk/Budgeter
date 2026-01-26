@@ -1,6 +1,6 @@
 'use client';
 
-import { TransactionRichWithId, TransactionWithId } from "@/types/backend";
+import { TransactionRichWithId } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellOrganisation } from "../cells/CellOrganisation";

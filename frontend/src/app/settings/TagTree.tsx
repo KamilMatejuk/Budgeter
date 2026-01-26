@@ -1,7 +1,6 @@
 import ErrorToast from "@/components/toast/ErrorToast";
 import TagSubtree from "./TagSubtree";
 import { getTags } from "../api/getters";
-import { MdAdd } from "react-icons/md";
 import NewTagSubtree from "./NewTagSubtree";
 
 

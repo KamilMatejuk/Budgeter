@@ -1,7 +1,5 @@
-import { TransactionWithId } from "@/types/backend";
 import ErrorToast from "@/components/toast/ErrorToast";
 import PageHeader from "@/components/page_layout/PageHeader";
-import { get } from "../api/fetch";
 import WarningToast from "@/components/toast/WarningToast";
 import MonthSelector from "./MonthSelector";
 import SectionHeader from "@/components/page_layout/SectionHeader";

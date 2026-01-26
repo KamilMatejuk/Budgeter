@@ -1,7 +1,7 @@
 import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { z } from "zod";
-import { Transaction, TransactionRichWithId, TransactionSplitRequest } from "@/types/backend";
+import { TransactionRichWithId, TransactionSplitRequest } from "@/types/backend";
 import { FormikProps, useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";

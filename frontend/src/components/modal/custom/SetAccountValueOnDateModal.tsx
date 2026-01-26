@@ -23,7 +23,7 @@ async function submit(values: FormSchemaType, item?: PersonalAccountWithId | nul
   return false;
 }
 
-export default function SetAccountValueOnDateModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
+export default function SetAccountValueOnDateModal({ url: _, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: { value: 0 },
     onSubmit: async (values) => { if (await submit(values, item)) onClose() },

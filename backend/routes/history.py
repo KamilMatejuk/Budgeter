@@ -11,7 +11,7 @@ from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from models.transaction import TransactionWithId
 from routes.sources.utils import mark_account_value_in_history
-from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag
+from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag, create_tags_condition, Join
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem, Comparison
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
@@ -370,25 +370,15 @@ async def _calculate_tag_composition(tag_id: str, request_id: int) -> list[TagCo
 
 @router.get("/compare", response_model=list[Comparison])
 async def get_transactions_filtered(
-    tagIn: str = Query(...),
-    tagOut: str | None = Query(None),
+    tagsIn: list[str] | None = Query(None),
+    tagsInJoin: Join = Query(Join.OR),
+    tagsOut: list[str] | None = Query(None),
+    tagsOutJoin: Join = Query(Join.OR),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     # condition
     condition = {"deleted": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
-    # include tags and subtags
-    includeTags = [tagIn] + await get_all_children_ids(tagIn, db)
-    # exclude tags and subtags
-    excludeTags = [tagOut] + (await get_all_children_ids(tagOut, db) if tagOut else [])
-    # build tag conditions
-    condition["tags"] = {}
-    if len(includeTags) > 0:
-        condition["tags"]["$in"] = includeTags
-    if len(excludeTags) > 0:
-        condition["tags"]["$nin"] = excludeTags
-    if len(condition["tags"]) == 0:
-        del condition["tags"]
-    print("Comparison condition:", condition)
+    condition.update(await create_tags_condition(tagsIn, tagsOut, tagsInJoin, tagsOutJoin, db))
     # iterate months
     response = []
     first: TransactionWithId = await get(db, "transactions", TransactionWithId, condition, "date", one=True, reverse=False)

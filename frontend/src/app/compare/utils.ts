@@ -1,10 +1,9 @@
+import { parseTagsSearchParams, pushTagFiltersToUrl } from "../search/utils";
 import { FiltersProps } from "./Filters";
 
 
 export function pushFiltersToUrl(filters: Omit<FiltersProps, "dates">) {
-  const params = new URLSearchParams();
-  if (filters.tagIn) params.append("tagIn", filters.tagIn);
-  if (filters.tagOut) params.append("tagOut", filters.tagOut);
+  const params = pushTagFiltersToUrl(filters);
   return params;
 }
 
@@ -18,6 +17,7 @@ export function pushSelectorsToUrl(selectors: Omit<FiltersProps, "tagIn" | "tagO
 }
 
 export function parseSearchParams(params: FiltersProps): FiltersProps {
+  params = parseTagsSearchParams(params);
   params.dates = params.dates ? Array.isArray(params.dates) ? params.dates : [params.dates] : [];
   params.dates = params.dates.map(dateRange => {
     if (typeof dateRange === "string") {

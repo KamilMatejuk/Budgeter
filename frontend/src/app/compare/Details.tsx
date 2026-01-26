@@ -10,11 +10,11 @@ import { DoubleBarChart } from "@/components/dashboard/Chart";
 import { getMonthName } from "@/const/date";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import Summary from "@/components/page_layout/Summary";
+import { pushTagFiltersToUrl } from "../search/utils";
 
 interface DetailsProps {
   filters: FiltersProps;
   data: Comparison[];
-  slug: string;
 }
 
 function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps, "range" | "slug"> {
@@ -30,7 +30,7 @@ function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps,
   }
 }
 
-export default function Details({ data, filters, slug }: DetailsProps) {
+export default function Details({ data, filters }: DetailsProps) {
   const [selectedRanges, setSelectedRanges] = useState<Range[]>(
     filters.dates?.length ? filters.dates.map(d => ({
       startMonth: d.start.getMonth(), startYear: d.start.getFullYear(),
@@ -44,6 +44,7 @@ export default function Details({ data, filters, slug }: DetailsProps) {
   const min_value = Math.min(...data.map(d => d.value));
   const max_value = Math.max(...data.map(d => d.value));
   const avg_value = data.reduce((sum, d) => sum + d.value, 0) / data.length;
+  const slug = pushTagFiltersToUrl(filters).toString();
 
   return (
     <>

@@ -79,10 +79,6 @@ export async function getTags() {
   return await get<TagWithId[]>("/api/tag", ["tag"]);
 }
 
-export async function getRichTags() {
-  return await get<TagWithId[]>("/api/tag/rich", ["tag", "rich"]);
-}
-
 export async function getTransactions(year: number, month: number) {
   return await get<TransactionRichWithId[]>(`/api/transactions/${year}/${month}`, ["transaction"]);
 }

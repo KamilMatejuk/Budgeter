@@ -1,4 +1,3 @@
-import enum
 import datetime
 from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -6,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import sort_by_name as sort_tags, get_rich_tags, get_all_children_ids
+from routes.tag import sort_by_name as sort_tags, get_rich_tags, create_tags_condition, Join
 from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
 from routes.history import remove_leading_zero_history
@@ -199,10 +198,6 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
     return await inner()
 
 
-class Join(enum.Enum):
-    OR = "OR"
-    AND = "AND"
-
 @multi_router.get("/filtered", response_model=list[TransactionRichWithId])
 async def get_transactions_filtered(
     accounts: list[str] | None = Query(None),
@@ -221,30 +216,8 @@ async def get_transactions_filtered(
     if accounts is not None and len(accounts) > 0: condition["account"] = {"$in": accounts}
     if organisations is not None and len(organisations) > 0: condition["organisation"] = {"$in": organisations}
     if title is not None and title.strip() != "": condition["title"] = {"$regex": title, "$options": "i"}
-    if dateStart is not None or dateEnd is not None:
-        condition["date"] = Date.condition(dateStart, dateEnd)
-    # include tags and subtags
-    includeTags = {}
-    for t in tagsIn or []:
-        includeTags[t] = await get_all_children_ids(t, db)
-    # exclude tags and subtags
-    excludeTags = {}
-    for t in tagsOut or []:
-        excludeTags[t] = await get_all_children_ids(t, db)
-    # build tag conditions
-    condition["tags"] = {}
-    if len(includeTags) > 0:
-        if tagsInJoin == Join.OR:
-            condition["tags"]["$in"] = [x for k, v in includeTags.items() for x in (k, *v)]
-        if tagsInJoin == Join.AND:
-            condition["$and"] = [{"tags": {"$in": [k, *v]}} for k, v in includeTags.items()]
-    if len(excludeTags) > 0:
-        if tagsOutJoin == Join.OR:
-            condition["tags"]["$nin"] = [x for k, v in excludeTags.items() for x in (k, *v)]
-        if tagsOutJoin == Join.AND:
-            condition["$nor"] = [{"$and": [{"tags": {"$in": [k, *v]}} for k, v in excludeTags.items()]}]
-    if len(condition["tags"]) == 0:
-        del condition["tags"]
+    if dateStart is not None or dateEnd is not None: condition["date"] = Date.condition(dateStart, dateEnd)
+    condition.update(await create_tags_condition(tagsIn, tagsOut, tagsInJoin, tagsOutJoin, db))
     # run
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition, "date")
     transactions = await enrich_transactions(transactions, db)

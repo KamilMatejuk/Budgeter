@@ -4,25 +4,27 @@ import TextInputWithError from "@/components/form/TextInputWithError";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { z } from "zod";
-import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 import OrganisationsInputWithError from "@/components/form/fields/OrganisationsInputWithError";
 import AccountsInputWithError from "@/components/form/fields/AccountsInputWithError";
 import Button from "@/components/button/Button";
 import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
 import { customRevalidateTag } from "../api/fetch";
-import ChoiceInputWithError from "@/components/form/ChoiceInputWithError";
 import { DEFAULT_JOIN, Join } from "@/types/enum";
 import { useEffect } from "react";
 import DateMonthRangeInputWithError from "@/components/form/DateMonthRangeInputWithError";
+import TagsIncludeExcludeInputWithError from "@/components/form/fields/TagsIncludeExcludeInputWithError";
 
-export interface FiltersProps {
-  accounts?: string[];
-  organisations?: string[];
+export interface TagsFiltersProps {
   tagsIn?: string[];
   tagsInJoin?: Join;
   tagsOut?: string[];
   tagsOutJoin?: Join;
+}
+
+export interface FiltersProps extends TagsFiltersProps {
+  accounts?: string[];
+  organisations?: string[];
   title?: string;
   dateStart?: Date;
   dateEnd?: Date;
@@ -68,9 +70,6 @@ export default function Filters({
     validate: withZodSchema(FormSchema),
   });
 
-  useEffect(() => { if (formik.values.tagsIn.length < 2) formik.setFieldValue("tagsInJoin", DEFAULT_JOIN) }, [formik.values.tagsIn]);
-  useEffect(() => { if (formik.values.tagsOut.length < 2) formik.setFieldValue("tagsOutJoin", DEFAULT_JOIN) }, [formik.values.tagsOut]);
-
   return (
     <div className="flex gap-1 mb-4">
       <div className="flex-1">
@@ -79,15 +78,8 @@ export default function Filters({
       <div className="flex-1">
         <OrganisationsInputWithError formik={formik} formikName="organisations" label="Organisation" />
       </div>
-      <div className="flex-1 gap-1 flex flex-col">
-        <TagsInputWithError formik={formik} formikName="tagsIn" label="Tags (include)" />
-        {formik.values.tagsIn.length >= 2 &&
-          <ChoiceInputWithError formik={formik} formikName="tagsInJoin" options={Join} />}
-      </div>
-      <div className="flex-1 gap-1 flex flex-col">
-        <TagsInputWithError formik={formik} formikName="tagsOut" label="Tags (exclude)" />
-        {formik.values.tagsOut.length >= 2 &&
-          <ChoiceInputWithError formik={formik} formikName="tagsOutJoin" options={Join} />}
+      <div className="flex-2">
+        <TagsIncludeExcludeInputWithError formik={formik} />
       </div>
       <div className="flex-1">
         <TextInputWithError formik={formik} formikName="title" label="Title" />

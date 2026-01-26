@@ -69,15 +69,6 @@ export function useOrganisations() {
   ) || [];
 }
 
-export function useOrganisation(name: string) {
-  return _useFetchWrapper<OrganisationWithId>(
-    ["organisation", name],
-    ["organisation"],
-    `/api/organisation/regex/${encodeURIComponent(name.replaceAll('/', ''))}`,
-    name,
-  ) || undefined;
-}
-
 export function useLastTransaction(account: string) {
   return _useFetchWrapper<TransactionWithId>(
     ["transaction", "last", account],

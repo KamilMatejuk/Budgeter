@@ -3781,9 +3781,11 @@ export interface operations {
     };
     get_transactions_filtered_api_history_compare_get: {
         parameters: {
-            query: {
-                tagIn: string;
-                tagOut?: string | null;
+            query?: {
+                tagsIn?: string[] | null;
+                tagsInJoin?: components["schemas"]["Join"];
+                tagsOut?: string[] | null;
+                tagsOutJoin?: components["schemas"]["Join"];
             };
             header?: never;
             path?: never;

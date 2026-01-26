@@ -1,3 +1,4 @@
+import enum
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -68,6 +69,47 @@ async def get_rich_tag(tag: Tag | str, db: AsyncIOMotorDatabase) -> TagRichWithI
 async def get_rich_tags(tags: list[str], db: AsyncIOMotorDatabase) -> list[TagRichWithId]:
     tags = list(set(tags))
     return [await get_rich_tag(t, db) for t in tags]
+
+
+class Join(enum.Enum):
+    OR = "OR"
+    AND = "AND"
+
+
+async def create_tags_condition(
+    tagsIn: list[str] | None,
+    tagsOut: list[str] | None,
+    tagsInJoin: Join,
+    tagsOutJoin: Join,
+    db: AsyncIOMotorDatabase
+) -> dict:
+    condition = {}
+    # include tags and subtags
+    includeTags = {}
+    for t in tagsIn or []:
+        includeTags[t] = await get_all_children_ids(t, db)
+    # exclude tags and subtags
+    excludeTags = {}
+    for t in tagsOut or []:
+        excludeTags[t] = await get_all_children_ids(t, db)
+    # fix overlap
+    excludeTags = {k: [vi for vi in v if vi not in includeTags.keys()] for k, v in excludeTags.items()}
+    includeTags = {k: [vi for vi in v if vi not in excludeTags.keys()] for k, v in includeTags.items()}
+    # build tag conditions
+    condition["tags"] = {}
+    if len(includeTags) > 0:
+        if tagsInJoin == Join.OR:
+            condition["tags"]["$in"] = [x for k, v in includeTags.items() for x in (k, *v)]
+        if tagsInJoin == Join.AND:
+            condition["$and"] = [{"tags": {"$in": [k, *v]}} for k, v in includeTags.items()]
+    if len(excludeTags) > 0:
+        if tagsOutJoin == Join.OR:
+            condition["tags"]["$nin"] = [x for k, v in excludeTags.items() for x in (k, *v)]
+        if tagsOutJoin == Join.AND:
+            condition["$nor"] = [{"$and": [{"tags": {"$in": [k, *v]}} for k, v in excludeTags.items()]}]
+    if len(condition["tags"]) == 0:
+        del condition["tags"]
+    return condition
 
 
 router = APIRouter()

@@ -1,6 +1,5 @@
 'use client';
 
-import { requiredText } from "@/components/form/TextInputWithError";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import { z } from "zod";
@@ -8,11 +7,11 @@ import Button from "@/components/button/Button";
 import { IoReload, IoTrashOutline } from "react-icons/io5";
 import { pushFiltersToUrl } from "./utils";
 import { customRevalidateTag } from "../api/fetch";
-import UsedTagInputWithError from "@/components/form/fields/UsedTagInputWithError";
+import { TagsFiltersProps } from "../search/Filters";
+import { DEFAULT_JOIN, Join } from "@/types/enum";
+import TagsIncludeExcludeInputWithError from "@/components/form/fields/TagsIncludeExcludeInputWithError";
 
-export interface FiltersProps {
-  tagIn?: string;
-  tagOut?: string;
+export interface FiltersProps extends TagsFiltersProps {
   dates?: {
     start: Date;
     end: Date;
@@ -20,8 +19,11 @@ export interface FiltersProps {
 }
 
 const FormSchema = z.object({
-  tagIn: requiredText,
-  tagOut: z.string().optional()
+  tagsIn: z.array(z.string()),
+  tagsInJoin: z.nativeEnum(Join).optional(),
+  tagsOut: z.array(z.string()),
+  tagsOutJoin: z.nativeEnum(Join).optional(),
+
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
@@ -31,9 +33,14 @@ function loadQueryWindow(query?: string) {
   window.location.reload();
 }
 
-export default function Filters({ tagIn = "", tagOut = "" }: FiltersProps) {
+export default function Filters({
+  tagsIn = [],
+  tagsInJoin = DEFAULT_JOIN,
+  tagsOut = [],
+  tagsOutJoin = DEFAULT_JOIN,
+}: FiltersProps) {
   const formik = useFormik<FormSchemaType>({
-    initialValues: { tagIn, tagOut },
+    initialValues: { tagsIn, tagsInJoin, tagsOut, tagsOutJoin },
     onSubmit: async (values) => {
       const params = pushFiltersToUrl(values)
       await customRevalidateTag("compare");
@@ -44,12 +51,7 @@ export default function Filters({ tagIn = "", tagOut = "" }: FiltersProps) {
 
   return (
     <div className="flex gap-1 mb-4">
-      <div className="flex-1">
-        <UsedTagInputWithError formik={formik} formikName="tagIn" label="Tag (include)" />
-      </div>
-      <div className="flex-1">
-        <UsedTagInputWithError formik={formik} formikName="tagOut" label="Tag (exclude)" />
-      </div>
+      <TagsIncludeExcludeInputWithError formik={formik} />
       {/* submit */}
       <div className="flex flex-col">
         <label className="w-full">Load</label>

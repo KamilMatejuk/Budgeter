@@ -7,7 +7,7 @@ import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { TransactionRichWithId } from "@/types/backend";
 import { parseSearchParams } from "./utils";
-import Summary from "./Summary";
+import Summary from "@/components/page_layout/Summary";
 
 
 interface PageProps {
@@ -44,7 +44,21 @@ export default async function Search({ searchParams }: PageProps) {
           ? <WarningToast message={warning} />
           : <>
             <SectionHeader text="Summary" />
-            <Summary data={transactions} />
+            <Summary data={[
+              { value: transactions.length, label: 'Total transactions' },
+              {
+                value: transactions.filter(t => t.value > 0).reduce((sum, t) => sum + t.value_pln, 0).toFixed(2) + ' zł',
+                label: 'Total earned'
+              },
+              {
+                value: transactions.filter(t => t.value < 0).reduce((sum, t) => sum + t.value_pln, 0).toFixed(2) + ' zł',
+                label: 'Total spent'
+              },
+              {
+                value: transactions.reduce((sum, t) => sum + t.value_pln, 0).toFixed(2) + ' zł',
+                label: 'Total value'
+              },
+            ]} />
             <SectionHeader text="Results" />
             <TableTransactions data={transactions} />
           </>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Range } from "./MonthSelector";
 import { getDateString, getISODateString } from "@/const/date";
+import Summary from "@/components/page_layout/Summary";
 
 export interface DetailProps {
   value: number;
@@ -15,9 +16,9 @@ export default function Detail({ value, transactions, range, slug }: DetailProps
   return (
     <div className="flex flex-col items-center">
       <p>{getDateString(dateStart)} - {getDateString(dateEnd)}</p>
-      <p>{value.toFixed(2)} zł</p>
+      <Summary data={[{ value: value.toFixed(2) + ' zł', label: 'Total value' }]} />
       <Link target="_blank" href={`/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`}>
-        {transactions}
+        <Summary data={[{ value: transactions, label: 'Number of transactions' }]} />
       </Link>
     </div>
   );

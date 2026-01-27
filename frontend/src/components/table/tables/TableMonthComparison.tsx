@@ -13,7 +13,6 @@ import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import { useEffect, useState } from "react";
 import CellValue from "../cells/CellValue";
 import { getDateSearchSlug } from "@/app/search/utils";
-import { flatten } from "@/components/dashboard/TagComparisonChart";
 
 interface TableMonthComparisonProps {
   data: MonthComparisonRow[];
@@ -38,6 +37,18 @@ const getDatesRecord = (n: number) => Array.from({ length: n }, (_, i) => {
   (acc, curr) => ({ ...acc, [curr.key]: curr.label }),
   {} as Record<string, string>
 );
+
+function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
+  const result: MonthComparisonRow[] = [];
+  function visit(list: MonthComparisonRow[]) {
+    list.forEach((item) => {
+      result.push({ ...item, subitems: [] });
+      if (item.subitems?.length) visit(item.subitems);
+    });
+  }
+  visit(items);
+  return result;
+}
 
 
 export default function TableMonthComparison({ data }: TableMonthComparisonProps) {

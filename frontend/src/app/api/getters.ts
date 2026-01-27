@@ -13,7 +13,6 @@ import {
   PersonalAccountRichWithId,
   Source,
   StockAccountRichWithId,
-  TagComposition,
   TagWithId,
   TransactionRichWithId,
 } from "@/types/backend";
@@ -124,10 +123,6 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
 
 export async function getMonthTagComparison() {
   return await get<MonthComparisonRow[]>(`/api/history/month_comparison`, ["transaction", "tag"]);
-}
-
-export async function getTagComposition() {
-  return await get<TagComposition[]>(`/api/history/tag_composition`, ["transaction", "tag"]);
 }
 
 export async function getRequiredAccountsInput() {

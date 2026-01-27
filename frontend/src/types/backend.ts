@@ -740,23 +740,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/history/tag_composition": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Tag Composition */
-        get: operations["get_tag_composition_api_history_tag_composition_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/history/compare": {
         parameters: {
             query?: never;
@@ -1549,29 +1532,6 @@ export type components = {
             /** Yearly Interest */
             yearly_interest: number;
         };
-        /** TagComposition */
-        TagComposition: {
-            /** Id */
-            _id: string;
-            tag: components["schemas"]["TagRichWithId"];
-            /** Values Total */
-            values_total: components["schemas"]["TagCompositionItem"][];
-            /** Values Year */
-            values_year: components["schemas"]["TagCompositionItem"][];
-            /** Values Month */
-            values_month: components["schemas"]["TagCompositionItem"][];
-        };
-        /** TagCompositionItem */
-        TagCompositionItem: {
-            /** Id */
-            _id?: string;
-            /** Tag Name */
-            tag_name: string;
-            /** Value */
-            value: number;
-            /** Colour */
-            colour: string;
-        };
         /** TagPartial */
         TagPartial: {
             /** Id */
@@ -1839,8 +1799,6 @@ export type StockAccount = components['schemas']['StockAccount'];
 export type StockAccountPartial = components['schemas']['StockAccountPartial'];
 export type StockAccountRichWithId = components['schemas']['StockAccountRichWithId'];
 export type StockAccountWithId = components['schemas']['StockAccountWithId'];
-export type TagComposition = components['schemas']['TagComposition'];
-export type TagCompositionItem = components['schemas']['TagCompositionItem'];
 export type TagPartial = components['schemas']['TagPartial'];
 export type TagRequest = components['schemas']['TagRequest'];
 export type TagRichWithId = components['schemas']['TagRichWithId'];
@@ -3715,26 +3673,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MonthComparisonRow"][];
-                };
-            };
-        };
-    };
-    get_tag_composition_api_history_tag_composition_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TagComposition"][];
                 };
             };
         };

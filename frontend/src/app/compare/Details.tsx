@@ -22,7 +22,7 @@ function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): Co
   if (items.length === 1) return items;
   const grouped: Record<string, ComparisonItemRecursive[]> = {};
   for (const item of items) {
-      (grouped[item.tag.name] ??= []).push(item);
+    (grouped[item.tag.name] ??= []).push(item);
   }
   return Object.values(grouped).map(itemsWithSameTag => {
     const childrenLists: ComparisonItemRecursive[] = itemsWithSameTag.flatMap(i => i.children);
@@ -46,7 +46,7 @@ function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps,
     _id: found[0]._id,
     transactions: found.reduce((sum, curr) => sum + curr.transactions, 0),
     value_pln: found.reduce((sum, curr) => sum + curr.value_pln, 0),
-    children: combineComparisonItemsRecursively(found.flatMap(f => f.children)),
+    children_tags: combineComparisonItemsRecursively(found.flatMap(f => f.children_tags)),
   };
 }
 

@@ -385,7 +385,7 @@ async def get_transactions_filtered(
             year=month.year,
             value_pln=total_value,
             transactions=len(transactions),
-            children=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []]
+            children_tags=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []]
         ))
     return response
 

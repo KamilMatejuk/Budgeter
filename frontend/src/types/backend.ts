@@ -1162,10 +1162,10 @@ export type components = {
             /** Transactions */
             transactions: number;
             /**
-             * Children
+             * Children Tags
              * @default []
              */
-            children: components["schemas"]["ComparisonItemRecursive"][];
+            children_tags: components["schemas"]["ComparisonItemRecursive"][];
         };
         /** ComparisonItemRecursive */
         ComparisonItemRecursive: {

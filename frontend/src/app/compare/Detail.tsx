@@ -27,7 +27,7 @@ const classes = {
   graphContainer: "flex justify-center items-center gap-4",
 }
 
-const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children }: DetailProps) {
+const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags }: DetailProps) {
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
   return (
@@ -43,11 +43,11 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       </Link>
 
       <p className={classes.label}>Children composition table</p>
-      <Table<ComparisonItemRecursive> url="" tag="" data={children} columns={columns} expandChild="children" expandAll />
+      <Table<ComparisonItemRecursive> url="" tag="" data={children_tags} columns={columns} expandChild="children" expandAll />
 
       <p className={classes.label}>Children composition graph</p>
       <div className={classes.graphContainer}>
-        {children.map((child, i) => {
+        {children_tags.map((child, i) => {
           // filter out zero value items and get first non-single children level
           let items = child.children.filter(c => c.value_pln !== 0);
           while (items.length === 1) {

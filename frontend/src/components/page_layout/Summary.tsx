@@ -7,15 +7,17 @@ const classes = {
 
 interface SummaryProps {
   data: {value: number | string, label: string}[];
+  labelPosition?: "top" | "bottom";
 }
 
-export default function Summary({ data }: SummaryProps) {
+export default function Summary({ data, labelPosition = "bottom" }: SummaryProps) {
   return (
     <div className={classes.container}>
       {data.map((d, i) => (
         <div key={i} className={classes.item}>
+          {labelPosition === "top" && <p className={classes.label}>{d.label}</p>}
           <p className={classes.value}>{d.value}</p>
-          <p className={classes.label}>{d.label}</p>
+          {labelPosition === "bottom" && <p className={classes.label}>{d.label}</p>}
         </div>
       ))}
     </div>

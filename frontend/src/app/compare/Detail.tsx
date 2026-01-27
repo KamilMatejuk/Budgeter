@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "@/components/table/cells/CellTag";
 import { defineCellValue } from "@/components/table/cells/CellValue";
 import SectionHeader from "@/components/page_layout/SectionHeader";
+import React from "react";
 
 export interface DetailProps extends Omit<Comparison, "month" | "year"> {
   range: Range;
@@ -23,7 +24,7 @@ const classes = {
   value: "text-2xl font-semibold",
 }
 
-export default function Detail({ value_pln, transactions, range, slug, children }: DetailProps) {
+const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children }: DetailProps) {
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
   return (
@@ -42,4 +43,5 @@ export default function Detail({ value_pln, transactions, range, slug, children 
       <Table<ComparisonItemRecursive> url="" tag="" data={children} columns={columns} expandChild="children" expandAll />
     </div>
   );
-}
+});
+export default Detail;

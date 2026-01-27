@@ -723,23 +723,6 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/api/history/month_comparison": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Month Comparison */
-        get: operations["get_month_comparison_api_history_month_comparison_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/history/compare": {
         parameters: {
             query?: never;
@@ -1209,22 +1192,6 @@ export type components = {
             Saldo: string;
             /** Waluta */
             Waluta: string;
-        };
-        /** MonthComparisonRow */
-        MonthComparisonRow: {
-            /** Id */
-            _id: string;
-            tag: components["schemas"]["TagRichWithId"];
-            /** Values */
-            values: number[];
-            /** Value Avg */
-            value_avg: number;
-            currency: components["schemas"]["Currency"];
-            /**
-             * Subitems
-             * @default []
-             */
-            subitems: components["schemas"]["MonthComparisonRow"][];
         };
         /** MonthlyExpense */
         MonthlyExpense: {
@@ -1776,7 +1743,6 @@ export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type Join = components['schemas']['Join'];
 export type MillenniumRequest = components['schemas']['MillenniumRequest'];
-export type MonthComparisonRow = components['schemas']['MonthComparisonRow'];
 export type MonthlyExpense = components['schemas']['MonthlyExpense'];
 export type MonthlyExpensePartial = components['schemas']['MonthlyExpensePartial'];
 export type MonthlyExpenseWithId = components['schemas']['MonthlyExpenseWithId'];
@@ -3653,26 +3619,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_month_comparison_api_history_month_comparison_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MonthComparisonRow"][];
                 };
             };
         };

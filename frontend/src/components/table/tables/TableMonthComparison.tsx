@@ -1,6 +1,5 @@
 'use client';
 
-import { MonthComparisonRow } from "@/types/backend";
 import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "../cells/CellTag";
@@ -13,9 +12,11 @@ import DropDownInputWithError from "@/components/form/DropDownInputWithError";
 import { useEffect, useState } from "react";
 import CellValue from "../cells/CellValue";
 import { getDateSearchSlug } from "@/app/search/utils";
+import { AggComparisonItemRecursive } from "@/components/dashboard/MonthComparison";
+import { Currency } from "@/types/enum";
 
 interface TableMonthComparisonProps {
-  data: MonthComparisonRow[];
+  data: AggComparisonItemRecursive[];
 }
 
 const customHeader = (label1: string, label2: string) => (
@@ -38,12 +39,12 @@ const getDatesRecord = (n: number) => Array.from({ length: n }, (_, i) => {
   {} as Record<string, string>
 );
 
-function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
-  const result: MonthComparisonRow[] = [];
-  function visit(list: MonthComparisonRow[]) {
+function flatten<T extends { children: T[] }>(items: T[]): T[] {
+  const result: T[] = [];
+  function visit(list: T[]) {
     list.forEach((item) => {
-      result.push({ ...item, subitems: [] });
-      if (item.subitems?.length) visit(item.subitems);
+      result.push({ ...item, children: [] });
+      if (item.children?.length) visit(item.children);
     });
   }
   visit(items);
@@ -52,7 +53,7 @@ function flatten(items: MonthComparisonRow[]): MonthComparisonRow[] {
 
 
 export default function TableMonthComparison({ data }: TableMonthComparisonProps) {
-  const len = data[0].values.length;
+  const len = data[0].values_pln.length;
   const datesRecord = getDatesRecord(len);
   const allTags = flatten(data).map(d => d.tag);
 
@@ -72,41 +73,41 @@ export default function TableMonthComparison({ data }: TableMonthComparisonProps
   }, [formik.values.date]);
 
   const thisCol = len - monthYearId - 1;
-  const columns: ColumnDef<MonthComparisonRow>[] = [
+  const columns: ColumnDef<AggComparisonItemRecursive>[] = [
     {
-      ...defineCellTag<MonthComparisonRow>(),
+      ...defineCellTag<AggComparisonItemRecursive>(),
       meta: { border: "right" }
     },
     {
-      ...defineCellValueGradientWithLink<MonthComparisonRow>(
-        "value_avg", "values", thisCol - 12, getDateSearchSlug(month, year - 1), allTags),
+      ...defineCellValueGradientWithLink<AggComparisonItemRecursive>(
+        "value_avg_pln", "values_pln", thisCol - 12, getDateSearchSlug(month, year - 1), allTags, Currency.PLN),
       header: () => customHeader("This Month Last Year", `${getMonthName(month)} ${year - 1}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradientWithLink<MonthComparisonRow>(
-        "value_avg", "values", thisCol - 2, getDateSearchSlug(month - 2, year), allTags),
+      ...defineCellValueGradientWithLink<AggComparisonItemRecursive>(
+        "value_avg_pln", "values_pln", thisCol - 2, getDateSearchSlug(month - 2, year), allTags, Currency.PLN),
       header: () => customHeader("Two Months Ago", `${getMonthName(month - 2)} ${month <= 2 ? year - 1 : year}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradientWithLink<MonthComparisonRow>(
-        "value_avg", "values", thisCol - 1, getDateSearchSlug(month - 1, year), allTags),
+      ...defineCellValueGradientWithLink<AggComparisonItemRecursive>(
+        "value_avg_pln", "values_pln", thisCol - 1, getDateSearchSlug(month - 1, year), allTags, Currency.PLN),
       header: () => customHeader("Previous Month", `${getMonthName(month - 1)} ${month == 1 ? year - 1 : year}`),
       accessorKey: "value",
     },
     {
-      ...defineCellValueGradientWithLink<MonthComparisonRow>(
-        "value_avg", "values", thisCol, getDateSearchSlug(month, year), allTags),
+      ...defineCellValueGradientWithLink<AggComparisonItemRecursive>(
+        "value_avg_pln", "values_pln", thisCol, getDateSearchSlug(month, year), allTags, Currency.PLN),
       header: () => <DropDownInputWithError formik={formik} formikName="date" options={datesRecord} hideEmpty />,
       meta: { align: "center", border: "both" },
       accessorKey: "value",
     },
     {
       header: () => customHeader("Average Month", `from last ${Object.keys(datesRecord).length} months`),
-      cell: ({ row }) => (<CellValue value={row.original.value_avg} currency={row.original.currency} />),
+      cell: ({ row }) => (<CellValue value={row.original.value_avg_pln} currency={Currency.PLN} />),
       accessorKey: "value",
     },
   ];
-  return <Table<MonthComparisonRow> url="" tag="" data={data} columns={columns} expandChild="subitems" />;
+  return <Table<AggComparisonItemRecursive> url="" tag="" data={data} columns={columns} expandChild="children" />;
 }

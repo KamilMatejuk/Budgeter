@@ -1,5 +1,3 @@
-import datetime
-from async_lru import alru_cache
 from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -14,7 +12,7 @@ from routes.utils import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
 from models.transaction import TransactionRichWithId, TransactionWithId
 from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag, create_tags_condition, Join
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem, Comparison, ComparisonItemRecursive
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, ComparisonItemRecursive
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
 router = APIRouter()
@@ -203,73 +201,6 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
         incomes.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value > 0))
         expenses.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value < 0))
     return (incomes, expenses)
-
-
-############################## Monthly Comparison #############################
-
-@router.get("/month_comparison", response_model=list[MonthComparisonRow])
-async def get_month_comparison(db: AsyncIOMotorDatabase = Depends(get_db)):
-    root_tags: list[TagWithId] = await get(db, "tags", TagWithId, {"parent": None})
-    request_id = hash(datetime.datetime.now().isoformat())
-    response = []
-    for tag in sorted(root_tags, key=lambda t: t.name.lower()):
-        row = await _calculate_tag_comparison(str(tag.id), request_id)
-        response.append(row)
-    return response
-
-@alru_cache(maxsize=128)
-async def _calculate_tag_comparison(tag_id: str, request_id: int) -> MonthComparisonRow:
-    # request_id is to avoid cross-request caching
-    db: AsyncIOMotorDatabase = await get_db()
-    tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag_id}, one=True)
-    first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
-    # tag ids
-    this_tag_id = [str(tag.id)]
-    child_tag_ids = await get_all_children_ids(tag, db)    
-    # values
-    all_child_values = []
-    this_tag_values = []
-    for month in Date.iterate_months(first.date if first else Date.today()):
-        condition = {
-            "deleted": False,
-            "date": Date.condition(month, Date.month_end(month)),
-            "$or": [{"debt_person": None}, {"debt_person": ""}],
-        }
-        all_child_transactions: list[TransactionWithId] = await get(
-            db, "transactions", TransactionWithId, {**condition, "tags": {"$in": this_tag_id + child_tag_ids}})
-        this_tag_transactions: list[TransactionWithId] = await get(
-            db, "transactions", TransactionWithId, {**condition, "tags": {"$in": this_tag_id, "$nin": child_tag_ids}})
-        # sum and convert to PLN
-        all_child_values.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in all_child_transactions))
-        this_tag_values.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in this_tag_transactions))
-
-    # children
-    subitems = []
-    children: list[TagWithId] = await get_children(tag, db)
-    for child in sorted(children, key=lambda t: t.name.lower()):
-        subitem = await _calculate_tag_comparison(str(child.id), request_id)
-        subitems.append(subitem)
-
-    rich_tag: TagRichWithId = await get_rich_tag(str(tag.id), db)
-    # only include Other, if its not zero and there are other subitems
-    if len(subitems) > 0 and any(v != 0 for v in this_tag_values):
-        subitems.append(MonthComparisonRow(
-            _id=str(PyObjectId()),
-            tag=TagRichWithId(_id=str(PyObjectId()), name=f"{rich_tag.name}/Other", colour=rich_tag.colour),
-            currency=Currency.PLN,
-            values=this_tag_values,
-            value_avg=Value.avg(this_tag_values),
-            subitems=[]
-        ))
-
-    return MonthComparisonRow(
-        _id=str(PyObjectId()),
-        tag=rich_tag,
-        currency=Currency.PLN,
-        values=all_child_values,
-        value_avg=Value.avg(all_child_values),
-        subitems=subitems
-    )
 
 
 ############################## Comparison #############################

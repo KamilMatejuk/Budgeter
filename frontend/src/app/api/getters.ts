@@ -6,7 +6,6 @@ import {
   CardRichWithId,
   CashWithId,
   Comparison,
-  MonthComparisonRow,
   MonthlyExpenseWithId,
   MonthlyIncomeWithId,
   OrganisationRichWithId,
@@ -119,10 +118,6 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
   let endpoint = `/api/history/income_expense/`;
   endpoint += range || DEFAULT_CHART_RANGE;
   return await get<[number[], number[]]>(endpoint, ["transaction"]);
-}
-
-export async function getMonthTagComparison() {
-  return await get<MonthComparisonRow[]>(`/api/history/month_comparison`, ["transaction", "tag"]);
 }
 
 export async function getRequiredAccountsInput() {

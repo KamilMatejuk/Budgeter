@@ -56,7 +56,13 @@ function defineCellValueGradient<T extends { currency?: Currency | keyof typeof 
 }
 
 export function defineCellValueGradientWithLink<T extends { currency?: Currency | keyof typeof Currency, tag: TagRichWithId }>(
-  midPointKey: keyof T, value: keyof T, index: number, filters: string, allTags: TagRichWithId[]) {
+  midPointKey: keyof T,
+  value: keyof T,
+  index: number,
+  filters: string,
+  allTags: TagRichWithId[],
+  currency?: Currency | keyof typeof Currency
+) {
   return {
     ...defineCellValueGradient<T>(midPointKey, value, index),
     cell: ({ row }) =>
@@ -64,7 +70,7 @@ export function defineCellValueGradientWithLink<T extends { currency?: Currency 
         <CellValueGradient
           value={(row.original[value] as number[])[index] || 0}
           midPoint={row.original[midPointKey] as number}
-          currency={row.original.currency}
+          currency={currency || row.original.currency}
         />
       </Link>
   } as ColumnDef<T>;

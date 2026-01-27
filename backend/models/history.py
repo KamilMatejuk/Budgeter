@@ -44,10 +44,15 @@ class TagComposition(PyBaseModel, metaclass=WithId):
     values_month: list[TagCompositionItem]
 
 
-class Comparison(PyBaseModel):
+class ComparisonItemRecursive(PyBaseModel, metaclass=WithId):
+    tag: TagRichWithId
+    value_pln: float
+    children: list["ComparisonItemRecursive"] = []
+
+class Comparison(PyBaseModel, metaclass=WithId):
     month: int
     year: int
-    value: float
+    value_pln: float
     transactions: int
-    # TODO chidlren composition
+    children: list[ComparisonItemRecursive] = [] # mapping of each include tag id to its children comparison
     # TODO other tags composition

@@ -8,7 +8,7 @@ from models.base import PyObjectId
 from routes.tag import sort_by_name as sort_tags, get_rich_tags, create_tags_condition, Join
 from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
-from routes.history import remove_leading_zero_history
+from routes.utils import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
 from routes.organisation import match_organisation_by_name_regex, get_organisation_name_by_name_regex

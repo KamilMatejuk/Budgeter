@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Comparison } from "@/types/backend";
+import { Comparison, ComparisonItemRecursive } from "@/types/backend";
 import { FiltersProps } from "./Filters";
 import Detail, { DetailProps } from "./Detail";
 import MonthSelector, { Range } from "./MonthSelector";
@@ -17,6 +17,24 @@ interface DetailsProps {
   data: Comparison[];
 }
 
+function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): ComparisonItemRecursive[] {
+  if (items.length === 0) return [];
+  if (items.length === 1) return items;
+  const grouped: Record<string, ComparisonItemRecursive[]> = {};
+  for (const item of items) {
+      (grouped[item.tag._id] ??= []).push(item);
+  }
+  return Object.values(grouped).map(itemsWithSameTag => {
+    const childrenLists: ComparisonItemRecursive[] = itemsWithSameTag.flatMap(i => i.children);
+    return {
+      _id: itemsWithSameTag[0]._id,
+      tag: itemsWithSameTag[0].tag,
+      value_pln: itemsWithSameTag.reduce((sum, i) => sum + i.value_pln, 0),
+      children: combineComparisonItemsRecursively(childrenLists),
+    };
+  });
+}
+
 function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps, "range" | "slug"> {
   const found = data.filter(d => {
     const dateIdx = d.year * 12 + d.month;
@@ -25,9 +43,11 @@ function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps,
     return dateIdx >= startIdx && dateIdx <= endIdx;
   });
   return {
+    _id: found[0]._id,
     transactions: found.reduce((sum, curr) => sum + curr.transactions, 0),
-    value: found.reduce((sum, curr) => sum + curr.value, 0),
-  }
+    value_pln: found.reduce((sum, curr) => sum + curr.value_pln, 0),
+    children: combineComparisonItemsRecursively(found.flatMap(f => f.children)),
+  };
 }
 
 export default function Details({ data, filters }: DetailsProps) {
@@ -41,9 +61,9 @@ export default function Details({ data, filters }: DetailsProps) {
     }]
   );
 
-  const min_value = Math.min(...data.map(d => d.value));
-  const max_value = Math.max(...data.map(d => d.value));
-  const avg_value = data.reduce((sum, d) => sum + d.value, 0) / data.length;
+  const min_value = Math.min(...data.map(d => d.value_pln));
+  const max_value = Math.max(...data.map(d => d.value_pln));
+  const avg_value = data.reduce((sum, d) => sum + d.value_pln, 0) / data.length;
   const slug = pushTagFiltersToUrl(filters).toString();
 
   return (
@@ -59,8 +79,8 @@ export default function Details({ data, filters }: DetailsProps) {
       <SectionHeader text="History" subtext="Select visible ranges on the graph, drag to select multiple, click selected ranges to remove them." />
       <div className="relative pb-2">
         <DoubleBarChart
-          dataPositive={data.map(d => d.value > 0 ? d.value : 0)}
-          dataNegative={data.map(d => d.value < 0 ? d.value : 0)}
+          dataPositive={data.map(d => d.value_pln > 0 ? d.value_pln : 0)}
+          dataNegative={data.map(d => d.value_pln < 0 ? d.value_pln : 0)}
           labels={data.map(d => getMonthName(d.month) + ' ' + d.year)} />
         <div className="absolute top-0 bottom-0 left-12 right-0 w-[calc(100%-48px)] h-[304px]">
           <MonthSelector data={data} selectedRanges={selectedRanges} setSelectedRanges={setSelectedRanges} />

@@ -1152,15 +1152,33 @@ export type components = {
         /** Comparison */
         Comparison: {
             /** Id */
-            _id?: string;
+            _id: string;
             /** Month */
             month: number;
             /** Year */
             year: number;
-            /** Value */
-            value: number;
+            /** Value Pln */
+            value_pln: number;
             /** Transactions */
             transactions: number;
+            /**
+             * Children
+             * @default []
+             */
+            children: components["schemas"]["ComparisonItemRecursive"][];
+        };
+        /** ComparisonItemRecursive */
+        ComparisonItemRecursive: {
+            /** Id */
+            _id: string;
+            tag: components["schemas"]["TagRichWithId"];
+            /** Value Pln */
+            value_pln: number;
+            /**
+             * Children
+             * @default []
+             */
+            children: components["schemas"]["ComparisonItemRecursive"][];
         };
         /**
          * Currency
@@ -1788,6 +1806,7 @@ export type CashPartial = components['schemas']['CashPartial'];
 export type CashWithId = components['schemas']['CashWithId'];
 export type ChartRange = components['schemas']['ChartRange'];
 export type Comparison = components['schemas']['Comparison'];
+export type ComparisonItemRecursive = components['schemas']['ComparisonItemRecursive'];
 export type Currency = components['schemas']['Currency'];
 export type HttpValidationError = components['schemas']['HTTPValidationError'];
 export type Join = components['schemas']['Join'];

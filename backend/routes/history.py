@@ -9,10 +9,12 @@ from core.utils import Value, Date
 from models.tag import TagRichWithId
 from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
-from models.transaction import TransactionWithId
+from routes.transaction import enrich_transactions
+from routes.utils import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
+from models.transaction import TransactionRichWithId, TransactionWithId
 from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag, create_tags_condition, Join
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem, Comparison
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, MonthComparisonRow, TagComposition, TagCompositionItem, Comparison, ComparisonItemRecursive
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 
 router = APIRouter()
@@ -168,18 +170,7 @@ async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = D
 class PatchAccountValueRequest(PyBaseModel):
     value: float
 
-async def remove_leading_zero_history(account: PersonalAccountWithId, db: AsyncIOMotorDatabase):
-    hist: list[AccountDailyHistory] = await get(db, "account_daily_history", AccountDailyHistory,
-                                                {"account": str(account.id)}, "date", reverse=False)
-    to_remove = []
-    for h in hist:
-        if h.value != 0.0: break
-        to_remove.append(h)
-    # leave one zero record to avoid empty history
-    if len(to_remove) > 1:
-        to_remove = to_remove[:-1]
-    for h in to_remove:
-        await db["account_daily_history"].delete_one({"_id": str(h.id)})
+
 
 @router.patch("/account_value", response_model=dict)
 async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -386,12 +377,61 @@ async def get_transactions_filtered(
     for month in Date.iterate_months(first.date):
         m_cond = {**condition, "date": Date.condition(month, Date.month_end(month))}
         transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, m_cond)
-        total_value = Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions)
+        transactions: list[TransactionRichWithId] = await enrich_transactions(transactions, db)
+        total_value = Value.sum(t.value_pln for t in transactions)
         response.append(Comparison(
+            _id=str(PyObjectId()),
             month=month.month,
             year=month.year,
-            value=total_value,
+            value_pln=total_value,
             transactions=len(transactions),
+            children=[await _create_aggregation_by_children(ti, transactions, db)
+            for ti in tagsIn or []]
         ))
     return response
 
+async def _create_aggregation_by_children(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> ComparisonItemRecursive:
+    children = await _aggregate_by_children(tag, transactions, db)
+    total_value = Value.sum(c.value_pln for c in children)
+    return ComparisonItemRecursive(_id=str(PyObjectId()), tag=await get_rich_tag(tag, db), value_pln=total_value, children=children)
+
+async def _aggregate_by_children(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> list[ComparisonItemRecursive]:
+    tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    if not tag: return []
+    tagFullName = await get_tag_name(tag, db)
+    children = await get_children(tag, db)
+    children_map: dict[str, list[TransactionRichWithId]] = {t: [] for t in (tag.children or []) + ["Other"]}
+    # map to immediate children
+    for t in transactions:
+        found_child = False
+        for ttag in t.tags:
+            if not ttag.name.startswith(tagFullName + "/"): continue
+            immediate_child_name = ttag.name[len(tagFullName) + 1:].split("/")[0]
+            immediate_child = [c for c in children if c.name == immediate_child_name]
+            if immediate_child:
+                children_map[str(immediate_child[0].id)].append(t)
+                found_child = True
+        if not found_child and str(tag.id) in [str(ttag.id) for ttag in t.tags]:
+            children_map["Other"].append(t)
+    # create recursive response
+    response = []
+    for child_tag_id, child_transactions in children_map.items():
+        total_value = Value.sum(t.value_pln for t in child_transactions)
+        if total_value == 0: continue
+        if child_tag_id == "Other":
+            if len(children_map) > 1:
+                response.append(ComparisonItemRecursive(
+                    _id=str(PyObjectId()),
+                    tag=TagRichWithId(_id=str(PyObjectId()), name=f"{await get_tag_name(tag, db)}/Other", colour=tag.colour),
+                    value_pln=total_value,
+                    children=[],
+                ))
+        else:
+            children = await _aggregate_by_children(child_tag_id, child_transactions, db)
+            response.append(ComparisonItemRecursive(
+                _id=str(PyObjectId()),
+                tag=await get_rich_tag(child_tag_id, db),
+                value_pln=total_value,
+                children=children,
+            ))
+    return response

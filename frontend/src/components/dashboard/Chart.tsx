@@ -20,6 +20,7 @@ Chart.register(
 
 const Options = {
   responsive: true,
+  animation: false,
   maintainAspectRatio: false,
   plugins: {
     legend: {
@@ -76,7 +77,7 @@ const LineChartOptions = {
 export function LineChart({ data, labels, ...props }: LineChartProps) {
   return (
     <ChartContainer {...props}>
-      <Line options={LineChartOptions} data={{
+      <Line options={LineChartOptions as ChartOptions<"line">} data={{
         labels,
         datasets: [{
           data,
@@ -176,7 +177,7 @@ export function PieChart({ data, labels, colors, ...props }: PieChartProps) {
   return (
     <ChartContainer {...props}>
       <Pie
-        options={PieChartOptions}
+        options={PieChartOptions as ChartOptions<"pie">}
         data={{
           labels,
           datasets: [

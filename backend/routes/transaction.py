@@ -31,7 +31,7 @@ async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIO
         pln = Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN))
         acc = next((c for c in cashs if str(c.id) == t.account), None) \
             if t.cash else next((a for a in accounts if str(a.id) == t.account), None)
-        tags = await get_rich_tags(t.tags, db)
+        tags = sorted(await get_rich_tags(t.tags, db), key=lambda t: not t.name.startswith("Wyjazdy"))
         result.append(TransactionRichWithId(
             **t.model_dump(exclude={"organisation", "account", "tags"}, by_alias=True, mode="json"),
             organisation=org,

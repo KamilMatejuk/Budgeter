@@ -14,6 +14,7 @@ import { getExpandedRowModel } from "@tanstack/react-table";
 const classes = {
   row: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
   selectedRow: "bg-second-bg",
+  th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
   td: "p-2 align-middle whitespace-nowrap",
 }
 
@@ -49,11 +50,29 @@ function defineColumnExpand<T extends Item>(): ColumnDef<T> {
     cell: ({ row }) => (
       row.getCanExpand()
         ? row.getIsExpanded()
-          ? <MdRemove size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 * row.depth }} />
-          : <MdAdd size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 20 * row.depth }} />
-        : <LuDot size={20} style={{ opacity: 0.5, marginLeft: 20 * row.depth }} />
+          ? <MdRemove size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 15 * row.depth }} />
+          : <MdAdd size={20} onClick={row.getToggleExpandedHandler()} style={{ cursor: "pointer", marginLeft: 15 * row.depth }} />
+        : <LuDot size={20} style={{ opacity: 0.5, marginLeft: 15 * row.depth }} />
     ),
   };
+}
+
+function updateFirstColumnWithIndent<T extends Item>(columns: ColumnDef<T>[]) {
+  if (columns.length === 0) return [];
+  const firstColumn = {
+    ...columns[0],
+    cell: (props) => {
+      const cell = columns[0].cell;
+      return (
+        <div style={{ marginLeft: 15 * props.row.depth }}>
+          {typeof cell === "function"
+            ? cell(props)
+            : cell}
+        </div>
+      );
+    },
+  } as ColumnDef<T>;
+  return [firstColumn, ...columns.slice(1)];
 }
 
 function defineColumnSelect<T extends Item>(): ColumnDef<T> {
@@ -100,7 +119,7 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
   const allColumns = useMemo(() => ([
     expandChild && defineColumnExpand<T>(),
     groupOptions && groupOptions.length > 0 && defineColumnSelect<T>(),
-    ...columns,
+    ...(expandChild ? updateFirstColumnWithIndent<T>(columns) : columns),
     options && options.length > 0 && defineColumnOptions<T>(options, setSelectedItem, setSelectedModal),
   ] as ColumnDef<T>[]).filter(Boolean), [columns, options]);
 
@@ -138,14 +157,15 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
             onClick={() => { setSelectedModal(index + 1 + (options?.length || 0)) }} />
         ))}
       </div>}
-      <table className="w-full min-w-[640px] text-sm m-0">
+      <table className="w-full text-sm m-0 table-auto">
         {/* header */}
         <thead className="bg-second-bg">
           <tr>
             {headers.map((header, i) => (
               <th key={`${header.id}-${i}`} className={twMerge(
-                "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
-                i == 0 && "w-4 px-4",
+                classes.th,
+                header.id === "select" && "w-4 px-4",
+                header.id === "expander" && "pr-0",
                 header.column.columnDef.meta?.align == "right" && "text-right",
                 header.column.columnDef.meta?.align == "center" && "text-center",
                 ["left", "both"].includes(header.column.columnDef.meta?.border || "") && "border-l border-line",
@@ -163,7 +183,8 @@ export default function Table<T extends Item>({ url, tag, data, columns, options
               {row.getVisibleCells().map((cell, i) => (
                 <td key={`${cell.id}-${i}`} className={twMerge(
                   classes.td,
-                  i == 0 && "px-4",
+                  cell.column.id === "select" && "px-4",
+                  cell.column.id === "expander" && "pr-0",
                   cell.column.columnDef.meta?.wrap && "whitespace-normal break-words",
                   cell.column.columnDef.meta?.wrapForce && "whitespace-normal break-all",
                   cell.column.columnDef.meta?.ellipsis && "whitespace-nowrap overflow-hidden text-ellipsis",

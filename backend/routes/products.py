@@ -6,7 +6,7 @@ from core.utils import Date, Value
 from routes.base import CRUDRouterFactory, create, get, patch
 from routes.sources.utils import mark_account_value_in_history
 from models.products import (Currency,
-    Cash, CashPartial, CashWithId,
+    Cash, CashPartial, CashWithId, CashRichWithId,
     Card, CardPartial, CardWithId, CardRichWithId,
     PersonalAccount, PersonalAccountPartial, PersonalAccountWithId, PersonalAccountRichWithId,
     StockAccount, StockAccountPartial, StockAccountWithId, StockAccountRichWithId,
@@ -17,8 +17,18 @@ router = APIRouter()
 
 cash_router = APIRouter(prefix="/cash")
 cash_factory = CRUDRouterFactory(cash_router, "cash", Cash, CashPartial, CashWithId)
-cash_factory.create_get()
-cash_factory.create_get_by_id()
+
+@cash_router.get("", response_model=list[CashRichWithId])
+async def get_cashs(db: AsyncIOMotorDatabase = Depends(get_db)):
+    items: list[CashWithId] = await get(db, "cash", CashWithId)
+    result = []
+    for i in items:
+        result.append(CashRichWithId(
+            **i.model_dump(by_alias=True, mode="json"),
+            value_pln=Value.multiply(i.value, Currency.convert(i.currency, Currency.PLN))
+        ))
+    return result
+
 cash_factory.create_post()
 cash_factory.create_patch()
 cash_factory.create_delete()

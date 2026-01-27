@@ -98,6 +98,9 @@ class CapitalInvestmentWithId(CapitalInvestment, metaclass=WithId): pass
 class CardRich(Card): account: PersonalAccountWithId
 class CardRichWithId(CardRich, metaclass=WithId): pass
 
+class CashRich(Cash): value_pln: float
+class CashRichWithId(CashRich, metaclass=WithId): pass
+
 class PersonalAccountRich(PersonalAccount): value_pln: float
 class PersonalAccountRichWithId(PersonalAccountRich, metaclass=WithId): pass
 

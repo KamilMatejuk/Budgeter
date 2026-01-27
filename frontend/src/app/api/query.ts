@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { get } from "./fetch";
-import { CashWithId, ChartRange, OrganisationRichWithId, PersonalAccountRichWithId, TagRichWithId, TransactionWithId } from "@/types/backend";
+import { CashRichWithId, ChartRange, OrganisationRichWithId, PersonalAccountRichWithId, TagRichWithId, TransactionWithId } from "@/types/backend";
 import { useEffect, useState } from "react";
 import { formatValue } from "@/components/table/cells/CellValue";
 import { getDateString } from "@/const/date";
@@ -20,7 +20,7 @@ function _useFetchWrapper<T>(queryKey: (string | number)[], revalidateKey: strin
 }
 
 export function useCashs() {
-  return _useFetchWrapper<CashWithId[]>(
+  return _useFetchWrapper<CashRichWithId[]>(
     ["cash"],
     ["cash"],
     '/api/products/cash',

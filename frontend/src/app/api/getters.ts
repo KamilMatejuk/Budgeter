@@ -4,7 +4,7 @@ import {
   CapitalInvestmentRichWithId,
   CardRequirementsResponse,
   CardRichWithId,
-  CashWithId,
+  CashRichWithId,
   Comparison,
   OrganisationRichWithId,
   PersonalAccountRichWithId,
@@ -34,7 +34,7 @@ export async function getCards() {
 }
 
 export async function getCash() {
-  return await get<CashWithId[]>("/api/products/cash", ["cash"]);
+  return await get<CashRichWithId[]>("/api/products/cash", ["cash"]);
 }
 
 export const _sortPersonalAccounts = (accounts: PersonalAccountRichWithId[]) => {

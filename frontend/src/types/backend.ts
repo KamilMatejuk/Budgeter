@@ -375,8 +375,7 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        /** Get Cash By Id */
-        get: operations["get_cash_by_id_api_products_cash__id__get"];
+        get?: never;
         put?: never;
         post?: never;
         /** Delete Cash */
@@ -1026,6 +1025,18 @@ export type components = {
             value?: number | null;
             currency?: components["schemas"]["Currency"] | null;
         };
+        /** CashRichWithId */
+        CashRichWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: number;
+            currency: components["schemas"]["Currency"];
+            /** Value Pln */
+            value_pln: number;
+        };
         /** CashWithId */
         CashWithId: {
             /** Id */
@@ -1589,6 +1600,7 @@ export type CardRichWithId = components['schemas']['CardRichWithId'];
 export type CardWithId = components['schemas']['CardWithId'];
 export type Cash = components['schemas']['Cash'];
 export type CashPartial = components['schemas']['CashPartial'];
+export type CashRichWithId = components['schemas']['CashRichWithId'];
 export type CashWithId = components['schemas']['CashWithId'];
 export type ChartRange = components['schemas']['ChartRange'];
 export type Comparison = components['schemas']['Comparison'];
@@ -2368,7 +2380,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CashWithId"][];
+                    "application/json": components["schemas"]["CashRichWithId"][];
                 };
             };
         };
@@ -2418,37 +2430,6 @@ export interface operations {
                 "application/json": components["schemas"]["CashPartial"];
             };
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CashWithId"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_cash_by_id_api_products_cash__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

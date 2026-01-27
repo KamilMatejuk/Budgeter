@@ -9,7 +9,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
 from routes.base import fail_wrapper
-from models.base import PyBaseModel, WithId, PyObjectId
+from models.base import PyObjectId
+from models.backup import BackupRequest, BackupPatchRequest, BackupResponse
 
 
 BACKUP_EXT = ".bson"
@@ -17,23 +18,6 @@ BACKUP_DIR = os.path.join(os.path.dirname(__file__), "../backups")
 os.makedirs(BACKUP_DIR, exist_ok=True)
 
 router = APIRouter()
-
-
-class BackupRequest(PyBaseModel):
-    auto: bool
-    name: str
-
-class BackupPatchRequest(PyBaseModel):
-    prev_name: str
-    name: str
-
-class BackupResponse(PyBaseModel, metaclass=WithId):
-    name: str
-    auto: bool
-    timestamp: datetime
-    size_mb: float
-    description: str
-
 
 ### Read parameters from filename and vice versa ###
 

@@ -2,6 +2,17 @@ import enum
 from datetime import date
 from models.tag import TagRichWithId
 from models.base import PyBaseModel, WithId
+from models.products import CardWithId, PersonalAccountWithId
+
+
+class CardRequirementsResponse(PyBaseModel):
+    card: CardWithId
+    remaining: int | float
+
+
+class AccountRequirementsResponse(PyBaseModel):
+    account: PersonalAccountWithId
+    remaining: int | float
 
 
 class CardMonthlyHistory(PyBaseModel):
@@ -23,10 +34,15 @@ class ChartRange(enum.Enum):
     _FULL = "FULL"
 
 
+class PatchAccountValueRequest(PyBaseModel):
+    value: float
+
+
 class ComparisonItemRecursive(PyBaseModel, metaclass=WithId):
     tag: TagRichWithId
     value_pln: float
     children: list["ComparisonItemRecursive"] = []
+
 
 class Comparison(PyBaseModel, metaclass=WithId):
     month: int

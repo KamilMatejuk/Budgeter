@@ -4,12 +4,13 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.db import get_db
 from core.utils import Value, Date
 from routes.base import fail_wrapper, get
-from models.base import PyBaseModel, PyObjectId
+from models.base import PyObjectId
 from routes.transaction import enrich_transactions
 from models.tag import TagRichWithId, TagWithId, Join
 from routes.sources.utils import mark_account_value_in_history
 from models.transaction import TransactionRichWithId, TransactionWithId
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, ComparisonItemRecursive
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, \
+    ComparisonItemRecursive, AccountRequirementsResponse, CardRequirementsResponse, PatchAccountValueRequest
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
 from routes.utils import get_tag_children, get_tag_name, get_rich_tag, create_tags_condition, remove_leading_zero_history, range_to_dates
 
@@ -17,14 +18,6 @@ router = APIRouter()
 
 
 ################################ Requirements #################################
-
-class CardRequirementsResponse(PyBaseModel):
-    card: CardWithId
-    remaining: int | float
-
-class AccountRequirementsResponse(PyBaseModel):
-    account: PersonalAccountWithId
-    remaining: int | float
 
 @router.get("/requirements/cards", response_model=list[CardRequirementsResponse])
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -148,9 +141,6 @@ async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = D
             response.append(Value.add(stable_value, value_map.get(current_date, 0.0)))
         return response
     return await inner()
-
-class PatchAccountValueRequest(PyBaseModel):
-    value: float
 
 @router.patch("/account_value", response_model=dict)
 async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):

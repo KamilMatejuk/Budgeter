@@ -2,9 +2,9 @@ import traceback
 from fastapi import HTTPException, APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from models.base import PyBaseModel
-from core.logger import get_logger
 from core.db import get_db
+from core.logger import get_logger
+from models.base import PyBaseModel
 
 
 LOGGER = get_logger(__name__)

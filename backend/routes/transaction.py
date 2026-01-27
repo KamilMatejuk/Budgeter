@@ -3,16 +3,17 @@ from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
+from models.tag import Join
 from core.utils import Value, Date
 from models.base import PyObjectId
-from routes.tag import sort_by_name as sort_tags, get_rich_tags, create_tags_condition, Join
 from models.products import Currency, PersonalAccountWithId, CashWithId
 from models.organisation import OrganisationWithId
-from routes.utils import remove_leading_zero_history
 from routes.sources.utils import mark_account_value_in_history
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
-from routes.organisation import match_organisation_by_name_regex, get_organisation_name_by_name_regex
-from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, TransactionRepayRequest, TransactionWithId, TransactionRichWithId
+from routes.utils import remove_leading_zero_history, match_organisation_by_name_regex, \
+    get_organisation_name_by_name_regex, sort_tags_by_name, get_rich_tags, create_tags_condition
+from models.transaction import Transaction, TransactionPartial, TransactionSplitRequest, \
+    TransactionRepayRequest, TransactionWithId, TransactionRichWithId
 
 single_router = APIRouter()
 multi_router = APIRouter()
@@ -46,7 +47,7 @@ async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase =
     if data.organisation is not None:
         data.organisation = await get_organisation_name_by_name_regex(data.organisation, db)
     if data.tags is not None:
-        data.tags = await sort_tags(data.tags, db)
+        data.tags = await sort_tags_by_name(data.tags, db)
     assert data.value is None, "Transaction value cannot be changed via patch"
     return await patch(db, "transactions", TransactionWithId, data)
 
@@ -54,7 +55,7 @@ async def patch_transaction(data: TransactionPartial, db: AsyncIOMotorDatabase =
 @single_router.post("", response_model=TransactionWithId)
 async def create_transaction(data: Transaction, db: AsyncIOMotorDatabase = Depends(get_db)):
     data.organisation = await get_organisation_name_by_name_regex(data.organisation, db)
-    data.tags = await sort_tags(data.tags, db)
+    data.tags = await sort_tags_by_name(data.tags, db)
     transaction: TransactionWithId = await create(db, "transactions", TransactionWithId, data)
     # update history
     account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(transaction.account)}, one=True)

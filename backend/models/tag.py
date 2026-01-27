@@ -1,7 +1,13 @@
 import re
+import enum
 from pydantic import field_validator
 
 from models.base import PyBaseModel, Partial, WithId
+
+
+class Join(enum.Enum):
+    OR = "OR"
+    AND = "AND"
 
 
 class Tag(PyBaseModel):

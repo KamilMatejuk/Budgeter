@@ -2,18 +2,16 @@ from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from models.tag import TagWithId
 from core.utils import Value, Date
-from models.tag import TagRichWithId
 from routes.base import fail_wrapper, get
 from models.base import PyBaseModel, PyObjectId
 from routes.transaction import enrich_transactions
-from routes.utils import remove_leading_zero_history
+from models.tag import TagRichWithId, TagWithId, Join
 from routes.sources.utils import mark_account_value_in_history
 from models.transaction import TransactionRichWithId, TransactionWithId
-from routes.tag import get_children, get_all_children_ids, get_name as get_tag_name, get_rich_tag, create_tags_condition, Join
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, ComparisonItemRecursive
 from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
+from routes.utils import get_tag_children, get_tag_name, get_rich_tag, create_tags_condition, remove_leading_zero_history, range_to_dates
 
 router = APIRouter()
 
@@ -82,19 +80,6 @@ async def _get_required_account_amount(db, key, filtr):
 
 ################################ Account Value #################################
 
-def _range_to_dates(range: ChartRange):
-    this_month = Date.this_month()
-    if range == ChartRange._3M:
-        start = Date.add_months(this_month, -2)
-    elif range == ChartRange._1Y:
-        start = Date.add_months(this_month, -11)
-    elif range == ChartRange._FULL:
-        start = None
-    else:
-        raise ValueError(f"Invalid range {range}")
-    return start
-
-
 @router.get("/account_value/{range}", response_model=list[float])
 async def get_total_account_values(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
@@ -117,7 +102,7 @@ async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabas
     if id == "Investments": return await get_investments_values(range, db)
     @fail_wrapper
     async def inner():
-        start = _range_to_dates(range)
+        start = range_to_dates(range)
         account: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": id}, one=True)
         # get history
         condition = {"account": str(account.id)}
@@ -154,7 +139,7 @@ async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = D
             if c.start < start_date: start_date = c.start
             for date in Date.iterate_days(c.start, c.end):
                 value_map[date] = Value.add(value_map.get(date, 0.0), c.value)
-        start = _range_to_dates(range)
+        start = range_to_dates(range)
         if start is None: start = start_date
         response = []
         record_index = 0
@@ -164,11 +149,8 @@ async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = D
         return response
     return await inner()
 
-
 class PatchAccountValueRequest(PyBaseModel):
     value: float
-
-
 
 @router.patch("/account_value", response_model=dict)
 async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -185,7 +167,7 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
 
 @router.get("/income_expense/{range}", response_model=tuple[list[float], list[float]])
 async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
-    start = _range_to_dates(range)
+    start = range_to_dates(range)
     if start is None:
         first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
         start = first.date if first else Date.today()
@@ -245,7 +227,7 @@ async def _aggregate_by_children(tag: str, transactions: list[TransactionRichWit
     tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
     if not tag: return []
     tagFullName = await get_tag_name(tag, db)
-    children = await get_children(tag, db)
+    children = await get_tag_children(tag, db)
     children_map: dict[str, list[TransactionRichWithId]] = {t: [] for t in (tag.children or []) + ["Other"]}
     # map to immediate children
     for t in transactions:

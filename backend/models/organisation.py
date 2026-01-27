@@ -1,5 +1,5 @@
 from models.base import PyBaseModel, Partial, WithId
-from routes.tag import TagRichWithId
+from models.tag import TagRichWithId
 
 class Organisation(PyBaseModel):
     patterns: list[str]

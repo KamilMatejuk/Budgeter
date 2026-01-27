@@ -3,13 +3,12 @@ import datetime
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from routes.sources.millennium import MillenniumRequest, create_millennium_transaction
-from routes.sources.revolut import RevolutRequest, create_revolut_transaction
-from models.transaction import TransactionWithId
-from routes.base import create, fail_wrapper, get
-from models.source import Source, SourceParsed
-from models.base import PyBaseModel
 from core.db import get_db
+from models.base import PyBaseModel
+from models.source import Source, SourceParsed
+from routes.base import create, fail_wrapper, get
+from routes.sources.revolut import RevolutRequest, create_revolut_transaction
+from routes.sources.millennium import MillenniumRequest, create_millennium_transaction
 
 
 router = APIRouter()

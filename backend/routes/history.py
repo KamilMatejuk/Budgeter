@@ -446,6 +446,7 @@ async def _aggregate_by_other(tag: str, transactions: list[TransactionRichWithId
     tagFullName = await get_tag_name(tag, db)
     # map to other tags
     other_tags_map: dict[str, list[TransactionRichWithId]] = {}
+    untagged: list[TransactionRichWithId] = []
     for t in transactions:
         found_other = False
         for ttag in t.tags:
@@ -455,24 +456,24 @@ async def _aggregate_by_other(tag: str, transactions: list[TransactionRichWithId
             other_tags_map[str(ttag.id)].append(t)
             found_other = True
         if not found_other and len(t.tags) == 1:
-            if "Untagged" not in other_tags_map: other_tags_map["Untagged"] = []
-            other_tags_map["Untagged"].append(t)
+            untagged.append(t)            
     # create response
     response = []
     for other_tag_id, other_transactions in other_tags_map.items():
         total_value = Value.sum(t.value_pln for t in other_transactions)
-        if other_tag_id == "Untagged":
-            response.append(ComparisonItemRecursive(
-                _id=str(PyObjectId()),
-                tag=TagRichWithId(_id=str(PyObjectId()), name="Untagged", colour="#000000"),
-                value_pln=total_value,
-                children=[],
-            ))
-        else:
-            response.append(ComparisonItemRecursive(
-                _id=str(PyObjectId()),
-                tag=await get_rich_tag(other_tag_id, db),
-                value_pln=total_value,
+        response.append(ComparisonItemRecursive(
+            _id=str(PyObjectId()),
+            tag=await get_rich_tag(other_tag_id, db),
+            value_pln=total_value,
+            children=[],
+        ))
+    response = sorted(response, key=lambda x: x.tag.name.lower())
+    if untagged:
+        total_value = Value.sum(t.value_pln for t in untagged)
+        response.append(ComparisonItemRecursive(
+            _id=str(PyObjectId()),
+            tag=TagRichWithId(_id=str(PyObjectId()), name="Untagged", colour="#000000"),
+            value_pln=total_value,
                 children=[],
             ))
     return response

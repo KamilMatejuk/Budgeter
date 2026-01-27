@@ -24,12 +24,26 @@ const columns: ColumnDef<ComparisonItemRecursive>[] = [
 const classes = {
   label: "text-sm text-subtext mt-4",
   value: "text-2xl font-semibold",
+  switch: "text-sm text-subtext underline cursor-pointer mt-2 w-full",
   graphContainer: "flex justify-center items-center gap-4",
 }
 
+function removeZeros(items: ComparisonItemRecursive[]): ComparisonItemRecursive[] {
+  return items
+    .filter(i => i.value_pln !== 0)
+    .map(i => ({
+      ...i,
+      children: removeZeros(i.children),
+    }));
+}
+
 const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags, other_tags }: DetailProps) {
+  const [hideZeros, setHideZeros] = React.useState(false);
+  const childrenTagValues = hideZeros ? removeZeros(children_tags) : children_tags;
+
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
+
   return (
     <div className="flex flex-col items-center">
       <SectionHeader text={`${getDateString(dateStart)} - ${getDateString(dateEnd)}`} className="border-b border-line" />
@@ -42,7 +56,8 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         <p className={classes.value}>{transactions}</p>
       </Link>
 
-      <p className={classes.label}>Children composition graph</p>
+      <SectionHeader text="Children composition" className="border-b border-line text-md font-normal" />
+
       <div className={classes.graphContainer}>
         {children_tags.map((child, i) => {
           // filter out zero value items and get first non-single children level
@@ -65,15 +80,18 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         })}
       </div>
 
-      <p className={classes.label}>Children composition table</p>
-      <Table<ComparisonItemRecursive>
-        data={children_tags.length == 1 ? children_tags[0].children : children_tags} // show only children if only one tag selected
-        columns={columns}
-        expandChild="children"
-        expandAll
-      />
+      <div>
+        <p className={classes.switch} onClick={() => setHideZeros(!hideZeros)}>{hideZeros ? "Show empty" : "Hide empty"}</p>
+        <Table<ComparisonItemRecursive>
+          data={childrenTagValues.length == 1 ? childrenTagValues[0].children : childrenTagValues} // show only children if only one tag selected
+          columns={columns}
+          expandChild="children"
+          expandAll
+        />
+      </div>
 
-      <p className={classes.label}>Other tags composition graph</p>
+      <SectionHeader text="Other tags composition" className="border-b border-line text-md font-normal" />
+
       <div className={classes.graphContainer}>
         {other_tags.map((child, i) => {
           return child.children.length == 0
@@ -89,7 +107,6 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         })}
       </div>
 
-      <p className={classes.label}>Other tags composition table</p>
       <Table<ComparisonItemRecursive>
         data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
         columns={columns}

@@ -385,7 +385,8 @@ async def get_transactions_filtered(
             year=month.year,
             value_pln=total_value,
             transactions=len(transactions),
-            children_tags=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []]
+            children_tags=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []],
+            other_tags=[await _create_aggregation_by_other(ti, transactions, db) for ti in tagsIn or []],
         ))
     return response
 
@@ -431,5 +432,47 @@ async def _aggregate_by_children(tag: str, transactions: list[TransactionRichWit
                 tag=await get_rich_tag(child_tag_id, db),
                 value_pln=total_value,
                 children=children,
+            ))
+    return response
+
+async def _create_aggregation_by_other(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> ComparisonItemRecursive:
+    children = await _aggregate_by_other(tag, transactions, db)
+    total_value = Value.sum(c.value_pln for c in children)
+    return ComparisonItemRecursive(_id=str(PyObjectId()), tag=await get_rich_tag(tag, db), value_pln=total_value, children=children)
+
+async def _aggregate_by_other(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> list[ComparisonItemRecursive]:
+    tag: TagWithId = await get(db, "tags", TagWithId, {"_id": tag}, one=True)
+    if not tag: return []
+    tagFullName = await get_tag_name(tag, db)
+    # map to other tags
+    other_tags_map: dict[str, list[TransactionRichWithId]] = {}
+    for t in transactions:
+        found_other = False
+        for ttag in t.tags:
+            if ttag.name.startswith(tagFullName + "/"): continue
+            if str(ttag.id) == str(tag.id): continue
+            if str(ttag.id) not in other_tags_map: other_tags_map[str(ttag.id)] = []
+            other_tags_map[str(ttag.id)].append(t)
+            found_other = True
+        if not found_other and len(t.tags) == 1:
+            if "Untagged" not in other_tags_map: other_tags_map["Untagged"] = []
+            other_tags_map["Untagged"].append(t)
+    # create response
+    response = []
+    for other_tag_id, other_transactions in other_tags_map.items():
+        total_value = Value.sum(t.value_pln for t in other_transactions)
+        if other_tag_id == "Untagged":
+            response.append(ComparisonItemRecursive(
+                _id=str(PyObjectId()),
+                tag=TagRichWithId(_id=str(PyObjectId()), name="Untagged", colour="#000000"),
+                value_pln=total_value,
+                children=[],
+            ))
+        else:
+            response.append(ComparisonItemRecursive(
+                _id=str(PyObjectId()),
+                tag=await get_rich_tag(other_tag_id, db),
+                value_pln=total_value,
+                children=[],
             ))
     return response

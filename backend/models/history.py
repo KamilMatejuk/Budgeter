@@ -55,4 +55,4 @@ class Comparison(PyBaseModel, metaclass=WithId):
     value_pln: float
     transactions: int
     children_tags: list[ComparisonItemRecursive] = [] # mapping of each include tag id to its children comparison
-    # TODO other tags composition
+    other_tags: list[ComparisonItemRecursive] = [] # mapping of each include tag id to other tags comparison

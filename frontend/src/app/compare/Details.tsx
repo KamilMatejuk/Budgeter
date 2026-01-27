@@ -47,6 +47,7 @@ function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps,
     transactions: found.reduce((sum, curr) => sum + curr.transactions, 0),
     value_pln: found.reduce((sum, curr) => sum + curr.value_pln, 0),
     children_tags: combineComparisonItemsRecursively(found.flatMap(f => f.children_tags)),
+    other_tags: combineComparisonItemsRecursively(found.flatMap(f => f.other_tags)),
   };
 }
 

@@ -1166,6 +1166,11 @@ export type components = {
              * @default []
              */
             children_tags: components["schemas"]["ComparisonItemRecursive"][];
+            /**
+             * Other Tags
+             * @default []
+             */
+            other_tags: components["schemas"]["ComparisonItemRecursive"][];
         };
         /** ComparisonItemRecursive */
         ComparisonItemRecursive: {

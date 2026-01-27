@@ -27,7 +27,7 @@ const classes = {
   graphContainer: "flex justify-center items-center gap-4",
 }
 
-const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags }: DetailProps) {
+const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags, other_tags }: DetailProps) {
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
   return (
@@ -41,9 +41,6 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       <Link target="_blank" href={`/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`}>
         <p className={classes.value}>{transactions}</p>
       </Link>
-
-      <p className={classes.label}>Children composition table</p>
-      <Table<ComparisonItemRecursive> url="" tag="" data={children_tags} columns={columns} expandChild="children" expandAll />
 
       <p className={classes.label}>Children composition graph</p>
       <div className={classes.graphContainer}>
@@ -67,6 +64,38 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
             />
         })}
       </div>
+
+      <p className={classes.label}>Children composition table</p>
+      <Table<ComparisonItemRecursive>
+        data={children_tags.length == 1 ? children_tags[0].children : children_tags} // show only children if only one tag selected
+        columns={columns}
+        expandChild="children"
+        expandAll
+      />
+
+      <p className={classes.label}>Other tags composition graph</p>
+      <div className={classes.graphContainer}>
+        {other_tags.map((child, i) => {
+          return child.children.length == 0
+            ? <InfoToast message="No subtags found\nin composition." />
+            : <PieChart
+              key={i}
+              data={child.children.map(c => c.value_pln)}
+              labels={child.children.map(c => c.tag.name)}
+              colors={child.children.map(c => c.tag.colour)}
+              width="200px"
+              height="200px"
+            />
+        })}
+      </div>
+
+      <p className={classes.label}>Other tags composition table</p>
+      <Table<ComparisonItemRecursive>
+        data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
+        columns={columns}
+        expandChild="children"
+        expandAll
+      />
     </div>
   );
 });

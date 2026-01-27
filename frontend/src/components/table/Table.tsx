@@ -32,8 +32,8 @@ interface GroupOption<T extends Item> {
   component: React.ComponentType<GroupBackendModalProps<T>>
 }
 interface TableProps<T extends Item> {
-  url: string;
-  tag: string;
+  url?: string;
+  tag?: string;
   data: T[];
   columns: ColumnDef<T>[];
   options?: Option<T>[];
@@ -111,7 +111,7 @@ function defineColumnOptions<T extends Item>(
   };
 }
 
-export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText, expandChild, expandAll }: TableProps<T>) {
+export default function Table<T extends Item>({ url = "", tag = "", data, columns, options, groupOptions, CreateModal, newText, expandChild, expandAll }: TableProps<T>) {
   // modals types are indexed as: 0 - create, 1+ - custom options, 1+n+ - group options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);

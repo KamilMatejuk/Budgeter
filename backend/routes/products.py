@@ -11,8 +11,6 @@ from models.products import (Currency,
     PersonalAccount, PersonalAccountPartial, PersonalAccountWithId, PersonalAccountRichWithId,
     StockAccount, StockAccountPartial, StockAccountWithId, StockAccountRichWithId,
     CapitalInvestment, CapitalInvestmentPartial, CapitalInvestmentWithId, CapitalInvestmentRichWithId,
-    MonthlyIncome, MonthlyIncomePartial, MonthlyIncomeWithId,
-    MonthlyExpense, MonthlyExpensePartial, MonthlyExpenseWithId,
 )
 
 router = APIRouter()
@@ -122,21 +120,3 @@ async def get_capitalinvestments(db: AsyncIOMotorDatabase = Depends(get_db)):
     return result
 
 router.include_router(capital_investment_router)
-
-monthly_income_router = APIRouter(prefix="/monthly_income")
-monthly_income_factory = CRUDRouterFactory(monthly_income_router, "monthly_income", MonthlyIncome, MonthlyIncomePartial, MonthlyIncomeWithId)
-monthly_income_factory.create_get()
-monthly_income_factory.create_get_by_id()
-monthly_income_factory.create_post()
-monthly_income_factory.create_patch()
-monthly_income_factory.create_delete()
-router.include_router(monthly_income_router)
-
-monthly_expense_router = APIRouter(prefix="/monthly_expense")
-monthly_expense_factory = CRUDRouterFactory(monthly_expense_router, "monthly_expense", MonthlyExpense, MonthlyExpensePartial, MonthlyExpenseWithId)
-monthly_expense_factory.create_get()
-monthly_expense_factory.create_get_by_id()
-monthly_expense_factory.create_post()
-monthly_expense_factory.create_patch()
-monthly_expense_factory.create_delete()
-router.include_router(monthly_expense_router)

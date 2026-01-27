@@ -1,7 +1,8 @@
 {
     "ignore": [
         "src/types/backend.ts",
-        "src/types/patch.ts"
+        "src/types/patch.ts",
+        "src/components/form/DayOfMonthInputWithError.tsx"
     ],
     "ignoreDependencies": [
         "@eslint/eslintrc",

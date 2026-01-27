@@ -3,7 +3,6 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import PhysicalProducts from "./PhysicalProducts";
 import Accounts from "./Accounts";
 import Investments from "./Investments";
-import RecurringProducts from "./RecurringProducts";
 import TagTree from "./TagTree";
 import Organisations from "./Organisations";
 
@@ -17,8 +16,6 @@ export default function Settings() {
       <Accounts />
       <SectionHeader text="Investments" subtext="Stock, capital and savings" />
       <Investments />
-      <SectionHeader text="Recurring" subtext="Monthly income and expenses" />
-      <RecurringProducts />
       <SectionHeader text="Tags" subtext="Hierarchy of your organisational tags" />
       <TagTree />
       <SectionHeader text="Organisations" subtext="Nice visualization of popular shops and services" />

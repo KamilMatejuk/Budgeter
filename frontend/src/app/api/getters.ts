@@ -6,8 +6,6 @@ import {
   CardRichWithId,
   CashWithId,
   Comparison,
-  MonthlyExpenseWithId,
-  MonthlyIncomeWithId,
   OrganisationRichWithId,
   PersonalAccountRichWithId,
   Source,
@@ -59,14 +57,6 @@ export async function getStockAccounts() {
 
 export async function getCapitalInvestments() {
   return await get<CapitalInvestmentRichWithId[]>("/api/products/capital_investment", ["capital_investment"]);
-}
-
-export async function getMonthlyIncomes() {
-  return await get<MonthlyIncomeWithId[]>("/api/products/monthly_income", ["monthly_income"]);
-}
-
-export async function getMonthlyExpenses() {
-  return await get<MonthlyExpenseWithId[]>("/api/products/monthly_expense", ["monthly_expense"]);
 }
 
 export async function getOrganisations() {

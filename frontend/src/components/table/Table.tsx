@@ -41,6 +41,7 @@ interface TableProps<T extends Item> {
   CreateModal?: React.ComponentType<BackendModalProps<T>>;
   newText?: string;
   expandChild?: keyof T;
+  expandAll?: boolean;
 }
 
 function defineColumnExpand<T extends Item>(): ColumnDef<T> {
@@ -110,11 +111,11 @@ function defineColumnOptions<T extends Item>(
   };
 }
 
-export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText, expandChild }: TableProps<T>) {
+export default function Table<T extends Item>({ url, tag, data, columns, options, groupOptions, CreateModal, newText, expandChild, expandAll }: TableProps<T>) {
   // modals types are indexed as: 0 - create, 1+ - custom options, 1+n+ - group options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
-  const [expanded, setExpanded] = useState<ExpandedState>(() => ({}));
+  const [expanded, setExpanded] = useState<ExpandedState>(() => (expandAll ? true : {}));
 
   const allColumns = useMemo(() => ([
     expandChild && defineColumnExpand<T>(),

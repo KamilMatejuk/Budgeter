@@ -39,7 +39,7 @@ export default function Detail({ value_pln, transactions, range, slug, children 
       </Link>
       
       <p className={classes.label}>Children composition table</p>
-      <Table<ComparisonItemRecursive> url="" tag="" data={children} columns={columns} expandChild="children" />
+      <Table<ComparisonItemRecursive> url="" tag="" data={children} columns={columns} expandChild="children" expandAll />
     </div>
   );
 }

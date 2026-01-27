@@ -22,7 +22,7 @@ function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): Co
   if (items.length === 1) return items;
   const grouped: Record<string, ComparisonItemRecursive[]> = {};
   for (const item of items) {
-      (grouped[item.tag._id] ??= []).push(item);
+      (grouped[item.tag.name] ??= []).push(item);
   }
   return Object.values(grouped).map(itemsWithSameTag => {
     const childrenLists: ComparisonItemRecursive[] = itemsWithSameTag.flatMap(i => i.children);

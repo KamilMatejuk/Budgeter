@@ -8,6 +8,8 @@ import { defineCellTag } from "@/components/table/cells/CellTag";
 import { defineCellValue } from "@/components/table/cells/CellValue";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import React from "react";
+import { PieChart } from "@/components/dashboard/Chart";
+import InfoToast from "@/components/toast/InfoToast";
 
 export interface DetailProps extends Omit<Comparison, "month" | "year"> {
   range: Range;
@@ -20,8 +22,9 @@ const columns: ColumnDef<ComparisonItemRecursive>[] = [
 ];
 
 const classes = {
-  label: "text-sm text-subtext mt-2",
+  label: "text-sm text-subtext mt-4",
   value: "text-2xl font-semibold",
+  graphContainer: "flex justify-center items-center gap-4",
 }
 
 const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children }: DetailProps) {
@@ -38,9 +41,27 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       <Link target="_blank" href={`/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`}>
         <p className={classes.value}>{transactions}</p>
       </Link>
-      
+
       <p className={classes.label}>Children composition table</p>
       <Table<ComparisonItemRecursive> url="" tag="" data={children} columns={columns} expandChild="children" expandAll />
+
+      <p className={classes.label}>Children composition graph</p>
+      <div className={classes.graphContainer}>
+        {children.map((child, i) => {
+          let items = child.children;
+          while (items.length === 1 && items[0].children.length > 0) items = items[0].children;
+          return items.length == 0
+            ? <InfoToast message="No subtags found\nin composition." />
+            : <PieChart
+              key={i}
+              data={items.map(c => c.value_pln)}
+              labels={items.map(c => c.tag.name)}
+              colors={items.map(c => c.tag.colour)}
+              width="200px"
+              height="200px"
+            />
+        })}
+      </div>
     </div>
   );
 });

@@ -54,8 +54,8 @@ function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps,
 export default function Details({ data, filters }: DetailsProps) {
   const [selectedRanges, setSelectedRanges] = useState<Range[]>(
     filters.dates?.length ? filters.dates.map(d => ({
-      startMonth: d.start.getMonth(), startYear: d.start.getFullYear(),
-      endMonth: d.end.getMonth(), endYear: d.end.getFullYear(),
+      startMonth: d.start.getMonth() + 1, startYear: d.start.getFullYear(),
+      endMonth: d.end.getMonth() + 1, endYear: d.end.getFullYear(),
     })) : [{
       startMonth: data[data.length - 1].month, startYear: data[data.length - 1].year,
       endMonth: data[data.length - 1].month, endYear: data[data.length - 1].year,

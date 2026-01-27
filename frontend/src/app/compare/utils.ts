@@ -24,7 +24,7 @@ export function parseSearchParams(params: FiltersProps): FiltersProps {
       const [start, end] = String(dateRange).split("_");
       const [startMonth, startYear] = start.split(".");
       const [endMonth, endYear] = end.split(".");
-      return { start: new Date(Number(startYear), Number(startMonth), 1), end: new Date(Number(endYear), Number(endMonth) + 1, 0) };
+      return { start: new Date(Number(startYear), Number(startMonth) - 1, 1), end: new Date(Number(endYear), Number(endMonth), 0) };
     }
     return dateRange;
   });

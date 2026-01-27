@@ -1,6 +1,6 @@
 'use client';
 
-import { ArcElement, BarElement, CategoryScale, Chart, ChartOptions, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
+import { ArcElement, BarElement, CategoryScale, Chart, ChartOptions, Filler, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { PropsWithChildren } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
@@ -13,9 +13,10 @@ Chart.register(
   LineElement,
   ArcElement,
   BarElement,
-  Title,
+  Filler,
   Tooltip,
   Legend,
+  Title,
 );
 
 const Options = {
@@ -89,6 +90,70 @@ export function LineChart({ data, labels, ...props }: LineChartProps) {
   );
 }
 
+// ************************** PREDICTION LINE CHART ***************************
+
+export interface PredictionLineChartProps extends ChartContainerProps {
+  top: number[];
+  middle: number[];
+  bottom: number[];
+  labels: string[];
+}
+
+const PredictionLineChartOptions = {
+  ...LineChartOptions,
+  layout: {
+    padding: { right: 30 },
+  },
+  plugins: {
+    ...LineChartOptions.plugins,
+    datalabels: {
+      display: (ctx: any) => ctx.dataIndex % 12 === 11,
+      formatter: (value: number) => value.toFixed(2),
+      align: "center",
+      anchor: "center",
+      color: "#1eae53",
+      font: { weight: "600", size: 12 },
+    },
+  },
+};
+
+
+export function PredictionLineChart({ top, middle, bottom, labels, ...props }: PredictionLineChartProps) {
+  return (
+    <ChartContainer {...props}>
+      <Line options={PredictionLineChartOptions as ChartOptions<"line">} data={{
+        labels,
+        datasets: [
+          {
+            label: "Pessimistic",
+            data: bottom,
+            borderColor: "#22C55EAA",
+            borderWidth: 2,
+            tension: 0.3,
+            fill: false,
+          },
+          {
+            label: "Optimistic",
+            data: top,
+            borderColor: "#22C55EAA",
+            borderWidth: 2,
+            tension: 0.3,
+            fill: { target: "-1" }, // fill to previous dataset (bottom)
+            backgroundColor: "#22C55E33",
+          },
+          {
+            label: "Realistic",
+            data: middle,
+            borderColor: "#22C55E",
+            borderWidth: 2,
+            tension: 0.3,
+            fill: false,
+          },
+        ],
+      }} />
+    </ChartContainer>
+  );
+}
 
 // ***************************** DOUBLE BAR CHART ****************************
 

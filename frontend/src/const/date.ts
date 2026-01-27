@@ -18,6 +18,18 @@ export function getMonthName(month: number) {
   return date.toLocaleString('default', { month: 'long' });
 }
 
+export function getDaysBetweenDates(start: Date, end: Date): number {
+  const oneDay = 1000 * 60 * 60 * 24;
+  const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  const diffInTime = endDate.getTime() - startDate.getTime();
+  return Math.round(diffInTime / oneDay);
+}
+
+export function getMonthsBetweenDates(start: Date, end: Date): number {
+  return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+}
+
 function _startDateFromRange(range: ChartRange | keyof typeof ChartRange): Date | undefined {
   const now = new Date();
   if (range == ChartRange["3M"]) {
@@ -39,7 +51,7 @@ function _getDaysSinceDate(start: Date): string[] {
   return dates;
 }
 
-function _getMonthsSinceDate(start: Date): string[] {
+export function _getMonthsSinceDate(start: Date): string[] {
   const months: string[] = [];
   const now = new Date();
   while (start <= now) {
@@ -71,4 +83,14 @@ export function getMonthsFromValues(values: number[]) {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth() - values.length + 1, 1);
   return _getMonthsSinceDate(start);
+}
+
+export function getMonthsArray(n: number): string[] {
+  const months: string[] = [];
+  const now = new Date();
+  for (let i = 0; i < n; i++) {
+    const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    months.push(getMonthName(date.getMonth() + 1) + ' ' + date.getFullYear());
+  }
+  return months;
 }

@@ -111,7 +111,6 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
         columns={columns}
         expandChild="children"
-        expandAll
       />
     </div>
   );

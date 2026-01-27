@@ -385,8 +385,7 @@ async def get_transactions_filtered(
             year=month.year,
             value_pln=total_value,
             transactions=len(transactions),
-            children=[await _create_aggregation_by_children(ti, transactions, db)
-            for ti in tagsIn or []]
+            children=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []]
         ))
     return response
 
@@ -417,7 +416,6 @@ async def _aggregate_by_children(tag: str, transactions: list[TransactionRichWit
     response = []
     for child_tag_id, child_transactions in children_map.items():
         total_value = Value.sum(t.value_pln for t in child_transactions)
-        if total_value == 0: continue
         if child_tag_id == "Other":
             if len(children_map) > 1:
                 response.append(ComparisonItemRecursive(

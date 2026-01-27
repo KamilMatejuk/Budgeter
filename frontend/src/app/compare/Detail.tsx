@@ -18,7 +18,7 @@ export interface DetailProps extends Omit<Comparison, "month" | "year"> {
 
 const columns: ColumnDef<ComparisonItemRecursive>[] = [
   defineCellTag<ComparisonItemRecursive>(),
-  defineCellValue<ComparisonItemRecursive>(),
+  defineCellValue<ComparisonItemRecursive>(true),
 ];
 
 const classes = {
@@ -48,8 +48,13 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       <p className={classes.label}>Children composition graph</p>
       <div className={classes.graphContainer}>
         {children.map((child, i) => {
-          let items = child.children;
-          while (items.length === 1 && items[0].children.length > 0) items = items[0].children;
+          // filter out zero value items and get first non-single children level
+          let items = child.children.filter(c => c.value_pln !== 0);
+          while (items.length === 1) {
+            const itemChildren = items[0].children.filter(c => c.value_pln !== 0);
+            if (itemChildren.length === 0) break;
+            items = items[0].children.filter(c => c.value_pln !== 0)
+          };
           return items.length == 0
             ? <InfoToast message="No subtags found\nin composition." />
             : <PieChart

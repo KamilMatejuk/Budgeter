@@ -20,8 +20,9 @@ export default function TextInputWithError<T>({ formik, formikName, label, ...pr
         {...props}
         className={twMerge(
           "border border-gray-300 px-4 py-2 rounded-md w-full text-center",
+          "disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500",
           error && touched && "border-red-200 bg-red-500/10",
-          props.className || ""
+          props.className || "",
         )}
       />
     </InputWithError>

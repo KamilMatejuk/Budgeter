@@ -74,11 +74,13 @@ export default function AmountInputWithError<T>({
   label,
   allowNegative,
   digits = 2,
+  ...props
 }: AmountInputWithErrorProps<T>) {
   const value = format(getValue(formik, formikName), digits);
 
   return (
     <TextInputWithError
+      {...props}
       formik={formik}
       formikName={formikName}
       label={label}

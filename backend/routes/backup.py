@@ -104,7 +104,7 @@ async def get_backups():
 async def create_backup(data: BackupRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
-        name = _find_unique_name(data.name)
+        name = _find_unique_name(data.name.strip())
         filename = _get_filename(name, data.auto)
         collections = await db.list_collection_names()
         with open(filename, "wb") as f:

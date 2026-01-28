@@ -22,3 +22,8 @@ types:
 check:
 	@docker compose run --rm frontend npx tsc --noEmit && \
 	 docker compose run --rm frontend npx knip --config knip.json
+
+backup:
+	@curl -s http://localhost:48522/api/backup \
+	  	-H "Content-Type: application/json" \
+  		-d '{"auto":true, "name":"Backup from Makefile"}'

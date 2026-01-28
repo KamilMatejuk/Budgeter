@@ -1,5 +1,10 @@
-import datetime
 from typing import Iterable
+import datetime
+import requests
+import json
+
+from models.products import Currency
+
 
 class Value:
     """Utility class to handle float values with two decimal places."""
@@ -48,6 +53,65 @@ class Value:
             count += 1
         if count == 0: return 0.0
         return Value.divide(total, count)
+
+
+class Forex:
+    """Utility class to handle currency conversion."""
+    filename: str = "exchange_rates.json"
+    PLN_per_USD = 3.50
+    PLN_per_EUR = 4.20
+
+    @staticmethod
+    def convert(src: Currency, dst: Currency) -> float:
+        if src == dst: return 1.0
+        PLNUSD, PLNEUR = Forex.get_rates()
+        if src == Currency.PLN and dst == Currency.USD: return 1.0 / PLNUSD
+        if src == Currency.PLN and dst == Currency.EUR: return 1.0 / PLNEUR
+        if src == Currency.USD and dst == Currency.PLN: return PLNUSD
+        if src == Currency.USD and dst == Currency.EUR: return PLNUSD / PLNEUR
+        if src == Currency.EUR and dst == Currency.PLN: return PLNEUR
+        if src == Currency.EUR and dst == Currency.USD: return PLNEUR / PLNUSD
+        return 1.0
+    
+    @staticmethod
+    def convert_to_pln(value: float, currency: Currency) -> float:
+        rate = Forex.convert(currency, Currency.PLN)
+        return Value.multiply(value, rate)
+    
+    @staticmethod
+    def get_rates() -> tuple[float, float] | None:
+        res = Forex._read_rates_from_file()
+        if res is not None: return res
+        res = Forex._fetch_rates_from_nbp()
+        if res is not None: return res
+        return (Forex.PLN_per_USD, Forex.PLN_per_EUR)
+    
+    @staticmethod
+    def _read_rates_from_file() -> tuple[float, float] | None:
+        try:
+            with open(Forex.filename, "r") as f:
+                data = json.load(f)
+                date = datetime.datetime.strptime(data["date"], "%Y-%m-%d").date()
+                if (datetime.date.today() - date).days > 7: return None
+                usd_rate = float(data["USD"])
+                eur_rate = float(data["EUR"])
+                return (usd_rate, eur_rate)
+        except: return None
+    
+    @staticmethod
+    def _fetch_rates_from_nbp() -> tuple[float, float] | None:
+        try:
+            res = requests.get("http://api.nbp.pl/api/exchangerates/tables/A/?format=json", timeout=5)
+            res.raise_for_status()
+            data = res.json()[0]
+            date = datetime.datetime.strptime(data["effectiveDate"], "%Y-%m-%d").date()
+            usd_rate = next(item for item in data["rates"] if item["code"] == "USD")["mid"]
+            eur_rate = next(item for item in data["rates"] if item["code"] == "EUR")["mid"]
+            with open(Forex.filename, "w") as f:
+                json.dump({"date": date.isoformat(), "USD": usd_rate, "EUR": eur_rate}, f)
+            return (usd_rate, eur_rate)
+        except: return None
+
 
 
 class Date:

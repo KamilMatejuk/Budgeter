@@ -55,3 +55,4 @@ openapi.json
 *.pb.py
 
 backups/
+exchange_rates.json

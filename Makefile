@@ -27,6 +27,3 @@ backup:
 	@curl -s http://localhost:48522/api/backup \
 	  	-H "Content-Type: application/json" \
   		-d '{"auto":true, "name":"Backup from Makefile"}'
-
-exchange_rates:
-	@bash forex.sh

@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from core.utils import Date, Value
+from core.utils import Date, Forex
 from routes.base import CRUDRouterFactory, create, get, patch
 from routes.sources.utils import mark_account_value_in_history
-from models.products import (Currency,
+from models.products import (
     Cash, CashPartial, CashWithId, CashRichWithId,
     Card, CardPartial, CardWithId, CardRichWithId,
     PersonalAccount, PersonalAccountPartial, PersonalAccountWithId, PersonalAccountRichWithId,
@@ -25,7 +25,7 @@ async def get_cashs(db: AsyncIOMotorDatabase = Depends(get_db)):
     for i in items:
         result.append(CashRichWithId(
             **i.model_dump(by_alias=True, mode="json"),
-            value_pln=Value.multiply(i.value, Currency.convert(i.currency, Currency.PLN))
+            value_pln=Forex.convert_to_pln(i.value, i.currency)
         ))
     return result
 
@@ -45,7 +45,7 @@ async def get_personalaccounts(db: AsyncIOMotorDatabase = Depends(get_db)):
     for i in items:
         result.append(PersonalAccountRichWithId(
             **i.model_dump(by_alias=True, mode="json"),
-            value_pln=Value.multiply(i.value, Currency.convert(i.currency, Currency.PLN))
+            value_pln=Forex.convert_to_pln(i.value, i.currency)
         ))
     return result
 
@@ -106,7 +106,7 @@ async def get_stockaccounts(db: AsyncIOMotorDatabase = Depends(get_db)):
     for i in items:
         result.append(StockAccountRichWithId(
             **i.model_dump(by_alias=True, mode="json"),
-            value_pln=Value.multiply(i.value, Currency.convert(i.currency, Currency.PLN))
+            value_pln=Forex.convert_to_pln(i.value, i.currency)
         ))
     return result
 
@@ -125,7 +125,7 @@ async def get_capitalinvestments(db: AsyncIOMotorDatabase = Depends(get_db)):
     for i in items:
         result.append(CapitalInvestmentRichWithId(
             **i.model_dump(by_alias=True, mode="json"),
-            value_pln=Value.multiply(i.value, Currency.convert(i.currency, Currency.PLN))
+            value_pln=Forex.convert_to_pln(i.value, i.currency)
         ))
     return result
 

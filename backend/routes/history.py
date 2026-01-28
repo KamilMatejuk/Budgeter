@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
-from core.utils import Value, Date
-from routes.base import fail_wrapper, get
 from models.base import PyObjectId
+from routes.base import fail_wrapper, get
+from core.utils import Value, Date, Forex
 from routes.transaction import enrich_transactions
 from models.tag import TagRichWithId, TagWithId, Join
 from routes.sources.utils import mark_account_value_in_history
 from models.transaction import TransactionRichWithId, TransactionWithId
 from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, \
     ComparisonItemRecursive, AccountRequirementsResponse, CardRequirementsResponse, PatchAccountValueRequest
-from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, Currency
+from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId
 from routes.utils import get_tag_children, get_tag_name, get_rich_tag, create_tags_condition, remove_leading_zero_history, range_to_dates
 
 router = APIRouter()
@@ -125,7 +125,7 @@ async def get_investments_values(range: ChartRange, db: AsyncIOMotorDatabase = D
     async def inner():
         stock: list[StockAccountWithId] = await get(db, "stock_account", StockAccountWithId)
         capital: list[CapitalInvestmentWithId] = await get(db, "capital_investment", CapitalInvestmentWithId)
-        stable_value = Value.sum(Value.multiply(s.value, Currency.convert(s.currency, Currency.PLN)) for s in stock)
+        stable_value = Value.sum(Forex.convert_to_pln(s.value, s.currency) for s in stock)
         value_map = {}
         start_date = Date.today()
         for c in capital:
@@ -170,8 +170,8 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
             "$or": [{"debt_person": None}, {"debt_person": ""}],
         }
         transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-        incomes.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value > 0))
-        expenses.append(Value.sum(Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN)) for t in transactions if t.value < 0))
+        incomes.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value > 0))
+        expenses.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value < 0))
     return (incomes, expenses)
 
 

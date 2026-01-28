@@ -4,10 +4,10 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
 from models.tag import Join
-from core.utils import Value, Date
 from models.base import PyObjectId
-from models.products import Currency, PersonalAccountWithId, CashWithId
+from core.utils import Forex, Value, Date
 from models.organisation import OrganisationWithId
+from models.products import PersonalAccountWithId, CashWithId
 from routes.sources.utils import mark_account_value_in_history
 from routes.base import CRUDRouterFactory, fail_wrapper, get, create, patch
 from routes.utils import remove_leading_zero_history, match_organisation_by_name_regex, \
@@ -29,7 +29,7 @@ async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIO
     result = []
     for t in transactions:
         org = await match_organisation_by_name_regex(t.organisation, organisations)
-        pln = Value.multiply(t.value, Currency.convert(t.currency, Currency.PLN))
+        pln = Forex.convert_to_pln(t.value, t.currency)
         acc = next((c for c in cashs if str(c.id) == t.account), None) \
             if t.cash else next((a for a in accounts if str(a.id) == t.account), None)
         tags = sorted(await get_rich_tags(t.tags, db), key=lambda t: not t.name.startswith("Wyjazdy"))

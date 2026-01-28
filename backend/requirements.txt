@@ -5,3 +5,4 @@ pymongo
 motor  # async MongoDB
 pydantic
 async-lru # for async caching (instead of functools.cache)
+requests

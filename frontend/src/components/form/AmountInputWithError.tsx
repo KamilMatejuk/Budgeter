@@ -44,7 +44,7 @@ function preprocess(value: number | string) {
 }
 
 
-function removeChars(value: number | string | undefined, allowNegative?: boolean) {
+function removeChars(value: number | string | undefined, digits: number, allowNegative?: boolean) {
   if (typeof value !== "string") return value ? value.toString() : "";
   const forbidden = allowNegative ? /[^0-9-\.]/g : /[^0-9\.]/g;
   value = value.replace(",", ".").replace(forbidden, "").trim();
@@ -52,19 +52,20 @@ function removeChars(value: number | string | undefined, allowNegative?: boolean
   const dotIndex = value.indexOf(".");
   if (dotIndex === -1) return value;
   const before = value.slice(0, dotIndex);
-  const after = value.slice(dotIndex + 1).replace(/\./g, "").slice(0, 2);
+  const after = value.slice(dotIndex + 1).replace(/\./g, "").slice(0, digits);
   return before + "." + after;
 }
 
 
-function format(value: number | string | undefined) {
-  if (typeof value === "number") return value.toFixed(2);
-  if (typeof value === "string" && value !== "") return Number(value).toFixed(2);
+function format(value: number | string | undefined, digits: number) {
+  if (typeof value === "number") return value.toFixed(digits);
+  if (typeof value === "string" && value !== "") return Number(value).toFixed(digits);
   return "";
 }
 
 interface AmountInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
   allowNegative?: boolean;
+  digits?: number;
 }
 
 export default function AmountInputWithError<T>({
@@ -72,8 +73,9 @@ export default function AmountInputWithError<T>({
   formikName,
   label,
   allowNegative,
+  digits = 2,
 }: AmountInputWithErrorProps<T>) {
-  const value = format(getValue(formik, formikName));
+  const value = format(getValue(formik, formikName), digits);
 
   return (
     <TextInputWithError
@@ -84,10 +86,10 @@ export default function AmountInputWithError<T>({
       value={value}
       onChange={(e) => {
         const cursorPos = (e.target.selectionStart || e.target.value.length);
-        formik.setFieldValue(formikName as string, format(removeChars(e.target.value, allowNegative)));
+        formik.setFieldValue(formikName as string, format(removeChars(e.target.value, digits, allowNegative), digits));
         requestAnimationFrame(() => e.target.setSelectionRange(cursorPos, cursorPos));
       }}
-      onBlur={() => formik.setFieldValue(formikName as string, format(value) || "0.00")}
+      onBlur={() => formik.setFieldValue(formikName as string, format(value, digits) || "0.00")}
     />
   );
 }

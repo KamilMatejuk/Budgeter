@@ -42,7 +42,7 @@ export default function UpdateStockAccountModal({ url, item, open, onClose }: Ba
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
       <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
-      <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
+      <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" digits={1} />
     </Modal>
   );
 }

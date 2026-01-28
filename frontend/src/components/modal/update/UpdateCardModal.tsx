@@ -71,7 +71,7 @@ export default function UpdateCardModal({ url, item, open, onClose }: BackendMod
       <ChoiceInputWithError formik={formik} formikName="credit" options={Type} label="Type" />
       <ChoiceInputWithError formik={formik} formikName="active" options={Active} label="Active" />
       <AccountsInputWithError formik={formik} formikName="account" label="Account" singleSelect />
-      <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" />
+      <AmountInputWithError formik={formik} formikName="min_number_of_transactions_monthly" label="Minimal monthly transactions" digits={0} />
     </Modal>
   );
 }

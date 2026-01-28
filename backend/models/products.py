@@ -20,8 +20,8 @@ class Currency(enum.Enum):
     @staticmethod
     def convert(src: "Currency", dst: "Currency") -> float:
         # approximate conversion rates
-        PLN_per_USD = 3.62
-        PLN_per_EUR = 4.21
+        PLN_per_USD = 3.5045
+        PLN_per_EUR = 4.2009
         if src == dst: return 1.0
         if src == Currency.PLN and dst == Currency.USD: return 1.0 / PLN_per_USD
         if src == Currency.PLN and dst == Currency.EUR: return 1.0 / PLN_per_EUR

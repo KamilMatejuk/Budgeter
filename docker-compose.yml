@@ -4,7 +4,7 @@ services:
     container_name: frontend
     working_dir: /app
     ports:
-      - "3000:3000"
+      - "48521:3000"
     volumes:
       - ./frontend:/app
     environment:
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000"
+      - "48522:8000"
     environment:
       - MONGO_URL=mongodb://mongo:27017
       - PROD=${PROD:-false}
@@ -32,7 +32,7 @@ services:
     image: mongo:6
     restart: always
     ports:
-      - "27017:27017"
+      - "48523:27017"
     volumes:
       - mongo_data:/data/db
 

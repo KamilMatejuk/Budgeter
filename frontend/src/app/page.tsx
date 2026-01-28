@@ -1,5 +1,4 @@
 import AccountsHistory from "@/components/dashboard/AccountsHistory";
-import AccountsPrediction from "@/components/dashboard/AccountsPrediction";
 import Debt from "@/components/dashboard/Debt";
 import IncomExpenseHistory from "@/components/dashboard/IncomeExpenseHistory";
 import MonthComparison from "@/components/dashboard/MonthComparison";
@@ -27,8 +26,6 @@ export default async function Home() {
       </MultiColumnSection>
       <SectionHeader text="Accounts' Balance" subtext={`Accounts value history`} />
       <AccountsHistory />
-      <SectionHeader text="Accounts' Prediction" subtext={`Total accounts value in the future, given current trends`} />
-      <AccountsPrediction />
       <SectionHeader text="Monthly Overview" subtext={`Incomes and expenses`} />
       <IncomExpenseHistory />
       <SectionHeader text="Month Comparison" subtext={`See how your selected month compares to averages and previous periods`} />

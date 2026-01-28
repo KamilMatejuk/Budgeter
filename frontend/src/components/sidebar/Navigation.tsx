@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { GoGraph, GoHome } from "react-icons/go";
-import { IoSaveOutline, IoSettingsOutline, IoTrashOutline } from "react-icons/io5";
+import { IoRocketOutline, IoSaveOutline, IoSettingsOutline, IoTrashOutline } from "react-icons/io5";
 import { TfiImport } from "react-icons/tfi";
 import { CiViewList } from "react-icons/ci";
 import { spanTransition } from "./SidebarClient";
@@ -21,6 +21,7 @@ const items: NavItem[] = [
   { label: "Transactions", href: "/transactions", icon: <CiViewList size={24} /> },
   { label: "Search", href: "/search", icon: <IoIosSearch size={24} /> },
   { label: "Compare", href: "/compare", icon: <GoGraph size={20} /> },
+  { label: "Predict", href: "/predict", icon: <IoRocketOutline size={20} /> },
   { label: "Settings", href: "/settings", icon: <IoSettingsOutline size={24} /> },
   { label: "Backups", href: "/backups", icon: <IoSaveOutline size={22} /> },
   { label: "Trash", href: "/trash", icon: <IoTrashOutline size={24} /> },

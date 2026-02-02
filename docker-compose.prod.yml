@@ -8,6 +8,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
+    volumes:
+      - ./backend/backups:/app/backups
 
   mongo:
     volumes:

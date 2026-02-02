@@ -14,7 +14,7 @@ import CellValue from "../cells/CellValue";
 import { getDateSearchSlug } from "@/app/search/utils";
 import { AggComparisonItemRecursive } from "@/components/dashboard/MonthComparison";
 import { Currency } from "@/types/enum";
-import ErrorToast from "@/components/toast/ErrorToast";
+import InfoToast from "@/components/toast/InfoToast";
 
 interface TableMonthComparisonProps {
   data: AggComparisonItemRecursive[];
@@ -54,7 +54,7 @@ function flatten<T extends { children: T[] }>(items: T[]): T[] {
 
 
 export default function TableMonthComparison({ data }: TableMonthComparisonProps) {
-  if (data.length === 0) return <ErrorToast message="No data available for month comparison table." />;
+  if (data.length === 0) return <InfoToast message="No data found" />;
 
   const len = data[0].values_pln.length;
   const datesRecord = getDatesRecord(len);

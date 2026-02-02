@@ -202,8 +202,9 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
           {/* add new row */}
           {CreateModal &&
             <tr className={twMerge(classes.row, "cursor-pointer text-subtext")} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
-              <td className="w-4 px-3 py-1"><MdAdd size={20} /></td>
-              <td className={classes.td} colSpan={columns.length + 1}>Create new {newText || ""}</td>
+              <td className={twMerge(classes.td, "flex items-center")} colSpan={columns.length + 1}>
+                <MdAdd size={20} />
+                <p className="ml-1 mt-0.5">Create new {newText || ""}</p></td>
             </tr>
           }
         </tbody>

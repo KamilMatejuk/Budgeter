@@ -1,18 +1,26 @@
+NAME_DEV := budgeter-dev
+NAME_PROD := budgeter-prod
+
+stop:
+	@docker compose -p $(NAME_DEV) down --remove-orphans
+	@docker compose -p $(NAME_PROD) down --remove-orphans
+
 run:
-	@docker compose down && \
-	docker compose up -d && \
-	docker compose logs -f backend frontend
+	@make stop && \
+	mkdir -p ./db.dev/mongo && \
+	docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml up -d && \
+	docker compose -p $(NAME_DEV) logs -f backend frontend
 
 prod:
-	@docker compose down && \
-	PROD=true docker compose up -d && \
-	docker compose logs -f backend frontend
+	@make stop && \
+	sudo mkdir -p /var/lib/budgeter/mongo && \
+	docker compose -p $(NAME_PROD) -f docker-compose.yml -f docker-compose.prod.yml up -d && \
+	docker compose -p $(NAME_PROD) logs -f backend frontend
 
-logs:
-	@docker compose logs -f backend frontend
 
 types:
-	@docker compose run --rm --user $(shell id -u):$(shell id -g) frontend \
+	@docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml run \
+		--rm --user $(shell id -u):$(shell id -g) frontend \
 		npx openapi-typescript http://backend:8000/openapi.json \
 			--output /app/src/types/backend.ts \
 			--export-type \
@@ -20,8 +28,8 @@ types:
 			--root-types-no-schema-prefix
 
 check:
-	@docker compose run --rm frontend npx tsc --noEmit && \
-	 docker compose run --rm frontend npx knip --config knip.json
+	@docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml run --rm frontend npx tsc --noEmit && \
+	 docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml run --rm frontend npx knip --config knip.json
 
 backup:
 	@curl -s http://localhost:48522/api/backup \

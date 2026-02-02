@@ -1,40 +1,26 @@
 services:
   frontend:
-    build: ./frontend
-    container_name: frontend
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://backend:8000
+    restart: unless-stopped
     working_dir: /app
     ports:
       - "48521:3000"
-    volumes:
-      - ./frontend:/app
-    environment:
-      - NEXT_PUBLIC_API_URL=http://backend:8000
-      - PROD=${PROD:-false}
     depends_on:
       - backend
 
   backend:
-    build: ./backend
-    container_name: backend
+    build:
+      context: ./backend
+    restart: unless-stopped
     working_dir: /app
-    volumes:
-      - ./backend:/app
-    ports:
-      - "48522:8000"
     environment:
       - MONGO_URL=mongodb://mongo:27017
-      - PROD=${PROD:-false}
     depends_on:
       - mongo
 
   mongo:
-    container_name: db
     image: mongo:6
-    restart: always
-    ports:
-      - "48523:27017"
-    volumes:
-      - mongo_data:/data/db
-
-volumes:
-  mongo_data:
+    restart: unless-stopped

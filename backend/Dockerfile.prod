@@ -1,0 +1,17 @@
+FROM python:3.13.5-slim
+
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+COPY . .
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+CMD ["gunicorn", \
+    "main:app", \
+    "-k", "uvicorn.workers.UvicornWorker", \
+    "-b", "0.0.0.0:8000", \
+    "-w", "4", \
+    "--log-level", "info", \
+    "--access-logfile", "-", \
+    "--error-logfile", "-"]

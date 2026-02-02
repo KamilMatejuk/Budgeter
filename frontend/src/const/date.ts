@@ -18,14 +18,6 @@ export function getMonthName(month: number) {
   return date.toLocaleString('default', { month: 'long' });
 }
 
-export function getDaysBetweenDates(start: Date, end: Date): number {
-  const oneDay = 1000 * 60 * 60 * 24;
-  const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  const diffInTime = endDate.getTime() - startDate.getTime();
-  return Math.round(diffInTime / oneDay);
-}
-
 export function getMonthsBetweenDates(start: Date, end: Date): number {
   return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
 }

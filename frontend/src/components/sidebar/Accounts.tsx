@@ -25,10 +25,11 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
       </motion.span>
       <motion.ul initial={false} animate={spanTransition(collapsed)} className={classes.list}>
         {items.map((it) => (
-          <li key={it.name} className={classes.item}>
-            {it.name}
-            <CellValue value={it.value || 0} currency={it.currency} colour />
-          </li>
+          it.value ? (
+            <li key={it.name} className={classes.item}>
+              {it.name}
+              <CellValue value={it.value || 0} currency={it.currency} colour />
+            </li>) : null
         ))}
       </motion.ul>
     </>

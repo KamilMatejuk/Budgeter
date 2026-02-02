@@ -14,14 +14,15 @@ factory.create_delete()
 
 
 @router.get("", response_model=list[OrganisationRichWithId] | dict)
-async def get_transactions_monthly(db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_organisations(db: AsyncIOMotorDatabase = Depends(get_db)):
     organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
     result = []
     for o in organisations:
         result.append(OrganisationRichWithId(
             **o.model_dump(exclude={"tags"}, by_alias=True, mode="json"),
             tags=await get_rich_tags(o.tags, db)))
-    return result
+    # sort by tag name, but ones with no tags go last
+    return sorted(result, key=lambda o: o.tags[0].name.lower() if o.tags else chr(ord('Ż') + 1))
 
 
 @router.get("/regex/{name}", response_model=OrganisationWithId | dict)

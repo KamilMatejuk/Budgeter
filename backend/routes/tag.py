@@ -50,8 +50,8 @@ async def get_tags_used(db: AsyncIOMotorDatabase = Depends(get_db)):
             if other_count < count and other_count > 0:
                 tag = TagRichWithId(_id=str(PyObjectId()), name=f"{tag.name}/Other", colour=tag.colour)
                 used_tags.append(tag)
-        # sort by name, but Other goes last (ASCII '{' is after 'z')
-        return sorted(used_tags, key=lambda t: t.name.replace("Other", "{"))
+        # sort by name, but Other goes last
+        return sorted(used_tags, key=lambda t: t.name.replace("Other", chr(ord('Ż') + 1)).lower())
     return await inner()
 
 

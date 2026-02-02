@@ -8,6 +8,5 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 COPY . .
 RUN npm install -g npm@11.7.0
 RUN npm install
-RUN npm run build
 
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "npm run build && npm run start"]

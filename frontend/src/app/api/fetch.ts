@@ -32,6 +32,12 @@ async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
   if (method === 'POST' || method === 'PATCH') { options.body = JSON.stringify(body || {}) }
   if (url.endsWith('/')) url = url.slice(0, -1);
 
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    const error = new Error('NEXT_PUBLIC_API_URL is not defined');
+    console.error('FetchError: missing API URL:', { url, error });
+    return { response: null, error: error.message };
+  }
+
   let res: Response | null = null;
   try {
     res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, options);

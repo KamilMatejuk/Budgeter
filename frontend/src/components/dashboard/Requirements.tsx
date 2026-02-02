@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import ErrorToast from "../toast/ErrorToast";
 import { getRequiredAccountsInput, getRequiredAccountsOutput, getRequiredCardsTransactions } from "@/app/api/getters";
 import { getAccountName } from "../table/cells/AccountNameUtils";
+import InfoToast from "../toast/InfoToast";
 
 const classes = {
   container: "flex gap-2 w-full",
@@ -19,6 +20,12 @@ export default async function Requirements() {
   const { response: incomes, error: incomesError } = await getRequiredAccountsInput();
   const { response: outcomes, error: outcomesError } = await getRequiredAccountsOutput();
   const { response: transactions, error: transactionsError } = await getRequiredCardsTransactions();
+
+  if (incomes && incomes.length === 0 &&
+    outcomes && outcomes.length === 0 &&
+    transactions && transactions.length === 0) {
+    return <InfoToast message="No requirements found" />;
+  }
 
   return (
     <div className={classes.container}>

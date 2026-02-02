@@ -1,14 +1,13 @@
 'use client';
 
 import { OrganisationRichWithId } from "@/types/backend";
-import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellIcon } from "../cells/CellIcon";
 import UpdateOrganisationModal from "@/components/modal/update/UpdateOrganisationModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { defineCellTag } from "../cells/CellTag";
-import MultilineText from "@/components/MultilineText";
+import MultiColumnTable from "../MultiColumnTable";
 
 
 interface TableOrganisationsProps {
@@ -16,7 +15,6 @@ interface TableOrganisationsProps {
 }
 
 const columns: ColumnDef<OrganisationRichWithId>[] = [
-  { accessorKey: "patterns", header: "Pattern", cell: ({ row }) => <MultilineText text={row.original.patterns.join("\n")} /> },
   { accessorKey: "name", header: "Name" },
   defineCellIcon<OrganisationRichWithId>(),
   defineCellTag<OrganisationRichWithId>(),
@@ -24,7 +22,8 @@ const columns: ColumnDef<OrganisationRichWithId>[] = [
 
 export default function TableOrganisations({ data }: TableOrganisationsProps) {
   return (
-    <Table<OrganisationRichWithId>
+    <MultiColumnTable<OrganisationRichWithId>
+      n={2}
       url="/api/organisation"
       tag="organisation"
       newText="organisation"

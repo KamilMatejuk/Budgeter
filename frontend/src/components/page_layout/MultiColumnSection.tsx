@@ -18,7 +18,7 @@ export default function MultiColumnSection({ children, ...props }: SectionHeader
       {(children as React.ReactNode[]).flatMap((child, i) => (
         <React.Fragment key={i}>
           {i > 0 && <div className="bg-second-bg" />}
-          <div className="p-2 pb-4">{child}</div>
+          <div>{child}</div>
         </React.Fragment>
       ))}
     </div>

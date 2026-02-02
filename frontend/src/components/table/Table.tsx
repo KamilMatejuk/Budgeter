@@ -31,7 +31,7 @@ interface GroupOption<T extends Item> {
   icon: React.ComponentType<IconBaseProps>;
   component: React.ComponentType<GroupBackendModalProps<T>>
 }
-interface TableProps<T extends Item> {
+export interface TableProps<T extends Item> {
   url?: string;
   tag?: string;
   data: T[];

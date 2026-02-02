@@ -15,8 +15,8 @@ interface TableOrganisationsProps {
 }
 
 const columns: ColumnDef<OrganisationRichWithId>[] = [
-  { accessorKey: "name", header: "Name" },
   defineCellIcon<OrganisationRichWithId>(),
+  { accessorKey: "name", header: "Name" },
   defineCellTag<OrganisationRichWithId>(),
 ];
 

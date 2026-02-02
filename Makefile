@@ -14,7 +14,7 @@ run:
 prod:
 	@make stop && \
 	sudo mkdir -p /var/lib/budgeter/mongo && \
-	docker compose -p $(NAME_PROD) -f docker-compose.yml -f docker-compose.prod.yml up -d && \
+	docker compose -p $(NAME_PROD) -f docker-compose.yml -f docker-compose.prod.yml up --build -d && \
 	docker compose -p $(NAME_PROD) logs -f backend frontend
 
 

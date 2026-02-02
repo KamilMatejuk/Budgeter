@@ -11,7 +11,7 @@ from routes.utils import get_tag_parent, get_rich_tag, get_tag_children, get_all
 router = APIRouter()
 
 
-@router.get("", response_model=list[TagWithId])
+@router.get("", response_model=list[TagWithId] | dict)
 async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -24,7 +24,7 @@ async def get_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await inner()
 
 
-@router.get("/rich", response_model=list[TagRichWithId])
+@router.get("/rich", response_model=list[TagRichWithId] | dict)
 async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -32,7 +32,7 @@ async def get_tags_rich(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await inner()
 
 
-@router.get("/used", response_model=list[TagRichWithId])
+@router.get("/used", response_model=list[TagRichWithId] | dict)
 async def get_tags_used(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -55,7 +55,7 @@ async def get_tags_used(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await inner()
 
 
-@router.post("", response_model=TagWithId)
+@router.post("", response_model=TagWithId | dict)
 async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -71,7 +71,7 @@ async def create_tag(data: TagRequest, db: AsyncIOMotorDatabase = Depends(get_db
     return await inner()
 
 
-@router.patch("", response_model=TagWithId)
+@router.patch("", response_model=TagWithId | dict)
 async def patch_tag(data: TagPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():

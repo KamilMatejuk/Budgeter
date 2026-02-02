@@ -96,7 +96,7 @@ class CRUDRouterFactory:
         async def f(db: AsyncIOMotorDatabase = Depends(get_db)):
             return await get(db, self.table, self.model_with_id)
         # update name and annotations for OpenAPI
-        f.__annotations__["return"] = list[self.model_with_id]
+        f.__annotations__["return"] = list[self.model_with_id] | dict
         f.__name__ = f"get_{self.model.__name__.lower()}s"
         # register route
         self.router.get("", response_model=list[self.model_with_id])(f)
@@ -108,7 +108,7 @@ class CRUDRouterFactory:
             if res is not None: return res
             raise HTTPException(status_code=404, detail="Not found")
         # update name and annotations for OpenAPI
-        f.__annotations__["return"] = self.model_with_id
+        f.__annotations__["return"] = self.model_with_id | dict
         f.__name__ = f"get_{self.model.__name__.lower()}_by_id"
         # register route
         self.router.get("/{id}", response_model=self.model_with_id)(f)
@@ -119,7 +119,7 @@ class CRUDRouterFactory:
             return await create(db, self.table, self.model_with_id, data, self.unique_field)
         # update name and annotations for OpenAPI
         f.__annotations__["data"] = self.model
-        f.__annotations__["return"] = self.model_with_id
+        f.__annotations__["return"] = self.model_with_id | dict
         f.__name__ = f"create_{self.model.__name__.lower()}"
         # register route
         self.router.post("", response_model=self.model_with_id)(f)
@@ -130,7 +130,7 @@ class CRUDRouterFactory:
             return await patch(db, self.table, self.model_with_id, data)
         # update name and annotations for OpenAPI
         f.__annotations__["data"] = self.partial_model
-        f.__annotations__["return"] = self.model_with_id
+        f.__annotations__["return"] = self.model_with_id | dict
         f.__name__ = f"patch_{self.model.__name__.lower()}"
         # register route
         self.router.patch("", response_model=self.model_with_id)(f)

@@ -38,7 +38,7 @@ personal_account_router = APIRouter(prefix="/personal_account")
 personal_account_factory = CRUDRouterFactory(personal_account_router, "personal_account", PersonalAccount, PersonalAccountPartial, PersonalAccountWithId)
 personal_account_factory.create_delete()
 
-@personal_account_router.get("", response_model=list[PersonalAccountRichWithId])
+@personal_account_router.get("", response_model=list[PersonalAccountRichWithId] | dict)
 async def get_personalaccounts(db: AsyncIOMotorDatabase = Depends(get_db)):
     items: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
     result = []
@@ -49,13 +49,13 @@ async def get_personalaccounts(db: AsyncIOMotorDatabase = Depends(get_db)):
         ))
     return result
 
-@personal_account_router.post("", response_model=PersonalAccountWithId)
+@personal_account_router.post("", response_model=PersonalAccountWithId | dict)
 async def create_personalaccount(data: PersonalAccount, db: AsyncIOMotorDatabase = Depends(get_db)):
     item: PersonalAccountWithId = await create(db, "personal_account", PersonalAccountWithId, data)
     await mark_account_value_in_history(item, Date.today().isoformat(), item.value, db)
     return item
 
-@personal_account_router.patch("", response_model=PersonalAccountWithId)
+@personal_account_router.patch("", response_model=PersonalAccountWithId | dict)
 async def patch_personalaccount(data: PersonalAccountPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     before: PersonalAccountWithId = await get(db, "personal_account", PersonalAccountWithId, {"_id": str(data.id)}, one=True)
     item: PersonalAccountWithId = await patch(db, "personal_account", PersonalAccountWithId, data)
@@ -78,7 +78,7 @@ router.include_router(personal_account_router)
 card_router = APIRouter(prefix="/card")
 card_factory = CRUDRouterFactory(card_router, "card", Card, CardPartial, CardWithId)
 
-@card_router.get("", response_model=list[CardRichWithId])
+@card_router.get("", response_model=list[CardRichWithId] | dict)
 async def get_cards(db: AsyncIOMotorDatabase = Depends(get_db)):
     cards: list[CardWithId] = await get(db, "card", CardWithId)
     accounts: list[PersonalAccountWithId] = await get(db, "personal_account", PersonalAccountWithId)
@@ -99,7 +99,7 @@ stock_account_factory.create_post()
 stock_account_factory.create_patch()
 stock_account_factory.create_delete()
 
-@stock_account_router.get("", response_model=list[StockAccountRichWithId])
+@stock_account_router.get("", response_model=list[StockAccountRichWithId] | dict)
 async def get_stockaccounts(db: AsyncIOMotorDatabase = Depends(get_db)):
     items: list[StockAccountWithId] = await get(db, "stock_account", StockAccountWithId)
     result = []
@@ -118,7 +118,7 @@ capital_investment_factory.create_post()
 capital_investment_factory.create_patch()
 capital_investment_factory.create_delete()
 
-@capital_investment_router.get("", response_model=list[CapitalInvestmentRichWithId])
+@capital_investment_router.get("", response_model=list[CapitalInvestmentRichWithId] | dict)
 async def get_capitalinvestments(db: AsyncIOMotorDatabase = Depends(get_db)):
     items: list[CapitalInvestmentWithId] = await get(db, "capital_investment", CapitalInvestmentWithId)
     result = []

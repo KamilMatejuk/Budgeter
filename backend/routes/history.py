@@ -19,7 +19,7 @@ router = APIRouter()
 
 ################################ Requirements #################################
 
-@router.get("/requirements/cards", response_model=list[CardRequirementsResponse])
+@router.get("/requirements/cards", response_model=list[CardRequirementsResponse] | dict)
 async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -41,11 +41,11 @@ async def get_required_card_transactions(db: AsyncIOMotorDatabase = Depends(get_
         return responses
     return await inner()
 
-@router.get("/requirements/accounts/in", response_model=list[AccountRequirementsResponse])
+@router.get("/requirements/accounts/in", response_model=list[AccountRequirementsResponse] | dict)
 async def get_required_account_amount_in(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await _get_required_account_amount(db, "min_incoming_amount_monthly", lambda t: t.value > 0)
 
-@router.get("/requirements/accounts/out", response_model=list[AccountRequirementsResponse])
+@router.get("/requirements/accounts/out", response_model=list[AccountRequirementsResponse] | dict)
 async def get_required_account_amount_out(db: AsyncIOMotorDatabase = Depends(get_db)):
     return await _get_required_account_amount(db, "min_outgoing_amount_monthly", lambda t: t.value < 0)
 
@@ -90,7 +90,7 @@ async def get_total_account_values(range: ChartRange, db: AsyncIOMotorDatabase =
     sorted_response = sorted(response.items(), key=lambda x: x[0], reverse=True)
     return [val for _, val in sorted_response]
 
-@router.get("/account_value/{range}/{id}", response_model=list[float])
+@router.get("/account_value/{range}/{id}", response_model=list[float] | dict)
 async def get_account_values(id: str, range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
     if id == "Investments": return await get_investments_values(range, db)
     @fail_wrapper
@@ -155,29 +155,32 @@ async def patch_account_value(data: PatchAccountValueRequest, db: AsyncIOMotorDa
 
 ################################ Income/Expense ###############################
 
-@router.get("/income_expense/{range}", response_model=tuple[list[float], list[float]])
+@router.get("/income_expense/{range}", response_model=tuple[list[float], list[float]] | dict)
 async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase = Depends(get_db)):
-    start = range_to_dates(range)
-    if start is None:
-        first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
-        start = first.date if first else Date.today()
-    incomes = []
-    expenses = []
-    for month in Date.iterate_months(start):
-        condition = {
-            "deleted": False,
-            "date": Date.condition(month, Date.month_end(month)),
-            "$or": [{"debt_person": None}, {"debt_person": ""}],
-        }
-        transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-        incomes.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value > 0))
-        expenses.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value < 0))
-    return (incomes, expenses)
+    @fail_wrapper
+    async def inner():
+        start = range_to_dates(range)
+        if start is None:
+            first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
+            start = first.date if first else Date.today()
+        incomes = []
+        expenses = []
+        for month in Date.iterate_months(start):
+            condition = {
+                "deleted": False,
+                "date": Date.condition(month, Date.month_end(month)),
+                "$or": [{"debt_person": None}, {"debt_person": ""}],
+            }
+            transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
+            incomes.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value > 0))
+            expenses.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value < 0))
+        return (incomes, expenses)
+    return await inner()
 
 
 ############################## Comparison #############################
 
-@router.get("/compare", response_model=list[Comparison])
+@router.get("/compare", response_model=list[Comparison] | dict)
 async def get_transactions_filtered(
     tagsIn: list[str] | None = Query(None),
     tagsInJoin: Join = Query(Join.OR),
@@ -185,28 +188,31 @@ async def get_transactions_filtered(
     tagsOutJoin: Join = Query(Join.OR),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    # condition
-    condition = {"deleted": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
-    condition.update(await create_tags_condition(tagsIn, tagsOut, tagsInJoin, tagsOutJoin, db))
-    # iterate months
-    response = []
-    first: TransactionWithId = await get(db, "transactions", TransactionWithId, condition, "date", one=True, reverse=False)
-    if not first: return []
-    for month in Date.iterate_months(first.date):
-        m_cond = {**condition, "date": Date.condition(month, Date.month_end(month))}
-        transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, m_cond)
-        transactions: list[TransactionRichWithId] = await enrich_transactions(transactions, db)
-        total_value = Value.sum(t.value_pln for t in transactions)
-        response.append(Comparison(
-            _id=str(PyObjectId()),
-            month=month.month,
-            year=month.year,
-            value_pln=total_value,
-            transactions=len(transactions),
-            children_tags=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []],
-            other_tags=[await _create_aggregation_by_other(ti, transactions, db) for ti in tagsIn or []],
-        ))
-    return response
+    @fail_wrapper
+    async def inner():
+        # condition
+        condition = {"deleted": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
+        condition.update(await create_tags_condition(tagsIn, tagsOut, tagsInJoin, tagsOutJoin, db))
+        # iterate months
+        response = []
+        first: TransactionWithId = await get(db, "transactions", TransactionWithId, condition, "date", one=True, reverse=False)
+        if not first: return []
+        for month in Date.iterate_months(first.date):
+            m_cond = {**condition, "date": Date.condition(month, Date.month_end(month))}
+            transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, m_cond)
+            transactions: list[TransactionRichWithId] = await enrich_transactions(transactions, db)
+            total_value = Value.sum(t.value_pln for t in transactions)
+            response.append(Comparison(
+                _id=str(PyObjectId()),
+                month=month.month,
+                year=month.year,
+                value_pln=total_value,
+                transactions=len(transactions),
+                children_tags=[await _create_aggregation_by_children(ti, transactions, db) for ti in tagsIn or []],
+                other_tags=[await _create_aggregation_by_other(ti, transactions, db) for ti in tagsIn or []],
+            ))
+        return response
+    return await inner()
 
 async def _create_aggregation_by_children(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> ComparisonItemRecursive:
     children = await _aggregate_by_children(tag, transactions, db)

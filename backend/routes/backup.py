@@ -87,7 +87,7 @@ def _parse_file_info(filename: str) -> BackupResponse:
 
 ### Routes ###
 
-@router.get("", response_model=list[BackupResponse])
+@router.get("", response_model=list[BackupResponse] | dict)
 async def get_backups():
     @fail_wrapper
     async def inner():
@@ -100,7 +100,7 @@ async def get_backups():
     return await inner()
 
 
-@router.post("", response_model=BackupResponse)
+@router.post("", response_model=BackupResponse | dict)
 async def create_backup(data: BackupRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -118,7 +118,7 @@ async def create_backup(data: BackupRequest, db: AsyncIOMotorDatabase = Depends(
     return await inner()
 
 
-@router.patch("", response_model=BackupResponse)
+@router.patch("", response_model=BackupResponse | dict)
 async def update_backup(data: BackupPatchRequest):
     @fail_wrapper
     async def inner():

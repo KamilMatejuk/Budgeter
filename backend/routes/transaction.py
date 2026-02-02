@@ -84,7 +84,7 @@ async def delete_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)
     return await inner()
 
 
-@single_router.patch("/split", response_model=list[TransactionWithId])
+@single_router.patch("/split", response_model=list[TransactionWithId] | dict)
 async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -109,7 +109,7 @@ async def split_transaction(data: TransactionSplitRequest, db: AsyncIOMotorDatab
     return await inner()
 
 
-@multi_router.get("/{year}/{month}", response_model=list[TransactionRichWithId])
+@multi_router.get("/{year}/{month}", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDatabase = Depends(get_db)):
     start = datetime.date(year, month, 1)
     end = Date.month_end(start)
@@ -119,26 +119,26 @@ async def get_transactions_monthly(year: int, month: int, db: AsyncIOMotorDataba
     return transactions
 
     
-@single_router.get("/last/{account}", response_model=TransactionWithId)
+@single_router.get("/last/{account}", response_model=TransactionWithId | dict)
 async def get_last_transaction_from_accont(account: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     return await get(db, "transactions", TransactionWithId, {"deleted": False, "account": account}, "date", one=True)
 
 
-@multi_router.get("/deleted", response_model=list[TransactionRichWithId])
+@multi_router.get("/deleted", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_deleted(db: AsyncIOMotorDatabase = Depends(get_db)):
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"deleted": True, "transfer_between_accounts": False}, "date")
     transactions = await enrich_transactions(transactions, db)
     return transactions
 
 
-@multi_router.get("/transfer", response_model=list[TransactionRichWithId])
+@multi_router.get("/transfer", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_transfer(db: AsyncIOMotorDatabase = Depends(get_db)):
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"transfer_between_accounts": True}, "date")
     transactions = await enrich_transactions(transactions, db)
     return transactions
 
 
-@single_router.post("/restore/{id}", response_model=TransactionWithId)
+@single_router.post("/restore/{id}", response_model=TransactionWithId | dict)
 async def restore_deleted_transaction(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -157,14 +157,14 @@ async def restore_deleted_transaction(id: str, db: AsyncIOMotorDatabase = Depend
     return await inner()
 
 
-@multi_router.get("/new", response_model=list[TransactionRichWithId])
+@multi_router.get("/new", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_without_tags(db: AsyncIOMotorDatabase = Depends(get_db)):
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"tags": {"$size": 0}, "deleted": False}, "date")
     transactions = await enrich_transactions(transactions, db)
     return transactions
 
 
-@multi_router.get("/debt", response_model=list[TransactionRichWithId])
+@multi_router.get("/debt", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_with_debt(db: AsyncIOMotorDatabase = Depends(get_db)):
     transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, {"debt_person": {"$ne": None}, "deleted": False}, "date")
     transactions = await enrich_transactions(transactions, db)
@@ -199,7 +199,7 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
     return await inner()
 
 
-@multi_router.get("/filtered", response_model=list[TransactionRichWithId])
+@multi_router.get("/filtered", response_model=list[TransactionRichWithId] | dict)
 async def get_transactions_filtered(
     accounts: list[str] | None = Query(None),
     organisations: list[str] | None = Query(None),

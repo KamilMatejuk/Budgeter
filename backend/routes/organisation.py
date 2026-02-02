@@ -13,7 +13,7 @@ factory.create_get_by_id()
 factory.create_delete()
 
 
-@router.get("", response_model=list[OrganisationRichWithId])
+@router.get("", response_model=list[OrganisationRichWithId] | dict)
 async def get_transactions_monthly(db: AsyncIOMotorDatabase = Depends(get_db)):
     organisations: list[OrganisationWithId] = await get(db, "organisations", OrganisationWithId)
     result = []
@@ -24,7 +24,7 @@ async def get_transactions_monthly(db: AsyncIOMotorDatabase = Depends(get_db)):
     return result
 
 
-@router.get("/regex/{name}", response_model=OrganisationWithId)
+@router.get("/regex/{name}", response_model=OrganisationWithId | dict)
 async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -33,7 +33,7 @@ async def get_organisation_by_name_regex(name: str, db: AsyncIOMotorDatabase = D
     return await inner()
 
 
-@router.post("", response_model=OrganisationWithId)
+@router.post("", response_model=OrganisationWithId | dict)
 async def create_organisation(data: Organisation, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():
@@ -47,7 +47,7 @@ async def create_organisation(data: Organisation, db: AsyncIOMotorDatabase = Dep
     return await inner()
 
 
-@router.patch("", response_model=OrganisationWithId)
+@router.patch("", response_model=OrganisationWithId | dict)
 async def patch_organisation(data: OrganisationPartial, db: AsyncIOMotorDatabase = Depends(get_db)):
     @fail_wrapper
     async def inner():

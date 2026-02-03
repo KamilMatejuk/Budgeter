@@ -137,10 +137,9 @@ class Date:
     @staticmethod
     def add_months(date: datetime.date, months: int) -> datetime.date:
         month = date.month + months
-        if month >= 12: year = date.year + 1
-        elif month < 1: year = date.year - 1
+        if month >= 12: year = date.year + 1; month = month % 12
+        elif month < 1: year = date.year - 1; month = (month - 1) % 12 + 1
         else: year = date.year
-        month = month % 12
         try:
             return date.replace(year=year, month=month)
         except ValueError:

@@ -33,6 +33,7 @@ export default async function MonthComparison() {
     if (error != null)
       return <ErrorToast message={`Could not download month comparison for tag ${tag.name}: ${error}`} />;
     // response is a list of months, with one tag per each month (the root tag)
+    if (response.length === 0) continue;
     data.push(combineMonths(response.map(r => r.children_tags[0])));
   }
 

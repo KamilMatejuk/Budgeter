@@ -15,7 +15,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 async function submit(values: FormSchemaType, items: TransactionRichWithId[], url: string) {
   await Promise.all(items.map(async (item) => {
-    const val = { _id: item._id, tags: [...item.tags, ...values.tags] } as TransactionPartial;
+    const val = { _id: item._id, tags: [...item.tags.map(t => t._id), ...values.tags] } as TransactionPartial;
     const { error } = await patch(url, val);
     if (error != null) alert(`Error tagging ${item._id}: ${error}`);
   }));

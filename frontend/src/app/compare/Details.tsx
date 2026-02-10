@@ -24,7 +24,7 @@ function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): Co
   for (const item of items) {
     (grouped[item.tag.name] ??= []).push(item);
   }
-  return Object.values(grouped).map(itemsWithSameTag => {
+  const combined = Object.values(grouped).map(itemsWithSameTag => {
     const childrenLists: ComparisonItemRecursive[] = itemsWithSameTag.flatMap(i => i.children);
     return {
       _id: itemsWithSameTag[0]._id,
@@ -33,6 +33,7 @@ function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): Co
       children: combineComparisonItemsRecursively(childrenLists),
     };
   });
+  return combined.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
 }
 
 function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps, "range" | "slug"> {

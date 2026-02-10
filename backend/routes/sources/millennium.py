@@ -65,11 +65,12 @@ async def get_account(db: AsyncIOMotorDatabase, number: str = None, id: str = No
     return account
 
 
-async def get_card(db: AsyncIOMotorDatabase, credit: bool, number: str = None, account: PersonalAccountWithId = None) -> CardWithId:
+async def get_card(db: AsyncIOMotorDatabase, credit: bool = None, number: str = None, account: PersonalAccountWithId = None) -> CardWithId:
     if number: condition = {"number": number}
     if account: condition = {"account": str(account.id)}
     assert condition is not None, "Either number or id must be provided"
-    card: CardWithId = await get(db, "card", CardWithId, {**condition, "credit": credit}, one=True)
+    if credit is not None: condition["credit"] = credit
+    card: CardWithId = await get(db, "card", CardWithId, condition, one=True)
     if card is None:
         err_detail = f"Card {number} not found" if number else f"Card for account {account.number} not found"
         raise HTTPException(status_code=500, detail=err_detail)
@@ -95,7 +96,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.CARD_PAYMENT:
         monthly_payment = data.description.startswith("OPŁATA MIESIĘCZNA ZA OBSLUGĘ KARTY")
         if monthly_payment and data.charges == "": return # some monthly card fees are 0, skip them
-        card = await get_card(db, credit=False, number=data.number)
+        card = await get_card(db, number=data.number)
         account = await get_account(db, id=card.account)
         if not monthly_payment: await mark_card_usage_in_history(card, data.transaction_date, db)
         await create_transaction(db, data, account, data.description,

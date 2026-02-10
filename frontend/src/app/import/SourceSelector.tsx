@@ -11,7 +11,7 @@ interface SourceSelectorProps {
 }
 
 const downloadInstructions: Record<Source, string> = {
-  [Source.REVOLUT]: "In app home screen, go to 'Accounts', select any account, tap on 'Statement', choose all accounts and select excel format. Share file to google drive.",
+  [Source.REVOLUT]: "In app home screen, go to 'Accounts', select any account, tap on 'Statement', choose all accounts and select excel format. Make a copy to google drive.",
   [Source.MILLENNIUM]: "On the website, go to 'Moje Finanse', select 'Wyciąg z historii transakcji'. Confirm in app. Correct the type from PDF to CSV and re-download the file.",
   [Source.EDENRED]: "",
 }

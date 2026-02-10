@@ -44,6 +44,8 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
 
+  console.log(childrenTagValues.length)
+
   return (
     <div className="flex flex-col items-center">
       <SectionHeader text={`${getDateString(dateStart)} - ${getDateString(dateEnd)}`} className="border-b border-line" />
@@ -68,7 +70,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
             items = items[0].children.filter(c => c.value_pln !== 0)
           };
           return items.length == 0
-            ? <InfoToast message="No subtags found\nin composition." />
+            ? <InfoToast key={i} message="No subtags found\nin composition." />
             : <PieChart
               key={i}
               data={items.map(c => c.value_pln)}
@@ -80,7 +82,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         })}
       </div>
 
-      <div>
+      {(childrenTagValues.length == 1 ? childrenTagValues[0].children : childrenTagValues).length > 0 && (<div>
         <p className={classes.switch} onClick={() => setHideZeros(!hideZeros)}>{hideZeros ? "Show empty" : "Hide empty"}</p>
         <Table<ComparisonItemRecursive>
           data={childrenTagValues.length == 1 ? childrenTagValues[0].children : childrenTagValues} // show only children if only one tag selected
@@ -88,7 +90,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
           expandChild="children"
           expandAll
         />
-      </div>
+      </div>)}
 
       <SectionHeader text="Other tags composition" className="border-b border-line text-md font-normal" />
 
@@ -107,11 +109,13 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         })}
       </div>
 
-      <Table<ComparisonItemRecursive>
-        data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
-        columns={columns}
-        expandChild="children"
-      />
+      {(other_tags.length == 1 ? other_tags[0].children : other_tags).length > 0 && (
+        <Table<ComparisonItemRecursive>
+          data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
+          columns={columns}
+          expandChild="children"
+        />
+      )}
     </div>
   );
 });

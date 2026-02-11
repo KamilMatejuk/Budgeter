@@ -33,7 +33,10 @@ function combineComparisonItemsRecursively(items: ComparisonItemRecursive[]): Co
       children: combineComparisonItemsRecursively(childrenLists),
     };
   });
-  return combined.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
+  return combined.sort((a, b) =>
+    a.tag.name.includes("Other") ? 1
+      : b.tag.name.includes("Other") ? -1
+        : a.tag.name.localeCompare(b.tag.name));
 }
 
 function combineComparisons(data: Comparison[], range: Range): Omit<DetailProps, "range" | "slug"> {

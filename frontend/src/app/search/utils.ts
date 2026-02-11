@@ -25,7 +25,8 @@ export function pushFiltersToUrl(filters: FiltersProps) {
 
 function parseArrayParam(param: string | string[] | undefined): string[] {
   if (!param) return [];
-  return Array.isArray(param) ? param : [param];
+  if (!Array.isArray(param)) return [param];
+  return Array.from(new Set(param));
 }
 
 function parseDateParam(param: string | undefined): Date | undefined {
@@ -62,6 +63,7 @@ export function getDateSearchSlug(month: number, year: number) {
 };
 
 export function getTagsSearchSlug(tag: TagRichWithId, allTags: TagRichWithId[]) {
+  if (allTags.length === 0) return `tagsIn=${tag._id}`;
   if (!tag.name.endsWith("Other")) return `tagsIn=${tag._id}`;
   const parentTag = allTags.find(t => t.name === tag.name.replace("/Other", ""))!;
   const siblingTags = allTags.filter(t => t.name.startsWith(`${parentTag.name}/`) && t.name != tag.name);

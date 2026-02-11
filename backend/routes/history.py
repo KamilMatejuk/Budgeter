@@ -285,9 +285,13 @@ async def _aggregate_by_other(tag: str, transactions: list[TransactionRichWithId
     response = []
     for other_tag_id, other_transactions in other_tags_map.items():
         total_value = Value.sum(t.value_pln for t in other_transactions)
+        # show 'Other' if has children, otherwise show the tag itself
+        other_tag = await get_rich_tag(other_tag_id, db)
+        if await get_tag_children(other_tag_id, db):
+            other_tag = TagRichWithId(_id=str(PyObjectId()), name=f"{other_tag.name}/Other", colour=other_tag.colour)
         response.append(ComparisonItemRecursive(
             _id=str(PyObjectId()),
-            tag=await get_rich_tag(other_tag_id, db),
+            tag=other_tag,
             value_pln=total_value,
             children=[],
         ))

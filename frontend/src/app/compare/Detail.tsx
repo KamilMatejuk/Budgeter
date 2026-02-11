@@ -10,6 +10,9 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import React from "react";
 import { PieChart } from "@/components/dashboard/Chart";
 import InfoToast from "@/components/toast/InfoToast";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { getTagsSearchSlug } from "../search/utils";
+import { useRichTags } from "../api/query";
 
 export interface DetailProps extends Omit<Comparison, "month" | "year"> {
   range: Range;
@@ -38,13 +41,26 @@ function removeZeros(items: ComparisonItemRecursive[]): ComparisonItemRecursive[
 }
 
 const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags, other_tags }: DetailProps) {
+  const allTags = useRichTags();
   const [hideZeros, setHideZeros] = React.useState(false);
   const childrenTagValues = hideZeros ? removeZeros(children_tags) : children_tags;
 
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
   const dateEnd = new Date(range.endYear, range.endMonth, 0);
 
-  console.log(childrenTagValues.length)
+  const allTransactionsUrl = `/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`;
+
+  const columnsWithLink = React.useMemo(() => ([
+    ...columns,
+    {
+      header: "",
+      accessorKey: "link",
+      cell: ({ row }) => <Link target="_blank" className="text-subtext"
+        href={`${allTransactionsUrl}&${getTagsSearchSlug(row.original.tag, allTags)}&tagsInJoin=AND`}>
+        <FaExternalLinkAlt size={12} />
+      </Link>
+    }
+  ]), [allTransactionsUrl, allTags]);
 
   return (
     <div className="flex flex-col items-center">
@@ -54,7 +70,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       <p className={classes.value}>{value_pln.toFixed(2)} zł</p>
 
       <p className={classes.label}>Number of transactions</p>
-      <Link target="_blank" href={`/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`}>
+      <Link target="_blank" href={allTransactionsUrl}>
         <p className={classes.value}>{transactions}</p>
       </Link>
 
@@ -70,7 +86,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
             items = items[0].children.filter(c => c.value_pln !== 0)
           };
           return items.length == 0
-            ? <InfoToast key={i} message="No subtags found\nin composition." />
+            ? <InfoToast key={i} message="No subtags found" />
             : <PieChart
               key={i}
               data={items.map(c => c.value_pln)}
@@ -86,7 +102,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
         <p className={classes.switch} onClick={() => setHideZeros(!hideZeros)}>{hideZeros ? "Show empty" : "Hide empty"}</p>
         <Table<ComparisonItemRecursive>
           data={childrenTagValues.length == 1 ? childrenTagValues[0].children : childrenTagValues} // show only children if only one tag selected
-          columns={columns}
+          columns={columnsWithLink}
           expandChild="children"
           expandAll
         />
@@ -97,7 +113,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       <div className={classes.graphContainer}>
         {other_tags.map((child, i) => {
           return child.children.length == 0
-            ? <InfoToast message="No subtags found\nin composition." />
+            ? <InfoToast key={i} message="No other tags found" />
             : <PieChart
               key={i}
               data={child.children.map(c => c.value_pln)}
@@ -112,7 +128,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
       {(other_tags.length == 1 ? other_tags[0].children : other_tags).length > 0 && (
         <Table<ComparisonItemRecursive>
           data={other_tags.length == 1 ? other_tags[0].children : other_tags} // show only children if only one tag selected
-          columns={columns}
+          columns={columnsWithLink}
           expandChild="children"
         />
       )}

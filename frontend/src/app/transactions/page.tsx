@@ -7,6 +7,7 @@ import TableTransactions from "@/components/table/tables/TableTransactions";
 import { getDateString, getMonthName } from "@/const/date";
 import NewTransactions from "./NewTransactions";
 import { getTransactions } from "../api/getters";
+import { Metadata } from "next";
 
 
 interface PageProps {
@@ -14,6 +15,15 @@ interface PageProps {
     year?: string;
     month?: string;
   }>;
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const { year, month } = await searchParams;
+  const yearNr = year ? parseInt(year) : new Date().getFullYear();
+  const monthNr = month ? parseInt(month) : new Date().getMonth() + 1;
+  return {
+    title: `Transactions for ${getMonthName(monthNr)} ${yearNr}`,
+  }
 }
 
 export default async function Transactions({ searchParams }: PageProps) {

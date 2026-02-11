@@ -7,6 +7,12 @@ import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { getMonthName } from "@/const/date";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Budgeter",
+  description: "Helps you manage your budget effectively",
+};
 
 export default async function Home() {
   const year = new Date().getFullYear();

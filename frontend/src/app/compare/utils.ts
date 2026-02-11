@@ -1,4 +1,5 @@
-import { parseTagsSearchParams, pushTagFiltersToUrl } from "../search/utils";
+import { getMonthName } from "@/const/date";
+import { getDescriptiveTagSearchParams, parseTagsSearchParams, pushTagFiltersToUrl } from "../search/utils";
 import { FiltersProps } from "./Filters";
 
 
@@ -29,4 +30,19 @@ export function parseSearchParams(params: FiltersProps): FiltersProps {
     return dateRange;
   });
   return params;
+}
+
+export function getDescriptiveSearchParams(params: FiltersProps) {
+  const tagDesc = getDescriptiveTagSearchParams(params);
+  const parts: string[] = tagDesc ? [tagDesc] : [];
+  params.dates?.forEach(({ start, end }) => {
+    const startMonth = getMonthName(start.getMonth() + 1);
+    const endMonth = getMonthName(end.getMonth() + 1);
+    const startYear = start.getFullYear();
+    const endYear = end.getFullYear();
+    if (startYear === endYear && startMonth === endMonth) parts.push(`${startMonth} ${startYear}`);
+    else if (startYear === endYear) parts.push(`${startMonth}/${endMonth} ${startYear}`);
+    else parts.push(`${startMonth} ${startYear}/${endMonth} ${endYear}`);
+  });
+  return parts.join(", ");
 }

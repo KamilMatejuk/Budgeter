@@ -1,12 +1,7 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 
-export const metadata: Metadata = {
-  title: "Budgeter",
-  description: "Helps you manage your budget effectively",
-};
 
 export default function RootLayout({
   children,

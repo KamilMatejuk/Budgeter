@@ -5,11 +5,18 @@ import { getCompareData } from "../api/getters";
 import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { Comparison } from "@/types/backend";
-import { parseSearchParams } from "./utils";
+import { getDescriptiveSearchParams, parseSearchParams } from "./utils";
 import Details from "./Details";
+import { Metadata } from "next";
 
 interface PageProps {
   searchParams: Promise<FiltersProps>;
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const sp = parseSearchParams(await searchParams);
+  const desc = getDescriptiveSearchParams(sp);
+  return { title: "Compare " + (desc ? `for ${desc}` : "without filters") }
 }
 
 export default async function Compare({ searchParams }: PageProps) {

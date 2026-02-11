@@ -6,12 +6,19 @@ import { getFilteredTransactions } from "../api/getters";
 import Filters, { FiltersProps } from "./Filters";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { TransactionRichWithId } from "@/types/backend";
-import { parseSearchParams } from "./utils";
+import { getDescriptiveSearchParams, parseSearchParams } from "./utils";
 import Summary from "@/components/page_layout/Summary";
+import { Metadata } from "next";
 
 
 interface PageProps {
   searchParams: Promise<FiltersProps>;
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const sp = parseSearchParams(await searchParams);
+  const desc = getDescriptiveSearchParams(sp);
+  return { title: "Search " + (desc ? `for ${desc}` : "without filters") }
 }
 
 export default async function Search({ searchParams }: PageProps) {

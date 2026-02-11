@@ -4,7 +4,9 @@ import WarningToast from "@/components/toast/WarningToast";
 import { getDeletedTransactions, getTransferTransactions } from "../api/getters";
 import TableTrash from "@/components/table/tables/TableTrash";
 import SectionHeader from "@/components/page_layout/SectionHeader";
+import { Metadata } from "next";
 
+export const metadata: Metadata = { title: "Trash" };
 
 export default async function Trash() {
   const { response: deleted, error: deletedError } = await getDeletedTransactions();

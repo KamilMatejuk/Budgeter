@@ -10,7 +10,9 @@ import ManualCreation from "./ManualCreation";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import { getPersonalAccounts, getSources } from "../api/getters";
 import { Source } from "@/types/enum";
+import { Metadata } from "next";
 
+export const metadata: Metadata = { title: "Import" };
 
 export default async function Import() {
   const { response: sources, error: sourcesError } = await getSources();

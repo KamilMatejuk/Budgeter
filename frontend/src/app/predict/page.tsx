@@ -5,6 +5,9 @@ import { ChartRange } from "@/types/enum";
 import { _getMonthsSinceDate, getMonthsBetweenDates } from "@/const/date";
 import Prediction from "./Prediction";
 import { calculate, capital, invest } from "./utils";
+import { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Predict future value" };
 
 const header = <PageHeader text="Accounts Prediction" subtext="Total accounts value in the future, given current trends" />
 

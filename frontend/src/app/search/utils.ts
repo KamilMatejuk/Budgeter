@@ -56,6 +56,24 @@ export function parseSearchParams(params: FiltersProps): FiltersProps {
   return params;
 }
 
+export function getDescriptiveTagSearchParams(params: FiltersProps) {
+  const parts: string[] = [];
+  if (params.tagsIn && params.tagsIn.length > 0) parts.push(`${params.tagsIn.length} included tag(s)`);
+  if (params.tagsOut && params.tagsOut.length > 0) parts.push(`${params.tagsOut.length} excluded tag(s)`);
+  return parts.join(", ");
+}
+
+export function getDescriptiveSearchParams(params: FiltersProps) {
+  const tagDesc = getDescriptiveTagSearchParams(params);
+  const parts: string[] = tagDesc ? [tagDesc] : [];
+  if (params.accounts && params.accounts.length > 0) parts.push(`${params.accounts.length} account(s)`);
+  if (params.organisations && params.organisations.length > 0) parts.push(`${params.organisations.length} organisation(s)`);
+  if (params.title) parts.push(`title contains "${params.title}"`);
+  if (params.dateStart) parts.push(`from ${getISODateString(params.dateStart)}`);
+  if (params.dateEnd) parts.push(`to ${getISODateString(params.dateEnd)}`);
+  return parts.join(", ");
+}
+
 export function getDateSearchSlug(month: number, year: number) {
   const dateStart = getISODateString(new Date(year, month - 1, 1));
   const dateEnd = getISODateString(new Date(year, month, 0));

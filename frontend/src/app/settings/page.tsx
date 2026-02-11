@@ -5,6 +5,9 @@ import Accounts from "./Accounts";
 import Investments from "./Investments";
 import TagTree from "./TagTree";
 import Organisations from "./Organisations";
+import { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Settings" };
 
 export default function Settings() {
   return (

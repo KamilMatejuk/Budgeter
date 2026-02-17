@@ -11,6 +11,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.prod
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - ./backend/backups:/app/backups
 
   mongo:

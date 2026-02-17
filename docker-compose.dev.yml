@@ -13,6 +13,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - ./backend:/app
     ports:
       - "48522:8000"

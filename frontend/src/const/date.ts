@@ -8,9 +8,34 @@ export function getDateString(date: Date | string): string {
   return new Date(date).toLocaleDateString("pl-PL");
 }
 
-export function getDateTimeString(date: Date | string): string {
-  return new Date(date).toLocaleDateString("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+export function getTimeString(date: Date | string): string {
+  return new Date(date).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
+
+export function getTimedeltaString(date: Date | string): string {
+  const now = new Date();
+  const past = new Date(date);
+  const minutes = Math.floor((now.getTime() - past.getTime()) / 60_000);
+
+  const divisions = [
+    { amount: 60, name: "minutes" },
+    { amount: 24, name: "hours" },
+    { amount: 30.41, name: "days" },
+    { amount: 12, name: "months" },
+    { amount: Infinity, name: "years" }
+  ] as { amount: number, name: Intl.RelativeTimeFormatUnit }[]
+
+  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" })
+  let duration = minutes;
+  for (const division of divisions) {
+    if (Math.abs(duration) < division.amount) {
+      return rtf.format(-Math.round(duration), division.name)
+    }
+    duration /= division.amount
+  }
+  return "now";
+}
+
 
 export function getMonthName(month: number) {
   const date = new Date(1970, 0, 1);

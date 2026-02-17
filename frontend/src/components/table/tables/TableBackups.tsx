@@ -7,7 +7,7 @@ import { MdDelete, MdEdit, MdRestore } from "react-icons/md";
 import DeleteByNameModal from "@/components/modal/delete/DeleteByNameModal";
 import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
 import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
-import { getDateTimeString } from "@/const/date";
+import { getDateString, getTimedeltaString, getTimeString } from "@/const/date";
 import GroupDeleteByNameModal from "@/components/modal/delete/GroupDeleteByNameModal";
 import { FaRobot, FaPerson } from "react-icons/fa6";
 
@@ -26,7 +26,11 @@ const columns: ColumnDef<BackupResponse>[] = [
   {
     header: "Timestamp",
     accessorKey: "timestamp",
-    cell: ({ row }) => getDateTimeString(row.original.timestamp)
+    cell: ({ row }) => <div className="flex flex-col items-center">
+      <span>{getDateString(row.original.timestamp)}</span>
+      <span>{getTimeString(row.original.timestamp)}</span>
+      <span className="text-subtext">{getTimedeltaString(row.original.timestamp)}</span>
+    </div>
   },
   {
     header: "Name",

@@ -217,6 +217,8 @@ async def get_transactions_filtered(
 async def _create_aggregation_by_children(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> ComparisonItemRecursive:
     children = await _aggregate_by_children(tag, transactions, db)
     total_value = Value.sum(c.value_pln for c in children)
+    if len(children) == 0:
+        total_value = Value.sum(t.value_pln for t in transactions if str(tag) in [str(ttag.id) for ttag in t.tags])
     return ComparisonItemRecursive(_id=str(PyObjectId()), tag=await get_rich_tag(tag, db), value_pln=total_value, children=children)
 
 async def _aggregate_by_children(tag: str, transactions: list[TransactionRichWithId], db: AsyncIOMotorDatabase) -> list[ComparisonItemRecursive]:

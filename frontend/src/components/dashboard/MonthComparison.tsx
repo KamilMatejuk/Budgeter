@@ -36,6 +36,11 @@ export default async function MonthComparison() {
     if (response.length === 0) continue;
     data.push(combineMonths(response.map(r => r.children_tags[0])));
   }
+  // padd with 0 if tags started in different months
+  const maxMonths = Math.max(...data.map(d => d.values_pln.length));
+  for (const d of data) {
+    d.values_pln.unshift(...Array(maxMonths - d.values_pln.length).fill(0));
+  }
 
   return (
     <TableMonthComparison data={data} />

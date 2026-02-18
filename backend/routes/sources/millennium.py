@@ -35,6 +35,8 @@ class MillenniumTransactionType(enum.Enum):
     CARD_CHARGE = 'OPŁATA'
     CARD_PAYMENT = 'PŁATNOŚĆ KARTĄ'
     CARD_PAYMENT_PHYSICAL = 'ZAKUP - FIZ. UŻYCIE KARTY'
+    CARD_PAYMENT_NONPHYSICAL = 'ZAKUP - BEZ FIZ. UŻYCIA KARTY'
+    CARD_PAYMENT_CYCLIC = 'PŁATNOŚĆ CYKLICZNA KARTĄ'
     CARD_PAYMENT_ONLINE = 'PŁATNOŚĆ KARTĄ W INTERNECIE'
     CARD_PAYMENT_ONLINE_REFUND = 'PŁATNOŚĆ KARTĄ W INTERNECIE ZWROT'
     BLIK_PAYMENT_ONLINE = 'PŁATNOŚĆ BLIK W INTERNECIE'
@@ -122,10 +124,16 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await create_transaction(db, data, account, data.description, title="Opłata za kartę")
         return
 
-    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL:
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_PHYSICAL or data.type == MillenniumTransactionType.CARD_PAYMENT_NONPHYSICAL:
         account = await get_account(db, number=data.number)
         card = await get_card(db, credit=False, account=account)
         await mark_card_usage_in_history(card, data.transaction_date, db)
+        await create_transaction(db, data, account, data.description, title="Płatność kartą")
+        return
+    
+    if data.type == MillenniumTransactionType.CARD_PAYMENT_CYCLIC:
+        account = await get_account(db, number=data.number)
+        card = await get_card(db, credit=False, account=account)
         await create_transaction(db, data, account, data.description, title="Płatność kartą")
         return
     

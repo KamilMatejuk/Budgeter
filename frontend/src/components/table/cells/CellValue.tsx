@@ -42,7 +42,7 @@ export function defineCellValue<T extends { value?: number; value_pln?: number; 
       if (row.original.value === undefined)
         return <CellValue value={row.original.value_pln} currency={Currency.PLN} colour={colour} />;
       const diffCurrr = row.original.currency && row.original.currency !== Currency.PLN;
-      const orgValueStr = diffCurrr ? formatValue(Math.abs(row.original.value), row.original.currency).slice(1) : null;
+      const orgValueStr = diffCurrr && row.original.value ? formatValue(Math.abs(row.original.value), row.original.currency).slice(1) : null;
       return (<div className="flex flex-col items-center">
         <CellValue value={row.original.value_pln} currency={Currency.PLN} colour={colour} />
         {diffCurrr && <p className="p-0 font-mono text-xs text-subtext">{orgValueStr}</p>}

@@ -31,11 +31,14 @@ export default function CellValue({ value, colour, currency }: CellValueProps) {
   return (<p className={className}>{valueStr}</p>);
 }
 
-export function defineCellValue<T extends { value?: number; value_pln?: number; currency?: Currency | keyof typeof Currency }>(colour: boolean = false) {
+export function defineCellValue<T extends { value?: number; value_pln?: number; currency?: Currency | keyof typeof Currency }>(
+  colour: boolean = false,
+  align: "left" | "center" | "right" = "center"
+) {
   return {
     accessorKey: "value",
     header: "Value",
-    meta: { align: "center" },
+    meta: { align },
     cell: ({ row }) => {
       if (row.original.value_pln === undefined)
         return <CellValue value={row.original.value} currency={row.original.currency} colour={colour} />;
@@ -43,7 +46,7 @@ export function defineCellValue<T extends { value?: number; value_pln?: number; 
         return <CellValue value={row.original.value_pln} currency={Currency.PLN} colour={colour} />;
       const diffCurrr = row.original.currency && row.original.currency !== Currency.PLN;
       const orgValueStr = diffCurrr && row.original.value ? formatValue(Math.abs(row.original.value), row.original.currency).slice(1) : null;
-      return (<div className="flex flex-col items-center">
+      return (<div className={`flex flex-col ${align === "left" ? "items-start" : align === "right" ? "items-end" : "items-center"}`}>
         <CellValue value={row.original.value_pln} currency={Currency.PLN} colour={colour} />
         {diffCurrr && <p className="p-0 font-mono text-xs text-subtext">{orgValueStr}</p>}
       </div>

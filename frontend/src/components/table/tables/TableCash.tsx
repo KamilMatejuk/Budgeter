@@ -13,10 +13,7 @@ interface TableCashProps {
   data: CashWithId[];
 }
 
-const columns: ColumnDef<CashWithId>[] = [
-  { accessorKey: "name", header: "Name" },
-  defineCellValue<CashWithId>(),
-];
+const columns: ColumnDef<CashWithId>[] = [defineCellValue<CashWithId>(false, "left")];
 
 export default function TableCash({ data }: TableCashProps) {
   return (

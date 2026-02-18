@@ -18,7 +18,7 @@ const classes = {
 
 
 function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null, currency: Currency | keyof typeof Currency }[] }) {
-  return (
+  return items.length > 0 ? (
     <>
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
         {title}
@@ -33,7 +33,7 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
         ))}
       </motion.ul>
     </>
-  )
+  ) : null;
 }
 
 
@@ -43,19 +43,24 @@ export interface AccountsProps {
   accounts: PersonalAccountRichWithId[];
   stocks: number;
   capitals: number;
+  cash: number;
 }
 
 
-export default function Accounts({ collapsed, cards, accounts, stocks, capitals }: AccountsProps) {
+export default function Accounts({ collapsed, cards, accounts, stocks, capitals, cash }: AccountsProps) {
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
   const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
     + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
     + capitals
-    + stocks;
+    + stocks
+    + cash;
 
   return (
     <div className={classes.container}>
+      <Section title="Cash" collapsed={collapsed} items={[
+        { name: Object.keys(Currency).map(c => c.toString()[0].toUpperCase() + c.toString().slice(1).toLowerCase()).join(", "), value: cash, currency },
+      ]} />
       <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency, value: card.value || null }))} />
       <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => (
         { value: account.value_pln, name: getAccountName(account), currency }))} />

@@ -96,12 +96,15 @@ export default async function Predict() {
         monthlySavings={avgMonthlySavings}
         nMonths={fullMonthSavings.length}
         capitalRatio={capitalRatio}
+        currentCapitalValue={currentCapitalValue}
         avgCapitalInterest={avgCapitalInterest}
         avgCapitalLength={avgCapitalLength}
         nCapital={capitalResponse.length}
         stockRatio={stockRatio}
+        currentStockValue={currentStockValue}
         avgStockInterest={avgStockInterest}
         nStock={stockResponse.length}
+        currentUninvested={totalUninvested}
         maxTime={maxTime}
         realisticPrediction={realisticPrediction}
       />

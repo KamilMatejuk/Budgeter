@@ -28,12 +28,15 @@ interface PredictionProps {
   monthlySavings: number;
   nMonths: number;
   capitalRatio: number;
+  currentCapitalValue: number;
   avgCapitalInterest: number;
   avgCapitalLength: number;
   nCapital: number;
   stockRatio: number;
+  currentStockValue: number;
   avgStockInterest: number;
   nStock: number;
+  currentUninvested: number;
   maxTime: number;
   realisticPrediction: number[];
 }
@@ -61,12 +64,15 @@ export default function Prediction({
   monthlySavings,
   nMonths,
   capitalRatio,
+  currentCapitalValue,
   avgCapitalInterest,
   avgCapitalLength,
   nCapital,
   stockRatio,
+  currentStockValue,
   avgStockInterest,
   nStock,
+  currentUninvested,
   maxTime,
   realisticPrediction,
 }: PredictionProps) {
@@ -166,11 +172,7 @@ export default function Prediction({
             width="252px" height="252px"
             labels={["Capital", "Stocks", "Uninvested"]}
             colors={["#22C55E", "#EF4444", "#000000"]}
-            data={[
-              Math.round(100 * capitalRatio),
-              Math.round(100 * stockRatio),
-              100 - Math.round(100 * capitalRatio) - Math.round(100 * stockRatio),
-            ]} />
+            data={[currentCapitalValue, currentStockValue, currentUninvested]} />
         </div>
       </div>
       {/* time */}

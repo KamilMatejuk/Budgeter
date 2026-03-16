@@ -45,17 +45,20 @@ class MillenniumTransactionType(enum.Enum):
     CREDIT_CARD_PAYOFF = 'WCZEŚN.SPŁ.KARTY:'
 
     TRANSFER_TO_PHONE = 'PRZELEW NA TELEFON'
-    TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
     TRANSFER_INCOMING_INTERNAL = 'PRZELEW WEWNĘTRZNY PRZYCHODZĄCY'
     TRANSFER_OUTGOING_INTERNAL = 'PRZELEW WEWNĘTRZNY WYCHODZĄCY'
     TRANSFER_REGULAR_INTERNAL = 'STAŁE ZLECENIE WEWNĄTRZ BANKU'
+    TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
+    TRANSFER_TO_ANOTHER_COUNTRY = 'PRZELEW ZAGRANICZNY'
     TRANSFER_SEPA = 'PRZEKAZ SEPA'
 
     REGULAR_ORDER = 'STAŁE ZLECENIE ZEWNĘTRZNE'
     INVESTMENT_OPERATION = 'OPERACJE NA LOKATACH'
     INVESTMENT_DEBIT = 'OBCIĄŻENIE'
     INVESTMENT_CREDIT = 'UZNANIE'
+    CURRENCY_EXCHANGE_DEBIT = 'WYMIANA WALUTY OBCIĄŻENIE'
+    CURRENCY_EXCHANGE_CREDIT = 'WYMIANA WALUTY UZNANIE'
 
 
 async def get_account(db: AsyncIOMotorDatabase, number: str = None, id: str = None) -> PersonalAccountWithId:
@@ -158,7 +161,9 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await create_transaction(db, data, account, data.recipient, title="Płatność BLIK - zwrot")
         return
 
-    if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK or data.type == MillenniumTransactionType.TRANSFER_SEPA:
+    if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK \
+        or data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_COUNTRY \
+        or data.type == MillenniumTransactionType.TRANSFER_SEPA:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient)
         return
@@ -206,6 +211,16 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.INVESTMENT_CREDIT:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, "Lokata Millennium")
+        return
+
+    if data.type == MillenniumTransactionType.CURRENCY_EXCHANGE_DEBIT:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Wymiana Walut Millennium")
+        return
+
+    if data.type == MillenniumTransactionType.CURRENCY_EXCHANGE_CREDIT:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Wymiana Walut Millennium")
         return
 
     raise HTTPException(status_code=500, detail=f"Unknown operation with transaction type {data.type}")

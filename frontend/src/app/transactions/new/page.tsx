@@ -3,7 +3,9 @@ import PageHeader from "@/components/page_layout/PageHeader";
 import InfoToast from "@/components/toast/InfoToast";
 import AnnotateTransactions from "./AnnotateTransactions";
 import { getNewTransactions } from "@/app/api/getters";
+import { Metadata } from "next";
 
+export const metadata: Metadata = { title: "New Transactions" };
 
 export default async function Transactions() {
   const { response: transactions, error } = await getNewTransactions();

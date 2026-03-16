@@ -127,6 +127,6 @@ async def get_capitalinvestments(db: AsyncIOMotorDatabase = Depends(get_db)):
             **i.model_dump(by_alias=True, mode="json"),
             value_pln=Forex.convert_to_pln(i.value, i.currency)
         ))
-    return result
+    return sorted(result, key=lambda x: x.end)
 
 router.include_router(capital_investment_router)

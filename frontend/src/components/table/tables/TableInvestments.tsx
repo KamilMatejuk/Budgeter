@@ -7,6 +7,7 @@ import { defineCellValue } from "../cells/CellValue";
 import UpdateCapitalInvestmentModal from "@/components/modal/update/UpdateCapitalInvestmentModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
+import CellDate from "../cells/CellDate";
 
 
 interface TableInvestmentsProps {
@@ -18,8 +19,8 @@ const columns: ColumnDef<CapitalInvestmentWithId>[] = [
   defineCellValue<CapitalInvestmentWithId>(),
   { accessorKey: "yearly_interest", header: "Yearly Interest", cell: ({ row }) => row.original.yearly_interest.toFixed(1) + "%" },
   { accessorKey: "capitalization", header: "Capitalization" },
-  { accessorKey: "start", header: "Start Date" },
-  { accessorKey: "end", header: "End Date" },
+  { accessorKey: "start", header: "Start Date", cell: ({ row }) => <CellDate value={row.original.start} showDelta /> },
+  { accessorKey: "end", header: "End Date", cell: ({ row }) => <CellDate value={row.original.end} showDelta /> },
 ];
 
 export default function TableInvestments({ data }: TableInvestmentsProps) {

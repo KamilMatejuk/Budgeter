@@ -7,9 +7,9 @@ import { MdDelete, MdEdit, MdRestore } from "react-icons/md";
 import DeleteByNameModal from "@/components/modal/delete/DeleteByNameModal";
 import UpdateBackupModal from "@/components/modal/update/UpdateBackupModal";
 import RestoreBackupModal from "@/components/modal/custom/RestoreBackupModal";
-import { getDateString, getTimedeltaString, getTimeString } from "@/const/date";
 import GroupDeleteByNameModal from "@/components/modal/delete/GroupDeleteByNameModal";
 import { FaRobot, FaPerson } from "react-icons/fa6";
+import CellDate from "../cells/CellDate";
 
 
 interface TableBackupsProps {
@@ -26,11 +26,7 @@ const columns: ColumnDef<BackupResponse>[] = [
   {
     header: "Timestamp",
     accessorKey: "timestamp",
-    cell: ({ row }) => <div className="flex flex-col items-center">
-      <span>{getDateString(row.original.timestamp)}</span>
-      <span>{getTimeString(row.original.timestamp)}</span>
-      <span className="text-subtext">{getTimedeltaString(row.original.timestamp)}</span>
-    </div>
+    cell: ({ row }) => <CellDate value={row.original.timestamp} showTime showDelta wrap />
   },
   {
     header: "Name",

@@ -43,6 +43,7 @@ class MillenniumTransactionType(enum.Enum):
     BLIK_PAYMENT_ONLINE_REFUND = 'PŁATNOŚĆ BLIK W INTERNECIE - ZWROT'
     BLIK_PAYMENT_CONTACTLESS = 'PŁATNOŚĆ ZBLIŻENIOWA BLIK'
     CREDIT_CARD_PAYOFF = 'WCZEŚN.SPŁ.KARTY:'
+    PAYMENT_REFUND = 'ZAKUP - ZWROT'
 
     TRANSFER_TO_PHONE = 'PRZELEW NA TELEFON'
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
@@ -159,6 +160,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.BLIK_PAYMENT_ONLINE_REFUND:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient, title="Płatność BLIK - zwrot")
+        return
+
+    if data.type == MillenniumTransactionType.PAYMENT_REFUND:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, data.description, title="Zakup - zwrot")
         return
 
     if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK \

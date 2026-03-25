@@ -7,6 +7,7 @@ import { defineCellValue } from "../cells/CellValue";
 import UpdateStockAccountModal from "@/components/modal/update/UpdateStockAccountModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { defineCellBoolean } from "../cells/CellBoolean";
 
 
 interface TableStocksProps {
@@ -18,6 +19,7 @@ const columns: ColumnDef<StockAccountWithId>[] = [
   defineCellValue<StockAccountWithId>(),
   { accessorKey: "number", header: "Number" },
   { accessorKey: "yearly_interest", header: "Yearly Interest", cell: ({ row }) => row.original.yearly_interest.toFixed(1) + "%" },
+  defineCellBoolean<StockAccountWithId>("withdrawable", "Withdraw"),
 ];
 
 export default function TableStocks({ data }: TableStocksProps) {

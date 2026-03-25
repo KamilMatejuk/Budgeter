@@ -12,6 +12,10 @@ import AmountInputWithError, { requiredNonNegativeAmount } from "../../form/Amou
 import ChoiceInputWithError from "../../form/ChoiceInputWithError";
 import AccountNumberInputWithError, { requiredAccountNumber } from "../../form/AccountNumberInputWithError";
 
+export enum Withdrawable {
+  YES = "AVAILABLE",
+  NO = "BLOCKED",
+}
 
 const FormSchema = z.object({
   owner: requiredText,
@@ -20,10 +24,12 @@ const FormSchema = z.object({
   number: requiredAccountNumber,
   value: requiredNonNegativeAmount,
   currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
+  withdrawable: z.nativeEnum(Withdrawable, { required_error: ERROR.requiredError }),
   min_incoming_amount_monthly: requiredNonNegativeAmount,
   min_outgoing_amount_monthly: requiredNonNegativeAmount,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
+type SubmitFormSchemaType = Omit<FormSchemaType, "withdrawable"> & { withdrawable: boolean };
 
 
 export default function UpdatePersonalAccountModal({ url, item, open, onClose }: BackendModalProps<PersonalAccountWithId>) {
@@ -35,10 +41,14 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
       number: item?.number || "",
       value: item?.value || 0,
       currency: item?.currency as Currency || Currency.PLN,
+      withdrawable: item?.withdrawable ? Withdrawable.YES : Withdrawable.NO,
       min_incoming_amount_monthly: item?.min_incoming_amount_monthly || 0,
       min_outgoing_amount_monthly: item?.min_outgoing_amount_monthly || 0,
     },
-    onSubmit: async (values) => await submit<FormSchemaType, PersonalAccountWithId>(url, values, item?._id, onClose),
+    onSubmit: async (values) => {
+      const val = { ...values, withdrawable: values.withdrawable == Withdrawable.YES }
+      await submit<SubmitFormSchemaType, PersonalAccountWithId>(url, val, item?._id, onClose);
+    },
     validate: withZodSchema(FormSchema),
   });
 
@@ -50,6 +60,7 @@ export default function UpdatePersonalAccountModal({ url, item, open, onClose }:
       <AccountNumberInputWithError formik={formik} formikName="number" label="Number" />
       {!item && <AmountInputWithError formik={formik} formikName="value" label="Value" />}
       <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="withdrawable" options={Withdrawable} label="Withdrawable" />
       <AmountInputWithError formik={formik} formikName="min_incoming_amount_monthly" label="Minimal monthly incoming amount" />
       <AmountInputWithError formik={formik} formikName="min_outgoing_amount_monthly" label="Minimal monthly outgoing amount" />
     </Modal>

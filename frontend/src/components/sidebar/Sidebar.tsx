@@ -11,10 +11,14 @@ export default async function Sidebar() {
   const { response: capitals } = await getCapitalInvestments();
   const accountsProps = {
     cards: cards?.filter((it) => it.credit && it.value) || [],
-    accounts: accounts?.filter((it) => it.value_pln) || [],
-    stocks: stocks?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
-    capitals: capitals?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
+    accounts: accounts?.filter((it) => it.withdrawable && it.value_pln) || [],
+    stocks: stocks?.reduce((acc, it) => acc + (it.withdrawable ? it.value_pln : 0), 0) || 0,
+    capitals: capitals?.reduce((acc, it) => acc + (it.withdrawable ? it.value_pln : 0), 0) || 0,
     cash: cashs?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
+    blocked:
+      (accounts?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0) + 
+      (stocks?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0) + 
+      (capitals?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0), 
   };
 
   return (<SidebarClient accountsProps={accountsProps} />);

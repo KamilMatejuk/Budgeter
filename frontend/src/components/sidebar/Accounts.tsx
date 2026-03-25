@@ -14,10 +14,22 @@ const classes = {
   item: "text-sm flex flex-nowrap whitespace-nowrap justify-between p-1 pl-3 w-full",
   label: "overflow-hidden whitespace-nowrap text-sm",
   total: "text-sm flex flex-nowrap whitespace-nowrap justify-end p-1 pl-3 w-full border-t border-line mt-2",
+  subtotal: "w-full border-t border-line mt-2 pt-2"
+}
+
+interface SectionProps {
+  title: string;
+  collapsed: boolean;
+  items: {
+    name: string,
+    value: number | null,
+    currency: Currency | keyof typeof Currency,
+    noColour?: boolean,
+  }[]
 }
 
 
-function Section({ title, collapsed, items }: { title: string; collapsed: boolean; items: { name: string, value: number | null, currency: Currency | keyof typeof Currency }[] }) {
+function Section({ title, collapsed, items }: SectionProps) {
   return items.length > 0 ? (
     <>
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
@@ -25,11 +37,14 @@ function Section({ title, collapsed, items }: { title: string; collapsed: boolea
       </motion.span>
       <motion.ul initial={false} animate={spanTransition(collapsed)} className={classes.list}>
         {items.map((it) => (
-          it.value ? (
             <li key={it.name} className={classes.item}>
               {it.name}
-              <CellValue value={it.value || 0} currency={it.currency} colour />
-            </li>) : null
+              <CellValue
+                value={it.value || 0}
+                currency={it.currency}
+                colour={it.noColour == undefined ? true : !it.noColour}
+              />
+            </li>
         ))}
       </motion.ul>
     </>
@@ -44,17 +59,19 @@ export interface AccountsProps {
   stocks: number;
   capitals: number;
   cash: number;
+  blocked: number;
 }
 
 
-export default function Accounts({ collapsed, cards, accounts, stocks, capitals, cash }: AccountsProps) {
+export default function Accounts({ collapsed, cards, accounts, stocks, capitals, cash, blocked }: AccountsProps) {
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
-  const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
+  const available = cards.reduce((acc, it) => acc + (it.value || 0), 0)
     + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
     + capitals
     + stocks
     + cash;
+  const total = available + blocked;
 
   return (
     <div className={classes.container}>
@@ -68,6 +85,12 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
         { name: "Capital", value: capitals, currency },
         { name: "Stocks", value: stocks, currency },
       ]} />
+      <motion.div initial={false} animate={spanTransition(collapsed)} className={classes.subtotal}>
+        <Section title="" collapsed={collapsed} items={[
+          { name: "Available", value: available, currency },
+          { name: "Blocked", value: blocked, currency, noColour: true },
+        ]} />
+      </motion.div>
       <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
         <CellValue value={total} currency={currency} colour />
       </motion.span>

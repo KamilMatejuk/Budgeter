@@ -13,19 +13,21 @@ import { requiredDate } from "../../form/DateInputWithError";
 import DateRangeInputWithError from "../../form/DateRangeInputWithError";
 import { submit } from "./utils";
 import { getISODateString } from "@/const/date";
+import { Withdrawable } from "./UpdatePersonalAccountModal";
 
 
 const FormSchema = z.object({
   name: requiredText,
   value: requiredPositiveAmount,
   currency: z.nativeEnum(Currency, { required_error: ERROR.requiredError }),
+  withdrawable: z.nativeEnum(Withdrawable, { required_error: ERROR.requiredError }),
   yearly_interest: requiredPositiveAmount,
   capitalization: z.nativeEnum(Capitalization, { required_error: ERROR.requiredError }),
   start: requiredDate,
   end: requiredDate,
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
-type SubmitFormSchemaType = Omit<FormSchemaType, "start" | "end"> & { start: string; end: string; };
+type SubmitFormSchemaType = Omit<FormSchemaType, "start" | "end" | "withdrawable"> & { start: string; end: string; withdrawable: boolean };
 
 
 export default function UpdateCapitalInvestmentModal({ url, item, open, onClose }: BackendModalProps<CapitalInvestmentWithId>) {
@@ -35,12 +37,18 @@ export default function UpdateCapitalInvestmentModal({ url, item, open, onClose 
       value: item?.value || 0,
       currency: item?.currency as Currency || Currency.PLN,
       yearly_interest: item?.yearly_interest || 0,
+      withdrawable: item?.withdrawable ? Withdrawable.YES : Withdrawable.NO,
       capitalization: item?.capitalization as Capitalization || Capitalization.ONCE,
       start: item?.start ? new Date(item.start) : new Date(),
       end: item?.end ? new Date(item.end) : new Date(),
     },
     onSubmit: async (values) => {
-      const val = { ...values, start: getISODateString(values.start), end: getISODateString(values.end) };
+      const val = {
+        ...values,
+        start: getISODateString(values.start),
+        end: getISODateString(values.end),
+        withdrawable: values.withdrawable == Withdrawable.YES,
+      };
       await submit<SubmitFormSchemaType, CapitalInvestmentWithId>(url, val, item?._id, onClose);
     },
     validate: withZodSchema(FormSchema),
@@ -51,6 +59,7 @@ export default function UpdateCapitalInvestmentModal({ url, item, open, onClose 
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <AmountInputWithError formik={formik} formikName="value" label="Value" />
       <ChoiceInputWithError formik={formik} formikName="currency" options={Currency} label="Currency" />
+      <ChoiceInputWithError formik={formik} formikName="withdrawable" options={Withdrawable} label="Withdrawable" />
       <AmountInputWithError formik={formik} formikName="yearly_interest" label="Yearly Interest" />
       <ChoiceInputWithError formik={formik} formikName="capitalization" options={Capitalization} label="Capitalization" />
       <DateRangeInputWithError formik={formik} formikNames={["start", "end"]} label="Date Range" />

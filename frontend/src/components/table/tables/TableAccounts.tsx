@@ -10,6 +10,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { AiFillDollarCircle } from "react-icons/ai";
 import SetAccountValueOnDateModal from "@/components/modal/custom/SetAccountValueOnDateModal";
 import { defineCellBank } from "../cells/CellBank";
+import { defineCellBoolean } from "../cells/CellBoolean";
 
 
 interface TableAccountsProps {
@@ -36,6 +37,7 @@ const columns: ColumnDef<PersonalAccountWithId>[] = [
   { accessorKey: "owner", header: "Owner" },
   defineCellValue<PersonalAccountWithId>(),
   { accessorKey: "number", header: "Number", cell: ({ row }) => renderNumber(row.original) },
+  defineCellBoolean<PersonalAccountWithId>("withdrawable", "Withdraw"),
   { accessorKey: "min_incoming_amount_monthly", header: "Requirements", cell: ({ row }) => renderMinAmountMonthly(row.original) }
 ];
 

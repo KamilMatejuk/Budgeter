@@ -690,8 +690,8 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        /** Get Transactions Monthly */
-        get: operations["get_transactions_monthly_api_organisation_get"];
+        /** Get Organisations */
+        get: operations["get_organisations_api_organisation_get"];
         put?: never;
         /** Create Organisation */
         post: operations["create_organisation_api_organisation_post"];
@@ -844,6 +844,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -861,6 +863,8 @@ export type components = {
             /** Value */
             value?: number | null;
             currency?: components["schemas"]["Currency"] | null;
+            /** Withdrawable */
+            withdrawable?: boolean | null;
             /** Yearly Interest */
             yearly_interest?: number | null;
             capitalization?: components["schemas"]["Capitalization"] | null;
@@ -884,6 +888,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -909,6 +915,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
             capitalization: components["schemas"]["Capitalization"];
@@ -1202,6 +1210,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly: number;
             /** Min Outgoing Amount Monthly */
@@ -1220,6 +1230,8 @@ export type components = {
             /** Value */
             value?: number | null;
             currency?: components["schemas"]["Currency"] | null;
+            /** Withdrawable */
+            withdrawable?: boolean | null;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly?: number | null;
             /** Min Outgoing Amount Monthly */
@@ -1238,6 +1250,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly: number;
             /** Min Outgoing Amount Monthly */
@@ -1258,6 +1272,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Min Incoming Amount Monthly */
             min_incoming_amount_monthly: number;
             /** Min Outgoing Amount Monthly */
@@ -1317,6 +1333,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
         };
@@ -1331,6 +1349,8 @@ export type components = {
             /** Value */
             value?: number | null;
             currency?: components["schemas"]["Currency"] | null;
+            /** Withdrawable */
+            withdrawable?: boolean | null;
             /** Yearly Interest */
             yearly_interest?: number | null;
         };
@@ -1345,6 +1365,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
             /** Value Pln */
@@ -1361,6 +1383,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
             /** Yearly Interest */
             yearly_interest: number;
         };
@@ -1575,6 +1599,10 @@ export type components = {
             msg: string;
             /** Error Type */
             type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
         };
     };
     responses: never;
@@ -3302,7 +3330,7 @@ export interface operations {
             };
         };
     };
-    get_transactions_monthly_api_organisation_get: {
+    get_organisations_api_organisation_get: {
         parameters: {
             query?: never;
             header?: never;

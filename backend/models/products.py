@@ -36,6 +36,7 @@ class PersonalAccount(PyBaseModel):
     number: str
     value: float
     currency: Currency
+    withdrawable: bool
     min_incoming_amount_monthly: int
     min_outgoing_amount_monthly: int
 
@@ -55,6 +56,7 @@ class StockAccount(PyBaseModel):
     number: str
     value: float
     currency: Currency
+    withdrawable: bool
     yearly_interest: float
 
 class CapitalInvestment(PyBaseModel):
@@ -63,6 +65,7 @@ class CapitalInvestment(PyBaseModel):
     start: date
     value: float
     currency: Currency
+    withdrawable: bool
     yearly_interest: float
     capitalization: Capitalization
 

@@ -10,6 +10,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import CellDate from "../cells/CellDate";
 import { getMonthsBetweenDates } from "@/const/date";
 import { Currency } from "@/types/enum";
+import { defineCellBoolean } from "../cells/CellBoolean";
 
 
 interface TableInvestmentsProps {
@@ -33,9 +34,10 @@ const columns: ColumnDef<CapitalInvestmentRichWithId>[] = [
       return <CellValue value={taxedProfit} colour currency={Currency.PLN} />
     },
   },
-  { accessorKey: "capitalization", header: "Capitalization", meta: { align: 'center' } },
   { accessorKey: "start", header: "Start Date", cell: ({ row }) => <CellDate value={row.original.start} showDelta /> },
   { accessorKey: "end", header: "End Date", cell: ({ row }) => <CellDate value={row.original.end} showDelta /> },
+  { accessorKey: "capitalization", header: "Capitalization", meta: { align: 'center' } },
+  defineCellBoolean<CapitalInvestmentRichWithId>("withdrawable", "Withdraw"),
 ];
 
 export default function TableInvestments({ data }: TableInvestmentsProps) {

@@ -4,6 +4,7 @@ NAME_PROD := budgeter-prod
 build:
 	@docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml build
 	@docker compose -p $(NAME_PROD) -f docker-compose.yml -f docker-compose.prod.yml build
+	@docker compose -p $(NAME_DEV) -f docker-compose.yml -f docker-compose.dev.yml run --rm --no-deps frontend npm install
 
 stop:
 	@docker compose -p $(NAME_DEV) down --remove-orphans

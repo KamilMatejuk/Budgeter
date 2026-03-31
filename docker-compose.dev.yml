@@ -7,7 +7,6 @@ services:
       NEXT_PUBLIC_API_URL: http://backend:8000
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - ./frontend:/app
 
   backend:
@@ -16,7 +15,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - ./backend:/app
     ports:
       - "48522:8000"

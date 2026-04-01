@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from "react";
 import MultiColumnSection from "../page_layout/MultiColumnSection";
 import Table, { Item, TableProps } from "./Table";
 
@@ -7,7 +8,19 @@ interface MultiColumnTableProps<T extends Item> extends TableProps<T> {
   n: number;
 }
 
-export default function MultiColumnTable<T extends Item>({ n, data, CreateModal, expandChild, ...props }: MultiColumnTableProps<T>) {
+export default function MultiColumnTable<T extends Item>({ n: nProp, data, CreateModal, expandChild, ...props }: MultiColumnTableProps<T>) {
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 640);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const n = isMobile ? 1 : nProp;
+
   // cannot use multi-column layout with less than 2 columns
   if (n <= 1) return <Table<T> {...props} data={data} CreateModal={CreateModal} expandChild={expandChild} />;
   // cannot use multi-column layout with expandable rows

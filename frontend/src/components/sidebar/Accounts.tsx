@@ -25,26 +25,27 @@ interface SectionProps {
     value: number | null,
     currency: Currency | keyof typeof Currency,
     noColour?: boolean,
-  }[]
+  }[],
+  fullWidth?: boolean;
 }
 
 
-function Section({ title, collapsed, items }: SectionProps) {
+function Section({ title, collapsed, items, fullWidth }: SectionProps) {
   return items.length > 0 ? (
     <>
-      <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
+      <motion.span initial={false} animate={spanTransition(collapsed, fullWidth)} className={classes.label}>
         {title}
       </motion.span>
-      <motion.ul initial={false} animate={spanTransition(collapsed)} className={classes.list}>
+      <motion.ul initial={false} animate={spanTransition(collapsed, fullWidth)} className={classes.list}>
         {items.map((it) => (
-            <li key={it.name} className={classes.item}>
-              {it.name}
-              <CellValue
-                value={it.value || 0}
-                currency={it.currency}
-                colour={it.noColour == undefined ? true : !it.noColour}
-              />
-            </li>
+          <li key={it.name} className={classes.item}>
+            {it.name}
+            <CellValue
+              value={it.value || 0}
+              currency={it.currency}
+              colour={it.noColour == undefined ? true : !it.noColour}
+            />
+          </li>
         ))}
       </motion.ul>
     </>
@@ -54,6 +55,7 @@ function Section({ title, collapsed, items }: SectionProps) {
 
 export interface AccountsProps {
   collapsed: boolean;
+  fullWidth?: boolean;
   cards: CardRichWithId[];
   accounts: PersonalAccountRichWithId[];
   stocks: number;
@@ -63,7 +65,7 @@ export interface AccountsProps {
 }
 
 
-export default function Accounts({ collapsed, cards, accounts, stocks, capitals, cash, blocked }: AccountsProps) {
+export default function Accounts({ collapsed, fullWidth, cards, accounts, stocks, capitals, cash, blocked }: AccountsProps) {
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
   const available = cards.reduce((acc, it) => acc + (it.value || 0), 0)
@@ -75,23 +77,47 @@ export default function Accounts({ collapsed, cards, accounts, stocks, capitals,
 
   return (
     <div className={classes.container}>
-      <Section title="Cash" collapsed={collapsed} items={[
-        { name: Object.keys(Currency).map(c => c.toString()[0].toUpperCase() + c.toString().slice(1).toLowerCase()).join(", "), value: cash, currency },
-      ]} />
-      <Section title="Cards" collapsed={collapsed} items={cards.map((card) => ({ ...card, currency, value: card.value || null }))} />
-      <Section title="Accounts" collapsed={collapsed} items={accounts.map((account) => (
-        { value: account.value_pln, name: getAccountName(account), currency }))} />
-      <Section title="Investments" collapsed={collapsed} items={[
-        { name: "Capital", value: capitals, currency },
-        { name: "Stocks", value: stocks, currency },
-      ]} />
-      <motion.div initial={false} animate={spanTransition(collapsed)} className={classes.subtotal}>
-        <Section title="" collapsed={collapsed} items={[
-          { name: "Available", value: available, currency },
-          { name: "Blocked", value: blocked, currency, noColour: true },
-        ]} />
+      <Section
+        title="Cash"
+        collapsed={collapsed}
+        fullWidth={fullWidth}
+        items={[
+          { name: Object.keys(Currency).map(c => c.toString()[0].toUpperCase() + c.toString().slice(1).toLowerCase()).join(", "), value: cash, currency },
+        ]}
+      />
+      <Section
+        title="Cards"
+        collapsed={collapsed}
+        fullWidth={fullWidth}
+        items={cards.map((card) => ({ ...card, currency, value: card.value || null }))}
+      />
+      <Section
+        title="Accounts"
+        collapsed={collapsed}
+        fullWidth={fullWidth}
+        items={accounts.map((account) => ({ value: account.value_pln, name: getAccountName(account), currency }))}
+      />
+      <Section
+        title="Investments"
+        collapsed={collapsed}
+        fullWidth={fullWidth}
+        items={[
+          { name: "Capital", value: capitals, currency },
+          { name: "Stocks", value: stocks, currency },
+        ]}
+      />
+      <motion.div initial={false} animate={spanTransition(collapsed, fullWidth)} className={classes.subtotal}>
+        <Section
+          title=""
+          collapsed={collapsed}
+          fullWidth={fullWidth}
+          items={[
+            { name: "Available", value: available, currency },
+            { name: "Blocked", value: blocked, currency, noColour: true },
+          ]}
+        />
       </motion.div>
-      <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.total}>
+      <motion.span initial={false} animate={spanTransition(collapsed, fullWidth)} className={classes.total}>
         <CellValue value={total} currency={currency} colour />
       </motion.span>
     </div>

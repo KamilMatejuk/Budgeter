@@ -38,18 +38,20 @@ const classes = {
 
 interface NavigationProps {
   collapsed: boolean;
+  onNavigate?: () => void;
+  fullWidth?: boolean;
 }
 
 
-export default function Navigation({ collapsed }: NavigationProps) {
+export default function Navigation({ collapsed, onNavigate, fullWidth }: NavigationProps) {
   return (
     <nav className={classes.container}>
       <ul className={classes.list}>
         {items.map((it) => (
           <li key={it.label}>
-            <Link href={it.href} className={classes.item}>
+            <Link href={it.href} className={classes.item} onClick={onNavigate}>
               <span className={classes.icon}>{it.icon}</span>
-              <motion.span initial={false} animate={spanTransition(collapsed)} className={classes.label}>
+              <motion.span initial={false} animate={spanTransition(collapsed, fullWidth)} className={classes.label}>
                 {it.label}
               </motion.span>
             </Link>

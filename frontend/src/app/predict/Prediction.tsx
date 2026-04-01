@@ -11,14 +11,24 @@ import TextInputWithError from "@/components/form/TextInputWithError";
 import MultilineText from "@/components/MultilineText";
 import ButtonWithLoader from "@/components/button/ButtonWithLoader";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 const classes = {
-  container: "flex gap-2",
-  param: "font-semibold text-center",
-  option: "font-semibold self-center",
-  details: "text-sm text-subtext m-0 text-center",
-  columns: "flex-1 grid grid-rows-[24px_42px_42px_42px_42px_42px_42px]", // 42px for inputs and multiline details, 24px for titles
-  optionsColumn: "grid grid-rows-[42px_42px_42px] gap-[42px] pt-[66px]",
+  container: "flex gap-1 sm:gap-2",
+  param: "font-semibold text-center text-[10px] sm:text-base",
+  option: "font-semibold md:self-center text-xs sm:text-base [writing-mode:vertical-rl] rotate-180 sm:[writing-mode:horizontal-tb] sm:rotate-0",
+  details: "max-w-48 m-auto text-[10px] sm:text-sm text-subtext m-0 text-center leading-tight",
+  columns: twMerge(
+    "flex-1 grid min-w-0",
+    "md:grid-rows-[24px_42px_42px_42px_42px_42px_42px]", // 42px for inputs and multiline details, 24px for titles
+    "grid-rows-[24px_50px_26px_50px_26px_50px_26px]", // 26px for inputs, 50px for multiline details, 24px for titles
+  ),
+  optionsColumn: twMerge(
+    "grid w-4 md:w-auto",
+    "md:grid-rows-[42px_42px_42px] md:gap-[42px] md:pt-[66px]",
+    "grid-rows-[76px_76px_76px] gap-0 pt-[24px]",
+  ),
+  input: "px-1 py-1 text-xs sm:px-4 sm:py-2 sm:text-base",
   allocationsColumn: "grid grid-rows-[24px_252px]",
 };
 
@@ -132,41 +142,41 @@ export default function Prediction({
         </div>
         <div className={classes.columns}>
           <p className={classes.param}>Monthly Savings</p>
-          <p className={classes.details}><MultilineText text={`saving 20% more\ngives ${(monthlySavings * 1.2).toFixed(2)} zł`} /></p>
-          <AmountInputWithError formik={formik} formikName="monthlySavingsOptimistic" />
-          <p className={classes.details}><MultilineText text={`current average\nfrom ${nMonths} months`} /></p>
-          <TextInputWithError formik={formik} formikName="monthlySavings" disabled />
-          <p className={classes.details}><MultilineText text={`saving 20% less\ngives ${(monthlySavings * 0.8).toFixed(2)} zł`} /></p>
-          <AmountInputWithError formik={formik} formikName="monthlySavingsPessimistic" />
+          <p className={classes.details}><MultilineText text={`saving 20% more gives ${(monthlySavings * 1.2).toFixed(2)} zł`} /></p>
+          <AmountInputWithError formik={formik} formikName="monthlySavingsOptimistic" className={classes.input} />
+          <p className={classes.details}><MultilineText text={`current average from ${nMonths} months`} /></p>
+          <TextInputWithError formik={formik} formikName="monthlySavings" disabled className={classes.input} />
+          <p className={classes.details}><MultilineText text={`saving 20% less gives ${(monthlySavings * 0.8).toFixed(2)} zł`} /></p>
+          <AmountInputWithError formik={formik} formikName="monthlySavingsPessimistic" className={classes.input} />
         </div>
         <div className={classes.columns}>
           <p className={classes.param}>Stock Interest</p>
-          <p className={classes.details}><MultilineText text="S&P500 historically rallied\nwith good years over 10%" /></p>
-          <AmountInputWithError formik={formik} formikName="stockInterestOptimistic" digits={1} />
-          <p className={classes.details}><MultilineText text={`current average\nfrom ${nStock} stock investments`} /></p>
-          <TextInputWithError formik={formik} formikName="stockInterest" disabled />
-          <p className={classes.details}><MultilineText text="S&P500 can have few bad years\ndoesn't move at 0%" /></p>
-          <AmountInputWithError formik={formik} formikName="stockInterestPessimistic" digits={1} allowNegative />
+          <p className={classes.details}><MultilineText text="S&P500 historically rallied with good years over 10%" /></p>
+          <AmountInputWithError formik={formik} formikName="stockInterestOptimistic" digits={1} className={classes.input} />
+          <p className={classes.details}><MultilineText text={`current average from ${nStock} stock investments`} /></p>
+          <TextInputWithError formik={formik} formikName="stockInterest" disabled className={classes.input} />
+          <p className={classes.details}><MultilineText text="S&P500 can have few bad years doesn't move at 0%" /></p>
+          <AmountInputWithError formik={formik} formikName="stockInterestPessimistic" digits={1} allowNegative className={classes.input} />
         </div>
         <div className={classes.columns}>
           <p className={classes.param}>Capital Interest</p>
-          <p className={classes.details}><MultilineText text="interest rates are low\nand banks lend at 6%" /></p>
-          <AmountInputWithError formik={formik} formikName="capitalInterestOptimistic" digits={1} />
-          <p className={classes.details}><MultilineText text={`current average\nfrom ${nCapital} capital investments`} /></p>
-          <TextInputWithError formik={formik} formikName="capitalInterest" disabled />
-          <p className={classes.details}><MultilineText text="interest rates are high\nand banks lend at 2%" /></p>
-          <AmountInputWithError formik={formik} formikName="capitalInterestPessimistic" digits={1} />
+          <p className={classes.details}><MultilineText text="interest rates are low and banks lend at 6%" /></p>
+          <AmountInputWithError formik={formik} formikName="capitalInterestOptimistic" digits={1} className={classes.input} />
+          <p className={classes.details}><MultilineText text={`current average from ${nCapital} capital investments`} /></p>
+          <TextInputWithError formik={formik} formikName="capitalInterest" disabled className={classes.input} />
+          <p className={classes.details}><MultilineText text="interest rates are high and banks lend at 2%" /></p>
+          <AmountInputWithError formik={formik} formikName="capitalInterestPessimistic" digits={1} className={classes.input} />
         </div>
         <div className={classes.columns}>
           <p className={classes.param}>Capital Length (months)</p>
-          <p className={classes.details}><MultilineText text="quicker returns\nonly at bank for 6 months" /></p>
-          <AmountInputWithError formik={formik} formikName="capitalLengthOptimistic" digits={0} />
-          <p className={classes.details}><MultilineText text={`current average\nfrom ${nCapital} capital investments`} /></p>
-          <TextInputWithError formik={formik} formikName="capitalLength" disabled />
-          <p className={classes.details}><MultilineText text="money bound for longer\nbonds at 24 months" /></p>
-          <AmountInputWithError formik={formik} formikName="capitalLengthPessimistic" digits={0} />
+          <p className={classes.details}><MultilineText text="quicker returns only at bank for 6 months" /></p>
+          <AmountInputWithError formik={formik} formikName="capitalLengthOptimistic" digits={0} className={classes.input} />
+          <p className={classes.details}><MultilineText text={`current average from ${nCapital} capital investments`} /></p>
+          <TextInputWithError formik={formik} formikName="capitalLength" disabled className={classes.input} />
+          <p className={classes.details}><MultilineText text="money bound for longer bonds at 24 months" /></p>
+          <AmountInputWithError formik={formik} formikName="capitalLengthPessimistic" digits={0} className={classes.input} />
         </div>
-        <div className={classes.allocationsColumn}>
+        <div className={`${classes.allocationsColumn} hidden sm:grid`}>
           <p className={classes.param}>Money allocation</p>
           <PieChart
             width="252px" height="252px"
@@ -174,6 +184,15 @@ export default function Prediction({
             colors={["#22C55E", "#EF4444", "#000000"]}
             data={[currentCapitalValue, currentStockValue, currentUninvested]} />
         </div>
+      </div>
+      {/* money allocation on mobile */}
+      <div className="sm:hidden flex flex-col items-center gap-1">
+        <p className={classes.param}>Money allocation</p>
+        <PieChart
+          width="150px" height="150px"
+          labels={["Capital", "Stocks", "Uninvested"]}
+          colors={["#22C55E", "#EF4444", "#000000"]}
+          data={[currentCapitalValue, currentStockValue, currentUninvested]} />
       </div>
       {/* time */}
       <div className="flex gap-1 justify-center items-center mb-0">

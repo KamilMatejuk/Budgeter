@@ -4,7 +4,7 @@ import { PropsWithChildren } from "react";
 
 
 const classes = {
-  base: "relative flex items-center justify-center px-4 py-2 border rounded-xl transition cursor-pointer",
+  base: "relative flex items-center justify-center p-1 md:px-4 md:py-2 border rounded-xl transition cursor-pointer",
   disabled: "disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-300 disabled:border-gray-200",
   positive: "bg-green-100 hover:bg-green-200 text-green-800 border-green-300",
   negative: "bg-red-100 hover:bg-red-200 text-red-800 border-red-300",

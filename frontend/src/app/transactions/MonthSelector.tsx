@@ -1,5 +1,4 @@
 import ButtonWithLink from "@/components/button/ButtonWithLink";
-import { getMonthName } from "@/const/date";
 
 interface MonthSelectorProps {
   year: number;
@@ -29,11 +28,11 @@ function generateMonths(year: number, month: number, n: number) {
 export default async function MonthSelector({ year, month, n = 5 }: MonthSelectorProps) {
   const months = generateMonths(year, month, n);
   return (
-    <div className="flex gap-1 mb-4">
+    <div className="flex flex-wrap gap-1 mb-4">
       {months.map(({ year: y, month: m }) => (
         <ButtonWithLink
           key={`${y}-${m}`}
-          text={`${getMonthName(m)}\n${y}`}
+          text={`${m.toString().padStart(2, '0')}.${y}`}
           action={m == month && y == year ? "positive" : "neutral"}
           className="flex-1"
           href={`?year=${y}&month=${m}`}

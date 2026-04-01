@@ -16,10 +16,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ReactQueryProvider>
-          <Sidebar />
-          <div className="flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4">
+          <div className="flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {children}
           </div>
+          <Sidebar />
         </ReactQueryProvider>
       </body>
     </html>

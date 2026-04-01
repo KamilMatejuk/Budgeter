@@ -32,7 +32,7 @@ export default function Header({ collapsed, setCollapsed, onClose, fullWidth }: 
         {onClose ? (
           <FaTimes size={18} />
         ) : (
-          <motion.div animate={{ rotate: collapsed ? 180 : 0 }} transition={transition}>
+          <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={transition}>
             <FaChevronLeft size={18} />
           </motion.div>
         )}

@@ -11,9 +11,9 @@ import { getAccountName } from "../table/cells/AccountNameUtils";
 const classes = {
   container: "overflow-hidden py-3",
   list: "overflow-x-hidden",
-  item: "text-sm flex flex-nowrap whitespace-nowrap justify-between p-1 pl-3 w-full",
+  item: "text-sm flex flex-nowrap whitespace-nowrap justify-between p-0.5 pl-3 pr-2 w-full",
   label: "overflow-hidden whitespace-nowrap text-sm",
-  total: "text-sm flex flex-nowrap whitespace-nowrap justify-end p-1 pl-3 w-full border-t border-line mt-2",
+  total: "text-sm flex flex-nowrap whitespace-nowrap justify-end p-0.5 pl-3 pr-2 w-full border-t border-line mt-2",
   subtotal: "w-full border-t border-line mt-2 pt-2"
 }
 

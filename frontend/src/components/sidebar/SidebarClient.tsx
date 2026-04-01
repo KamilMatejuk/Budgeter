@@ -9,7 +9,7 @@ import Header from "./Header";
 import Accounts, { AccountsProps } from "./Accounts";
 
 
-const width = 300;
+const width = 320;
 export const transition = {
   type: "spring",
   duration: 500,
@@ -40,7 +40,7 @@ export default function SidebarClient({ accountsProps }: SidebarClientProps) {
         transition={transition}
         className={twMerge(
           "hidden md:flex h-screen p-2 flex-col shrink-0",
-          collapsed ? "shadow-[inset_0_0_12px_0_rgba(0,0,0,0.2)]" : "shadow-[0_0_12px_0_rgba(0,0,0,0.2)]"
+          collapsed ? "shadow-[inset_0_0_12px_0_rgba(0,0,0,0.2)]" : "shadow-[-4px_0_12px_0_rgba(0,0,0,0.2)]"
         )}
       >
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -58,7 +58,7 @@ export default function SidebarClient({ accountsProps }: SidebarClientProps) {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.15 }}
             onClick={() => setMobileOpen(true)}
-            className="md:hidden fixed top-3 left-3 z-[9999] p-2.5 rounded-md bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.2)] hover:bg-gray-100"
+            className="md:hidden fixed top-3 right-3 z-[9999] p-2.5 rounded-md bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.2)] hover:bg-gray-100"
           >
             <FaBars size={18} />
           </motion.button>
@@ -70,9 +70,9 @@ export default function SidebarClient({ accountsProps }: SidebarClientProps) {
         {mobileOpen && (
           <motion.aside
             key="mobile-sidebar"
-            initial={{ x: "-100%" }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            exit={{ x: "100%" }}
             transition={transition}
             className="md:hidden fixed inset-0 z-50 flex flex-col bg-white p-2 overflow-y-auto shadow-[0_0_12px_0_rgba(0,0,0,0.2)]"
           >

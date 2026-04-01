@@ -10,17 +10,27 @@ export default function MultiColumnSection({ children, ...props }: SectionHeader
   if (n == 1) return children;
 
   return (
-    <div
-      {...props}
-      className={twMerge("w-full grid gap-4", props.className)}
-      style={{ gridTemplateColumns: new Array(n).fill("1fr").join(" 1px ") }}
-    >
-      {(children as React.ReactNode[]).flatMap((child, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && <div className="bg-second-bg" />}
-          <div>{child}</div>
-        </React.Fragment>
-      ))}
-    </div>
+    <>
+      <div
+        {...props}
+        className={twMerge("w-full flex flex-col gap-4 sm:hidden", props.className)}
+      >
+        {(children as React.ReactNode[]).map((child, i) => (
+          <div key={i}>{child}</div>
+        ))}
+      </div>
+      <div
+        {...props}
+        className={twMerge("w-full hidden sm:grid gap-4", props.className)}
+        style={{ gridTemplateColumns: new Array(n).fill("1fr").join(" 1px ") }}
+      >
+        {(children as React.ReactNode[]).flatMap((child, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div className="bg-second-bg" />}
+            <div>{child}</div>
+          </React.Fragment>
+        ))}
+      </div>
+    </>
   );
 }

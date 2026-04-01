@@ -1,8 +1,8 @@
 const classes = {
-  container: "flex flex-row justify-evenly items-center gap-8",
+  container: "flex flex-row justify-evenly items-center gap-4 md:gap-8",
   item: "flex flex-col justify-center items-center",
-  value: "text-2xl font-semibold",
-  label: "text-sm text-subtext",
+  value: "text-lg md:text-2xl font-semibold text-center whitespace-nowrap",
+  label: "text-xs md:text-sm text-subtext text-center",
 }
 
 interface SummaryProps {

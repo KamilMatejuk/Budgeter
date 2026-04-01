@@ -50,19 +50,19 @@ export default function Filters({
   });
 
   return (
-    <div className="flex flex-wrap gap-1 mb-4">
+    <div className="flex gap-1 mb-4">
       <TagsIncludeExcludeInputWithError formik={formik} />
       {/* submit */}
       <div className="flex flex-col">
         <label className="w-full">Load</label>
-        <Button type="submit" action="positive" className="w-10 h-10 p-2" onClick={() => formik.handleSubmit()}>
+        <Button type="submit" action="positive" className="w-10 h-10 md:p-2" onClick={() => formik.handleSubmit()}>
           <IoReload size={24} />
         </Button>
       </div>
       {/* clear */}
       <div className="flex flex-col">
         <label className="w-full">Clear</label>
-        <Button action="neutral" className="w-10 h-10 p-2" onClick={() => loadQueryWindow()}>
+        <Button action="neutral" className="w-10 h-10 md:p-2" onClick={() => loadQueryWindow()}>
           <IoTrashOutline size={24} />
         </Button>
       </div>

@@ -1,6 +1,7 @@
 import "./globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
+import { twMerge } from "tailwind-merge";
 
 
 export default function RootLayout({
@@ -16,7 +17,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ReactQueryProvider>
-          <div className="flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className={twMerge(
+            "flex-1 overflow-auto w-full h-full p-4 pb-64 space-y-4",
+            "md:[&::-webkit-scrollbar]:hidden md:[-ms-overflow-style:none] md:[scrollbar-width:none]",
+          )}>
             {children}
           </div>
           <Sidebar />

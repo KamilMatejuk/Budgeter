@@ -70,20 +70,20 @@ export default function Filters({
   });
 
   return (
-    <div className="flex gap-1 mb-4">
-      <div className="flex-1">
+    <div className="flex flex-wrap gap-1 mb-4">
+      <div className="flex-1 min-w-32">
         <AccountsInputWithError formik={formik} formikName="accounts" label="Accounts" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-w-32">
         <OrganisationsInputWithError formik={formik} formikName="organisations" label="Organisation" />
       </div>
-      <div className="flex-2">
+      <div className="flex-2 min-w-40">
         <TagsIncludeExcludeInputWithError formik={formik} />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-w-24">
         <TextInputWithError formik={formik} formikName="title" label="Title" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-w-32">
         <DateMonthRangeInputWithError formik={formik} formikNames={["dateStart", "dateEnd"]} label="Date Range" />
       </div>
       {/* submit */}

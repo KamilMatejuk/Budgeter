@@ -50,7 +50,7 @@ export default function Filters({
   });
 
   return (
-    <div className="flex gap-1 mb-4">
+    <div className="flex flex-wrap gap-1 mb-4">
       <TagsIncludeExcludeInputWithError formik={formik} />
       {/* submit */}
       <div className="flex flex-col">

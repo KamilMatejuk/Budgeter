@@ -33,7 +33,7 @@ export default function MultiColumnTable<T extends Item>({ n: nProp, data, Creat
   }
   // render multi-column section with tables
   return (
-    <MultiColumnSection className="gap-1">
+    <MultiColumnSection className="gap-1" mobileBehaviour="wrap">
       {dataChunks.map((chunk, i) => (
         <Table<T> {...props} data={chunk} CreateModal={i == dataChunks.length - 1 ? CreateModal : undefined} />
       ))}

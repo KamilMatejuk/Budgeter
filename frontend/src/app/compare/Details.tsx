@@ -91,7 +91,7 @@ export default function Details({ data, filters }: DetailsProps) {
       {/* details */}
       <SectionHeader text="Results" />
       <div className="w-full flex flex-nowrap gap-2 justify-center">
-        <MultiColumnSection>
+        <MultiColumnSection mobileBehaviour="scroll">
           {selectedRanges.map((r, i) => (
             <Detail key={i} {...combineComparisons(data, r)} range={r} slug={slug} />
           ))}

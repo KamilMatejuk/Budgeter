@@ -26,7 +26,7 @@ export default async function Import() {
   return (
     <>
       <PageHeader text="Import" subtext="Add new transactions" />
-      <MultiColumnSection>
+      <MultiColumnSection mobileBehaviour="wrap">
         <>
           <SourceProvider>
             <SectionHeader text="From file" subtext="Load report from your preferred source" />

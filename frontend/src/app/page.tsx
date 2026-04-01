@@ -20,7 +20,7 @@ export default async function Home() {
   return (
     <>
       <PageHeader text="Dashboards" subtext="Your overview of financial health" />
-      <MultiColumnSection>
+      <MultiColumnSection mobileBehaviour="wrap">
         <>
           <SectionHeader text="This Month Requirements" subtext={`Requirements of cards and accounts in ${getMonthName(month)} ${year}`} />
           <Requirements />

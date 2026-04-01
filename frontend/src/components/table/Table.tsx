@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef, ExpandedState, flexRender, getCoreRowModel, TableOptions, useReactTable } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { MdAdd, MdRemove } from "react-icons/md";
 import { LuDot } from "react-icons/lu";
@@ -139,6 +139,26 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
     ...expandableTableProps,
   })
   const headers = table.getHeaderGroups().flatMap(headerGroup => headerGroup.headers)
+  const topScrollRef = useRef<HTMLDivElement>(null);
+  const bottomScrollRef = useRef<HTMLDivElement>(null);
+  const tableWrapRef = useRef<HTMLDivElement>(null);
+  const syncScroll = (from: "top" | "bottom") => {
+    const top = topScrollRef.current;
+    const bottom = bottomScrollRef.current;
+    if (!top || !bottom) return;
+    if (from === "top") bottom.scrollLeft = top.scrollLeft;
+    else top.scrollLeft = bottom.scrollLeft;
+  };
+  useEffect(() => {
+    const bottom = bottomScrollRef.current;
+    const phantom = tableWrapRef.current;
+    if (!bottom || !phantom) return;
+    const observer = new ResizeObserver(() => {
+      phantom.style.width = `${bottom.scrollWidth}px`;
+    });
+    observer.observe(bottom);
+    return () => observer.disconnect();
+  }, []);
   const closeModal = async () => {
     setSelectedItem(null);
     setSelectedModal(null);
@@ -158,7 +178,11 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
             onClick={() => { setSelectedModal(index + 1 + (options?.length || 0)) }} />
         ))}
       </div>}
-      <table className="w-full text-sm m-0 table-auto">
+      <div ref={topScrollRef} className="overflow-x-auto" onScroll={() => syncScroll("top")}>
+        <div ref={tableWrapRef} style={{ height: 1 }} />
+      </div>
+      <div ref={bottomScrollRef} className="overflow-x-auto" onScroll={() => syncScroll("bottom")}>
+        <table className="w-full text-sm m-0 table-auto">
         {/* header */}
         <thead className="bg-second-bg">
           <tr>
@@ -211,7 +235,8 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
             </tr>
           }
         </tbody>
-      </table>
+        </table>
+      </div>
       {/* option modals */}
       {CreateModal && selectedModal === 0 && <CreateModal open onClose={closeModal} url={url} item={selectedItem} />}
       {

@@ -14,7 +14,7 @@ import { getExpandedRowModel } from "@tanstack/react-table";
 const classes = {
   row: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
   selectedRow: "bg-second-bg",
-  th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap",
+  th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap min-w-24",
   td: "p-2 align-middle whitespace-nowrap",
 }
 
@@ -189,8 +189,8 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
             {headers.map((header, i) => (
               <th key={`${header.id}-${i}`} className={twMerge(
                 classes.th,
-                header.id === "select" && "w-4 px-4",
-                header.id === "expander" && "pr-0",
+                header.id === "select" && "min-w-4 w-4 px-4",
+                header.id === "expander" && "min-w-4 pr-0",
                 header.column.columnDef.meta?.align == "right" && "text-right",
                 header.column.columnDef.meta?.align == "center" && "text-center",
                 ["left", "both"].includes(header.column.columnDef.meta?.border || "") && "border-l border-line",

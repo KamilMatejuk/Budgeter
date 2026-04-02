@@ -178,8 +178,8 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
             onClick={() => { setSelectedModal(index + 1 + (options?.length || 0)) }} />
         ))}
       </div>}
-      <div ref={topScrollRef} className="overflow-x-auto" onScroll={() => syncScroll("top")}>
-        <div ref={tableWrapRef} style={{ height: 1 }} />
+      <div ref={topScrollRef} className="overflow-x-auto md:hidden" onScroll={() => syncScroll("top")}>
+        <div ref={tableWrapRef} className="h-0.5 bg-second-bg" />
       </div>
       <div ref={bottomScrollRef} className="overflow-x-auto" onScroll={() => syncScroll("bottom")}>
         <table className="w-full text-sm m-0 table-auto">

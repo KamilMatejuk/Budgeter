@@ -11,11 +11,11 @@ interface ChartWithOptionsProps {
 
 export default function ChartWithOptions({ chart, options, selectOption }: ChartWithOptionsProps) {
   return (
-    <div className="w-full grid grid-cols-[1fr_300px] gap-4">
+    <div className="w-full flex flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_300px]">
       {/* chart */}
       {chart}
       {/* options */}
-      <div className="flex flex-col gap-1 overflow-y-auto overflow-x-hidden max-h-[300px]">
+      <div className="flex flex-col gap-1 overflow-y-auto overflow-x-hidden max-h-[125px] md:max-h-[300px]">
         {options.map((a) => (
           <Button
             key={a.id}

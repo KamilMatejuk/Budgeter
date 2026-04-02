@@ -13,7 +13,6 @@ export default async function AccountsHistory() {
   const { response: totalAccValueResponse, error: totalAccValueError } = await getHistoricAccountValues(undefined, DEFAULT_CHART_RANGE);
   if (totalAccValueError != null)
     return <ErrorToast message={`Could not download accounts history: ${totalAccValueError}`} />;
-
   
   const { response: accountsResponse, error: accountsError } = await getPersonalAccounts();
   if (accountsError != null)

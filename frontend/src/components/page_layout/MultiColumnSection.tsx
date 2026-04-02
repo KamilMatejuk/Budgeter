@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
+import ScrollableHorizontal from "../ScrollableHorizontal";
 
 interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement>, PropsWithChildren {
   mobileBehaviour: 'wrap' | 'scroll';
@@ -20,7 +21,7 @@ export default function MultiColumnSection({ children, mobileBehaviour, ...props
   const gridStyle = { gridTemplateColumns: new Array(n).fill("1fr").join(" 1px ") };
 
   const gridClassName = mobileBehaviour === 'scroll'
-    ? "w-full overflow-x-auto grid gap-4"
+    ? "w-full grid gap-4"
     : "w-full hidden sm:grid gap-4";
 
   return (
@@ -37,13 +38,15 @@ export default function MultiColumnSection({ children, mobileBehaviour, ...props
         </div>
       )}
       {/* each one next to each other - desktop or mobile scroll*/}
-      <div
-        {...props}
-        className={twMerge(gridClassName, props.className)}
-        style={gridStyle}
-      >
-        {gridContent}
-      </div>
+      <ScrollableHorizontal>
+        <div
+          {...props}
+          className={twMerge(gridClassName, props.className)}
+          style={gridStyle}
+          >
+          {gridContent}
+        </div>
+      </ScrollableHorizontal>
     </>
   );
 }

@@ -182,19 +182,27 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
         assert debt_transaction is not None, "Debt transaction not found"
         assert debt_transaction.value < 0.0, "Debt transaction value must be negative"
         diff = Value.add(repay_transaction.value, debt_transaction.value)
-        # remove repay transaction
-        repay_transaction.deleted = True
-        await patch(db, "transactions", TransactionWithId, repay_transaction)
-        # if fully repaid, just delete debt transaction
         if diff == 0.0:
+            # fully repaid, delete both debt and repay
+            repay_transaction.deleted = True
+            await patch(db, "transactions", TransactionWithId, repay_transaction)
             debt_transaction.deleted = True
             await patch(db, "transactions", TransactionWithId, debt_transaction)
+        elif diff > 0:
+            # more money received then debt, update repay and delete debt
+            debt_transaction.deleted = True
+            await patch(db, "transactions", TransactionWithId, debt_transaction)
+            repay_transaction.title += f" (after {debt_transaction.title} debt repayment)"
+            repay_transaction.value = diff
+            await patch(db, "transactions", TransactionWithId, repay_transaction)
         else:
-            # otherwise, update debt transaction with remaining value and mark as not debt anymore
+            # more money in debt then received, update debt and delete repay
             debt_transaction.title += f" (after {debt_transaction.debt_person} debt repayment)"
             debt_transaction.debt_person = None
             debt_transaction.value = diff
             await patch(db, "transactions", TransactionWithId, debt_transaction)
+            repay_transaction.deleted = True
+            await patch(db, "transactions", TransactionWithId, repay_transaction)
         return {}
     return await inner()
 

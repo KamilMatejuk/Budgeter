@@ -10,7 +10,7 @@ export default async function Organisations() {
 
   // people are organisations with automatically assigned person icon
   const organsations = (response || []).filter(org => org.icon !== personIcon);
-  const people = (response || []).filter(org => org.icon === personIcon);
+  const people = (response || []).filter(org => org.icon === personIcon).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     error != null

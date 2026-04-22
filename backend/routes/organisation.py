@@ -22,7 +22,7 @@ async def get_organisations(db: AsyncIOMotorDatabase = Depends(get_db)):
             **o.model_dump(exclude={"tags"}, by_alias=True, mode="json"),
             tags=await get_rich_tags(o.tags, db)))
     # sort by tag name, but ones with no tags go last
-    return sorted(result, key=lambda o: o.tags[0].name.lower() if o.tags else chr(ord('Ż') + 1))
+    return sorted(result, key=lambda o: (0, o.tags[0].name.lower()) if o.tags else (1, o.name.lower()))
 
 
 @router.get("/regex/{name}", response_model=OrganisationWithId | dict)

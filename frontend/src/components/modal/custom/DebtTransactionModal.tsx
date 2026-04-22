@@ -4,17 +4,17 @@ import { z } from "zod";
 import { TransactionRichWithId, TransactionPartial } from "@/types/backend";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
+import TextInputWithError from "../../form/TextInputWithError";
 import { patch } from "@/app/api/fetch";
 import TransactionDetails from "./TransactionDetails";
 
 
-const FormSchema = z.object({ person: requiredText });
+const FormSchema = z.object({ person: z.string() });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 
 async function submit(values: FormSchemaType, item: TransactionRichWithId, url: string) {
-  const val = { _id: item._id, debt_person: values.person } as TransactionPartial;
+  const val = { _id: item._id, debt_person: values.person || null } as TransactionPartial;
   const { error } = await patch(url, val);
   if (error == null) return true;
   alert(`Error: ${error}`);

@@ -47,6 +47,7 @@ class MillenniumTransactionType(enum.Enum):
 
     TRANSFER_TO_PHONE = 'PRZELEW NA TELEFON'
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
+    TRANSFER_INCOMING_INSTANT = 'PRZELEW NATYCHMIASTOWY PRZYCHODZĄCY'
     TRANSFER_INCOMING_INTERNAL = 'PRZELEW WEWNĘTRZNY PRZYCHODZĄCY'
     TRANSFER_OUTGOING_INTERNAL = 'PRZELEW WEWNĘTRZNY WYCHODZĄCY'
     TRANSFER_REGULAR_INTERNAL = 'STAŁE ZLECENIE WEWNĄTRZ BANKU'
@@ -179,7 +180,8 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         await create_transaction(db, data, account, data.recipient)
         return
     
-    if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL:
+    if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL \
+        or data.type == MillenniumTransactionType.TRANSFER_INCOMING_INSTANT:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient)
         return

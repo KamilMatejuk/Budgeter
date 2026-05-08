@@ -1022,6 +1022,11 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /**
+             * Withdrawable
+             * @default true
+             */
+            withdrawable: boolean;
         };
         /** CashPartial */
         CashPartial: {
@@ -1032,6 +1037,8 @@ export type components = {
             /** Value */
             value?: number | null;
             currency?: components["schemas"]["Currency"] | null;
+            /** Withdrawable */
+            withdrawable?: boolean | null;
         };
         /** CashRichWithId */
         CashRichWithId: {
@@ -1042,6 +1049,11 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /**
+             * Withdrawable
+             * @default true
+             */
+            withdrawable: boolean;
             /** Value Pln */
             value_pln: number;
         };
@@ -1054,6 +1066,8 @@ export type components = {
             /** Value */
             value: number;
             currency: components["schemas"]["Currency"];
+            /** Withdrawable */
+            withdrawable: boolean;
         };
         /**
          * ChartRange

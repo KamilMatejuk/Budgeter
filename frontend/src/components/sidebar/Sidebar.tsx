@@ -14,11 +14,12 @@ export default async function Sidebar() {
     accounts: accounts?.filter((it) => it.withdrawable && it.value_pln) || [],
     stocks: stocks?.reduce((acc, it) => acc + (it.withdrawable ? it.value_pln : 0), 0) || 0,
     capitals: capitals?.reduce((acc, it) => acc + (it.withdrawable ? it.value_pln : 0), 0) || 0,
-    cash: cashs?.reduce((acc, it) => acc + (it.value_pln || 0), 0) || 0,
+    cash: cashs?.reduce((acc, it) => acc + (it.withdrawable ? it.value_pln : 0), 0) || 0,
     blocked:
       (accounts?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0) + 
       (stocks?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0) + 
-      (capitals?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0), 
+      (capitals?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0) +
+      (cashs?.reduce((acc, it) => acc + (!it.withdrawable ? it.value_pln : 0), 0) || 0), 
   };
 
   return (<SidebarClient accountsProps={accountsProps} />);

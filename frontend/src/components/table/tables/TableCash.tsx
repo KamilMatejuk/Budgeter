@@ -7,13 +7,17 @@ import { defineCellValue } from "../cells/CellValue";
 import UpdateCashModal from "@/components/modal/update/UpdateCashModal";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { defineCellBoolean } from "../cells/CellBoolean";
 
 
 interface TableCashProps {
   data: CashWithId[];
 }
 
-const columns: ColumnDef<CashWithId>[] = [defineCellValue<CashWithId>(false, "left")];
+const columns: ColumnDef<CashWithId>[] = [
+  defineCellValue<CashWithId>(false, "left"),
+  defineCellBoolean<CashWithId>("withdrawable", "Withdraw"),
+];
 
 export default function TableCash({ data }: TableCashProps) {
   return (

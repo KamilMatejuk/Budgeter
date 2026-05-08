@@ -28,6 +28,7 @@ class Cash(PyBaseModel):
     name: str
     value: float
     currency: Currency
+    withdrawable: bool = True
 
 class PersonalAccount(PyBaseModel):
     type: AccountType

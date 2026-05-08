@@ -62,6 +62,7 @@ class MillenniumTransactionType(enum.Enum):
     INVESTMENT_CREDIT = 'UZNANIE'
     CURRENCY_EXCHANGE_DEBIT = 'WYMIANA WALUTY OBCIĄŻENIE'
     CURRENCY_EXCHANGE_CREDIT = 'WYMIANA WALUTY UZNANIE'
+    CASH_DEPOSIT = 'WPŁATA GOTÓWKI'
 
 
 async def get_account(db: AsyncIOMotorDatabase, number: str = None, id: str = None) -> PersonalAccountWithId:
@@ -232,6 +233,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.CURRENCY_EXCHANGE_CREDIT:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, "Wymiana Walut Millennium")
+        return
+    
+    if data.type == MillenniumTransactionType.CASH_DEPOSIT:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Bankomat Millennium")
         return
 
     raise HTTPException(status_code=500, detail=f"Unknown operation with transaction type {data.type}")

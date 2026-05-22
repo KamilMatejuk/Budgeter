@@ -46,10 +46,12 @@ class MillenniumTransactionType(enum.Enum):
     CREDIT_CARD_PAYOFF = 'WCZEŚN.SPŁ.KARTY:'
     PAYMENT_REFUND = 'ZAKUP - ZWROT'
 
+    TRANSFER_CHARGE = 'PROWIZJA'
     TRANSFER_TO_PHONE = 'PRZELEW NA TELEFON'
     TRANSFER_INCOMING_EXTERNAL = 'PRZELEW PRZYCHODZĄCY'
     TRANSFER_INCOMING_INSTANT = 'PRZELEW NATYCHMIASTOWY PRZYCHODZĄCY'
     TRANSFER_INCOMING_INTERNAL = 'PRZELEW WEWNĘTRZNY PRZYCHODZĄCY'
+    TRANSFER_OUTGOING_INSTANT = 'PRZELEW NATYCHMIASTOWY WYCHODZĄCY'
     TRANSFER_OUTGOING_INTERNAL = 'PRZELEW WEWNĘTRZNY WYCHODZĄCY'
     TRANSFER_REGULAR_INTERNAL = 'STAŁE ZLECENIE WEWNĄTRZ BANKU'
     TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
@@ -185,21 +187,14 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         return
     
     if data.type == MillenniumTransactionType.TRANSFER_INCOMING_EXTERNAL \
-        or data.type == MillenniumTransactionType.TRANSFER_INCOMING_INSTANT:
+        or data.type == MillenniumTransactionType.TRANSFER_INCOMING_INSTANT \
+        or data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL \
+        or data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INSTANT \
+        or data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INTERNAL:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient)
         return
 
-    if data.type == MillenniumTransactionType.TRANSFER_INCOMING_INTERNAL:
-        account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient)
-        return
-    
-    if data.type == MillenniumTransactionType.TRANSFER_OUTGOING_INTERNAL:
-        account = await get_account(db, number=data.number)
-        await create_transaction(db, data, account, data.recipient)
-        return
-    
     if data.type == MillenniumTransactionType.TRANSFER_REGULAR_INTERNAL:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient)
@@ -208,6 +203,11 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
     if data.type == MillenniumTransactionType.REGULAR_ORDER:
         account = await get_account(db, number=data.number)
         await create_transaction(db, data, account, data.recipient)
+        return
+    
+    if data.type == MillenniumTransactionType.TRANSFER_CHARGE:
+        account = await get_account(db, number=data.number)
+        await create_transaction(db, data, account, "Bank Millennium")
         return
     
     if data.type == MillenniumTransactionType.INVESTMENT_OPERATION:

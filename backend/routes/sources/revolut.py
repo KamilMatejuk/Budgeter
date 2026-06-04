@@ -55,13 +55,16 @@ class RevolutRequest(PyBaseModel):
     
 class RevolutTransactionType(enum.Enum):
     EXCHANGE = 'Exchange'
-    REV_PAYMENT = 'Rev Payment' # TODO add
+    REV_PAYMENT = 'Rev Payment'
+    REV_REFUND = 'Rev Payment Refund'
     CARD_PAYMENT = 'Card Payment'
     CARD_REFUND = 'Card Refund'
     TRANSFER = 'Transfer'
     DEPOSIT = 'Deposit'
     WITHDRAWAL = 'Withdrawal'
     REWARD = 'Reward'
+    CHARGE = 'Charge'
+    ATM = 'ATM'
     
     @classmethod
     def _missing_(cls, value):
@@ -117,6 +120,11 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
         await mark_account_value_in_history(account, date, value, db)
         return
 
+    if data.type == RevolutTransactionType.REV_REFUND:
+        await create_transaction("Zwrot")
+        await mark_account_value_in_history(account, date, value, db)
+        return
+
     if data.type == RevolutTransactionType.CARD_PAYMENT:
         await create_transaction("Płatność kartą")
         await mark_account_value_in_history(account, date, value, db)
@@ -134,6 +142,16 @@ async def create_revolut_transaction(data: RevolutRequest, owner: str, db: Async
 
     if data.type == RevolutTransactionType.TRANSFER:
         await create_transaction("Przelew", data.description.replace("Transfer to ", ""))
+        await mark_account_value_in_history(account, date, value, db)
+        return
+
+    if data.type == RevolutTransactionType.ATM:
+        await create_transaction(data.description, "Revolut")
+        await mark_account_value_in_history(account, date, value, db)
+        return
+
+    if data.type == RevolutTransactionType.CHARGE:
+        await create_transaction(data.description, "Revolut")
         await mark_account_value_in_history(account, date, value, db)
         return
 

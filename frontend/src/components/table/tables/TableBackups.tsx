@@ -59,6 +59,7 @@ export default function TableBackups({ data }: TableBackupsProps) {
       ]}
       CreateModal={UpdateBackupModal}
       newText="backup"
+      newOnTop
       groupOptions={[
         { name: "Delete", icon: MdDelete, component: GroupDeleteByNameModal },
       ]}

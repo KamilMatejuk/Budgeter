@@ -41,6 +41,7 @@ export interface TableProps<T extends Item> {
   groupOptions?: GroupOption<T>[];
   CreateModal?: React.ComponentType<BackendModalProps<T>>;
   newText?: string;
+  newOnTop?: boolean;
   expandChild?: keyof T;
   expandAll?: boolean;
 }
@@ -112,7 +113,7 @@ function defineColumnOptions<T extends Item>(
   };
 }
 
-export default function Table<T extends Item>({ url = "", tag = "", data, columns, options, groupOptions, CreateModal, newText, expandChild, expandAll }: TableProps<T>) {
+export default function Table<T extends Item>({ url = "", tag = "", data, columns, options, groupOptions, CreateModal, newText, newOnTop, expandChild, expandAll }: TableProps<T>) {
   // modals types are indexed as: 0 - create, 1+ - custom options, 1+n+ - group options
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [selectedModal, setSelectedModal] = useState<number | null>(null);
@@ -146,6 +147,16 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
     table.resetRowSelection();
     await customRevalidateTag(tag);
   };
+  const newRow = CreateModal && (
+    <tr className={twMerge(classes.row, "cursor-pointer text-subtext")} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
+      <td className={classes.td} colSpan={columns.length + 1}>
+        <div className="flex items-center">
+          <MdAdd size={20} className="ml-1"/>
+          <p className="ml-4 mt-0.5">Create new {newText || ""}</p>
+        </div>
+      </td>
+    </tr>
+  );
 
   return (
     <div>
@@ -181,6 +192,7 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
         </thead>
         {/* data */}
         <tbody>
+          {newOnTop && newRow}
           {table.getRowModel().rows.map((row, i) => (
             <tr key={`${row.id}-${i}`} className={twMerge(classes.row, row.getIsSelected() && classes.selectedRow)}>
               {row.getVisibleCells().map((cell, i) => (
@@ -202,16 +214,7 @@ export default function Table<T extends Item>({ url = "", tag = "", data, column
             </tr>
           ))}
           {/* add new row */}
-          {CreateModal &&
-            <tr className={twMerge(classes.row, "cursor-pointer text-subtext")} onClick={() => { setSelectedItem(null); setSelectedModal(0) }}>
-              <td className={classes.td} colSpan={columns.length + 1}>
-                <div className="flex items-center">
-                  <MdAdd size={20} />
-                  <p className="ml-1 mt-0.5">Create new {newText || ""}</p>
-                </div>
-              </td>
-            </tr>
-          }
+          {!newOnTop && newRow}
         </tbody>
         </table>
       </ScrollableHorizontal>

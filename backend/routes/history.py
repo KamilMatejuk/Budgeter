@@ -161,13 +161,14 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
     async def inner():
         start = range_to_dates(range)
         if start is None:
-            first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False}, "date", one=True, reverse=False)
+            first: TransactionWithId = await get(db, "transactions", TransactionWithId, {"deleted": False, "outlier": False}, "date", one=True, reverse=False)
             start = first.date if first else Date.today()
         incomes = []
         expenses = []
         for month in Date.iterate_months(start):
             condition = {
                 "deleted": False,
+                "outlier": False,
                 "date": Date.condition(month, Date.month_end(month)),
                 "$or": [{"debt_person": None}, {"debt_person": ""}],
             }

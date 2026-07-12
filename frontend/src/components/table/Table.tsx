@@ -25,7 +25,8 @@ export interface Item { _id: string } // generic type for items with id
 interface Option<T extends Item> {
   name: string;
   icon: React.ComponentType<IconBaseProps>;
-  component: React.ComponentType<BackendModalProps<T>>
+  component: React.ComponentType<BackendModalProps<T>>;
+  isActive?: (item: T) => boolean;
 }
 interface GroupOption<T extends Item> {
   name: string;
@@ -104,8 +105,12 @@ function defineColumnOptions<T extends Item>(
     header: "Options",
     cell: ({ row }) => (
       <div className="flex justify-end space-x-2">
-        {options.map(({ name, icon: Icon }, index) => (
-          <Icon size={20} title={name} className="cursor-pointer" key={index}
+        {options.map(({ name, icon: Icon, isActive }, index) => (
+          <Icon
+            size={20}
+            key={index}
+            title={name}
+            className={twMerge("cursor-pointer", isActive?.(row.original) && "text-negative")}
             onClick={() => { setSelectedItem(row.original); setSelectedModal(index + 1) }} />))}
       </div>
     ),

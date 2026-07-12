@@ -1481,6 +1481,11 @@ export type components = {
              */
             deleted: boolean;
             /**
+             * Outlier
+             * @default false
+             */
+            outlier: boolean;
+            /**
              * Transfer Between Accounts
              * @default false
              */
@@ -1509,6 +1514,8 @@ export type components = {
             cash?: boolean | null;
             /** Deleted */
             deleted?: boolean | null;
+            /** Outlier */
+            outlier?: boolean | null;
             /** Transfer Between Accounts */
             transfer_between_accounts?: boolean | null;
             /** Debt Person */
@@ -1550,6 +1557,11 @@ export type components = {
              * @default false
              */
             deleted: boolean;
+            /**
+             * Outlier
+             * @default false
+             */
+            outlier: boolean;
             /**
              * Transfer Between Accounts
              * @default false
@@ -1600,6 +1612,8 @@ export type components = {
             cash: boolean;
             /** Deleted */
             deleted: boolean;
+            /** Outlier */
+            outlier: boolean;
             /** Transfer Between Accounts */
             transfer_between_accounts: boolean;
             /** Debt Person */

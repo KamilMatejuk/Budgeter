@@ -1,3 +1,4 @@
+import re
 import datetime
 from fastapi import APIRouter, Depends, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -173,6 +174,12 @@ async def get_transactions_with_debt(db: AsyncIOMotorDatabase = Depends(get_db))
 
 @single_router.post("/repay", response_model=dict)
 async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
+    def append_debt_repayment_suffix(title: str, new_entry: str | None) -> str:
+        matches = list(re.compile(r" \(after (.+?) debt repayment\)").finditer(title))
+        if not matches: return f"{title} (after {new_entry} debt repayment)"
+        base = title[:matches[0].start()]
+        entries = [m.group(1) for m in matches] + [str(new_entry)]
+        return f"{base} (after {', '.join(entries)} debt repayment)"
     @fail_wrapper
     async def inner():
         repay_transaction: TransactionWithId = await get(db, "transactions", TransactionWithId, {"_id": str(data.id), "deleted": False}, one=True)
@@ -192,12 +199,12 @@ async def repay_transaction(data: TransactionRepayRequest, db: AsyncIOMotorDatab
             # more money received then debt, update repay and delete debt
             debt_transaction.deleted = True
             await patch(db, "transactions", TransactionWithId, debt_transaction)
-            repay_transaction.title += f" (after {debt_transaction.title} debt repayment)"
+            repay_transaction.title = append_debt_repayment_suffix(repay_transaction.title, debt_transaction.title)
             repay_transaction.value = diff
             await patch(db, "transactions", TransactionWithId, repay_transaction)
         else:
             # more money in debt then received, update debt and delete repay
-            debt_transaction.title += f" (after {debt_transaction.debt_person} debt repayment)"
+            debt_transaction.title = append_debt_repayment_suffix(debt_transaction.title, debt_transaction.debt_person)
             debt_transaction.debt_person = None
             debt_transaction.value = diff
             await patch(db, "transactions", TransactionWithId, debt_transaction)

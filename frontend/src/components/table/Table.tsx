@@ -16,7 +16,7 @@ const classes = {
   row: "border-b last:border-0 border-second-bg hover:bg-second-bg transition-colors",
   selectedRow: "bg-second-bg",
   th: "text-left text-xs uppercase tracking-wider p-2 select-none whitespace-nowrap min-w-24",
-  td: "p-2 align-middle whitespace-nowrap",
+  td: "p-1 align-middle whitespace-nowrap",
 }
 
 export interface Item { _id: string } // generic type for items with id

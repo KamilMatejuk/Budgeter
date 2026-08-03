@@ -35,7 +35,7 @@ export default async function Home() {
       {/* <AccountsHistory /> */}
       <SectionHeader text="Monthly Overview" subtext={`Incomes and expenses`} />
       <IncomExpenseHistory />
-      <SectionHeader text="Month Comparison" subtext={`See how your selected month compares to averages and previous periods`} />
+      <SectionHeader text="Tag Trend" subtext={`See how your tags trend over months`} />
       <MonthComparison />
     </>
   );

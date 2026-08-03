@@ -90,6 +90,53 @@ export function LineChart({ data, labels, ...props }: LineChartProps) {
   );
 }
 
+// ************************** TREND LINE CHART ***************************
+
+export interface TrendLineChartProps extends LineChartProps {
+  colour: string;
+}
+
+const TrendLineChartOptions = {
+  ...LineChartOptions,
+  scales: {
+    ...LineChartOptions.scales,
+    x: {
+      ...LineChartOptions.scales?.x,
+      display: false,
+    },
+    y: {
+      grid: { display: false },
+      ticks: {
+        callback: (value: any) => String(value).padStart(6, " "),
+      },
+    },
+  },
+};
+
+export function TrendLineChart({ data, labels, colour, ...props }: TrendLineChartProps) {
+  return (
+    <ChartContainer {...props}>
+      <Line options={TrendLineChartOptions as ChartOptions<"line">} data={{
+        labels,
+        datasets: [
+          {
+            data: data.map((_) => 0),
+            borderColor: "transparent",
+          },
+          {
+            data,
+            borderColor: colour,
+            borderWidth: 2,
+            tension: 0.3,
+            fill: { target: "-1" }, // fill to previous dataset (x axis)
+            backgroundColor: `${colour}33`,
+          }
+        ],
+      }} />
+    </ChartContainer>
+  );
+}
+
 // ************************** PREDICTION LINE CHART ***************************
 
 export interface PredictionLineChartProps extends ChartContainerProps {

@@ -187,6 +187,7 @@ async def get_transactions_filtered(
     tagsInJoin: Join = Query(Join.OR),
     tagsOut: list[str] | None = Query(None),
     tagsOutJoin: Join = Query(Join.OR),
+    hideOutliers: bool = False,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     @fail_wrapper
@@ -194,6 +195,7 @@ async def get_transactions_filtered(
         # condition
         condition = {"deleted": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
         condition.update(await create_tags_condition(tagsIn, tagsOut, tagsInJoin, tagsOutJoin, db))
+        if hideOutliers: condition["outlier"] = False
         # iterate months
         response = []
         first: TransactionWithId = await get(db, "transactions", TransactionWithId, condition, "date", one=True, reverse=False)

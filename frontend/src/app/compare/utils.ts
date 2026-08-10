@@ -5,6 +5,7 @@ import { FiltersProps } from "./Filters";
 
 export function pushFiltersToUrl(filters: Omit<FiltersProps, "dates">) {
   const params = pushTagFiltersToUrl(filters);
+  params.append("hideOutliers", `${filters.hideOutliers || false}`);
   return params;
 }
 

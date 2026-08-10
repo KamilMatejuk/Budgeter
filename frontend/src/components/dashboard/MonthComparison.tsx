@@ -44,7 +44,7 @@ export default async function MonthComparison() {
   const data: AggComparisonItemRecursive[] = [];
   const rootTags = tags.filter(t => t.parent == null);
   for (const tag of rootTags) {
-    const { response, error } = await getCompareData({ tagsIn: [tag._id] });
+    const { response, error } = await getCompareData({ tagsIn: [tag._id], hideOutliers: true });
     if (error != null)
       return <ErrorToast message={`Could not download month comparison for tag ${tag.name}: ${error}`} />;
     // response is a list of months, with one tag per each month (the root tag)

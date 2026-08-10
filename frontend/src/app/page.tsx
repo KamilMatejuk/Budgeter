@@ -26,16 +26,16 @@ export default async function Home() {
           <Requirements />
         </>
         <>
-          <SectionHeader text="Debt" subtext={"Money owed and outstanding balances"} />
+          <SectionHeader text="Debt" subtext="Money owed and outstanding balances" />
           <Debt />
         </>
       </MultiColumnSection>
       {/* Temporarly hide */}
       {/* <SectionHeader text="Accounts' Balance" subtext={`Accounts value history`} /> */}
       {/* <AccountsHistory /> */}
-      <SectionHeader text="Monthly Overview" subtext={`Incomes and expenses`} />
+      <SectionHeader text="Monthly Overview" subtext="Incomes and expenses (without outliers)" />
       <IncomExpenseHistory />
-      <SectionHeader text="Tag Trend" subtext={`See how your tags trend over months`} />
+      <SectionHeader text="Tag Trend" subtext="See how your tags trend (without outliers)" />
       <MonthComparison />
     </>
   );

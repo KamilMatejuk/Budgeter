@@ -16,6 +16,7 @@ export interface FiltersProps extends TagsFiltersProps {
     start: Date;
     end: Date;
   }[];
+  hideOutliers?: boolean;
 }
 
 const FormSchema = z.object({

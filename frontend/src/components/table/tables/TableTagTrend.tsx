@@ -44,21 +44,44 @@ export default function TableTagTrend({ data }: TableTagTrendProps) {
     {
       accessorKey: "details",
       header: () => "Details",
+      meta: { align: "center" },
       cell: ({ row }) => (
       <div className="grid grid-cols-[auto_1fr] items-center text-sm">
-        <div>Median</div>
+        <div className="text-left">Median</div>
         <div className="ml-auto w-fit">
           <CellValue value={row.original.value_median_pln} currency={Currency.PLN} />
         </div>
-        <div>Average</div>
+        <div className="text-left">Average</div>
         <div className="ml-auto w-fit">
           <CellValue value={row.original.value_avg_pln} currency={Currency.PLN} />
         </div>
-        <div className="text-subtext">Deviation</div>
+        <div className="text-left text-subtext">Deviation</div>
         <div className="text-right text-subtext">
           ± {((row.original.value_cv_pln || 0) * 100).toFixed(1)}%
         </div>
       </div>),
+    },
+    {
+      accessorKey: "last",
+      header: () => `This ${getMonthName(new Date().getMonth() + 1)}`,
+      meta: { align: "center" },
+      cell: ({ row }) => {
+        const latest = row.original.values_pln[row.original.values_pln.length - 1]
+        const diffMedian = Math.abs(latest) - Math.abs(row.original.value_median_pln)
+        const diffAvg = Math.abs(latest) - Math.abs(row.original.value_avg_pln)
+        const diffRow = (diff: number, org: string) => (diff == 0
+          ? <div className="text-black/50">exactly {org}</div>
+          : <div className={diff > 0 ? "text-negative/50" : "text-positive/50"}>
+              {Math.abs(diff).toFixed(2)} zł {diff > 0 ? "over" : "below"} {org}
+            </div>)
+        return (
+          <div className="flex flex-col items-center text-sm px-1">
+            <div>{diffRow(diffMedian, "median")}</div>
+            <div>{diffRow(diffAvg, "average")}</div>
+            <CellValue value={latest} currency={Currency.PLN} />
+          </div>
+        )
+      },
     },
   ];
   return <Table<AggComparisonItemRecursive> url="" tag="" data={data} columns={columns} expandChild="children" />;

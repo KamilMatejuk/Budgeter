@@ -1,7 +1,7 @@
 // import AccountsHistory from "@/components/dashboard/AccountsHistory";
 import Debt from "@/components/dashboard/Debt";
 import IncomExpenseHistory from "@/components/dashboard/IncomeExpenseHistory";
-import MonthComparison from "@/components/dashboard/MonthComparison";
+import TagTrend from "@/components/dashboard/TagTrend";
 import Requirements from "@/components/dashboard/Requirements";
 import MultiColumnSection from "@/components/page_layout/MultiColumnSection";
 import PageHeader from "@/components/page_layout/PageHeader";
@@ -36,7 +36,7 @@ export default async function Home() {
       <SectionHeader text="Monthly Overview" subtext="Incomes and expenses (without outliers)" />
       <IncomExpenseHistory />
       <SectionHeader text="Tag Trend" subtext="See how your tags trend (without outliers)" />
-      <MonthComparison />
+      <TagTrend />
     </>
   );
 }

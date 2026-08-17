@@ -1,5 +1,5 @@
 import ErrorToast from "../toast/ErrorToast";
-import TableMonthComparison from "../table/tables/TableMonthComparison";
+import TableTagTrend from "../table/tables/TableTagTrend";
 import { getCompareData, getTags } from "@/app/api/getters";
 import { ComparisonItemRecursive } from "@/types/backend";
 import { median, average, coefficientOfVariation } from 'simple-statistics'
@@ -36,17 +36,17 @@ function paddValues(items: AggComparisonItemRecursive[], max: number): AggCompar
   })
 }
 
-export default async function MonthComparison() {
+export default async function TagTrend() {
   const { response: tags, error } = await getTags();
   if (error != null)
-    return <ErrorToast message={`Could not download month comparison: ${error}`} />;
+    return <ErrorToast message={`Could not download tag trend: ${error}`} />;
 
   const data: AggComparisonItemRecursive[] = [];
   const rootTags = tags.filter(t => t.parent == null);
   for (const tag of rootTags) {
     const { response, error } = await getCompareData({ tagsIn: [tag._id], hideOutliers: true });
     if (error != null)
-      return <ErrorToast message={`Could not download month comparison for tag ${tag.name}: ${error}`} />;
+      return <ErrorToast message={`Could not download tag trend for tag ${tag.name}: ${error}`} />;
     // response is a list of months, with one tag per each month (the root tag)
     if (response.length === 0) continue;
     data.push(combineMonths(response.map(r => r.children_tags[0])));
@@ -54,6 +54,6 @@ export default async function MonthComparison() {
   // padd with 0 if tags started in different months
   const maxMonths = Math.max(...data.map(d => d.values_pln.length));
   return (
-    <TableMonthComparison data={paddValues(data, maxMonths)} />
+    <TableTagTrend data={paddValues(data, maxMonths)} />
   );
 }

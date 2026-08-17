@@ -4,13 +4,13 @@ import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "../cells/CellTag";
 import CellValue from "../cells/CellValue";
-import { AggComparisonItemRecursive } from "@/components/dashboard/MonthComparison";
+import { AggComparisonItemRecursive } from "@/components/dashboard/TagTrend";
 import { Currency } from "@/types/enum";
 import InfoToast from "@/components/toast/InfoToast";
 import { getMonthName } from "@/const/date";
 import { TrendLineChart } from "@/components/dashboard/Chart";
 
-interface TableMonthComparisonProps {
+interface TableTagTrendProps {
   data: AggComparisonItemRecursive[];
 }
 
@@ -20,7 +20,7 @@ const getDates = (n: number) => Array.from({ length: n }, (_, i) => {
   return `${getMonthName(date.getMonth() + 1)} ${date.getFullYear()}`
 });
 
-export default function TableMonthComparison({ data }: TableMonthComparisonProps) {
+export default function TableTagTrend({ data }: TableTagTrendProps) {
   if (data.length === 0) return <InfoToast message="No data found" />;
 
   const datesRecord = getDates(data[0].values_pln.length);

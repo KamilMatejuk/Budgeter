@@ -7,7 +7,6 @@ import { defineCellOrganisation } from "../cells/CellOrganisation";
 import { defineCellValue } from "../cells/CellValue";
 import { defineCellAccountName } from "../cells/CellAccountName";
 import { MdRestore } from "react-icons/md";
-import { defineCellTag } from "../cells/CellTag";
 import { getDateString } from "@/const/date";
 import GroupRestoreByIdModal from "@/components/modal/delete/GroupRestoreByIdModal";
 import RestoreByIdModal from "@/components/modal/delete/RestoreByIdModal";
@@ -23,7 +22,6 @@ const columns: ColumnDef<TransactionRichWithId>[] = [
   { accessorKey: "title", header: "Title", meta: { wrapForce: true } },
   defineCellOrganisation<TransactionRichWithId>(),
   defineCellValue<TransactionRichWithId>(true),
-  defineCellTag<TransactionRichWithId>(),
 ];
 
 export default function TableTrash({ data }: TableTrashProps) {

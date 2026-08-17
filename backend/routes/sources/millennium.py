@@ -56,6 +56,7 @@ class MillenniumTransactionType(enum.Enum):
     TRANSFER_REGULAR_INTERNAL = 'STAŁE ZLECENIE WEWNĄTRZ BANKU'
     TRANSFER_TO_ANOTHER_BANK = 'PRZELEW DO INNEGO BANKU'
     TRANSFER_TO_ANOTHER_COUNTRY = 'PRZELEW ZAGRANICZNY'
+    TRANSFER_TO_TAX_OFFICE = 'PRZELEW DO URZEDU SKARBOWEGO'
     TRANSFER_SEPA = 'PRZEKAZ SEPA'
 
     REGULAR_ORDER = 'STAŁE ZLECENIE ZEWNĘTRZNE'
@@ -175,6 +176,7 @@ async def create_millennium_transaction(data: MillenniumRequest, db: AsyncIOMoto
         return
 
     if data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_BANK \
+        or data.type == MillenniumTransactionType.TRANSFER_TO_TAX_OFFICE \
         or data.type == MillenniumTransactionType.TRANSFER_TO_ANOTHER_COUNTRY \
         or data.type == MillenniumTransactionType.TRANSFER_SEPA:
         account = await get_account(db, number=data.number)

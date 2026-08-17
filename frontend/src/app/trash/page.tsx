@@ -3,8 +3,8 @@ import PageHeader from "@/components/page_layout/PageHeader";
 import WarningToast from "@/components/toast/WarningToast";
 import { getDeletedTransactions, getTransferTransactions } from "../api/getters";
 import TableTrash from "@/components/table/tables/TableTrash";
-import SectionHeader from "@/components/page_layout/SectionHeader";
 import { Metadata } from "next";
+import Section from "@/components/page_layout/Section";
 
 export const metadata: Metadata = { title: "Trash" };
 
@@ -15,20 +15,22 @@ export default async function Trash() {
   return (
     <>
       <PageHeader text="Trash" subtext="Deleted or ortherwise discarded transactions" />
-      <SectionHeader text="Deleted Transactions" subtext="Their deletion affects account values and historical balances" />
-      {deletedError != null
-        ? <ErrorToast message={`Could not download transactions: ${deletedError}`} />
-        : deleted.length == 0
-          ? <WarningToast message="No transactions found" />
-          : <TableTrash data={deleted} />
-      }
-      <SectionHeader text="Transfers Between Accounts" subtext="They are removed from summary, while keeping historical value accuracy" />
-      {transferError != null
-        ? <ErrorToast message={`Could not download transfer transactions: ${transferError}`} />
-        : transfer.length == 0
+      <Section text="Deleted Transactions" subtext="Their deletion affects account values and historical balances" closed>
+        {deletedError != null
+          ? <ErrorToast message={`Could not download transactions: ${deletedError}`} />
+          : deleted.length == 0
+            ? <WarningToast message="No transactions found" />
+            : <TableTrash data={deleted} />
+        }
+      </Section>
+      <Section text="Transfers Between Accounts" subtext="They are removed from summary, while keeping historical value accuracy" closed>
+        {transferError != null
+          ? <ErrorToast message={`Could not download transfer transactions: ${transferError}`} />
+          : transfer.length == 0
           ? <WarningToast message="No transfer transactions found" />
           : <TableTrash data={transfer} />
-      }
+        }
+      </Section>
     </>
   );
 }

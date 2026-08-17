@@ -3,6 +3,7 @@ from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
 from models.source import Source
+from models.tag import TagRichWithId
 
 # Enums
 
@@ -70,6 +71,11 @@ class CapitalInvestment(PyBaseModel):
     yearly_interest: float
     capitalization: Capitalization
 
+class Budget(PyBaseModel):
+    name: str
+    tags: list[str] | None # id of Tags
+    value_pln: float
+
 # Partial models for updates
 
 class CashPartial(Cash, metaclass=Partial): pass
@@ -77,6 +83,7 @@ class PersonalAccountPartial(PersonalAccount, metaclass=Partial): pass
 class CardPartial(Card, metaclass=Partial): pass
 class StockAccountPartial(StockAccount, metaclass=Partial): pass
 class CapitalInvestmentPartial(CapitalInvestment, metaclass=Partial): pass
+class BudgetPartial(Budget, metaclass=Partial): pass
 
 # WithId models for responses
 class CashWithId(Cash, metaclass=WithId): pass
@@ -84,6 +91,7 @@ class PersonalAccountWithId(PersonalAccount, metaclass=WithId): pass
 class CardWithId(Card, metaclass=WithId): pass
 class StockAccountWithId(StockAccount, metaclass=WithId): pass
 class CapitalInvestmentWithId(CapitalInvestment, metaclass=WithId): pass
+class BudgetWithId(Budget, metaclass=WithId): pass
 
 # custom enriched models
 
@@ -101,3 +109,6 @@ class StockAccountRichWithId(StockAccountRich, metaclass=WithId): pass
 
 class CapitalInvestmentRich(CapitalInvestment): value_pln: float
 class CapitalInvestmentRichWithId(CapitalInvestmentRich, metaclass=WithId): pass
+
+class BudgetRich(Budget): tags: list[TagRichWithId] | None
+class BudgetRichWithId(BudgetRich, metaclass=WithId): pass

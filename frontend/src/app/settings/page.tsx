@@ -6,6 +6,7 @@ import TagTree from "./TagTree";
 import Organisations from "./Organisations";
 import { Metadata } from "next";
 import Section from "@/components/page_layout/Section";
+import Budgets from "./Budgets";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -27,6 +28,9 @@ export default function Settings() {
       </Section>
       <Section text="Organisations" subtext="Nice visualization of popular shops and services" closed>
         <Organisations />
+      </Section>
+      <Section text="Budgets" subtext="Monthly limits for your defined groups of spendings" closed>
+        <Budgets />
       </Section>
     </>
   );

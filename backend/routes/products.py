@@ -3,6 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from core.db import get_db
 from core.utils import Date, Forex
+from routes.utils import get_rich_tags
 from routes.base import CRUDRouterFactory, create, get, patch
 from routes.sources.utils import mark_account_value_in_history
 from models.products import (
@@ -11,6 +12,7 @@ from models.products import (
     PersonalAccount, PersonalAccountPartial, PersonalAccountWithId, PersonalAccountRichWithId,
     StockAccount, StockAccountPartial, StockAccountWithId, StockAccountRichWithId,
     CapitalInvestment, CapitalInvestmentPartial, CapitalInvestmentWithId, CapitalInvestmentRichWithId,
+    Budget, BudgetPartial, BudgetWithId, BudgetRichWithId,
 )
 
 router = APIRouter()
@@ -130,3 +132,22 @@ async def get_capitalinvestments(db: AsyncIOMotorDatabase = Depends(get_db)):
     return sorted(result, key=lambda x: x.end)
 
 router.include_router(capital_investment_router)
+
+budget_router = APIRouter(prefix="/budget")
+budget_factory = CRUDRouterFactory(budget_router, "budget", Budget, BudgetPartial, BudgetWithId)
+budget_factory.create_post()
+budget_factory.create_patch()
+budget_factory.create_delete()
+
+@budget_router.get("", response_model=list[BudgetRichWithId] | dict)
+async def get_budgets(db: AsyncIOMotorDatabase = Depends(get_db)):
+    items: list[BudgetWithId] = await get(db, "budget", BudgetWithId)
+    result = []
+    for i in items:
+        result.append(BudgetRichWithId(
+            **i.model_dump(exclude={"tags"}, by_alias=True, mode="json"),
+            tags = sorted(await get_rich_tags(i.tags, db), key=lambda t: t.name) if i.tags is not None else None,
+        ))
+    return sorted(result, key=lambda x: x.name)
+
+router.include_router(budget_router)

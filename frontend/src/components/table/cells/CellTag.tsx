@@ -59,7 +59,7 @@ export function CellTag({ tag, ...props }: CellTagProps) {
   </div>
 }
 
-export function defineCellTag<T extends { tag?: TagRichWithId, tags?: TagRichWithId[] }>() {
+export function defineCellTag<T extends { tag?: TagRichWithId | null, tags?: TagRichWithId[] | null }>() {
   return {
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (
       <div className="flex gap-1">

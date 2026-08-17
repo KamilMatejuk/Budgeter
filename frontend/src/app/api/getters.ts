@@ -1,6 +1,7 @@
 import {
   AccountRequirementsResponse,
   BackupResponse,
+  BudgetRichWithId,
   CapitalInvestmentRichWithId,
   CardRequirementsResponse,
   CardRichWithId,
@@ -57,6 +58,10 @@ export async function getStockAccounts() {
 
 export async function getCapitalInvestments() {
   return await get<CapitalInvestmentRichWithId[]>("/api/products/capital_investment", ["capital_investment"]);
+}
+
+export async function getBudgets() {
+  return await get<BudgetRichWithId[]>("/api/products/budget", ["budget", "transaction", "tag"]);
 }
 
 export async function getOrganisations() {

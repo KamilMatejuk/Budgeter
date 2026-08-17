@@ -529,6 +529,42 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/products/budget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Budgets */
+        get: operations["get_budgets_api_products_budget_get"];
+        put?: never;
+        /** Create Budget */
+        post: operations["create_budget_api_products_budget_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Budget */
+        patch: operations["patch_budget_api_products_budget_patch"];
+        trace?: never;
+    };
+    "/api/products/budget/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Budget */
+        delete: operations["delete_budget_api_products_budget__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/history/requirements/cards": {
         parameters: {
             query?: never;
@@ -824,6 +860,50 @@ export type components = {
             size_mb: number;
             /** Description */
             description: string;
+        };
+        /** Budget */
+        Budget: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name: string;
+            /** Tags */
+            tags: string[] | null;
+            /** Value Pln */
+            value_pln: number;
+        };
+        /** BudgetPartial */
+        BudgetPartial: {
+            /** Id */
+            _id?: string;
+            /** Name */
+            name?: string | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Value Pln */
+            value_pln?: number | null;
+        };
+        /** BudgetRichWithId */
+        BudgetRichWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Tags */
+            tags: components["schemas"]["TagRichWithId"][] | null;
+            /** Value Pln */
+            value_pln: number;
+        };
+        /** BudgetWithId */
+        BudgetWithId: {
+            /** Id */
+            _id: string;
+            /** Name */
+            name: string;
+            /** Tags */
+            tags: string[] | null;
+            /** Value Pln */
+            value_pln: number;
         };
         /** CapitalInvestment */
         CapitalInvestment: {
@@ -1644,6 +1724,10 @@ export type AccountType = components['schemas']['AccountType'];
 export type BackupPatchRequest = components['schemas']['BackupPatchRequest'];
 export type BackupRequest = components['schemas']['BackupRequest'];
 export type BackupResponse = components['schemas']['BackupResponse'];
+export type Budget = components['schemas']['Budget'];
+export type BudgetPartial = components['schemas']['BudgetPartial'];
+export type BudgetRichWithId = components['schemas']['BudgetRichWithId'];
+export type BudgetWithId = components['schemas']['BudgetWithId'];
 export type CapitalInvestment = components['schemas']['CapitalInvestment'];
 export type CapitalInvestmentPartial = components['schemas']['CapitalInvestmentPartial'];
 export type CapitalInvestmentRichWithId = components['schemas']['CapitalInvestmentRichWithId'];
@@ -3056,6 +3140,127 @@ export interface operations {
             };
         };
     };
+    get_budgets_api_products_budget_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetRichWithId"][] | {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    create_budget_api_products_budget_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Budget"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_budget_api_products_budget_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BudgetPartial"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetWithId"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_budget_api_products_budget__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_required_card_transactions_api_history_requirements_cards_get: {
         parameters: {
             query?: never;
@@ -3265,6 +3470,7 @@ export interface operations {
                 tagsInJoin?: components["schemas"]["Join"];
                 tagsOut?: string[] | null;
                 tagsOutJoin?: components["schemas"]["Join"];
+                hideOutliers?: boolean;
             };
             header?: never;
             path?: never;

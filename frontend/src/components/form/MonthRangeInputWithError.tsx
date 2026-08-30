@@ -1,4 +1,3 @@
-import React from "react";
 import { getValue, MultiInputWithErrorProps } from "./InputWithError";
 import DateInputWrapperWithError from "./DateInputWrapperWithError";
 

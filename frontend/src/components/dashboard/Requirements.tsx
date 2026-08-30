@@ -1,5 +1,4 @@
 import CellValue from "../table/cells/CellValue";
-import React from "react";
 import CellBoolean from "../table/cells/CellBoolean";
 import { twMerge } from "tailwind-merge";
 import ErrorToast from "../toast/ErrorToast";
@@ -52,23 +51,23 @@ export default async function Requirements() {
         const filtered = data.filter(item => item.remaining > 0);
         if (error == null && filtered.length === 0) return null;
         return (
-        <div key={title} className={classes.section}>
-          <h3>Required {title}:</h3>
-          {error != null
-            ? <ErrorToast message={`Failed to load required ${title}:\n${error}`} />
-            : (<ul>
-              {filtered.map((item, i) => (
-                <li key={i} className={twMerge(classes.item, item.remaining <= 0 ? classes.fulfilled : classes.unfulfilled)}>
-                  <span className={classes.name}>{item.name}</span>
-                  <span className={classes.dots} />
-                  {item.currency != null
-                    ? <CellValue value={item.remaining} currency={item.currency} />
-                    : <span>{item.remaining}</span>}
-                  <CellBoolean value={item.remaining <= 0} />
-                </li>
-              ))}
-            </ul>)}
-        </div>
+          <div key={title} className={classes.section}>
+            <h3>Required {title}:</h3>
+            {error != null
+              ? <ErrorToast message={`Failed to load required ${title}:\n${error}`} />
+              : (<ul>
+                {filtered.map((item, i) => (
+                  <li key={i} className={twMerge(classes.item, item.remaining <= 0 ? classes.fulfilled : classes.unfulfilled)}>
+                    <span className={classes.name}>{item.name}</span>
+                    <span className={classes.dots} />
+                    {item.currency != null
+                      ? <CellValue value={item.remaining} currency={item.currency} />
+                      : <span>{item.remaining}</span>}
+                    <CellBoolean value={item.remaining <= 0} />
+                  </li>
+                ))}
+              </ul>)}
+          </div>
         );
       })}
     </div>

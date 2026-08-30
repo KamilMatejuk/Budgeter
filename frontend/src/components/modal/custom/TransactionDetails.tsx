@@ -1,4 +1,3 @@
-import React from "react";
 import { TransactionRichWithId } from "@/types/backend";
 import { FaArrowRight } from "react-icons/fa";
 import CellAccountName from "../../table/cells/CellAccountName";

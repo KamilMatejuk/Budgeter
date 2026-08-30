@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { GroupBackendModalProps } from "../Modal";
 import { post } from "@/app/api/fetch";
 import { Item } from "../../table/Table";

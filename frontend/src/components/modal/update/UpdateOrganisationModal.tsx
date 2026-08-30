@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { submit } from "./utils";
 import { z } from "zod";

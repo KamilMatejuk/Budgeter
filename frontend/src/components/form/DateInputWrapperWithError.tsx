@@ -1,4 +1,3 @@
-import React from "react";
 import DatePicker, { DatePickerProps } from 'react-datepicker';
 import InputWithError, { MultiInputWithErrorProps } from "./InputWithError";
 

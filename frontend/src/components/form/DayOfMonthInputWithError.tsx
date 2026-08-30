@@ -1,4 +1,3 @@
-import React from "react";
 import { z } from "zod";
 import { getValue, SingleInputWithErrorProps } from "./InputWithError";
 import DateInputWrapperWithError from "./DateInputWrapperWithError";

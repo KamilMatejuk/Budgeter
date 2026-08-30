@@ -1,8 +1,8 @@
-import React from "react";
 import { MultiInputWithErrorProps } from "./InputWithError";
 import DateRangeInputWithError from "./DateRangeInputWithError";
 import MonthRangeInputWithError from "./MonthRangeInputWithError";
 import { IoCalendarNumberOutline, IoCalendarOutline } from "react-icons/io5";
+import { useState } from "react";
 
 
 const classes = {
@@ -11,7 +11,7 @@ const classes = {
 }
 
 export default function DateMonthRangeInputWithError<T>({ formik, formikNames, label }: MultiInputWithErrorProps<T>) {
-  const [monthDate, setMonthDate] = React.useState<"date" | "month">("date");
+  const [monthDate, setMonthDate] = useState<"date" | "month">("date");
   return (
     monthDate === "date"
       ? <div className={classes.container}>

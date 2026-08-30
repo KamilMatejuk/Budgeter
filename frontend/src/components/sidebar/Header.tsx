@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { spanTransition, transition } from "./SidebarClient";
 import { FaChevronLeft, FaTimes } from "react-icons/fa";

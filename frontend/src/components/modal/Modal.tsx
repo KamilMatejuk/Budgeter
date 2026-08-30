@@ -1,6 +1,6 @@
 'use client';
 
-import React, { PropsWithChildren, useEffect, useRef } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
 import ButtonWithLoader from "../button/ButtonWithLoader";
 import { Item } from "../table/Table";
 
@@ -40,7 +40,7 @@ export interface GroupBackendModalProps<T extends Item> extends ModalProps {
 export default function Modal({
   open, onClose, children,
   cancellable, onCancel, onSave, onDelete,
-  title, cancelText="Cancel", saveText="Save", deleteText="Delete"
+  title, cancelText = "Cancel", saveText = "Save", deleteText = "Delete"
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 

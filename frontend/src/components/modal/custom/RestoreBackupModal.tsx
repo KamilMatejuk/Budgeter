@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { BackupResponse } from "@/types/backend";
 import { customRevalidateAllTags, post } from "@/app/api/fetch";

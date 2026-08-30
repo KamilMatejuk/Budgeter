@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { SingleInputWithErrorProps } from "../InputWithError";
 import { useOrganisations } from "@/app/api/query";
 import SearchableTextInputWithError from "../SearchableTextInputWithError";

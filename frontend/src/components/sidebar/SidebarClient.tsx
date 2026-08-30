@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, Transition, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { FaBars } from "react-icons/fa";

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { SingleInputWithErrorProps } from "../InputWithError";
 import { CellTag } from "../../table/cells/CellTag";
 import { useRichTags } from "@/app/api/query";

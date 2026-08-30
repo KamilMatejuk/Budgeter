@@ -1,4 +1,3 @@
-import React from "react";
 import { BackendModalProps } from "../Modal";
 import { TransactionRichWithId } from "@/types/backend";
 import DebtTransactionModal from "./DebtTransactionModal";

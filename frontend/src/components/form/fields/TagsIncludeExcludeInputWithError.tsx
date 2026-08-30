@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { MultiInputWithErrorProps } from "../InputWithError";
 import { useUsedTags } from "@/app/api/query";
 import ChoiceInputWithError from "../ChoiceInputWithError";

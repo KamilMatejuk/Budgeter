@@ -1,4 +1,3 @@
-import React from "react";
 import { z } from "zod";
 import { ERROR } from "@/const/message";
 import { getValue, SingleInputWithErrorProps } from "./InputWithError";

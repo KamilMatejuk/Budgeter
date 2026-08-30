@@ -12,13 +12,13 @@ type FetchArgs = {
 };
 
 // has to be server function
-export const customRevalidateTag = async (tag: string) => revalidateTag(tag);
+export const customRevalidateTag = async (tag: string) => revalidateTag(tag, "max");
 
 export const customRevalidateAllTags = async () => {
   const tags = ['backup', 'card', 'cash', 'organisation', 'tag', 'transaction',
     'personal_account', 'stock_account', 'capital_investment'];
   for (const tag of tags) {
-    await revalidateTag(tag);
+    await revalidateTag(tag, "max");
   }
 }
 

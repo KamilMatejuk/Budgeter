@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { patch } from "@/app/api/fetch";
 import { TransactionRichWithId } from "@/types/backend";

@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { GroupBackendModalProps } from "../Modal";
 import { z } from "zod";
 import { TransactionRichWithId, TransactionPartial } from "@/types/backend";

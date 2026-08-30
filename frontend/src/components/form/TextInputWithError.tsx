@@ -1,4 +1,3 @@
-import React from "react";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { ERROR } from "@/const/message";

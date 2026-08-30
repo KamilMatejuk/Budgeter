@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { BackendModalProps } from "../Modal";
 import { submit } from "./utils";
 import { z } from "zod";
@@ -30,7 +29,7 @@ export default function UpdatePeopleModal({ url, item, open, onClose }: BackendM
       tags: item?.tags.map(tag => tag._id) || [],
     },
     onSubmit: async (values) => {
-      await submit<SubmitFormSchemaType, OrganisationRichWithId>(url, {...values, icon: personIcon}, item?._id, onClose);
+      await submit<SubmitFormSchemaType, OrganisationRichWithId>(url, { ...values, icon: personIcon }, item?._id, onClose);
       await customRevalidateTag("transaction");
     },
     validate: withZodSchema(FormSchema),

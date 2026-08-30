@@ -1,4 +1,3 @@
-import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import InputWithError, { getValue, SingleInputWithErrorProps } from './InputWithError';
 import { z } from 'zod';

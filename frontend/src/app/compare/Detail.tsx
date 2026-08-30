@@ -7,12 +7,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "@/components/table/cells/CellTag";
 import { defineCellValue } from "@/components/table/cells/CellValue";
 import SectionHeader from "@/components/page_layout/SectionHeader";
-import React from "react";
 import { PieChart } from "@/components/dashboard/Chart";
 import InfoToast from "@/components/toast/InfoToast";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { getTagsSearchSlug } from "../search/utils";
 import { useRichTags } from "../api/query";
+import { memo, useMemo, useState } from "react";
 
 export interface DetailProps extends Omit<Comparison, "month" | "year"> {
   range: Range;
@@ -40,9 +40,9 @@ function removeZeros(items: ComparisonItemRecursive[]): ComparisonItemRecursive[
     }));
 }
 
-const Detail = React.memo(function Detail({ value_pln, transactions, range, slug, children_tags, other_tags }: DetailProps) {
+const Detail = memo(function Detail({ value_pln, transactions, range, slug, children_tags, other_tags }: DetailProps) {
   const allTags = useRichTags();
-  const [hideZeros, setHideZeros] = React.useState(false);
+  const [hideZeros, setHideZeros] = useState(false);
   const childrenTagValues = hideZeros ? removeZeros(children_tags) : children_tags;
 
   const dateStart = new Date(range.startYear, range.startMonth - 1, 1);
@@ -50,7 +50,7 @@ const Detail = React.memo(function Detail({ value_pln, transactions, range, slug
 
   const allTransactionsUrl = `/search?${slug}&dateStart=${getISODateString(dateStart)}&dateEnd=${getISODateString(dateEnd)}`;
 
-  const columnsWithLink = React.useMemo(() => ([
+  const columnsWithLink = useMemo(() => ([
     ...columns,
     {
       header: "",

@@ -55,7 +55,7 @@ export default function TagSubtree({ parent, allTags, first }: TagSubtreeProps) 
         </ul>
       </div>
       {/* modals */}
-      {modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} item={parent} />}
+      {modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} item={parent} name="name" />}
       {modalOpen === "update" && <UpdateTagModal open onClose={closeModal} url={url} item={parent} />}
       {modalOpen === "create" && <UpdateTagModal open onClose={closeModal} url={url} item={{ parent: parent._id } as TagWithId} />}
     </div>

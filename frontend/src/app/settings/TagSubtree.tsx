@@ -40,9 +40,9 @@ export default function TagSubtree({ parent, allTags, first }: TagSubtreeProps) 
       <div className={classes.tag.container}>
         {!first && <div className={classes.lines.horizontal} />}
         <span className={classes.tag.body} style={style}>{parent.name}</span>
-        <MdEdit size={20} className={classes.tag.edit} onClick={() => setModalOpen("update")} />
-        <MdDelete size={20} className={classes.tag.delete} onClick={() => setModalOpen("delete")} />
-        <MdAdd size={20} className={classes.tag.delete} onClick={() => setModalOpen("create")} />
+        <MdEdit size={20} className={classes.tag.edit} onClick={() => setModalOpen("update")} title="Update" />
+        <MdDelete size={20} className={classes.tag.delete} onClick={() => setModalOpen("delete")} title="Delete" />
+        <MdAdd size={20} className={classes.tag.delete} onClick={() => setModalOpen("create")} title="Create subtag" />
       </div>
       <div className={classes.lines.layout}>
         <div className={classes.lines.verical} />

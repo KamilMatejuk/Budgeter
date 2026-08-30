@@ -13,7 +13,7 @@ export default function NewTagSubtree() {
   return (
     <div>
       <span className="mt-1 cursor-pointer text-subtext flex text-sm w-fit" onClick={() => setModalOpen(true)}>
-        <MdAdd size={20} />
+        <MdAdd size={20} title="Create new tag" />
       </span>
       {/* modals */}
       {modalOpen && <UpdateTagModal open onClose={closeModal} url="/api/tag" item={{} as TagWithId} />}

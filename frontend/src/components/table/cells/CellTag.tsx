@@ -27,11 +27,13 @@ export function getTextColor(bgColor: string): string {
 
 interface CellTagProps extends React.HTMLAttributes<HTMLDivElement> {
   tag: TagRichWithId;
+  maxLengthToCollapse?: number;
 }
 
-export function CellTag({ tag, ...props }: CellTagProps) {
+export function CellTag({ tag, maxLengthToCollapse, ...props }: CellTagProps) {
   const parts = tag.name.split("/");
-  return <div className={classes.container} {...props}>
+  const shouldCollapse = maxLengthToCollapse && tag.name.length >= maxLengthToCollapse
+  return <div className={classes.container} title={maxLengthToCollapse ? tag.name : undefined} {...props}>
     {parts.map((part, i) => {
       const isFirst = i == 0;
       const isLast = i == parts.length - 1;
@@ -52,7 +54,7 @@ export function CellTag({ tag, ...props }: CellTagProps) {
             color: getTextColor(tag.colour),
           }}
         >
-          {part}
+          {shouldCollapse && !isLast ? part.slice(0, 3) + "..." : part}
         </span>
       )
     })}
@@ -63,8 +65,8 @@ export function defineCellTag<T extends { tag?: TagRichWithId | null, tags?: Tag
   return {
     accessorKey: "tags", header: "Tags", cell: ({ row }) => (
       <div className="flex gap-1">
-        {row.original.tags?.map((t) => <CellTag key={t._id} tag={t} />)}
-        {row.original.tag ? <CellTag tag={row.original.tag} /> : null}
+        {row.original.tags?.map((t) => <CellTag key={t._id} tag={t} maxLengthToCollapse={10} />)}
+        {row.original.tag ? <CellTag tag={row.original.tag} maxLengthToCollapse={10} /> : null}
       </div>
     ), meta: { wrap: true }
   } as ColumnDef<T>;

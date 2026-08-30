@@ -10,13 +10,13 @@ export default async function TagTree() {
   return error != null
     ? <ErrorToast message={`Could not download tags: ${error}`} />
     : (
-      <div className="flex flex-wrap items-start gap-16">
+      <div className="flex flex-wrap items-start gap-4">
+        <div className="mb-4 shrink-0"><NewTagSubtree /></div>
         {response.filter((tag) => tag.parent === null).map((tag) => (
           <div key={tag._id} className="mb-4 shrink-0">
             <TagSubtree parent={tag} allTags={response} first />
           </div>
         ))}
-        <div className="mb-4 shrink-0"><NewTagSubtree /></div>
       </div>
     );
 }

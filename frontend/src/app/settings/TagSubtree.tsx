@@ -17,10 +17,9 @@ export const classes = {
   },
   lines: {
     horizontal: "h-px w-4 bg-line",
-    verical: "w-px h-full bg-line",
+    verical: "w-px h-[calc(100%-15px)] bg-line",
     layout: "ml-8 grid grid-cols-[auto_1fr]"
   },
-  new: "ml-6 mb-2 cursor-pointer text-subtext flex text-sm w-fit",
 }
 
 interface TagSubtreeProps {
@@ -35,7 +34,6 @@ export default function TagSubtree({ parent, allTags, first }: TagSubtreeProps) 
   const url = "/api/tag";
 
   const children = allTags.filter((tag) => tag.parent === parent._id);
-  const newTag = `Create new subtag of ${parent.name}`;
   const style = { backgroundColor: parent.colour, color: getTextColor(parent.colour) };
   return (
     <div>
@@ -44,6 +42,7 @@ export default function TagSubtree({ parent, allTags, first }: TagSubtreeProps) 
         <span className={classes.tag.body} style={style}>{parent.name}</span>
         <MdEdit size={20} className={classes.tag.edit} onClick={() => setModalOpen("update")} />
         <MdDelete size={20} className={classes.tag.delete} onClick={() => setModalOpen("delete")} />
+        <MdAdd size={20} className={classes.tag.delete} onClick={() => setModalOpen("create")} />
       </div>
       <div className={classes.lines.layout}>
         <div className={classes.lines.verical} />
@@ -55,13 +54,10 @@ export default function TagSubtree({ parent, allTags, first }: TagSubtreeProps) 
           ))}
         </ul>
       </div>
-      <span className={classes.new} onClick={() => setModalOpen("create")}>
-        <MdAdd size={20} />{newTag}
-      </span>
       {/* modals */}
-      {modalOpen === "delete" && parent && <DeleteByIdModal open onClose={closeModal} url={url} item={parent} />}
-      {modalOpen === "update" && parent && <UpdateTagModal open onClose={closeModal} url={url} item={parent} />}
-      {modalOpen === "create" && <UpdateTagModal open onClose={closeModal} url={url} item={(parent ? { parent: parent._id } : {}) as TagWithId} />}
+      {modalOpen === "delete" && <DeleteByIdModal open onClose={closeModal} url={url} item={parent} />}
+      {modalOpen === "update" && <UpdateTagModal open onClose={closeModal} url={url} item={parent} />}
+      {modalOpen === "create" && <UpdateTagModal open onClose={closeModal} url={url} item={{ parent: parent._id } as TagWithId} />}
     </div>
   );
 };

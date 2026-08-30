@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { RequestInit } from 'next/dist/server/web/spec-extension/request';
 
 type RESTMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -12,13 +12,14 @@ type FetchArgs = {
 };
 
 // has to be server function
-export const customRevalidateTag = async (tag: string) => revalidateTag(tag, "max");
+// Next v16 updated API and introduced updateTag
+export const customRevalidateTag = async (tag: string) => updateTag(tag);
 
 export const customRevalidateAllTags = async () => {
   const tags = ['backup', 'card', 'cash', 'organisation', 'tag', 'transaction',
     'personal_account', 'stock_account', 'capital_investment'];
   for (const tag of tags) {
-    await revalidateTag(tag, "max");
+    await updateTag(tag);
   }
 }
 

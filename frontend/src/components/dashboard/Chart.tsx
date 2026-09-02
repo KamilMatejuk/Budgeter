@@ -214,7 +214,7 @@ const DoubleBarChartOptions = {
   ...Options,
   scales: {
     x: { ...Options.scales.x, stacked: true },
-    y: { ...Options.scales.y, stacked: true },
+    y: { ...Options.scales.y, stacked: true, min: NaN, max: NaN },
   },
   plugins: {
     ...Options.plugins,
@@ -244,6 +244,8 @@ const DoubleBarChartOptions = {
 };
 
 export function DoubleBarChart({ dataPositive, dataNegative, labels, ...props }: DoubleBarChartProps) {
+  DoubleBarChartOptions.scales.y.min = Math.min(...dataNegative) * 1.11
+  DoubleBarChartOptions.scales.y.max = Math.max(...dataPositive) * 1.11
   return (
     <ChartContainer {...props}>
       <Bar

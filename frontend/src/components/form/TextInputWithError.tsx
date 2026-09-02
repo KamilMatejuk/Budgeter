@@ -10,16 +10,18 @@ export const requiredText = z.string({ required_error: ERROR.requiredError }).mi
 export default function TextInputWithError<T>({ formik, formikName, label, ...props }: SingleInputWithErrorProps<T>) {
   const error = getError(formik, formikName);
   const touched = getTouched(formik, formikName);
+  const rows = props.rows ?? 1;
 
   return (
     <InputWithError<T> formik={formik} formikNames={[formikName]} label={label}>
-      <input
-        type="text"
+      <textarea
         {...formik.getFieldProps(formikName as string)}
         {...props}
+        rows={rows}
         className={twMerge(
           "border border-gray-300 px-4 py-2 rounded-md w-full text-center",
           "disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500",
+          "resize-none", rows == 1 && "whitespace-nowrap overflow-hidden",
           error && touched && "border-red-200 bg-red-500/10",
           props.className || "",
         )}

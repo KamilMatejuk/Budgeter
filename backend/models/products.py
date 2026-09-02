@@ -73,6 +73,7 @@ class CapitalInvestment(PyBaseModel):
 
 class Budget(PyBaseModel):
     name: str
+    description: str
     tags: list[str] | None # id of Tags
     value_pln: float
 

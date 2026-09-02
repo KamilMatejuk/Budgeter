@@ -11,6 +11,7 @@ import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
 
 const FormSchema = z.object({
   name: requiredText,
+  description: z.string().optional(),
   tags: z.array(z.string()).nullable(),
   value_pln: requiredPositiveAmount,
 });
@@ -27,6 +28,7 @@ export default function UpdateBudgetModal({ url, item, open, onClose }: BackendM
   const formik = useFormik<FormSchemaType>({
     initialValues: {
       name: item?.name || "",
+      description: item?.description || "",
       tags: item?.tags ? item?.tags.map(tag => tag._id) : null,
       value_pln: item?.value_pln || 0,
     },
@@ -37,6 +39,7 @@ export default function UpdateBudgetModal({ url, item, open, onClose }: BackendM
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
+      <TextInputWithError formik={formik} formikName="description" label="Description" rows={5} />
       <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
       <AmountInputWithError formik={formik} formikName="value_pln" label="Value" />
     </Modal>

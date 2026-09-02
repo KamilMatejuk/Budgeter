@@ -867,6 +867,8 @@ export type components = {
             _id?: string;
             /** Name */
             name: string;
+            /** Description */
+            description: string;
             /** Tags */
             tags: string[] | null;
             /** Value Pln */
@@ -878,6 +880,8 @@ export type components = {
             _id?: string;
             /** Name */
             name?: string | null;
+            /** Description */
+            description?: string | null;
             /** Tags */
             tags?: string[] | null;
             /** Value Pln */
@@ -889,6 +893,8 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Description */
+            description: string;
             /** Tags */
             tags: components["schemas"]["TagRichWithId"][] | null;
             /** Value Pln */
@@ -900,6 +906,8 @@ export type components = {
             _id: string;
             /** Name */
             name: string;
+            /** Description */
+            description: string;
             /** Tags */
             tags: string[] | null;
             /** Value Pln */

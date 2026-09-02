@@ -16,6 +16,7 @@ interface TableBudgetsProps {
 
 const columns: ColumnDef<BudgetRichWithId>[] = [
   { accessorKey: "name", header: "Name" },
+  { accessorKey: "description", header: "Description", meta: { wrap: true } },
   {
     ...defineCellTag<BudgetRichWithId>(),
     cell: ({ row }) => (

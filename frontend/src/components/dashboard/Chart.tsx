@@ -3,7 +3,7 @@
 import { ArcElement, BarElement, CategoryScale, Chart, ChartOptions, Filler, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { PropsWithChildren } from "react";
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
 
 Chart.register(
   ChartDataLabels,
@@ -273,25 +273,34 @@ export function DoubleBarChart({ dataPositive, dataNegative, labels, ...props }:
 
 // ******************************** PIE CHART ********************************
 
-export interface PieChartProps extends ChartContainerProps {
+export interface DoughnutChartProps extends ChartContainerProps {
   data: number[];
   labels: string[];
   colors: string[];
+  asProgress?: boolean;
 }
 
-const PieChartOptions = {
+const DoughnutChartOptions = {
   ...Options,
+  cutout: "0%",
+  rotation: 0,
+  circumference: 360,
   scales: {
     y: { display: false },
     x: { display: false },
   },
 };
 
-export function PieChart({ data, labels, colors, ...props }: PieChartProps) {
+export function DoughnutChart({ data, labels, colors, asProgress, ...props }: DoughnutChartProps) {
+  if (asProgress) {
+    DoughnutChartOptions.cutout = "75%";
+    DoughnutChartOptions.rotation = -135;
+    DoughnutChartOptions.circumference = 270;
+  }
   return (
     <ChartContainer {...props}>
-      <Pie
-        options={PieChartOptions as ChartOptions<"pie">}
+      <Doughnut
+        options={DoughnutChartOptions as ChartOptions<"doughnut">}
         data={{
           labels,
           datasets: [

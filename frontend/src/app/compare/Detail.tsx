@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { defineCellTag } from "@/components/table/cells/CellTag";
 import { defineCellValue } from "@/components/table/cells/CellValue";
 import SectionHeader from "@/components/page_layout/SectionHeader";
-import { PieChart } from "@/components/dashboard/Chart";
+import { DoughnutChart } from "@/components/dashboard/Chart";
 import InfoToast from "@/components/toast/InfoToast";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { getTagsSearchSlug } from "../search/utils";
@@ -87,7 +87,7 @@ const Detail = memo(function Detail({ value_pln, transactions, range, slug, chil
           };
           return items.length == 0
             ? <InfoToast key={i} message="No subtags found" />
-            : <PieChart
+            : <DoughnutChart
               key={i}
               data={items.map(c => c.value_pln)}
               labels={items.map(c => c.tag.name)}
@@ -114,7 +114,7 @@ const Detail = memo(function Detail({ value_pln, transactions, range, slug, chil
         {other_tags.map((child, i) => {
           return child.children.length == 0
             ? <InfoToast key={i} message="No other tags found" />
-            : <PieChart
+            : <DoughnutChart
               key={i}
               data={child.children.map(c => c.value_pln)}
               labels={child.children.map(c => c.tag.name)}

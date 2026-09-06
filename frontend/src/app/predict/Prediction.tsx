@@ -1,6 +1,6 @@
 'use client';
 
-import { PieChart, PredictionLineChart } from "@/components/dashboard/Chart";
+import { DoughnutChart, PredictionLineChart } from "@/components/dashboard/Chart";
 import { _getMonthsSinceDate, getMonthsArray } from "@/const/date";
 import { calculate } from "./utils";
 import { z } from "zod";
@@ -178,7 +178,7 @@ export default function Prediction({
         </div>
         <div className={`${classes.allocationsColumn} hidden sm:grid`}>
           <p className={classes.param}>Money allocation</p>
-          <PieChart
+          <DoughnutChart
             width="252px" height="252px"
             labels={["Capital", "Stocks", "Uninvested"]}
             colors={["#22C55E", "#EF4444", "#000000"]}
@@ -188,7 +188,7 @@ export default function Prediction({
       {/* money allocation on mobile */}
       <div className="sm:hidden flex flex-col items-center gap-1">
         <p className={classes.param}>Money allocation</p>
-        <PieChart
+        <DoughnutChart
           width="150px" height="150px"
           labels={["Capital", "Stocks", "Uninvested"]}
           colors={["#22C55E", "#EF4444", "#000000"]}

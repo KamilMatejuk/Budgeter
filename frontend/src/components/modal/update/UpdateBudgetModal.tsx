@@ -6,41 +6,42 @@ import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
 import TextInputWithError, { requiredText } from "../../form/TextInputWithError";
 import AmountInputWithError, { requiredPositiveAmount } from "../../form/AmountInputWithError";
-import TagsInputWithError from "@/components/form/fields/TagsInputWithError";
+import TagsIncludeExcludeInputWithError from "@/components/form/fields/TagsIncludeExcludeInputWithError";
+import { Join } from "@/types/enum";
 
 
 const FormSchema = z.object({
   name: requiredText,
   description: z.string().optional(),
-  tags: z.array(z.string()).nullable(),
   value_pln: requiredPositiveAmount,
+  tagsIn: z.array(z.string()),
+  tagsInJoin: z.nativeEnum(Join).optional(),
+  tagsOut: z.array(z.string()),
+  tagsOutJoin: z.nativeEnum(Join).optional(),
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
-const normalizeValues = (values: FormSchemaType) => ({
-  ...values,
-  tags: values.tags?.filter((tag): tag is string => tag !== null).length
-    ? values.tags.filter((tag): tag is string => tag !== null)
-    : null,
-});
 
 export default function UpdateBudgetModal({ url, item, open, onClose }: BackendModalProps<BudgetRichWithId>) {
   const formik = useFormik<FormSchemaType>({
     initialValues: {
       name: item?.name || "",
       description: item?.description || "",
-      tags: item?.tags ? item?.tags.map(tag => tag._id) : null,
       value_pln: item?.value_pln || 0,
+      tagsIn: item?.tagsIn ? item?.tagsIn.map(tag => tag._id) : [],
+      tagsOut: item?.tagsOut ? item?.tagsOut.map(tag => tag._id) : [],
+      tagsInJoin: item?.tagsInJoin as Join,
+      tagsOutJoin: item?.tagsOutJoin as Join,
     },
-    onSubmit: async (values) => submit<FormSchemaType, BudgetWithId>(url, normalizeValues(values), item?._id, onClose),
-    validate: (values) => withZodSchema(FormSchema)(normalizeValues(values)),
+    onSubmit: async (values) => submit<FormSchemaType, BudgetWithId>(url, values, item?._id, onClose),
+    validate: withZodSchema(FormSchema),
   });
 
   return (
     <Modal open={open} onClose={onClose} cancellable onSave={formik.submitForm} title={item ? "Update personal account" : "Create personal account"}>
       <TextInputWithError formik={formik} formikName="name" label="Name" />
       <TextInputWithError formik={formik} formikName="description" label="Description" rows={5} />
-      <TagsInputWithError formik={formik} formikName="tags" label="Tags" />
+      <TagsIncludeExcludeInputWithError formik={formik} layout="vertical" />
       <AmountInputWithError formik={formik} formikName="value_pln" label="Value" />
     </Modal>
   );

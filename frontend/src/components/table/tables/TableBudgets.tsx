@@ -18,15 +18,27 @@ const columns: ColumnDef<BudgetRichWithId>[] = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "description", header: "Description", meta: { wrap: true } },
   {
-    ...defineCellTag<BudgetRichWithId>(),
+    accessorKey: "tagsIn",
+    header: "Tags (including)",
     cell: ({ row }) => (
-        row.original.tags ? (
-          <div className="flex gap-1">
-            {row.original.tags.map((t) => <CellTag key={t._id} tag={t} />)}
-          </div>
-        ) : "Everything"
+      !row.original.tagsIn || !row.original.tagsIn.length ? "Everything" : (
+        <div className="flex gap-1">
+          {row.original.tagsIn.map((t) => <CellTag key={t._id} tag={t} />)}
+        </div>
       )
-    },
+    )
+  },
+  {
+    accessorKey: "tagsOut",
+    header: "Tags (excluding)",
+    cell: ({ row }) => (
+      !row.original.tagsOut || !row.original.tagsOut.length ? "Nothing" : (
+        <div className="flex gap-1">
+          {row.original.tagsOut.map((t) => <CellTag key={t._id} tag={t} />)}
+        </div>
+      )
+    )
+  },
   defineCellValue<BudgetRichWithId>(),
 ];
 

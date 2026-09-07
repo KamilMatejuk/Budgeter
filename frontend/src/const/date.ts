@@ -111,3 +111,10 @@ export function getMonthsArray(n: number): string[] {
   }
   return months;
 }
+
+export function getThisMonthPassedPercentage(): number {
+  const now = new Date();
+  const day = now.getDate();
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  return (day / daysInMonth) * 100;
+}

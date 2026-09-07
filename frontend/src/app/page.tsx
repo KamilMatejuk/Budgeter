@@ -8,6 +8,7 @@ import PageHeader from "@/components/page_layout/PageHeader";
 import SectionHeader from "@/components/page_layout/SectionHeader";
 import { getMonthName } from "@/const/date";
 import { Metadata } from "next";
+import Budget from "@/components/dashboard/Budget";
 
 export const metadata: Metadata = {
   title: "Budgeter",
@@ -35,7 +36,9 @@ export default async function Home() {
       {/* <AccountsHistory /> */}
       <SectionHeader text="Monthly Overview" subtext="Incomes and expenses (without outliers)" />
       <IncomExpenseHistory />
-      <SectionHeader text="Tag Trend" subtext="See how your tags trend (without outliers)" />
+      <SectionHeader text="Budget" subtext="How much of your budget you've used so far this month (without outliers)" />
+      <Budget />
+      <SectionHeader text="Tag Trend" subtext="How your tags trend (without outliers)" />
       <TagTrend />
     </>
   );

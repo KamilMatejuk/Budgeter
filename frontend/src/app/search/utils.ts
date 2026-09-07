@@ -74,7 +74,12 @@ export function getDescriptiveSearchParams(params: FiltersProps) {
   return parts.join(", ");
 }
 
-export function getDateSearchSlug(month: number, year: number) {
+export function getDateSearchSlug(month?: number, year?: number) {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+  month ??= currentMonth;
+  year ??= currentYear;
   const dateStart = getISODateString(new Date(year, month - 1, 1));
   const dateEnd = getISODateString(new Date(year, month, 0));
   return `dateStart=${dateStart}&dateEnd=${dateEnd}`;

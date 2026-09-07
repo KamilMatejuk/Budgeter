@@ -1,6 +1,7 @@
 import {
   AccountRequirementsResponse,
   BackupResponse,
+  BudgetResponse,
   BudgetRichWithId,
   CapitalInvestmentRichWithId,
   CardRequirementsResponse,
@@ -113,6 +114,10 @@ export async function getHistoricIncomeExpenseValues(range?: ChartRange) {
   let endpoint = `/api/history/income_expense/`;
   endpoint += range || DEFAULT_CHART_RANGE;
   return await get<[number[], number[]]>(endpoint, ["transaction"]);
+}
+
+export async function getThisMonthsBudget() {
+  return await get<BudgetResponse[]>("/api/history/budget/", ["budget", "transaction", "tag"]);
 }
 
 export async function getRequiredAccountsInput() {

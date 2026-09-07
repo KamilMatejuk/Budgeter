@@ -141,13 +141,14 @@ budget_factory.create_delete()
 
 @budget_router.get("", response_model=list[BudgetRichWithId] | dict)
 async def get_budgets(db: AsyncIOMotorDatabase = Depends(get_db)):
-    items: list[BudgetWithId] = await get(db, "budget", BudgetWithId)
+    items: list[BudgetWithId] = await get(db, "budget", BudgetWithId, sort="name", reverse=False)
     result = []
     for i in items:
         result.append(BudgetRichWithId(
-            **i.model_dump(exclude={"tags"}, by_alias=True, mode="json"),
-            tags = sorted(await get_rich_tags(i.tags, db), key=lambda t: t.name) if i.tags is not None else None,
+            **i.model_dump(exclude={"tagsIn", "tagsOut"}, by_alias=True, mode="json"),
+            tagsIn = sorted(await get_rich_tags(i.tagsIn, db), key=lambda t: t.name),
+            tagsOut = sorted(await get_rich_tags(i.tagsOut, db), key=lambda t: t.name),
         ))
-    return sorted(result, key=lambda x: x.name)
+    return result
 
 router.include_router(budget_router)

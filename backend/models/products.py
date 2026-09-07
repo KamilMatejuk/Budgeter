@@ -3,7 +3,7 @@ from datetime import date
 
 from models.base import PyBaseModel, Partial, WithId
 from models.source import Source
-from models.tag import TagRichWithId
+from models.tag import TagRichWithId, Join
 
 # Enums
 
@@ -74,7 +74,10 @@ class CapitalInvestment(PyBaseModel):
 class Budget(PyBaseModel):
     name: str
     description: str
-    tags: list[str] | None # id of Tags
+    tagsIn: list[str]
+    tagsInJoin: Join
+    tagsOut: list[str]
+    tagsOutJoin: Join
     value_pln: float
 
 # Partial models for updates
@@ -111,5 +114,7 @@ class StockAccountRichWithId(StockAccountRich, metaclass=WithId): pass
 class CapitalInvestmentRich(CapitalInvestment): value_pln: float
 class CapitalInvestmentRichWithId(CapitalInvestmentRich, metaclass=WithId): pass
 
-class BudgetRich(Budget): tags: list[TagRichWithId] | None
+class BudgetRich(Budget):
+    tagsIn: list[TagRichWithId] | None
+    tagsOut: list[TagRichWithId] | None
 class BudgetRichWithId(BudgetRich, metaclass=WithId): pass

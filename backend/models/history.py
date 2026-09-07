@@ -2,7 +2,7 @@ import enum
 from datetime import date
 from models.tag import TagRichWithId
 from models.base import PyBaseModel, WithId
-from models.products import CardWithId, PersonalAccountWithId
+from models.products import CardWithId, PersonalAccountWithId, BudgetRichWithId
 
 
 class CardRequirementsResponse(PyBaseModel):
@@ -51,3 +51,8 @@ class Comparison(PyBaseModel, metaclass=WithId):
     transactions: int
     children_tags: list[ComparisonItemRecursive] = [] # mapping of each include tag id to its children comparison
     other_tags: list[ComparisonItemRecursive] = [] # mapping of each include tag id to other tags comparison
+
+
+class BudgetResponse(PyBaseModel):
+    budget: BudgetRichWithId
+    value_pln: float

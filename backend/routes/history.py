@@ -9,10 +9,10 @@ from routes.transaction import enrich_transactions
 from models.tag import TagRichWithId, TagWithId, Join
 from routes.sources.utils import mark_account_value_in_history
 from models.transaction import TransactionRichWithId, TransactionWithId
-from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, \
+from models.history import AccountDailyHistory, CardMonthlyHistory, ChartRange, Comparison, BudgetResponse, \
     ComparisonItemRecursive, AccountRequirementsResponse, CardRequirementsResponse, PatchAccountValueRequest
-from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId
-from routes.utils import get_tag_children, get_tag_name, get_rich_tag, create_tags_condition, remove_leading_zero_history, range_to_dates
+from models.products import CardWithId, StockAccountWithId, CapitalInvestmentWithId, PersonalAccountWithId, BudgetWithId, BudgetRichWithId
+from routes.utils import get_tag_children, get_tag_name, get_rich_tag, get_rich_tags, create_tags_condition, remove_leading_zero_history, range_to_dates
 
 router = APIRouter()
 
@@ -310,3 +310,33 @@ async def _aggregate_by_other(tag: str, transactions: list[TransactionRichWithId
                 children=[],
             ))
     return response
+
+
+############################## Budget #############################
+
+@router.get("/budget", response_model=list[BudgetResponse] | dict)
+async def get_this_months_budget(db: AsyncIOMotorDatabase = Depends(get_db)):
+    @fail_wrapper
+    async def inner():
+        start = Date.this_month()
+        condition = {"deleted": False, "outlier": False, "$or": [{"debt_person": None}, {"debt_person": ""}]}
+        condition.update({"date": Date.condition(start, Date.month_end(start))})
+        response = []
+        budgets: list[BudgetWithId] = await get(db, "budget", BudgetWithId, sort="name", reverse=False)
+        for b in budgets:
+            condition.update(await create_tags_condition(b.tagsIn, b.tagsOut, b.tagsInJoin, b.tagsOutJoin, db))
+            transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
+            spent = Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions)
+            response.append(
+                BudgetResponse(
+                    _id=str(PyObjectId()),
+                    value_pln=abs(spent),
+                    budget=BudgetRichWithId(
+                        **b.model_dump(exclude={"tagsIn", "tagsOut"}, by_alias=True, mode="json"),
+                        tagsIn = sorted(await get_rich_tags(b.tagsIn, db), key=lambda t: t.name),
+                        tagsOut = sorted(await get_rich_tags(b.tagsOut, db), key=lambda t: t.name),
+                    ),
+                )
+            )
+        return response
+    return await inner()

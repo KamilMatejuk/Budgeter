@@ -701,6 +701,23 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/api/history/budget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get This Months Budget */
+        get: operations["get_this_months_budget_api_history_budget_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/organisation/{id}": {
         parameters: {
             query?: never;
@@ -869,8 +886,12 @@ export type components = {
             name: string;
             /** Description */
             description: string;
-            /** Tags */
-            tags: string[] | null;
+            /** Tagsin */
+            tagsIn: string[];
+            tagsInJoin: components["schemas"]["Join"];
+            /** Tagsout */
+            tagsOut: string[];
+            tagsOutJoin: components["schemas"]["Join"];
             /** Value Pln */
             value_pln: number;
         };
@@ -882,10 +903,22 @@ export type components = {
             name?: string | null;
             /** Description */
             description?: string | null;
-            /** Tags */
-            tags?: string[] | null;
+            /** Tagsin */
+            tagsIn?: string[] | null;
+            tagsInJoin?: components["schemas"]["Join"] | null;
+            /** Tagsout */
+            tagsOut?: string[] | null;
+            tagsOutJoin?: components["schemas"]["Join"] | null;
             /** Value Pln */
             value_pln?: number | null;
+        };
+        /** BudgetResponse */
+        BudgetResponse: {
+            /** Id */
+            _id?: string;
+            budget: components["schemas"]["BudgetRichWithId"];
+            /** Value Pln */
+            value_pln: number;
         };
         /** BudgetRichWithId */
         BudgetRichWithId: {
@@ -895,8 +928,12 @@ export type components = {
             name: string;
             /** Description */
             description: string;
-            /** Tags */
-            tags: components["schemas"]["TagRichWithId"][] | null;
+            /** Tagsin */
+            tagsIn: components["schemas"]["TagRichWithId"][] | null;
+            tagsInJoin: components["schemas"]["Join"];
+            /** Tagsout */
+            tagsOut: components["schemas"]["TagRichWithId"][] | null;
+            tagsOutJoin: components["schemas"]["Join"];
             /** Value Pln */
             value_pln: number;
         };
@@ -908,8 +945,12 @@ export type components = {
             name: string;
             /** Description */
             description: string;
-            /** Tags */
-            tags: string[] | null;
+            /** Tagsin */
+            tagsIn: string[];
+            tagsInJoin: components["schemas"]["Join"];
+            /** Tagsout */
+            tagsOut: string[];
+            tagsOutJoin: components["schemas"]["Join"];
             /** Value Pln */
             value_pln: number;
         };
@@ -1734,6 +1775,7 @@ export type BackupRequest = components['schemas']['BackupRequest'];
 export type BackupResponse = components['schemas']['BackupResponse'];
 export type Budget = components['schemas']['Budget'];
 export type BudgetPartial = components['schemas']['BudgetPartial'];
+export type BudgetResponse = components['schemas']['BudgetResponse'];
 export type BudgetRichWithId = components['schemas']['BudgetRichWithId'];
 export type BudgetWithId = components['schemas']['BudgetWithId'];
 export type CapitalInvestment = components['schemas']['CapitalInvestment'];
@@ -3504,6 +3546,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_this_months_budget_api_history_budget_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetResponse"][] | {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };

@@ -78,7 +78,7 @@ export default function Filters({
         <OrganisationsInputWithError formik={formik} formikName="organisations" label="Organisation" />
       </div>
       <div className="flex-2 min-w-40">
-        <TagsIncludeExcludeInputWithError formik={formik} />
+        <TagsIncludeExcludeInputWithError formik={formik} layout="horizontal" />
       </div>
       <div className="flex-1 min-w-24">
         <TextInputWithError formik={formik} formikName="title" label="Title" />

@@ -52,7 +52,7 @@ export default function Filters({
 
   return (
     <div className="flex gap-1 mb-4">
-      <TagsIncludeExcludeInputWithError formik={formik} />
+      <TagsIncludeExcludeInputWithError formik={formik} layout="horizontal"/>
       {/* submit */}
       <div className="flex flex-col">
         <label className="w-full">Load</label>

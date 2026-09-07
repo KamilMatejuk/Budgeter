@@ -5,6 +5,7 @@ import ChoiceInputWithError from "../ChoiceInputWithError";
 import { DEFAULT_JOIN, Join } from "@/types/enum";
 import UsedTagsInputWithError from "./UsedTagInputWithError";
 import { TagRichWithId } from "@/types/backend";
+import { twMerge } from "tailwind-merge";
 
 
 type TagsIncludeExcludeFormType = {
@@ -16,7 +17,9 @@ type TagsIncludeExcludeFormType = {
 
 // label is "Tags"
 // formikNames are "tagsIn", "tagsOut", "tagsInJoin", "tagsOutJoin"
-interface TagsIncludeExcludeInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames" | "label"> { }
+interface TagsIncludeExcludeInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames" | "label"> {
+  layout: 'horizontal' | 'vertical'
+}
 
 
 function getSiblingsAndParentOfOtherTag(allTags: TagRichWithId[], possibleOtherTags?: string[]) {
@@ -34,7 +37,7 @@ function addTagsToListIfNotExists(tagIds: string[], list?: string[]) {
   return Array.from(new Set([...(list), ...tagIds]));
 }
 
-export default function TagsIncludeExcludeInputWithError<T extends TagsIncludeExcludeFormType>({ formik }: TagsIncludeExcludeInputWithErrorProps<T>) {
+export default function TagsIncludeExcludeInputWithError<T extends TagsIncludeExcludeFormType>({ formik, layout }: TagsIncludeExcludeInputWithErrorProps<T>) {
   const tags = useUsedTags();
 
   // include other -> include parent and exclude children
@@ -76,7 +79,7 @@ export default function TagsIncludeExcludeInputWithError<T extends TagsIncludeEx
 
 
   return (
-    <div className="w-full grid grid-cols-2 gap-1">
+    <div className={twMerge("w-full grid gap-1", layout == 'horizontal' ? "grid-cols-2" : "grid-cols-1")}>
       <div className="gap-1 flex flex-col">
         <UsedTagsInputWithError formik={formik} formikName="tagsIn" label="Tags (include)" />
         {formik.values.tagsIn && formik.values.tagsIn.length >= 2 &&

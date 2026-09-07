@@ -11,8 +11,8 @@ export default function MultiTextInputWithError<T>({ formik, formikName, label, 
     <>
       {new Array(values.length + 1).fill("").map((_, i) => (
         <InputWithError<T> formik={formik} formikNames={[formikName]} label={i == 0 ? label : ""} key={i}>
-          <input
-            type="text"
+          <textarea
+            rows={1}
             {...props}
             className={twMerge(
               "border border-gray-300 px-4 py-2 rounded-md w-full text-center",

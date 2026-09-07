@@ -1,5 +1,7 @@
 import { twMerge } from "tailwind-merge";
-import InputWithError, { getValue, SingleInputWithErrorProps } from "./InputWithError";
+import InputWithError, { getValue } from "./InputWithError";
+import { InputHTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import { FormikProps } from "formik";
 
 
 const classes = {
@@ -10,7 +12,11 @@ const classes = {
   radio: "form-radio hidden",
 }
 
-export interface ChoiceInputWithErrorProps<T> extends SingleInputWithErrorProps<T> {
+// similar to SingleInputWithErrorProps
+export interface ChoiceInputWithErrorProps<T> extends PropsWithChildren, InputHTMLAttributes<HTMLInputElement> {
+  formik: FormikProps<T>;
+  formikName: keyof T | string;
+  label?: string | ReactNode;
   options: Record<string, string>;
 }
 

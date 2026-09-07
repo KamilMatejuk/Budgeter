@@ -1,15 +1,17 @@
-import { PropsWithChildren, ReactNode, TextareaHTMLAttributes } from "react";
+import { InputHTMLAttributes, PropsWithChildren, ReactNode, TextareaHTMLAttributes } from "react";
 import { FormikProps } from "formik";
 
 
-export interface MultiInputWithErrorProps<T> extends PropsWithChildren, TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface MultiInputWithErrorProps<T> extends PropsWithChildren, InputHTMLAttributes<HTMLInputElement> {
   formik: FormikProps<T>;
   formikNames: (keyof T | string)[];
   label?: string | ReactNode;
 }
 
-export interface SingleInputWithErrorProps<T> extends Omit<MultiInputWithErrorProps<T>, "formikNames"> {
+export interface SingleInputWithErrorProps<T> extends PropsWithChildren, TextareaHTMLAttributes<HTMLTextAreaElement> {
+  formik: FormikProps<T>;
   formikName: keyof T | string;
+  label?: string | ReactNode;
 }
 
 

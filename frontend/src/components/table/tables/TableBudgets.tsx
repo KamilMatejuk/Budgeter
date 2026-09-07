@@ -5,7 +5,7 @@ import Table from "@/components/table/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import DeleteByIdModal from "@/components/modal/delete/DeleteByIdModal";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { CellTag, defineCellTag } from "../cells/CellTag";
+import { CellTag } from "../cells/CellTag";
 import { defineCellValue } from "../cells/CellValue";
 import UpdateBudgetModal from "@/components/modal/update/UpdateBudgetModal";
 

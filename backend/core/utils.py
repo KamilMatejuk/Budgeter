@@ -72,7 +72,8 @@ class Forex:
     @staticmethod
     def convert(src: Currency, dst: Currency, date: datetime.date | None = None) -> float:
         if src == dst: return 1.0
-        rates = Forex.get_rates(date)
+        rates = Forex.PLN_per_unit
+        # rates = Forex.get_rates(date)
         return rates[src] / rates[dst]
     
     @staticmethod

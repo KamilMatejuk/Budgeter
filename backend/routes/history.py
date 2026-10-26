@@ -173,8 +173,8 @@ async def get_total_income_expense(range: ChartRange, db: AsyncIOMotorDatabase =
                 "$or": [{"debt_person": None}, {"debt_person": ""}],
             }
             transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-            incomes.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value > 0))
-            expenses.append(Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions if t.value < 0))
+            incomes.append(Value.sum(Forex.convert_to_pln(t.value, t.currency, t.date) for t in transactions if t.value > 0))
+            expenses.append(Value.sum(Forex.convert_to_pln(t.value, t.currency, t.date) for t in transactions if t.value < 0))
         return (incomes, expenses)
     return await inner()
 
@@ -326,7 +326,7 @@ async def get_this_months_budget(db: AsyncIOMotorDatabase = Depends(get_db)):
         for b in budgets:
             condition.update(await create_tags_condition(b.tagsIn, b.tagsOut, b.tagsInJoin, b.tagsOutJoin, db))
             transactions: list[TransactionWithId] = await get(db, "transactions", TransactionWithId, condition)
-            spent = Value.sum(Forex.convert_to_pln(t.value, t.currency) for t in transactions)
+            spent = Value.sum(Forex.convert_to_pln(t.value, t.currency, t.date) for t in transactions)
             response.append(
                 BudgetResponse(
                     _id=str(PyObjectId()),

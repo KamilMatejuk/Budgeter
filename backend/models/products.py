@@ -17,6 +17,8 @@ class Currency(enum.Enum):
     PLN = "PLN"
     USD = "USD"
     EUR = "EUR"
+    THB = "THB"
+    CZK = "CZK"
 
 class AccountType(enum.Enum):
     PERSONAL = "Osobiste"

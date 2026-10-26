@@ -30,7 +30,7 @@ async def enrich_transactions(transactions: list[TransactionWithId], db: AsyncIO
     result = []
     for t in transactions:
         org = await match_organisation_by_name_regex(t.organisation, organisations)
-        pln = Forex.convert_to_pln(t.value, t.currency)
+        pln = Forex.convert_to_pln(t.value, t.currency, t.date)
         acc = next((c for c in cashs if str(c.id) == t.account), None) \
             if t.cash else next((a for a in accounts if str(a.id) == t.account), None)
         tags = sorted(await get_rich_tags(t.tags, db), key=lambda t: not t.name.startswith("Wyjazdy"))

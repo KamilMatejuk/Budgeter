@@ -18,6 +18,8 @@ export enum Currency {
   PLN = "PLN",
   USD = "USD",
   EUR = "EUR",
+  THB = "THB",
+  CZK = "CZK",
 }
 
 // AccountType from backend.ts
@@ -32,6 +34,8 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   [Currency.PLN]: "zł",
   [Currency.USD]: "$",
   [Currency.EUR]: "€",
+  [Currency.THB]: "฿",
+  [Currency.CZK]: "Kč",
 };
 
 // ChartRange from backend.ts

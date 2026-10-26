@@ -1243,7 +1243,7 @@ export type components = {
          * Currency
          * @enum {string}
          */
-        Currency: "PLN" | "USD" | "EUR";
+        Currency: "PLN" | "USD" | "EUR" | "THB" | "CZK";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */

@@ -58,59 +58,92 @@ class Value:
 class Forex:
     """Utility class to handle currency conversion."""
     filename: str = "exchange_rates.json"
-    PLN_per_USD = 3.50
-    PLN_per_EUR = 4.20
+    # fallback PLN per 1 unit of currency
+    PLN_per_unit: dict[Currency, float] = {
+        Currency.PLN: 1.00,
+        Currency.USD: 3.50,
+        Currency.EUR: 4.20,
+        Currency.THB: 0.11,
+        Currency.CZK: 0.17,
+    }
+    _rates: dict[datetime.date, dict[Currency, float]] | None = None
+    MAX_DAYS_BACK = 10
 
     @staticmethod
-    def convert(src: Currency, dst: Currency) -> float:
+    def convert(src: Currency, dst: Currency, date: datetime.date | None = None) -> float:
         if src == dst: return 1.0
-        PLNUSD, PLNEUR = Forex.get_rates()
-        if src == Currency.PLN and dst == Currency.USD: return 1.0 / PLNUSD
-        if src == Currency.PLN and dst == Currency.EUR: return 1.0 / PLNEUR
-        if src == Currency.USD and dst == Currency.PLN: return PLNUSD
-        if src == Currency.USD and dst == Currency.EUR: return PLNUSD / PLNEUR
-        if src == Currency.EUR and dst == Currency.PLN: return PLNEUR
-        if src == Currency.EUR and dst == Currency.USD: return PLNEUR / PLNUSD
-        return 1.0
+        rates = Forex.get_rates(date)
+        return rates[src] / rates[dst]
     
     @staticmethod
-    def convert_to_pln(value: float, currency: Currency) -> float:
-        rate = Forex.convert(currency, Currency.PLN)
+    def convert_to_pln(value: float, currency: Currency, date: datetime.date | None = None) -> float:
+        rate = Forex.convert(currency, Currency.PLN, date)
         return Value.multiply(value, rate)
     
     @staticmethod
-    def get_rates() -> tuple[float, float] | None:
-        res = Forex._read_rates_from_file()
-        if res is not None: return res
-        res = Forex._fetch_rates_from_nbp()
-        if res is not None: return res
-        return (Forex.PLN_per_USD, Forex.PLN_per_EUR)
-    
+    def get_rates(date: datetime.date | None = None) -> dict[Currency, float]:
+        if date is None: date = Date.today()
+        history = Forex._get_history()
+        for days_back in range(Forex.MAX_DAYS_BACK):
+            day = date - datetime.timedelta(days=days_back)
+            rates = history.get(day)
+            if rates is not None and len(rates) == len(Currency): return rates
+            rates = Forex._try_fetch(day)
+            if rates is not None: return rates
+        earlier = [d for d in history if d <= date]
+        if earlier: return history[max(earlier)]
+        return Forex.PLN_per_unit
+
     @staticmethod
-    def _read_rates_from_file() -> tuple[float, float] | None:
+    def _get_history() -> dict[datetime.date, dict[Currency, float]]:
+        if Forex._rates is None:
+            Forex._rates = Forex._read_rates_from_file()
+        return Forex._rates
+
+    @staticmethod
+    def _try_fetch(date: datetime.date) -> dict[Currency, float] | None:
+        try:
+            rates = Forex._fetch_rates_from_nbp(date)
+        except Exception as e:
+            print(f"Failed to fetch NBP rates for {date}: {e}")
+            return None
+        if rates is None:
+            return None
+        history = Forex._get_history()
+        history[date] = rates
+        Forex._save(history)
+        return rates
+
+    @staticmethod
+    def _read_rates_from_file() -> dict[datetime.date, dict[Currency, float]]:
         try:
             with open(Forex.filename, "r") as f:
                 data = json.load(f)
-                date = datetime.datetime.strptime(data["date"], "%Y-%m-%d").date()
-                if (datetime.date.today() - date).days > 7: return None
-                usd_rate = float(data["USD"])
-                eur_rate = float(data["EUR"])
-                return (usd_rate, eur_rate)
-        except: return None
-    
+            return {
+                datetime.date.fromisoformat(d): {Currency.PLN: 1.0, **{Currency(c): float(r) for c, r in rates.items()}}
+                for d, rates in data.items()
+            }
+        except Exception as e:
+            print(f"Failed to read {Forex.filename}: {e}")
+            return {}
+
     @staticmethod
-    def _fetch_rates_from_nbp() -> tuple[float, float] | None:
-        try:
-            res = requests.get("http://api.nbp.pl/api/exchangerates/tables/A/?format=json", timeout=5)
-            res.raise_for_status()
-            data = res.json()[0]
-            date = datetime.datetime.strptime(data["effectiveDate"], "%Y-%m-%d").date()
-            usd_rate = next(item for item in data["rates"] if item["code"] == "USD")["mid"]
-            eur_rate = next(item for item in data["rates"] if item["code"] == "EUR")["mid"]
-            with open(Forex.filename, "w") as f:
-                json.dump({"date": date.isoformat(), "USD": usd_rate, "EUR": eur_rate}, f)
-            return (usd_rate, eur_rate)
-        except: return None
+    def _save(history: dict[datetime.date, dict[Currency, float]]) -> None:
+        Forex._rates = dict(sorted(history.items()))
+        lines = [
+            f'"{d.isoformat()}": {json.dumps({c.value: r for c, r in rates.items() if c != Currency.PLN})}'
+            for d, rates in Forex._rates.items()
+        ]
+        with open(Forex.filename, "w") as f:
+            f.write("{\n" + ",\n".join(lines) + "\n}\n")
+
+    @staticmethod
+    def _fetch_rates_from_nbp(date: datetime.date) -> dict[Currency, float] | None:
+        res = requests.get(f"https://api.nbp.pl/api/exchangerates/tables/A/{date.isoformat()}/?format=json", timeout=10)
+        if res.status_code == 404: return None
+        res.raise_for_status()
+        nbp_rates = {item["code"]: float(item["mid"]) for item in res.json()[0]["rates"]}
+        return {c: 1.0 if c == Currency.PLN else nbp_rates.get(c.value, Forex.PLN_per_unit[c]) for c in Currency}
 
 
 

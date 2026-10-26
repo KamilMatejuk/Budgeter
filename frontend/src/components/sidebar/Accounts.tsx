@@ -68,12 +68,12 @@ export interface AccountsProps {
 export default function Accounts({ collapsed, fullWidth, cards, accounts, stocks, capitals, cash, blocked }: AccountsProps) {
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
-  const available = cards.reduce((acc, it) => acc + (it.value || 0), 0)
+  const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
     + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
     + capitals
     + stocks
     + cash;
-  const total = available + blocked;
+  const available = total - blocked;
 
   return (
     <div className={classes.container}>

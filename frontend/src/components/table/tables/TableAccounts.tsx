@@ -11,6 +11,7 @@ import { AiFillDollarCircle } from "react-icons/ai";
 import SetAccountValueOnDateModal from "@/components/modal/custom/SetAccountValueOnDateModal";
 import { defineCellBank } from "../cells/CellBank";
 import { defineCellBoolean } from "../cells/CellBoolean";
+import { AccountType } from "@/types/enum";
 
 
 interface TableAccountsProps {
@@ -33,7 +34,8 @@ function renderNumber(item: PersonalAccountWithId): string {
 
 const columns: ColumnDef<PersonalAccountWithId>[] = [
   defineCellBank<PersonalAccountWithId>(),
-  { accessorKey: "type", header: "Type" },
+  { accessorKey: "type", header: "Type", cell: ({ row }) => row.original.type + 
+    (row.original.type == AccountType.EXCHANGE ? ` (${row.original.currency})` : '') },
   { accessorKey: "owner", header: "Owner" },
   defineCellValue<PersonalAccountWithId>(),
   { accessorKey: "number", header: "Number", cell: ({ row }) => renderNumber(row.original) },

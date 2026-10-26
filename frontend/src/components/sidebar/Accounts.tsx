@@ -69,7 +69,7 @@ export default function Accounts({ collapsed, fullWidth, cards, accounts, stocks
   // all values are mapped to PLN on server side
   const currency = Currency.PLN;
   const total = cards.reduce((acc, it) => acc + (it.value || 0), 0)
-    + accounts.reduce((acc, it) => acc + (it.value || 0), 0)
+    + accounts.reduce((acc, it) => acc + (it.value_pln || 0), 0)
     + capitals
     + stocks
     + cash;

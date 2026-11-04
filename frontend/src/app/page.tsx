@@ -9,6 +9,8 @@ import SectionHeader from "@/components/page_layout/SectionHeader";
 import { getMonthName } from "@/const/date";
 import { Metadata } from "next";
 import Budget from "@/components/dashboard/Budget";
+import Loader from "@/components/Loader";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Budgeter",
@@ -24,22 +26,22 @@ export default async function Home() {
       <MultiColumnSection mobileBehaviour="wrap">
         <>
           <SectionHeader text="This Month Requirements" subtext={`Requirements of cards and accounts in ${getMonthName(month)} ${year}`} />
-          <Requirements />
+          <Suspense fallback={<Loader />}><Requirements /></Suspense>
         </>
         <>
           <SectionHeader text="Debt" subtext="Money owed and outstanding balances" />
-          <Debt />
+          <Suspense fallback={<Loader />}><Debt /></Suspense>
         </>
       </MultiColumnSection>
       {/* Temporarly hide */}
       {/* <SectionHeader text="Accounts' Balance" subtext={`Accounts value history`} /> */}
       {/* <AccountsHistory /> */}
       <SectionHeader text="Monthly Overview" subtext="Incomes and expenses (without outliers)" />
-      <IncomExpenseHistory />
+      <Suspense fallback={<Loader />}><IncomExpenseHistory /></Suspense>
       <SectionHeader text="Budget" subtext="How much of your budget you've used so far this month (without outliers)" />
-      <Budget />
+      <Suspense fallback={<Loader />}><Budget /></Suspense>
       <SectionHeader text="Tag Trend" subtext="How your tags trend (without outliers)" />
-      <TagTrend />
+      <Suspense fallback={<Loader />}><TagTrend /></Suspense>
     </>
   );
 }

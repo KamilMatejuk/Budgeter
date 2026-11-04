@@ -27,7 +27,8 @@ export const customRevalidateAllTags = async () => {
 async function fetchFromApi<T>({ url, method, body, tags }: FetchArgs) {
   const options: RequestInit = {
     method,
-    next: { tags, revalidate: 60 },
+    cache: 'no-store',
+    next: { tags },
     headers: { 'Content-Type': 'application/json' },
   };
   if (method === 'POST' || method === 'PATCH') { options.body = JSON.stringify(body || {}) }

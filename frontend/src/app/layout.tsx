@@ -3,6 +3,9 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { twMerge } from "tailwind-merge";
 
+// render every page on request - never prerender at build time
+// or serve a statically cached page (which the client router keeps for 5 min)
+export const dynamic = "force-dynamic";
 
 export default function RootLayout({
   children,
